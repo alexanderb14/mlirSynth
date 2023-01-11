@@ -13,6 +13,7 @@ add_llvm_executable(
   ContextManager.cc
   enumeration/Candidate.cc
   enumeration/Enumerator.cc
+  enumeration/Stats.cc
   execution/ArgUtils.cc
   execution/Executor.cc
   execution/Lowering.cc

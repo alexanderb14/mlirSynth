@@ -121,26 +121,6 @@ void printCandidate(ProcessingStatus status, CandidateStorePtr &localCandidateSt
   }
 }
 
-void printStats(EnumerationStats &stats) {
-  llvm::outs() << "\nEnumeration Stats"
-               << "\n--------\n";
-  llvm::outs() << "Number of enumerated candidates:             "
-               << stats.numEnumerated << "\n";
-
-  llvm::outs() << "Number of valid candidates:                  "
-               << stats.numValid << "\n";
-  llvm::outs() << "Percentage of valid candidates:              "
-               << (stats.numValid * 100.0) / stats.numEnumerated << "%\n";
-
-  llvm::outs() << "Number of executed candidates:               "
-               << stats.numExecuted << "\n";
-  llvm::outs() << "Percentage of executed candidates:           "
-               << (stats.numExecuted * 100.0) / stats.numEnumerated << "%\n";
-
-  llvm::outs() << "Number of ignored equivalent candidates:     "
-               << stats.numEquivalent << "\n";
-}
-
 void printArray(double *arr, ArrayRef<int64_t> shape) {
   if (shape.empty()) {
     llvm::outs() << arr[0] << "\n";
@@ -498,7 +478,7 @@ process(MLIRContext &ctx, EnumerationStats &stats,
   newCandidate->setHash(hash);
   if (options.ignoreEquivalentCandidates &&
       !candidateStore->addCandidateHash(hash)) {
-    stats.numEquivalent++;
+    stats.numIgnored++;
     return reject_hashNotUnique;
   }
 
@@ -508,8 +488,10 @@ process(MLIRContext &ctx, EnumerationStats &stats,
     llvm::outs() << "Found a match!\n";
     printArray(out, returnShape);
     module->dump();
+
     candidateStore->merge(localCandidateStore);
-    printStats(stats);
+    stats.numOps = newCandidate->getNumOps();
+    stats.dump();
 
     return accept_solution;
   }
@@ -593,7 +575,7 @@ bool enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   }
 
   llvm::outs() << "\n";
-  printStats(stats);
+  stats.dump();
 
   return false;
 }

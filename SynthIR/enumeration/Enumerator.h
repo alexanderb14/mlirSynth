@@ -2,6 +2,7 @@
 #define TOOLS_SYNTHESIZER_ENUMERATOR_H
 
 #include "Candidate.h"
+#include "Stats.h"
 
 #include "execution/Executor.h"
 
@@ -9,13 +10,6 @@
 #include "mlir/IR/BuiltinOps.h"
 
 #include <vector>
-
-struct EnumerationStats {
-  unsigned numEnumerated = 0;
-  unsigned numValid = 0;
-  unsigned numExecuted = 0;
-  unsigned numEquivalent = 0;
-};
 
 struct EnumerationOptions {
   bool printStatusNames;
