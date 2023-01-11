@@ -2,6 +2,7 @@ import json
 import os
 import subprocess
 import time
+import pandas as pd
 
 # Get script directory
 script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -9,13 +10,48 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 # Run program x and get output as string
 def run_program(x):
     start = time.time()
-    p = subprocess.Popen(x, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate()
+    p = subprocess.run(x, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10)
     end = time.time()
-    return out.decode("utf-8"), end - start, p.returncode
+    return p.stdout.decode('utf-8'), end-start, p.returncode
 
-program = os.path.join(script_dir, '../build/bin/synthesizer')
-args_add = ['--num-threads=32', '--ignore-equivalent-candidates']
+def run_tests(tests):
+    program = os.path.join(script_dir, '../build/bin/synthesizer')
+
+    stats_all = []
+    for test in tests:
+        test_file, allowed_ops = test
+        print('Running test: ' + test_file)
+
+        test = os.path.join(script_dir, '../test/' + test_file)
+
+        for ignore_equivalent_candidates in [True, False]:
+            for restrict_ops in [True, False]:
+                args = ['--num-threads=32']
+                if ignore_equivalent_candidates:
+                    args += ['--ignore-equivalent-candidates']
+                if restrict_ops:
+                    args += ['--ops=' + ','.join(allowed_ops)]
+
+                try:
+                    # Run synthesis
+                    out, synth_time, returncode = run_program([program, test] + args)
+
+                    # Parse stats
+                    statsStr = out.split('JSON: ')[1].split('\n')[0]
+                    stats = json.loads(statsStr)
+                    stats['synth_time'] = synth_time
+                except subprocess.TimeoutExpired:
+                    stats = {}
+
+                stats['test_file'] = test_file
+                stats['ignore_equivalent_candidates'] = ignore_equivalent_candidates
+                stats['restrict_ops'] = restrict_ops
+
+                print(stats)
+                stats_all.append(stats)
+
+                with open('/tmp/stats.json', 'w') as f:
+                    json.dump(stats_all, f, indent=2)
 
 tests = [
     ('correlation_1.mlir', ['chlo.broadcast_divide', 'mhlo.reduce']),
@@ -29,31 +65,9 @@ tests = [
     ('gemm.mlir', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
     ('gesummv.mlir', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
 ]
+run_tests(tests)
 
-stats_all = []
-for test in tests:
-    test_file, test_allowed_ops = test
-    print('Running test: ' + test_file)
-
-    test = os.path.join(script_dir, '../test/' + test_file)
-
-    for allowed_ops in [test_allowed_ops, []]:
-        allowed_ops_arg = '--ops=' + ','.join(allowed_ops)
-
-        # Run synthesis
-        args = args_add + [allowed_ops_arg]
-        out, synth_time, returncode = run_program([program, test] + args)
-    
-        # Parse stats
-        statsStr = out.split('JSON: ')[1].split('\n')[0]
-        stats = json.loads(statsStr)
-    
-        stats['test_file'] = test_file
-        stats['args'] = ','.join(args)
-        stats['synth_time'] = synth_time
-    
-        print(stats)
-        stats_all.append(stats)
-    
-        with open('/tmp/stats.json', 'w') as f:
-            json.dump(stats_all, f, indent=2)
+with open('/tmp/stats.json', 'r') as f:
+    stats_all = json.load(f)
+    df = pd.DataFrame(stats_all)
+print(df)
