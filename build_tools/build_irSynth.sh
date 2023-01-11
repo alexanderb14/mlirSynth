@@ -14,6 +14,8 @@ cmake .. -GNinja \
   -DLLVM_ENABLE_LLD=ON \
   -DMLIR_DIR=${PWD}/../mlir-hlo/llvm-build/lib/cmake/mlir \
   -DMHLO_DIR=${PWD}/../mlir-hlo/build/cmake/modules/CMakeFiles \
+  -DCMAKE_C_COMPILER=clang \
+  -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 cmake --build .
 popd
