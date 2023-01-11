@@ -1,6 +1,6 @@
 #include "Stats.h"
 
-#include "llvm/Support/CommandLine.h"
+#include "llvm/Support/raw_ostream.h"
 
 void EnumerationStats::dump() {
   llvm::outs() << "\nEnumeration Stats"
