@@ -51,4 +51,4 @@ list(APPEND MHLO_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/mlir-hlo/build/lhlo")
 list(APPEND MHLO_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/mlir-hlo/build/stablehlo")
 include_directories(${MHLO_INCLUDE_DIRS})
 
-add_subdirectory(SynthIR)
+add_subdirectory(irSynth)

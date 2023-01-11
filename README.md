@@ -1,1 +1,1 @@
-# SynthIR
+# irSynth

@@ -2,7 +2,7 @@
 
 set -e
 
-if ! [ -f "$PWD/../SynthIR/README.md" ]; then
+if ! [ -f "$PWD/../irSynth/README.md" ]; then
   echo "ERROR: Run this script from the root of the repository."
   exit 1
 fi
@@ -41,11 +41,11 @@ cmake --build "$PWD/llvm-build" --target all --target mlir-cpu-runner
 mkdir build
 pushd build
 cmake .. -GNinja \
- -DLLVM_ENABLE_LLD=ON \
- -DCMAKE_BUILD_TYPE=RelWithDebInfo \
- -DLLVM_ENABLE_ASSERTIONS=On \
- -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
- -DMLIR_DIR=${PWD}/../llvm-build/lib/cmake/mlir
+  -DLLVM_ENABLE_LLD=ON \
+  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+  -DLLVM_ENABLE_ASSERTIONS=On \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  -DMLIR_DIR=${PWD}/../llvm-build/lib/cmake/mlir
 cmake --build .
 popd
 
