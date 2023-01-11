@@ -1,2 +1,4 @@
 build
 mlir-hlo
+
+compile_commands.json
