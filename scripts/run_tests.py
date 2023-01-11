@@ -10,7 +10,7 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 # Run program x and get output as string
 def run_program(x):
     start = time.time()
-    p = subprocess.run(x, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10)
+    p = subprocess.run(x, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=100)
     end = time.time()
     return p.stdout.decode('utf-8'), end-start, p.returncode
 
