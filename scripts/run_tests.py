@@ -6,11 +6,13 @@ import pandas as pd
 
 # Get script directory
 script_dir = os.path.dirname(os.path.realpath(__file__))
+timeout = 300
 
 # Run program x and get output as string
 def run_program(x):
     start = time.time()
-    p = subprocess.run(x, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=100)
+    print(' '.join(x))
+    p = subprocess.run(x, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
     end = time.time()
     return p.stdout.decode('utf-8'), end-start, p.returncode
 
@@ -25,27 +27,30 @@ def run_tests(tests):
         test = os.path.join(script_dir, '../test/' + test_file)
 
         for ignore_equivalent_candidates in [True, False]:
-            for restrict_ops in [True, False]:
-                args = ['--num-threads=32']
+            for guides in [True, False]:
+                args = ['--num-threads=32', '--max-num-ops=6']
                 if ignore_equivalent_candidates:
                     args += ['--ignore-equivalent-candidates']
-                if restrict_ops:
+                if guides:
                     args += ['--ops=' + ','.join(allowed_ops)]
 
                 try:
                     # Run synthesis
                     out, synth_time, returncode = run_program([program, test] + args)
+                    if returncode != 0:
+                        raise RuntimeError('Synthesis failed')
 
                     # Parse stats
                     statsStr = out.split('JSON: ')[1].split('\n')[0]
                     stats = json.loads(statsStr)
                     stats['synth_time'] = synth_time
-                except subprocess.TimeoutExpired:
+                except (subprocess.TimeoutExpired, RuntimeError) as e:
                     stats = {}
+                    stats['synth_time'] = timeout
 
-                stats['test_file'] = test_file
-                stats['ignore_equivalent_candidates'] = ignore_equivalent_candidates
-                stats['restrict_ops'] = restrict_ops
+                stats['testFile'] = test_file.split('.')[0]
+                stats['ignoreEquivalentCandidates'] = ignore_equivalent_candidates
+                stats['guides'] = guides
 
                 print(stats)
                 stats_all.append(stats)
@@ -70,4 +75,5 @@ run_tests(tests)
 with open('/tmp/stats.json', 'r') as f:
     stats_all = json.load(f)
     df = pd.DataFrame(stats_all)
+df.to_csv('/tmp/stats.csv', index=False)
 print(df)
