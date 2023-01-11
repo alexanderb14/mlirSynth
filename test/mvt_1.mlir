@@ -4,12 +4,12 @@ func.func @foo(%arg1: memref<3xf64>, %arg2: memref<3xf64>, %arg3: memref<3xf64>,
 
   affine.for %arg6 = 0 to 3 {
     affine.for %arg7 = 0 to 3 {
-      %0 = affine.load %arg1[%arg6] : memref<3xf64>
+      %0 = affine.load %arg1cpy[%arg6] : memref<3xf64>
       %1 = affine.load %arg5[%arg6, %arg7] : memref<3x3xf64>
       %2 = affine.load %arg3[%arg7] : memref<3xf64>
       %3 = arith.mulf %1, %2 : f64
       %4 = arith.addf %0, %3 : f64
-      affine.store %4, %arg1[%arg6] : memref<3xf64>
+      affine.store %4, %arg1cpy[%arg6] : memref<3xf64>
     }
   }
   affine.for %arg6 = 0 to 3 {
