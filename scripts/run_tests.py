@@ -3,10 +3,24 @@ import os
 import subprocess
 import time
 import pandas as pd
+import plotnine as p9
+
+tests = [
+    ('correlation_1.mlir', ['chlo.broadcast_divide', 'mhlo.reduce']),
+    ('atax.mlir', ['mhlo.dot']),
+    ('2mm.mlir', ['mhlo.dot', 'chlo.broadcast_multiply']),
+    ('3mm.mlir', ['mhlo.dot']),
+    ('mvt_1.mlir', ['mhlo.dot', 'chlo.broadcast_add']),
+    ('mvt_2.mlir', ['mhlo.dot', 'chlo.broadcast_add']),
+    ('bicg_1.mlir', ['mhlo.dot']),
+    ('bicg_2.mlir', ['mhlo.dot']),
+    ('gemm.mlir', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
+    ('gesummv.mlir', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
+]
 
 # Get script directory
 script_dir = os.path.dirname(os.path.realpath(__file__))
-timeout = 300
+timeout = 600
 
 # Run program x and get output as string
 def run_program(x):
@@ -26,7 +40,7 @@ def run_tests(tests):
 
         test = os.path.join(script_dir, '../test/' + test_file)
 
-        for ignore_equivalent_candidates in [True, False]:
+        for ignore_equivalent_candidates in [True]:
             for guides in [True, False]:
                 args = ['--num-threads=32', '--max-num-ops=6']
                 if ignore_equivalent_candidates:
@@ -58,22 +72,19 @@ def run_tests(tests):
                 with open('/tmp/stats.json', 'w') as f:
                     json.dump(stats_all, f, indent=2)
 
-tests = [
-    ('correlation_1.mlir', ['chlo.broadcast_divide', 'mhlo.reduce']),
-    ('atax.mlir', ['mhlo.dot']),
-    ('2mm.mlir', ['mhlo.dot', 'mhlo.multiply']),
-    ('3mm.mlir', ['mhlo.dot']),
-    ('mvt_1.mlir', ['mhlo.dot', 'chlo.broadcast_add']),
-    ('mvt_2.mlir', ['mhlo.dot', 'chlo.broadcast_add']),
-    ('bicg_1.mlir', ['mhlo.dot']),
-    ('bicg_2.mlir', ['mhlo.dot']),
-    ('gemm.mlir', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
-    ('gesummv.mlir', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
-]
+# Run experiments.
 run_tests(tests)
 
+# Plot results.
 with open('/tmp/stats.json', 'r') as f:
     stats_all = json.load(f)
     df = pd.DataFrame(stats_all)
 df.to_csv('/tmp/stats.csv', index=False)
-print(df)
+
+df = pd.read_csv('/tmp/stats.csv')
+plot = (p9.ggplot(df[df['ignoreEquivalentCandidates']==True],
+        p9.aes(x='testFile', y='synth_time', fill='guides'))
++ p9.geom_col(stat="identity", width=.5, position = "dodge")
++ p9.scale_y_sqrt()
++ p9.theme(axis_text_x=p9.element_text(rotation=45, hjust=1)))
+plot.save('/tmp/plot.pdf', width=10, height=5)
