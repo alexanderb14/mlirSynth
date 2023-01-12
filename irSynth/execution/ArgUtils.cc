@@ -16,6 +16,9 @@ ReturnAndArgType getOwningMemRefForShape(ArrayRef<int64_t> shape) {
   if (shape.size() == 2) {
     return OwningMemRef2DPtr(new OwningMemRef<double, 2>(shape));
   }
+  if (shape.size() == 3) {
+    return OwningMemRef3DPtr(new OwningMemRef<double, 3>(shape));
+  }
   assert(false && "Unsupported shape");
 }
 
@@ -34,6 +37,11 @@ ReturnAndArgType getReturnMemRefForShape(ArrayRef<int64_t> shape) {
     return Result2DPtr(new mlir::ExecutionEngine::Result<
                        OwningMemRef<double, 2>::DescriptorType>(
         *(OwningMemRef<double, 2>(shape))));
+  }
+  if (shape.size() == 2) {
+    return Result3DPtr(new mlir::ExecutionEngine::Result<
+                       OwningMemRef<double, 3>::DescriptorType>(
+        *(OwningMemRef<double, 3>(shape))));
   }
 
   assert(false && "Unsupported shape");
@@ -80,19 +88,6 @@ std::vector<ReturnAndArgType> createArgs(Region::BlockArgListType args) {
   return returnAndArgs;
 }
 
-// double *getReturnDataPtr(ReturnAndArgType &ret) {
-//   if (auto *memRef = std::get_if<Result0DPtr>(&ret)) {
-//     return (double*) &(*memRef)->value;
-//   }
-//   if (auto *memRef = std::get_if<Result1DPtr>(&ret)) {
-//     return (double*) &(*memRef)->value;
-//   }
-//   if (auto *memRef = std::get_if<Result2DPtr>(&ret)) {
-//     return (double*) &(*memRef)->value;
-//   }
-//   assert(false && "Unsupported return type");
-// }
-
 double *getReturnDataPtr(ReturnAndArgType &returnAndArgs) {
   if (auto *memRef = std::get_if<OwningMemRef0DPtr>(&returnAndArgs)) {
     return (**memRef)->data;
@@ -101,6 +96,9 @@ double *getReturnDataPtr(ReturnAndArgType &returnAndArgs) {
     return (**memRef)->data;
   }
   if (auto *memRef = std::get_if<OwningMemRef2DPtr>(&returnAndArgs)) {
+    return (**memRef)->data;
+  }
+  if (auto *memRef = std::get_if<OwningMemRef3DPtr>(&returnAndArgs)) {
     return (**memRef)->data;
   }
   assert(false && "Unsupported return type");
@@ -125,6 +123,15 @@ void randomlyInitializeArgs(std::vector<ReturnAndArgType> args) {
       for (int i = 0; i < shape[0]; i++) {
         for (int j = 0; j < shape[1]; j++) {
           (**memRef)[{i, j}] = dist(e2);
+        }
+      }
+    } else if (auto *memRef = std::get_if<OwningMemRef3DPtr>(&arg)) {
+      auto *shape = (**memRef)->sizes;
+      for (int i = 0; i < shape[0]; i++) {
+        for (int j = 0; j < shape[1]; j++) {
+          for (int k = 0; k < shape[2]; k++) {
+            (**memRef)[{i, j, k}] = dist(e2);
+          }
         }
       }
     } else if (auto *val = std::get_if<DoublePtr>(&arg)) {
@@ -154,6 +161,18 @@ void printArgs(std::vector<ReturnAndArgType> args) {
       for (int i = 0; i < shape[0]; i++) {
         for (int j = 0; j < shape[1]; j++) {
           llvm::outs() << (**memRef)[{i, j}] << ", ";
+        }
+        llvm::outs() << "\n";
+      }
+      llvm::outs() << "\n";
+    } else if (auto *memRef = std::get_if<OwningMemRef3DPtr>(&arg)) {
+      auto *shape = (**memRef)->sizes;
+      for (int i = 0; i < shape[0]; i++) {
+        for (int j = 0; j < shape[1]; j++) {
+          for (int k = 0; k < shape[2]; k++) {
+            llvm::outs() << (**memRef)[{i, j, k}] << ", ";
+          }
+          llvm::outs() << "\n";
         }
         llvm::outs() << "\n";
       }
@@ -191,6 +210,9 @@ void printArgTypes(std::vector<ReturnAndArgType> args) {
     if (auto *memRef = std::get_if<OwningMemRef2DPtr>(&arg))
       llvm::outs() << "2D MemRef\n";
 
+    if (auto *memRef = std::get_if<OwningMemRef3DPtr>(&arg))
+      llvm::outs() << "3D MemRef\n";
+
     if (auto *val = std::get_if<DoublePtr>(&arg))
       llvm::outs() << "Double\n";
   }
@@ -210,6 +232,9 @@ void createReturnAndArgsArray(
       returnAndArgsPtrs.push_back(&***memRef);
       returnAndArgsPtrsPtrs.push_back(&returnAndArgsPtrs.back());
     } else if (auto *memRef = std::get_if<OwningMemRef2DPtr>(&returnOrArg)) {
+      returnAndArgsPtrs.push_back(&***memRef);
+      returnAndArgsPtrsPtrs.push_back(&returnAndArgsPtrs.back());
+    } else if (auto *memRef = std::get_if<OwningMemRef3DPtr>(&returnOrArg)) {
       returnAndArgsPtrs.push_back(&***memRef);
       returnAndArgsPtrsPtrs.push_back(&returnAndArgsPtrs.back());
     } else if (auto *arg = std::get_if<DoublePtr>(&returnOrArg)) {
