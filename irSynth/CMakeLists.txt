@@ -15,6 +15,7 @@ add_llvm_executable(
   enumeration/Enumerator.cc
   enumeration/Stats.cc
   execution/ArgUtils.cc
+  execution/ArrayUtils.cc
   execution/Executor.cc
   execution/Lowering.cc
   Utils.cc)
