@@ -3,8 +3,8 @@
 #include "CandidateTuples.h"
 #include "Utils.h"
 #include "enumeration/Candidate.h"
-#include "execution/ArrayUtils.h"
 #include "execution/ArgUtils.h"
+#include "execution/ArrayUtils.h"
 
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/ExecutionEngine/ExecutionEngine.h"
