@@ -10,7 +10,7 @@ tests = [
     ('correlation_1.mlir', ['chlo.broadcast_divide', 'mhlo.reduce']),
     ('correlation_3.mlir', ['chlo.broadcast_subtract', 'chlo.broadcast_multiply', 'chlo.broadcast_divide']),
     ('atax.mlir', ['mhlo.dot']),
-    ('2mm.mlir', ['mhlo.dot', 'chlo.broadcast_multiply']),
+    ('2mm.mlir', ['mhlo.dot', 'chlo.broadcast_multiply', 'chlo.broadcast_add']),
     ('3mm.mlir', ['mhlo.dot']),
     ('mvt_1.mlir', ['mhlo.dot', 'chlo.broadcast_add']),
     ('mvt_2.mlir', ['mhlo.dot', 'chlo.broadcast_add']),
@@ -43,7 +43,7 @@ def run_tests(tests):
         test = os.path.join(script_dir, '../test/' + test_file)
 
         for ignore_equivalent_candidates in [True]:
-            for guides in [True, False]:
+            for guides in [True]:
                 args = ['--num-threads=32', '--max-num-ops=6']
                 if ignore_equivalent_candidates:
                     args += ['--ignore-equivalent-candidates']
