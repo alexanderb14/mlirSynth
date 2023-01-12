@@ -8,6 +8,7 @@ import plotnine as p9
 
 tests = [
     ('correlation_1.mlir', ['chlo.broadcast_divide', 'mhlo.reduce']),
+    ('correlation_3.mlir', ['chlo.broadcast_subtract', 'chlo.broadcast_multiply', 'chlo.broadcast_divide']),
     ('atax.mlir', ['mhlo.dot']),
     ('2mm.mlir', ['mhlo.dot', 'chlo.broadcast_multiply']),
     ('3mm.mlir', ['mhlo.dot']),
