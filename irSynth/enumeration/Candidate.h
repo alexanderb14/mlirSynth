@@ -44,9 +44,12 @@ public:
 
   std::vector<CandidatePtr> getPredecessors() { return predecessors; }
 
-  bool hasHash() {return hashExists;}
-  void setHash(double hash) {hashExists = true; this->hash = hash;}
-  double getHash() {return hash;}
+  bool hasHash() { return hashExists; }
+  void setHash(double hash) {
+    hashExists = true;
+    this->hash = hash;
+  }
+  double getHash() { return hash; }
 
 private:
   std::vector<unsigned> argIds;
@@ -74,13 +77,13 @@ public:
   void dumpSizes();
   int getTotal();
 
-  int getCandidateId(const CandidatePtr& candidate);
+  int getCandidateId(const CandidatePtr &candidate);
 
   bool addCandidateHash(double hash);
 
 private:
   std::mutex addCandidatesMutex;
-  std::unordered_map<Candidate*, int> candidateToId;
+  std::unordered_map<Candidate *, int> candidateToId;
   std::unordered_map<unsigned, std::vector<CandidatePtr>> weightToCandidates;
 
   std::mutex hashesMutex;

@@ -83,7 +83,8 @@ void Candidate::dump() {
   unsigned argIdx = 0;
   for (auto &argId : argIds) {
     llvm::outs() << "  argId: " << argId << ", "
-      << getRegion()->getBlocks().front().getArgument(argIdx) << "\n";
+                 << getRegion()->getBlocks().front().getArgument(argIdx)
+                 << "\n";
   }
 
   llvm::outs() << "- Ops\n";
@@ -95,7 +96,8 @@ void Candidate::dump() {
 
 // CandidateStore
 // -----------------------------------
-void CandidateStore::addCandidate(const CandidatePtr &candidate, unsigned weight) {
+void CandidateStore::addCandidate(const CandidatePtr &candidate,
+                                  unsigned weight) {
   std::lock_guard<std::mutex> lock(addCandidatesMutex);
 
   candidateToId[candidate.get()] = candidateToId.size();

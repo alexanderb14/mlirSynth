@@ -1,5 +1,8 @@
 #include "ContextManager.h"
 
+#include "gml_st/IR/gml_st_ops.h"
+#include "gml_st/transforms/passes.h"
+#include "gml_st/transforms/test_passes.h"
 #include "lhlo/IR/lhlo_ops.h"
 #include "lhlo/transforms/passes.h"
 #include "mlir-hlo/Dialect/mhlo/IR/register.h"
@@ -22,9 +25,6 @@
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Support/ThreadPool.h"
 #include "llvm/Support/Threading.h"
-#include "gml_st/IR/gml_st_ops.h"
-#include "gml_st/transforms/passes.h"
-#include "gml_st/transforms/test_passes.h"
 
 using namespace mlir;
 
@@ -50,8 +50,8 @@ MLIRContext *ContextManager::createContext() {
   registry.insert<func::FuncDialect>();
   mlir::mhlo::registerAllMhloDialects(registry);
   mlir::stablehlo::registerAllDialects(registry);
-  registry.insert<mlir::lmhlo::LmhloDialect,
-                  mlir::gml_st::GmlStDialect, mlir::thlo::THLODialect>();
+  registry.insert<mlir::lmhlo::LmhloDialect, mlir::gml_st::GmlStDialect,
+                  mlir::thlo::THLODialect>();
 
   ctx->appendDialectRegistry(registry);
   ctx->loadAllAvailableDialects();

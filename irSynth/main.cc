@@ -57,8 +57,7 @@ getDialectOps(MLIRContext *ctx, std::vector<Dialect *> &dialects,
     for (auto op : ctx->getRegisteredOperations()) {
       if (&op.getDialect() == dialect) {
         if (opsMap.empty() ||
-            opsMap.find(op.getIdentifier().str()) !=
-                opsMap.end()) {
+            opsMap.find(op.getIdentifier().str()) != opsMap.end()) {
           opNames.push_back(op);
         }
       }
@@ -88,11 +87,11 @@ int main(int argc, char **argv) {
       "print-status-tiles", cl::desc("Print status tiles"), cl::init(false));
 
   cl::opt<bool> printValidCandidates("print-valid-candidates",
-                                   cl::desc("Print valid candidates"),
-                                   cl::init(false));
-  cl::opt<bool> printInvalidCandidates("print-invalid-candidates",
-                                     cl::desc("Print invalid candidates"),
+                                     cl::desc("Print valid candidates"),
                                      cl::init(false));
+  cl::opt<bool> printInvalidCandidates("print-invalid-candidates",
+                                       cl::desc("Print invalid candidates"),
+                                       cl::init(false));
 
   cl::opt<bool> printErrors("print-errors", cl::desc("Print errors"),
                             cl::init(false));
@@ -100,8 +99,7 @@ int main(int argc, char **argv) {
                            cl::init(false));
 
   cl::opt<std::string> ops(
-      "ops", cl::desc("Comma separated list of allowed ops"),
-      cl::init(""));
+      "ops", cl::desc("Comma separated list of allowed ops"), cl::init(""));
   cl::opt<int> maxNumOps("max-num-ops", cl::desc("Max number of operations"),
                          cl::init(3));
 
@@ -130,11 +128,11 @@ int main(int argc, char **argv) {
   std::vector<std::string> opsVec;
   if (ops.empty()) {
     opsVec = {"chlo.broadcast_divide",
-                     "chlo.broadcast_add",
-                     "chlo.broadcast_subtract",
-                     "chlo.broadcast_multiply",
-                     "mhlo.dot",
-                     "mhlo.reduce"};
+              "chlo.broadcast_add",
+              "chlo.broadcast_subtract",
+              "chlo.broadcast_multiply",
+              "mhlo.dot",
+              "mhlo.reduce"};
   } else {
     opsVec = splitString(ops);
   }
@@ -159,7 +157,7 @@ int main(int argc, char **argv) {
   ParserConfig config(ctx, /*verifyAfterParse=*/true, &fallbackResourceMap);
   OwningOpRef<Operation *> inputOp =
       parseSourceFileForTool(sourceMgr, config, /*insertImplicitModule*/ false);
-  assert (inputOp && "Failed to parse input file");
+  assert(inputOp && "Failed to parse input file");
 
   std::vector<func::FuncOp> functions = getFunctions(inputOp.get());
   func::FuncOp inputFunction = functions[0];

@@ -22,8 +22,10 @@ mlir::LogicalResult jitAndInvoke(mlir::OwningOpRef<mlir::ModuleOp> module,
 
 class IExecutor {
 public:
-  virtual mlir::LogicalResult lowerCHLOToLLVMDialect(mlir::ModuleOp &module) = 0;
-  virtual mlir::LogicalResult lowerAffineToLLVMDialect(mlir::ModuleOp &module) = 0;
+  virtual mlir::LogicalResult
+  lowerCHLOToLLVMDialect(mlir::ModuleOp &module) = 0;
+  virtual mlir::LogicalResult
+  lowerAffineToLLVMDialect(mlir::ModuleOp &module) = 0;
 
   virtual ~IExecutor() = default;
 };
@@ -37,7 +39,7 @@ public:
   mlir::LogicalResult lowerAffineToLLVMDialect(mlir::ModuleOp &module) override;
 
 public:
-  mlir::MLIRContext* ctx;
+  mlir::MLIRContext *ctx;
 
 private:
   std::shared_ptr<mlir::PassManager> pmCHLOToLLVM;

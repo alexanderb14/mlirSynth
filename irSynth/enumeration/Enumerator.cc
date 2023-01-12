@@ -68,7 +68,8 @@ std::string processingStatusToStr(ProcessingStatus &status) {
   assert(false && "Processing Status not known");
 }
 
-void printCandidate(ProcessingStatus status, CandidateStorePtr &localCandidateStore,
+void printCandidate(ProcessingStatus status,
+                    CandidateStorePtr &localCandidateStore,
                     CandidateStorePtr &candidateStore, CandidatePtr &candidate,
                     EnumerationOptions &options,
                     OwningOpRef<ModuleOp> &module) {
@@ -88,8 +89,7 @@ void printCandidate(ProcessingStatus status, CandidateStorePtr &localCandidateSt
   if (printStatus) {
     if (options.printStatusTiles) {
       statusStr = " ";
-    }
-    else {
+    } else {
       statusStr = "Candidate " + std::to_string(candidateId) + ": ";
 
       statusStr += "status:" + processingStatusToStr(status);
@@ -495,7 +495,7 @@ process(MLIRContext &ctx, EnumerationStats &stats,
 
     return accept_solution;
   }
-  
+
   return accept_candidate;
 }
 
@@ -530,8 +530,8 @@ bool enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   // - Print them.
   for (auto &candidate : candidateStore->getCandidates()) {
     auto module = createModule(ctx, candidate->getRegion());
-    printCandidate(ProcessingStatus::accept_candidate, candidateStore, candidateStore,
-                   candidate, options, module);
+    printCandidate(ProcessingStatus::accept_candidate, candidateStore,
+                   candidateStore, candidate, options, module);
   }
 
   // - Enumerate candidates.

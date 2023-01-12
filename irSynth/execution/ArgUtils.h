@@ -9,9 +9,9 @@
 #include "mlir/IR/Operation.h"
 #include "mlir/Pass/PassManager.h"
 
-using OwningMemRef0DPtr = mlir::OwningMemRef<double, 0>*;
-using OwningMemRef1DPtr = mlir::OwningMemRef<double, 1>*;
-using OwningMemRef2DPtr = mlir::OwningMemRef<double, 2>*;
+using OwningMemRef0DPtr = mlir::OwningMemRef<double, 0> *;
+using OwningMemRef1DPtr = mlir::OwningMemRef<double, 1> *;
+using OwningMemRef2DPtr = mlir::OwningMemRef<double, 2> *;
 
 using Result0DPtr = mlir::ExecutionEngine::Result<OwningMemRef0DPtr> *;
 using Result1DPtr = mlir::ExecutionEngine::Result<OwningMemRef1DPtr> *;
@@ -31,8 +31,9 @@ std::vector<ReturnAndArgType> createArgs(mlir::Region::BlockArgListType args);
 double *getReturnDataPtr(ReturnAndArgType &returnAndArgs);
 void randomlyInitializeArgs(std::vector<ReturnAndArgType> args);
 void printArgs(std::vector<ReturnAndArgType> args);
-std::vector<ReturnAndArgType> selectArgs(const std::vector<ReturnAndArgType> &args,
-                                         const std::vector<unsigned> &argIds);
+std::vector<ReturnAndArgType>
+selectArgs(const std::vector<ReturnAndArgType> &args,
+           const std::vector<unsigned> &argIds);
 void printArgTypes(std::vector<ReturnAndArgType> args);
 void createReturnAndArgsArray(std::vector<ReturnAndArgType> returnAndArgs,
                               llvm::SmallVector<void *> &returnAndArgsPtrs,

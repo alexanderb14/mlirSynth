@@ -9,7 +9,7 @@ class ContextManager {
 public:
   ContextManager(bool printErrors);
 
-  mlir::MLIRContext* createContext();
+  mlir::MLIRContext *createContext();
 
 private:
   std::vector<MLIRContextPtr> contexts;

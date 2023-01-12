@@ -80,18 +80,18 @@ std::vector<ReturnAndArgType> createArgs(Region::BlockArgListType args) {
   return returnAndArgs;
 }
 
-//double *getReturnDataPtr(ReturnAndArgType &ret) {
-//  if (auto *memRef = std::get_if<Result0DPtr>(&ret)) {
-//    return (double*) &(*memRef)->value;
-//  }
-//  if (auto *memRef = std::get_if<Result1DPtr>(&ret)) {
-//    return (double*) &(*memRef)->value;
-//  }
-//  if (auto *memRef = std::get_if<Result2DPtr>(&ret)) {
-//    return (double*) &(*memRef)->value;
-//  }
-//  assert(false && "Unsupported return type");
-//}
+// double *getReturnDataPtr(ReturnAndArgType &ret) {
+//   if (auto *memRef = std::get_if<Result0DPtr>(&ret)) {
+//     return (double*) &(*memRef)->value;
+//   }
+//   if (auto *memRef = std::get_if<Result1DPtr>(&ret)) {
+//     return (double*) &(*memRef)->value;
+//   }
+//   if (auto *memRef = std::get_if<Result2DPtr>(&ret)) {
+//     return (double*) &(*memRef)->value;
+//   }
+//   assert(false && "Unsupported return type");
+// }
 
 double *getReturnDataPtr(ReturnAndArgType &returnAndArgs) {
   if (auto *memRef = std::get_if<OwningMemRef0DPtr>(&returnAndArgs)) {
@@ -202,8 +202,8 @@ void createReturnAndArgsArray(
     llvm::SmallVector<void *> &returnAndArgsPtrsPtrs) {
   // For the return, add the pointer to the vector. For each arg, create a
   // pointer and add it to the vector.
-  for (auto & returnOrArg : returnAndArgs) {
-     if (auto *memRef = std::get_if<OwningMemRef0DPtr>(&returnOrArg)) {
+  for (auto &returnOrArg : returnAndArgs) {
+    if (auto *memRef = std::get_if<OwningMemRef0DPtr>(&returnOrArg)) {
       returnAndArgsPtrs.push_back(&***memRef);
       returnAndArgsPtrsPtrs.push_back(&returnAndArgsPtrs.back());
     } else if (auto *memRef = std::get_if<OwningMemRef1DPtr>(&returnOrArg)) {
@@ -226,7 +226,7 @@ void convertScalarToMemrefArgs(std::vector<ReturnAndArgType> &returnAndArgs) {
     if (std::get_if<DoublePtr>(&returnAndArg)) {
       auto *d = std::get<DoublePtr>(returnAndArg);
       auto memref = OwningMemRef0DPtr(new OwningMemRef<double, 0>({}));
-      (*memref)[{}] = (double) *d;
+      (*memref)[{}] = (double)*d;
       returnAndArg = memref;
     }
   }

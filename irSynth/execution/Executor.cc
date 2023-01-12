@@ -63,8 +63,7 @@ LogicalResult jitAndInvoke(OwningOpRef<ModuleOp> module,
     auto *r = new mlir::ExecutionEngine::Result<
         OwningMemRef<double, 2>::DescriptorType>(***memRef);
     argsArray.push_back(r);
-  }
-  else {
+  } else {
     llvm::outs() << "Unsupported return type: " << ret.index() << "\n";
     assert(false);
   }
@@ -76,11 +75,11 @@ LogicalResult jitAndInvoke(OwningOpRef<ModuleOp> module,
       argsPtrs.push_back(&***memRef);
       argsArray.push_back(&argsPtrs.back());
     } else if (auto *memRef = std::get_if<OwningMemRef1DPtr>(&returnOrArg)) {
-        argsPtrs.push_back(&***memRef);
-        argsArray.push_back(&argsPtrs.back());
+      argsPtrs.push_back(&***memRef);
+      argsArray.push_back(&argsPtrs.back());
     } else if (auto *memRef = std::get_if<OwningMemRef2DPtr>(&returnOrArg)) {
-        argsPtrs.push_back(&***memRef);
-        argsArray.push_back(&argsPtrs.back());
+      argsPtrs.push_back(&***memRef);
+      argsArray.push_back(&argsPtrs.back());
     } else if (auto *arg = std::get_if<DoublePtr>(&returnOrArg)) {
       argsPtrs.push_back((void *)*arg);
       argsArray.push_back((void *)*arg);
