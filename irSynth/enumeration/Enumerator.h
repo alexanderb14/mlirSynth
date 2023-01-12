@@ -1,5 +1,5 @@
-#ifndef TOOLS_SYNTHESIZER_ENUMERATOR_H
-#define TOOLS_SYNTHESIZER_ENUMERATOR_H
+#ifndef IRSYNTH_ENUMERATOR_H
+#define IRSYNTH_ENUMERATOR_H
 
 #include "Candidate.h"
 #include "Stats.h"
@@ -33,4 +33,4 @@ bool enumerateCandidates(
     std::vector<mlir::RegisteredOperationName> &avaliableOps,
     EnumerationOptions &options);
 
-#endif // TOOLS_SYNTHESIZER_ENUMERATOR_H
+#endif // IRSYNTH_ENUMERATOR_H

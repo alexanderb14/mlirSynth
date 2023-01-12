@@ -1,5 +1,5 @@
-#ifndef TOOLS_SYNTHESIZER_CANDIDATE_H
-#define TOOLS_SYNTHESIZER_CANDIDATE_H
+#ifndef IRSYNTH_CANDIDATE_H
+#define IRSYNTH_CANDIDATE_H
 
 #include "mlir/IR/Block.h"
 #include "mlir/IR/BlockAndValueMapping.h"
@@ -90,4 +90,4 @@ private:
   std::unordered_map<double, unsigned> hashes;
 };
 
-#endif // TOOLS_SYNTHESIZER_CANDIDATE_H
+#endif // IRSYNTH_CANDIDATE_H

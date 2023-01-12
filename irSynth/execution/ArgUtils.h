@@ -1,5 +1,5 @@
-#ifndef TOOLS_SYNTHESIZER_ARGUTILS_H
-#define TOOLS_SYNTHESIZER_ARGUTILS_H
+#ifndef IRSYNTH_ARGUTILS_H
+#define IRSYNTH_ARGUTILS_H
 
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/ExecutionEngine/ExecutionEngine.h"
@@ -43,4 +43,4 @@ void createReturnAndArgsArray(std::vector<ReturnAndArgType> returnAndArgs,
                               llvm::SmallVector<void *> &returnAndArgsPtrsPtrs);
 void convertScalarToMemrefArgs(std::vector<ReturnAndArgType> &returnAndArgs);
 
-#endif // TOOLS_SYNTHESIZER_ARGUTILS_H
+#endif // IRSYNTH_ARGUTILS_H

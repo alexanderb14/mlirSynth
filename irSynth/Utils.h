@@ -1,5 +1,5 @@
-#ifndef TOOLS_SYNTHESIZER_OPERATIONUTILS_H
-#define TOOLS_SYNTHESIZER_OPERATIONUTILS_H
+#ifndef IRSYNTH_UTILS_H
+#define IRSYNTH_UTILS_H
 
 #include "mlir-hlo/Dialect/mhlo/IR/hlo_ops.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
@@ -34,4 +34,4 @@ std::tuple<int, int>
 getRequiredNumOperandsAndNumResults(mlir::MLIRContext &ctx,
                                     mlir::OperationName &opName);
 
-#endif // TOOLS_SYNTHESIZER_OPERATIONUTILS_H
+#endif // IRSYNTH_UTILS_H

@@ -1,5 +1,5 @@
-#ifndef TOOLS_SYNTHESIZER_EXECUTOR_H
-#define TOOLS_SYNTHESIZER_EXECUTOR_H
+#ifndef IRSYNTH_EXECUTOR_H
+#define IRSYNTH_EXECUTOR_H
 
 #include "ContextManager.h"
 #include "execution/ArgUtils.h"
@@ -63,4 +63,4 @@ private:
 };
 using ThreadedExecutorPtr = std::shared_ptr<ThreadedExecutor>;
 
-#endif // TOOLS_SYNTHESIZER_EXECUTOR_H
+#endif // IRSYNTH_EXECUTOR_H

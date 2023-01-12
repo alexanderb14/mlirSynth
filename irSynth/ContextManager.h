@@ -1,5 +1,5 @@
-#ifndef TOOLS_SYNTHESIZER_CONTEXTMANAGER_H
-#define TOOLS_SYNTHESIZER_CONTEXTMANAGER_H
+#ifndef IRSYNTH_CONTEXTMANAGER_H
+#define IRSYNTH_CONTEXTMANAGER_H
 
 #include <mlir/IR/MLIRContext.h>
 
@@ -19,4 +19,4 @@ private:
 };
 using ContextManagerPtr = std::shared_ptr<ContextManager>;
 
-#endif // TOOLS_SYNTHESIZER_CONTEXTMANAGER_H
+#endif // IRSYNTH_CONTEXTMANAGER_H

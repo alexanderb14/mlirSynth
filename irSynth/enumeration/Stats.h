@@ -1,5 +1,5 @@
-#ifndef TOOLS_SYNTHESIZER_STATS_H
-#define TOOLS_SYNTHESIZER_STATS_H
+#ifndef IRSYNTH_STATS_H
+#define IRSYNTH_STATS_H
 
 class EnumerationStats {
 public:
@@ -13,4 +13,4 @@ public:
   unsigned numOps = 0;
 };
 
-#endif // TOOLS_SYNTHESIZER_STATS_H
+#endif // IRSYNTH_STATS_H

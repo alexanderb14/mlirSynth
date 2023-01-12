@@ -1,5 +1,5 @@
-#ifndef TOOLS_ENUMERATOR_CANDIDATEENUMERATOR_H
-#define TOOLS_ENUMERATOR_CANDIDATEENUMERATOR_H
+#ifndef IRSYNTH_CANDIDATETUPLES_H
+#define IRSYNTH_CANDIDATETUPLES_H
 
 #include "Candidate.h"
 
@@ -14,4 +14,4 @@ getOperandCandidateTuples(mlir::MLIRContext &ctx,
                           mlir::RegisteredOperationName opName,
                           std::vector<CandidatePtr> &operandCandidates);
 
-#endif // TOOLS_ENUMERATOR_CANDIDATEENUMERATOR_H
+#endif // IRSYNTH_CANDIDATETUPLES_H
