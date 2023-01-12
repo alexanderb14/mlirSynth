@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 import subprocess
@@ -72,19 +73,29 @@ def run_tests(tests):
                 with open('/tmp/stats.json', 'w') as f:
                     json.dump(stats_all, f, indent=2)
 
-# Run experiments.
-run_tests(tests)
+def main():
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description='Run tests')
+    parser.add_argument('--exp', action='store_true', default=False, help='Run experiments')
+    args = parser.parse_args()
 
-# Plot results.
-with open('/tmp/stats.json', 'r') as f:
-    stats_all = json.load(f)
-    df = pd.DataFrame(stats_all)
-df.to_csv('/tmp/stats.csv', index=False)
+    if args.exp:
+        run_tests(tests)
+    
+    # Plot results.
+    with open('/tmp/stats.json', 'r') as f:
+        stats_all = json.load(f)
+        df = pd.DataFrame(stats_all)
+    df.to_csv('/tmp/stats.csv', index=False)
+    
+    df = pd.read_csv('/tmp/stats.csv')
+    plot = (p9.ggplot(df[df['ignoreEquivalentCandidates']==True],
+            p9.aes(x='testFile', y='synth_time', fill='guides'))
+    + p9.geom_col(stat="identity", width=.5, position = "dodge")
+    + p9.scale_y_sqrt()
+    + p9.theme(axis_text_x=p9.element_text(rotation=45, hjust=1)))
+    plot.save('/tmp/plot.pdf', width=10, height=5)
 
-df = pd.read_csv('/tmp/stats.csv')
-plot = (p9.ggplot(df[df['ignoreEquivalentCandidates']==True],
-        p9.aes(x='testFile', y='synth_time', fill='guides'))
-+ p9.geom_col(stat="identity", width=.5, position = "dodge")
-+ p9.scale_y_sqrt()
-+ p9.theme(axis_text_x=p9.element_text(rotation=45, hjust=1)))
-plot.save('/tmp/plot.pdf', width=10, height=5)
+
+if __name__ == '__main__':
+    main()
