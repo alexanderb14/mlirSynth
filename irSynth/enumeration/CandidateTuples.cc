@@ -107,7 +107,7 @@ getOperandCandidateTuples(MLIRContext &ctx, RegisteredOperationName opName,
 
   int numOperands = getRequiredNumOperands(op);
   int numAttributes = getRequiredNumAttributes(op);
-  std::vector<Attribute> attributeCandidates = getTensorAttributes(builder);
+  std::vector<Attribute> attributeCandidates = getTensorAttributes(builder, 2);
   int numRegions = getRequiredNumRegions(op);
   std::vector<std::shared_ptr<Region>> regionCandidates = getRegions(builder);
 

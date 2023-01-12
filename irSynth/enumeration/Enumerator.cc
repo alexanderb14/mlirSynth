@@ -235,7 +235,7 @@ void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
   OpBuilder builder(&ctx);
 
   // Constant candidates.
-  for (auto &attr : getTensorAttributes(builder)) {
+  for (auto &attr : getTensorAttributes(builder, 0)) {
     CandidatePtr candidate(new Candidate({}));
     candidate->addOperation(
         ctx, builder.create<mhlo::ConstantOp>(UnknownLoc::get(&ctx), attr),
