@@ -7,7 +7,7 @@ if ! [ -f "$PWD/../irSynth/README.md" ]; then
   exit 1
 fi
 
-# Autogenerate arg tuple file.
+# Autogenerate arg tuple construction source file.
 python3 build_tools/gen_ArgTuples.py \
   --max_operands 3 \
   --max_attributes 3 \
