@@ -7,6 +7,14 @@ if ! [ -f "$PWD/../irSynth/README.md" ]; then
   exit 1
 fi
 
+# Autogenerate arg tuple file.
+python3 build_tools/gen_ArgTuples.py \
+  --max_operands 3 \
+  --max_attributes 3 \
+  --max_regions 3 \
+  --output irSynth/enumeration/ArgTuples.cc
+clang-format -i irSynth/enumeration/ArgTuples.cc --style=file
+
 # Build irSynth.
 mkdir build
 pushd build
