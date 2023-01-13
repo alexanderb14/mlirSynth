@@ -1,6 +1,6 @@
 set(LLVM_LINK_COMPONENTS Core Support nativecodegen native)
 
-add_library(CE enumeration/CandidateTuples.cc)
+add_library(CE enumeration/ArgTuples.cc)
 target_include_directories(CE PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 
 get_property(dialect_libs GLOBAL PROPERTY MLIR_DIALECT_LIBS)

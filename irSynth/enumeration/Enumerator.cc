@@ -1,6 +1,6 @@
 #include "Enumerator.h"
 
-#include "CandidateTuples.h"
+#include "ArgTuples.h"
 #include "Utils.h"
 #include "enumeration/Candidate.h"
 #include "execution/ArgUtils.h"
@@ -306,21 +306,21 @@ process(MLIRContext &ctx, EnumerationStats &stats,
         RegisteredOperationName &opName, IExecutorPtr &executor,
         std::vector<ReturnAndArgType> &args, CandidateStorePtr &candidateStore,
         CandidateStorePtr &localCandidateStore, double *refOut,
-        EnumerationOptions &options, CandidateTuple operandCandidateTuple,
+        EnumerationOptions &options, ArgTuple operandArgTuple,
         CandidatePtr &newCandidate, OwningOpRef<ModuleOp> &module) {
   stats.numEnumerated++;
 
   // Create candidate.
-  newCandidate.reset(new Candidate(operandCandidateTuple.operands));
+  newCandidate.reset(new Candidate(operandArgTuple.operands));
   auto builder = OpBuilder(&ctx);
 
   // Set up operands.
   SmallVector<mlir::Value> operands =
-      newCandidate->merge(ctx, operandCandidateTuple.operands);
+      newCandidate->merge(ctx, operandArgTuple.operands);
 
   // Set up attributes.
   auto attrNames = getFilteredAttributeNames(opName);
-  auto attrValues = operandCandidateTuple.attributes;
+  auto attrValues = operandArgTuple.attributes;
   assert(attrNames.size() == attrValues.size() &&
          "Attribute names and values must have the same size.");
 
@@ -334,7 +334,7 @@ process(MLIRContext &ctx, EnumerationStats &stats,
 
   // Set up regions.
   SmallVector<std::unique_ptr<Region>> regions = {};
-  for (auto &regionCandidate : operandCandidateTuple.regions) {
+  for (auto &regionCandidate : operandArgTuple.regions) {
     std::unique_ptr<Region> region = std::make_unique<Region>();
     BlockAndValueMapping mapping;
     regionCandidate->cloneInto(region.get(), mapping);
@@ -478,18 +478,18 @@ bool enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
 
     for (auto opName : avaliableOps) {
       auto operandCandidates = candidateStore->getCandidates(numOps);
-      auto operandCandidateTuples =
-          getOperandCandidateTuples(ctx, opName, operandCandidates);
+      auto operandArgTuples =
+          getOperandArgTuples(ctx, opName, operandCandidates);
 
       auto status = failableParallelForEach(
-          &ctx, operandCandidateTuples, [&](auto &operandCandidateTuple) {
+          &ctx, operandArgTuples, [&](auto &operandArgTuple) {
             CandidatePtr newCandidate;
             OwningOpRef<ModuleOp> module;
 
             ProcessingStatus status =
                 process(ctx, stats, opName, executor, args, candidateStore,
                         localCandidateStore, refOut, options,
-                        operandCandidateTuple, newCandidate, module);
+                        operandArgTuple, newCandidate, module);
 
             if (status == accept_solution)
               return failure();

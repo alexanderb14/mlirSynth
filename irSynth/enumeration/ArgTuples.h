@@ -3,14 +3,14 @@
 
 #include "Candidate.h"
 
-struct CandidateTuple {
+struct ArgTuple {
   std::vector<CandidatePtr> operands;
   std::vector<mlir::Attribute> attributes;
   std::vector<std::shared_ptr<mlir::Region>> regions;
 };
 
-std::vector<CandidateTuple>
-getOperandCandidateTuples(mlir::MLIRContext &ctx,
+std::vector<ArgTuple>
+getOperandArgTuples(mlir::MLIRContext &ctx,
                           mlir::RegisteredOperationName opName,
                           std::vector<CandidatePtr> &operandCandidates);
 
