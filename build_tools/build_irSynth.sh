@@ -28,3 +28,9 @@ cmake .. -GNinja \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 cmake --build .
 popd
+
+# Merge all compile_commands.json files, so that clangd can find them.
+jq -s 'map(.[])' mlir-hlo/llvm-build/compile_commands.json \
+  mlir-hlo/build/compile_commands.json \
+  build/compile_commands.json \
+  > compile_commands.json
