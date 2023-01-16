@@ -100,6 +100,8 @@ def main():
             p9.aes(x='testFile', y='synth_time', fill='guides'))
     + p9.geom_col(stat="identity", width=.5, position = "dodge")
     + p9.scale_y_sqrt()
+    + p9.geom_hline(yintercept=1)
+    + p9.annotate("text", x=0.6, y=2, label="1s")
     + p9.theme(axis_text_x=p9.element_text(rotation=45, hjust=1)))
     plot.save('/tmp/plot.pdf', width=10, height=5)
 
