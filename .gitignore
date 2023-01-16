@@ -1,5 +1,8 @@
 .cache
+.gdb_history
 build
+build-dbg
+
 mlir-hlo
 
 compile_commands.json
