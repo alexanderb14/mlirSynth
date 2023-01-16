@@ -10,7 +10,7 @@ func.func @foo(%arg3: memref<5x3x7xf64>, %arg4: memref<7x7xf64>) -> memref<5x3x7
       affine.for %arg8 = 0 to 7 {
         affine.store %cst, %arg5[%arg8] : memref<7xf64>
         affine.for %arg9 = 0 to 7 {
-          %0 = affine.load %arg3[%arg6, %arg7, %arg9] : memref<5x3x7xf64>
+          %0 = affine.load %arg3cpy[%arg6, %arg7, %arg9] : memref<5x3x7xf64>
           %1 = affine.load %arg4[%arg9, %arg8] : memref<7x7xf64>
           %2 = arith.mulf %0, %1 : f64
           %3 = affine.load %arg5[%arg8] : memref<7xf64>
@@ -20,7 +20,7 @@ func.func @foo(%arg3: memref<5x3x7xf64>, %arg4: memref<7x7xf64>) -> memref<5x3x7
       }
       affine.for %arg8 = 0 to 7 {
         %0 = affine.load %arg5[%arg8] : memref<7xf64>
-        affine.store %0, %arg3[%arg6, %arg7, %arg8] : memref<5x3x7xf64>
+        affine.store %0, %arg3cpy[%arg6, %arg7, %arg8] : memref<5x3x7xf64>
       }
     }
   }
