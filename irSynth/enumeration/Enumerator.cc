@@ -1,6 +1,7 @@
 #include "Enumerator.h"
 
 #include "ArgTuples.h"
+#include "AttributeGen.h"
 #include "Utils.h"
 #include "enumeration/Candidate.h"
 #include "execution/ArgUtils.h"

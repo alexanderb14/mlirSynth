@@ -2,6 +2,7 @@
 // scripts/gen_ArgTuples.py
 
 #include "ArgTuples.h"
+#include "AttributeGen.h"
 
 #include "Utils.h"
 

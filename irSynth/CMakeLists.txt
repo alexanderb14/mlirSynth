@@ -11,6 +11,7 @@ add_llvm_executable(
   synthesizer
   main.cc
   ContextManager.cc
+  enumeration/AttributeGen.cc
   enumeration/Candidate.cc
   enumeration/Enumerator.cc
   enumeration/Stats.cc
