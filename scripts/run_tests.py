@@ -8,6 +8,7 @@ import pandas as pd
 import plotnine as p9
 
 tests = [
+    ('doitgen.mlir', ['mhlo.dot_general']),
     ('correlation_1.mlir', ['chlo.broadcast_divide', 'mhlo.reduce']),
     ('correlation_3.mlir', ['chlo.broadcast_subtract', 'chlo.broadcast_multiply', 'chlo.broadcast_divide']),
     ('atax.mlir', ['mhlo.dot']),
