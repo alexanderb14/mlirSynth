@@ -448,11 +448,11 @@ getOperandArgTuples(MLIRContext &ctx, RegisteredOperationName opName,
 
   int numOperands = getRequiredNumOperands(op);
   int numAttributes = getRequiredNumAttributes(op);
-  int numRegions = getRequiredNumRegions(op);
 
   Block::BlockArgListType blockArgs;
   std::vector<Attribute> attributeCandidates =
       genAttributes(builder, blockArgs, 2);
+  int numRegions = getRequiredNumRegions(op);
 
   std::vector<std::shared_ptr<Region>> regionCandidates = getRegions(builder);
   if (numOperands == 0 && numAttributes == 0 && numRegions == 1) {

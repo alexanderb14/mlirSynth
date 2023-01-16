@@ -30,7 +30,7 @@ getOperandArgTuples(MLIRContext &ctx, RegisteredOperationName opName,
 
   Block::BlockArgListType blockArgs;
   std::vector<Attribute> attributeCandidates =
-      getTensorAttributes(builder, blockArgs, 2);
+      genAttributes(builder, blockArgs, 2);
   int numRegions = getRequiredNumRegions(op);
 
   std::vector<std::shared_ptr<Region>> regionCandidates = getRegions(builder);
