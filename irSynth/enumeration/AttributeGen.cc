@@ -1,6 +1,8 @@
 #include "AttributeGen.h"
 
 #include "mlir/Dialect/Func/IR/FuncOps.h"
+#include "mlir/IR/BuiltinAttributes.h"
+#include "mlir/IR/BuiltinTypeInterfaces.h"
 
 #include <random>
 
@@ -13,21 +15,49 @@ int randomInteger(int min, int max) {
   return dis(gen);
 }
 
+DenseElementsAttr getDenseElementsAttr(std::vector<Attribute> attrVect) {
+  Type type = RankedTensorType::get({static_cast<long>(attrVect.size())},
+                                    attrVect[0].cast<TypedAttr>().getType());
+  return DenseElementsAttr::get(type.cast<TensorType>(), attrVect);
+}
+
 std::vector<Attribute>
-getTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
+genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
+  std::vector<Attribute> attributes;
+
+  for (auto arg : functionArgs) {
+    if (!arg.getType().isa<ShapedType>())
+      continue;
+
+    auto shape = arg.getType().cast<ShapedType>().getShape();
+
+    // Same shape as the argument: E.g. [3, 5, 7] -> [3, 5, 7]
+    auto attrVect = std::vector<Attribute>();
+    for (auto dim : shape) {
+      attrVect.push_back(builder.getI64IntegerAttr(dim));
+    }
+    attributes.push_back(getDenseElementsAttr(attrVect));
+
+    // Dimension at previous last inserted: E.g. [3, 5, 7] -> [3, 5, 1, 7]
+    attrVect = std::vector<Attribute>();
+    unsigned dimIdx = 0;
+    for (auto dim : shape) {
+      attrVect.push_back(builder.getI64IntegerAttr(dim));
+      if (dimIdx == shape.size() - 2) {
+        attrVect.push_back(builder.getI64IntegerAttr(1));
+      }
+      dimIdx++;
+    }
+    attributes.push_back(getDenseElementsAttr(attrVect));
+  }
+
+  return attributes;
+}
+
+std::vector<Attribute>
+genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
                     int maxRank) {
   std::vector<Attribute> tensorValues;
-
-  auto attr = std::vector<Attribute>();
-  attr.push_back(builder.getI64IntegerAttr(5));
-  attr.push_back(builder.getI64IntegerAttr(3));
-  attr.push_back(builder.getI64IntegerAttr(1));
-  attr.push_back(builder.getI64IntegerAttr(7));
-  Type type = RankedTensorType::get({static_cast<long>(attr.size())},
-                                    attr[0].cast<TypedAttr>().getType());
-  auto attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attr);
-  tensorValues.push_back(attrDense);
-
 
   if (maxRank >= 0) {
     std::vector<Attribute> attrs = {
@@ -84,4 +114,28 @@ getTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
   }
 
   return tensorValues;
+}
+
+void printAttributes(std::vector<Attribute>& attributes) {
+  llvm::outs() << "Attributes:"
+               << "\n--------\n";
+  for (auto attr : attributes) {
+    attr.dump();
+  }
+}
+
+std::vector<Attribute>
+genAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
+              int maxRank) {
+  std::vector<Attribute> attributes;
+
+  auto shapeValues = genShapeAttributes(builder, functionArgs);
+  attributes.insert(attributes.end(), shapeValues.begin(), shapeValues.end());
+
+  auto tensorValues = genTensorAttributes(builder, functionArgs, maxRank);
+  attributes.insert(attributes.end(), tensorValues.begin(), tensorValues.end());
+
+  // printAttributes(attributes);
+
+  return attributes;
 }

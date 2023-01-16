@@ -22,7 +22,7 @@ ReturnAndArgType getOwningMemRefForShape(ArrayRef<int64_t> shape) {
   if (shape.size() == 4) {
     return OwningMemRef4DPtr(new OwningMemRef<double, 4>(shape));
   }
-  llvm::outs() << "Shape is too large, asserting\n";
+  llvm::outs() << "Shape size " << shape.size() << " not supported.\n";
   assert(false && "Unsupported shape");
 }
 

@@ -86,7 +86,8 @@ std::vector<StringAttr>
 getFilteredAttributeNames(RegisteredOperationName opName) {
   std::vector<StringAttr> filteredAttrNames;
   for (auto attrName : opName.getAttributeNames()) {
-    if (attrName == "precision_config" || attrName == "broadcast_dimensions")
+    if (attrName == "precision_config" || attrName == "broadcast_dimensions" ||
+    attrName == "dot_dimension_numbers")
       continue;
     filteredAttrNames.push_back(attrName);
   }

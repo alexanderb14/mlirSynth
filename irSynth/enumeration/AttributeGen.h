@@ -6,7 +6,7 @@
 #include "mlir/IR/Region.h"
 
 std::vector<mlir::Attribute>
-getTensorAttributes(mlir::OpBuilder &builder,
-                    mlir::Region::BlockArgListType &functionArgs, int maxRank);
+genAttributes(mlir::OpBuilder &builder,
+              mlir::Region::BlockArgListType &functionArgs, int maxRank);
 
 #endif // IRSYNTH_ATTRIBUTEGEN_H

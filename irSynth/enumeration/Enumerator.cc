@@ -30,6 +30,7 @@ using namespace mlir;
 enum ProcessingStatus {
   reject_hasTooManyOps,
   reject_isNotResultTypeInferrable,
+  reject_hasUnsupportedShapeRank,
   reject_isNotAllDefsAreUsed,
   reject_isNotVerifiable,
   reject_hasNoArguments,
@@ -47,6 +48,8 @@ std::string processingStatusToStr(ProcessingStatus &status) {
     return "reject_hasTooManyOps";
   if (status == reject_isNotResultTypeInferrable)
     return "reject_isNotResultTypeInferrable";
+  if (status == reject_hasUnsupportedShapeRank)
+    return "reject_hasUnsupportedShapeRank";
   if (status == reject_isNotAllDefsAreUsed)
     return "reject_isNotAllDefsAreUsed";
   if (status == reject_isNotVerifiable)
@@ -69,6 +72,8 @@ std::string processingStatusToStr(ProcessingStatus &status) {
     return "accept_solution";
   assert(false && "Processing Status not known");
 }
+
+unsigned maxShapeRank = 4;
 
 void printCandidate(ProcessingStatus status,
                     CandidateStorePtr &localCandidateStore,
@@ -118,7 +123,7 @@ void printCandidate(ProcessingStatus status,
       (!(status == accept_candidate) && options.printInvalidCandidates) ||
       options.printStatusNames) {
     llvm::outs() << statusStr << "\n";
-    if (status > reject_isNotResultTypeInferrable)
+    if (status > reject_hasUnsupportedShapeRank)
       module->print(llvm::outs());
   }
 }
@@ -188,9 +193,10 @@ OwningOpRef<ModuleOp> createModule(MLIRContext &ctx, Region *region) {
 
 LogicalResult inferResultTypes(MLIRContext &ctx, Operation *op,
                                RegisteredOperationName &opName) {
-  // If it is a dynamic_reshape, we have to add the result type manually,
-  // because the result type is not inferable.
-  if (op->getName().getStringRef().str() == "mhlo.dynamic_reshape") {
+  // Not all operations have the infer return types function.
+  // Therefore, we implement some manually.
+  auto opNameStr = op->getName().getStringRef().str();
+  if (opNameStr == "mhlo.dynamic_reshape") {
     // Construct a tensor type with the shape values of the second operand.
     SmallVector<int64_t, 4> shape;
     auto *argOp = op->getOperand(1).getDefiningOp();
@@ -208,6 +214,43 @@ LogicalResult inferResultTypes(MLIRContext &ctx, Operation *op,
           }
         }
       }
+    }
+
+    auto arg0Type = op->getOperand(0).getType();
+    auto newTensorType = RankedTensorType::get(
+        shape, arg0Type.cast<TensorType>().getElementType());
+    op->getResult(0).setType(newTensorType);
+
+    return success();
+  }
+  if (opNameStr == "mhlo.dot_general") {
+    // Get the return shapes of the lhs and rhs operands.
+    auto lhsShape =
+        op->getOperand(0).getType().cast<RankedTensorType>().getShape();
+    auto rhsShape =
+        op->getOperand(1).getType().cast<RankedTensorType>().getShape();
+
+    // Get the contraction dimensions.
+    auto dotDimensionNumbersAttr =
+        op->getAttrOfType<mhlo::DotDimensionNumbersAttr>(
+            "dot_dimension_numbers");
+    auto lhsContractingDimensions =
+        dotDimensionNumbersAttr.getLhsContractingDimensions();
+    auto rhsContractingDimensions =
+        dotDimensionNumbersAttr.getRhsContractingDimensions();
+    assert(lhsContractingDimensions.size() == 1);
+    assert(rhsContractingDimensions.size() == 1);
+    auto lhsContractingDimension = lhsContractingDimensions[0];
+    auto rhsContractingDimension = rhsContractingDimensions[0];
+
+    // The return shape is the concatenation of the lhs and rhs shapes along lhs
+    // and rhs contraction dimensions.
+    SmallVector<int64_t, 4> shape;
+    for (unsigned i = 0; i < lhsContractingDimension; i++) {
+      shape.push_back(lhsShape[i]);
+    }
+    for (unsigned i = rhsContractingDimension + 1; i < rhsShape.size(); i++) {
+      shape.push_back(rhsShape[i]);
     }
 
     auto arg0Type = op->getOperand(0).getType();
@@ -247,6 +290,12 @@ LogicalResult inferResultTypes(MLIRContext &ctx, Operation *op,
   }
 
   // Check if the inferred type is valid.
+  if (inferredTypes.size() != op->getNumResults()) {
+    llvm::outs() << "Inferred type size does not match the number of results."
+                 << "inferredTypes.size() = " << inferredTypes.size()
+                 << ", op->getNumResults() = " << op->getNumResults() << "\n";
+    assert(false);
+  }
   for (auto &type : inferredTypes) {
     if (!type) {
       return failure();
@@ -266,7 +315,7 @@ void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
   OpBuilder builder(&ctx);
 
   // Constant candidates.
-  for (auto &attr : getTensorAttributes(builder, functionArgs, 0)) {
+  for (auto &attr : genAttributes(builder, functionArgs, 0)) {
     CandidatePtr candidate(new Candidate({}));
     candidate->addOperation(
         ctx, builder.create<mhlo::ConstantOp>(UnknownLoc::get(&ctx), attr),
@@ -338,7 +387,8 @@ process(MLIRContext &ctx, EnumerationStats &stats,
         std::vector<ReturnAndArgType> &args, CandidateStorePtr &candidateStore,
         CandidateStorePtr &localCandidateStore, double *refOut,
         EnumerationOptions &options, ArgTuple operandArgTuple,
-        CandidatePtr &newCandidate, OwningOpRef<ModuleOp> &module) {
+        CandidatePtr &newCandidate, OwningOpRef<ModuleOp> &module,
+        ArrayRef<int64_t> &targetShape) {
   stats.numEnumerated++;
 
   // Create candidate.
@@ -359,8 +409,22 @@ process(MLIRContext &ctx, EnumerationStats &stats,
   for (unsigned i = 0; i < attrNames.size(); i++) {
     StringAttr attrName = attrNames[i];
     mlir::Attribute value = attrValues[i];
-
     attributes.push_back(builder.getNamedAttr(attrName, value));
+  }
+
+  auto unfilteredAttrNames = opName.getAttributeNames();
+  for (auto attrName : unfilteredAttrNames) {
+     if (attrName.str() == "dot_dimension_numbers") {
+      // Last element of lhsOpShape is the dimension to be contracted
+      auto lhsOpShape = operands[0].getType().cast<ShapedType>().getShape();
+      int64_t lhsContracting = lhsOpShape.size() - 1;
+      // First element of rhsOpShape is the dimension to be contracted
+      int64_t rhsContracting = 0;
+
+      auto dotDimensionNumbers = mhlo::DotDimensionNumbersAttr::get(
+          &ctx, {}, {}, {lhsContracting}, {rhsContracting});
+      attributes.push_back(builder.getNamedAttr(attrName, dotDimensionNumbers));
+    }
   }
 
   // Set up regions.
@@ -389,7 +453,19 @@ process(MLIRContext &ctx, EnumerationStats &stats,
 
   // Infer the operation result type.
   if (failed(inferResultTypes(ctx, op, opName))) {
+    if (options.printInvalidCandidates)
+      createModule(ctx, newCandidate->getRegion())->dump();
     return reject_isNotResultTypeInferrable;
+  }
+
+  // Check if the operation result shape rank is supported.
+  for (auto resultType : op->getResultTypes()) {
+    if (resultType.isa<RankedTensorType>()) {
+      auto shape = resultType.cast<RankedTensorType>().getShape();
+      if (shape.size() > maxShapeRank) {
+        return reject_hasUnsupportedShapeRank;
+      }
+    }
   }
 
   // Verify candidate.
@@ -419,7 +495,6 @@ process(MLIRContext &ctx, EnumerationStats &stats,
     return reject_isNotCompilableToLLVM;
   }
 
-  // if (!hasTargetShape(op, targetShape))
   if (returnShape.empty())
     return reject_hasEmptyReturnShape;
 
@@ -439,6 +514,7 @@ process(MLIRContext &ctx, EnumerationStats &stats,
   // Hash and add to store if hash doesn't exist yet.
   double hash = hashArray(out, returnShape);
   newCandidate->setHash(hash);
+  //llvm::outs() << "Hash: " << hash << "\n";
   if (options.ignoreEquivalentCandidates &&
       !candidateStore->addCandidateHash(hash)) {
     stats.numIgnored++;
@@ -447,16 +523,18 @@ process(MLIRContext &ctx, EnumerationStats &stats,
 
   localCandidateStore->addCandidate(newCandidate, newCandidate->getNumOps());
 
-  if (areArraysEqual(refOut, out, returnShape)) {
-    llvm::outs() << "Found a match!\n";
-    printArray(out, returnShape);
-    module->dump();
+  if (returnShape == targetShape) {
+    if (areArraysEqual(refOut, out, returnShape)) {
+      llvm::outs() << "Found a match!\n";
+      // printArray(out, returnShape);
+      module->dump();
 
-    candidateStore->merge(localCandidateStore);
-    stats.numOps = newCandidate->getNumOps();
-    stats.dump();
+      candidateStore->merge(localCandidateStore);
+      stats.numOps = newCandidate->getNumOps();
+      stats.dump();
 
-    return accept_solution;
+      return accept_solution;
+    }
   }
 
   return accept_candidate;
@@ -520,7 +598,7 @@ bool enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
             ProcessingStatus status =
                 process(ctx, stats, opName, executor, args, candidateStore,
                         localCandidateStore, refOut, options,
-                        operandArgTuple, newCandidate, module);
+                        operandArgTuple, newCandidate, module, targetShape);
 
             if (status == accept_solution)
               return failure();
