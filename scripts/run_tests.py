@@ -1,5 +1,6 @@
 import argparse
 import json
+import multiprocessing
 import os
 import subprocess
 import time
@@ -10,12 +11,12 @@ tests = [
     ('correlation_1.mlir', ['chlo.broadcast_divide', 'mhlo.reduce']),
     ('correlation_3.mlir', ['chlo.broadcast_subtract', 'chlo.broadcast_multiply', 'chlo.broadcast_divide']),
     ('atax.mlir', ['mhlo.dot']),
-    ('2mm.mlir', ['mhlo.dot', 'chlo.broadcast_multiply', 'chlo.broadcast_add']),
     ('3mm.mlir', ['mhlo.dot']),
     ('mvt_1.mlir', ['mhlo.dot', 'chlo.broadcast_add']),
     ('mvt_2.mlir', ['mhlo.dot', 'chlo.broadcast_add']),
     ('bicg_1.mlir', ['mhlo.dot']),
     ('bicg_2.mlir', ['mhlo.dot']),
+    ('2mm.mlir', ['mhlo.dot', 'chlo.broadcast_multiply', 'chlo.broadcast_add']),
     ('gemm.mlir', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
     ('gesummv.mlir', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
 ]
@@ -33,6 +34,9 @@ def run_program(x):
     return p.stdout.decode('utf-8'), end-start, p.returncode
 
 def run_tests(tests):
+    cpu_count = multiprocessing.cpu_count()
+    print('Running experiments on %d cores' % cpu_count)
+
     program = os.path.join(script_dir, '../build/bin/synthesizer')
 
     stats_all = []
@@ -44,7 +48,8 @@ def run_tests(tests):
 
         for ignore_equivalent_candidates in [True]:
             for guides in [True]:
-                args = ['--num-threads=32', '--max-num-ops=6']
+                args = ['--num-threads=%d' % cpu_count,
+                        '--max-num-ops=6']
                 if ignore_equivalent_candidates:
                     args += ['--ignore-equivalent-candidates']
                 if guides:
