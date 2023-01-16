@@ -447,8 +447,12 @@ getOperandArgTuples(MLIRContext &ctx, RegisteredOperationName opName,
 
   int numOperands = getRequiredNumOperands(op);
   int numAttributes = getRequiredNumAttributes(op);
-  std::vector<Attribute> attributeCandidates = getTensorAttributes(builder, 2);
   int numRegions = getRequiredNumRegions(op);
+
+  Block::BlockArgListType blockArgs;
+  std::vector<Attribute> attributeCandidates =
+      getTensorAttributes(builder, blockArgs, 2);
+
   std::vector<std::shared_ptr<Region>> regionCandidates = getRegions(builder);
   if (numOperands == 0 && numAttributes == 0 && numRegions == 1) {
     return get0operands0attributes1regions(

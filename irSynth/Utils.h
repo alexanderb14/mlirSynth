@@ -12,8 +12,9 @@ int randomInteger(int min, int max);
 
 std::vector<mlir::func::FuncOp> getFunctions(mlir::Operation *op);
 
-std::vector<mlir::Attribute> getTensorAttributes(mlir::OpBuilder &builder,
-                                                 int maxRank);
+std::vector<mlir::Attribute>
+getTensorAttributes(mlir::OpBuilder &builder,
+                    mlir::Region::BlockArgListType &functionArgs, int maxRank);
 
 std::vector<std::shared_ptr<mlir::Region>> getRegions(mlir::OpBuilder &builder);
 

@@ -27,8 +27,21 @@ std::vector<func::FuncOp> getFunctions(mlir::Operation *op) {
   return functions;
 }
 
-std::vector<Attribute> getTensorAttributes(OpBuilder &builder, int maxRank) {
+std::vector<Attribute>
+getTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
+                    int maxRank) {
   std::vector<Attribute> tensorValues;
+
+  auto attr = std::vector<Attribute>();
+  attr.push_back(builder.getI64IntegerAttr(5));
+  attr.push_back(builder.getI64IntegerAttr(3));
+  attr.push_back(builder.getI64IntegerAttr(1));
+  attr.push_back(builder.getI64IntegerAttr(7));
+  Type type = RankedTensorType::get({static_cast<long>(attr.size())},
+                                    attr[0].cast<TypedAttr>().getType());
+  auto attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attr);
+  tensorValues.push_back(attrDense);
+
 
   if (maxRank >= 0) {
     std::vector<Attribute> attrs = {
@@ -57,17 +70,6 @@ std::vector<Attribute> getTensorAttributes(OpBuilder &builder, int maxRank) {
                                                builder.getF64FloatAttr(j)});
       }
     }
-    // for (int i = 0; i < 3; i++) {
-    //   for (int j = 0; j < 3; j++) {
-    //     for (int k = 0; k < 3; k++) {
-    //       rank1Attrs.push_back(std::vector<Attribute>{
-    //         builder.getI64IntegerAttr(i),
-    //         builder.getI64IntegerAttr(j),
-    //         builder.getI64IntegerAttr(k)
-    //       });
-    //     }
-    //   }
-    // }
     for (auto attr : attrs) {
       Type type = RankedTensorType::get({static_cast<long>(attr.size())},
                                         attr[0].cast<TypedAttr>().getType());

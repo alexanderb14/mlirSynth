@@ -19,6 +19,10 @@ ReturnAndArgType getOwningMemRefForShape(ArrayRef<int64_t> shape) {
   if (shape.size() == 3) {
     return OwningMemRef3DPtr(new OwningMemRef<double, 3>(shape));
   }
+  if (shape.size() == 4) {
+    return OwningMemRef4DPtr(new OwningMemRef<double, 4>(shape));
+  }
+  llvm::outs() << "Shape is too large, asserting\n";
   assert(false && "Unsupported shape");
 }
 
@@ -38,10 +42,15 @@ ReturnAndArgType getReturnMemRefForShape(ArrayRef<int64_t> shape) {
                        OwningMemRef<double, 2>::DescriptorType>(
         *(OwningMemRef<double, 2>(shape))));
   }
-  if (shape.size() == 2) {
+  if (shape.size() == 3) {
     return Result3DPtr(new mlir::ExecutionEngine::Result<
                        OwningMemRef<double, 3>::DescriptorType>(
         *(OwningMemRef<double, 3>(shape))));
+  }
+  if (shape.size() == 4) {
+    return Result4DPtr(new mlir::ExecutionEngine::Result<
+                       OwningMemRef<double, 4>::DescriptorType>(
+        *(OwningMemRef<double, 4>(shape))));
   }
 
   assert(false && "Unsupported shape");
@@ -101,6 +110,9 @@ double *getReturnDataPtr(ReturnAndArgType &returnAndArgs) {
   if (auto *memRef = std::get_if<OwningMemRef3DPtr>(&returnAndArgs)) {
     return (**memRef)->data;
   }
+  if (auto *memRef = std::get_if<OwningMemRef4DPtr>(&returnAndArgs)) {
+    return (**memRef)->data;
+  }
   assert(false && "Unsupported return type");
 }
 
@@ -131,6 +143,17 @@ void randomlyInitializeArgs(std::vector<ReturnAndArgType> args) {
         for (int j = 0; j < shape[1]; j++) {
           for (int k = 0; k < shape[2]; k++) {
             (**memRef)[{i, j, k}] = dist(e2);
+          }
+        }
+      }
+    } else if (auto *memRef = std::get_if<OwningMemRef4DPtr>(&arg)) {
+      auto *shape = (**memRef)->sizes;
+      for (int i = 0; i < shape[0]; i++) {
+        for (int j = 0; j < shape[1]; j++) {
+          for (int k = 0; k < shape[2]; k++) {
+            for (int l = 0; l < shape[3]; l++) {
+              (**memRef)[{i, j, k, l}] = dist(e2);
+            }
           }
         }
       }
@@ -177,6 +200,21 @@ void printArgs(std::vector<ReturnAndArgType> args) {
         llvm::outs() << "\n";
       }
       llvm::outs() << "\n";
+    } else if (auto *memRef = std::get_if<OwningMemRef4DPtr>(&arg)) {
+      auto *shape = (**memRef)->sizes;
+      for (int i = 0; i < shape[0]; i++) {
+        for (int j = 0; j < shape[1]; j++) {
+          for (int k = 0; k < shape[2]; k++) {
+            for (int l = 0; l < shape[3]; l++) {
+              llvm::outs() << (**memRef)[{i, j, k, l}] << ", ";
+            }
+            llvm::outs() << "\n";
+          }
+          llvm::outs() << "\n";
+        }
+        llvm::outs() << "\n";
+      }
+      llvm::outs() << "\n";
     } else if (auto *val = std::get_if<DoublePtr>(&arg)) {
       llvm::outs() << **val << "\n";
     } else {
@@ -213,6 +251,9 @@ void printArgTypes(std::vector<ReturnAndArgType> args) {
     if (auto *memRef = std::get_if<OwningMemRef3DPtr>(&arg))
       llvm::outs() << "3D MemRef\n";
 
+    if (auto *memRef = std::get_if<OwningMemRef4DPtr>(&arg))
+      llvm::outs() << "4D MemRef\n";
+
     if (auto *val = std::get_if<DoublePtr>(&arg))
       llvm::outs() << "Double\n";
   }
@@ -235,6 +276,9 @@ void createReturnAndArgsArray(
       returnAndArgsPtrs.push_back(&***memRef);
       returnAndArgsPtrsPtrs.push_back(&returnAndArgsPtrs.back());
     } else if (auto *memRef = std::get_if<OwningMemRef3DPtr>(&returnOrArg)) {
+      returnAndArgsPtrs.push_back(&***memRef);
+      returnAndArgsPtrsPtrs.push_back(&returnAndArgsPtrs.back());
+    } else if (auto *memRef = std::get_if<OwningMemRef4DPtr>(&returnOrArg)) {
       returnAndArgsPtrs.push_back(&***memRef);
       returnAndArgsPtrsPtrs.push_back(&returnAndArgsPtrs.back());
     } else if (auto *arg = std::get_if<DoublePtr>(&returnOrArg)) {

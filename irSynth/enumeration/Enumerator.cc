@@ -187,6 +187,36 @@ OwningOpRef<ModuleOp> createModule(MLIRContext &ctx, Region *region) {
 
 LogicalResult inferResultTypes(MLIRContext &ctx, Operation *op,
                                RegisteredOperationName &opName) {
+  // If it is a dynamic_reshape, we have to add the result type manually,
+  // because the result type is not inferable.
+  if (op->getName().getStringRef().str() == "mhlo.dynamic_reshape") {
+    // Construct a tensor type with the shape values of the second operand.
+    SmallVector<int64_t, 4> shape;
+    auto *argOp = op->getOperand(1).getDefiningOp();
+    if (argOp) {
+      auto constantOp = dyn_cast<mhlo::ConstantOp>(argOp);
+      if (constantOp) {
+        auto denseAttr = constantOp.getValue().dyn_cast<DenseElementsAttr>();
+        if (denseAttr) {
+          // Check if the dense attribute is a vector.
+          if (denseAttr.getType().getRank() == 1) {
+            // Get the shape values and add them to the shape vector.
+            for (auto value : denseAttr.getValues<IntegerAttr>()) {
+              shape.push_back(value.getValue().getSExtValue());
+            }
+          }
+        }
+      }
+    }
+
+    auto arg0Type = op->getOperand(0).getType();
+    auto newTensorType = RankedTensorType::get(
+        shape, arg0Type.cast<TensorType>().getElementType());
+    op->getResult(0).setType(newTensorType);
+
+    return success();
+  }
+
   // Check if the operation is well-formed. If not, bail out
   // early because otherwise type inference will assert.
   std::vector<std::string> verifyTraitsOnlyOps = {"mhlo.dot"};
@@ -235,7 +265,7 @@ void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
   OpBuilder builder(&ctx);
 
   // Constant candidates.
-  for (auto &attr : getTensorAttributes(builder, 0)) {
+  for (auto &attr : getTensorAttributes(builder, functionArgs, 0)) {
     CandidatePtr candidate(new Candidate({}));
     candidate->addOperation(
         ctx, builder.create<mhlo::ConstantOp>(UnknownLoc::get(&ctx), attr),
