@@ -33,16 +33,10 @@ public:
   ScopStmt *lookupStmt(mlir::Operation *op);
   llvm::SmallVector<ScopStmt> lookupStmts(mlir::Block &block);
 
-  void dump(llvm::raw_ostream &os);
-  void dumpRelDetails(mlir::FlatAffineRelation rel);
+  void toDot(llvm::raw_ostream &os, Scop &scop);
+  void toDotStmts(llvm::raw_ostream &os, Scop &scop);
 
-public:
-  mlir::Operation *op;
-  llvm::SmallVector<ScopStmt> stmts;
-  mlir::AsmState *asmState;
-  isl::schedule schedule;
-  isl::union_map flowDependencies;
-  isl_ctx *ctx;
+  void dump(llvm::raw_ostream &os);
 
 private:
   void buildScopStmts();
@@ -50,9 +44,16 @@ private:
   void computeFlowDependencies();
 
   isl::map getAccessRelationForOp(mlir::Operation *op, std::string &opName);
+
+private:
+  mlir::Operation *op;
+  llvm::SmallVector<ScopStmt> stmts;
+  mlir::AsmState *asmState;
+  isl::schedule schedule;
+  isl::union_map flowDependencies;
+  isl_ctx *ctx;
 };
 
-void toDot(llvm::raw_ostream &os, Scop &scop);
-void toDotStmts(llvm::raw_ostream &os, Scop &scop);
+void dumpRelDetails(mlir::FlatAffineRelation rel);
 
 #endif // IRSYNTH_SCOP_H

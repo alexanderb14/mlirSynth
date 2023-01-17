@@ -414,46 +414,11 @@ void Scop::dump(raw_ostream &os) {
   os << "\n";
 }
 
-void Scop::dumpRelDetails(FlatAffineRelation rel) {
-  llvm::outs() << "--------Relation--------\n";
-
-  rel.dump();
-  for (unsigned int i = 0; i < rel.getNumVars(); ++i) {
-    llvm::outs() << "Var " << i << "\t";
-
-    std::string varKind;
-    switch (rel.getVarKindAt(i)) {
-    case mlir::presburger::VarKind::Symbol:
-      varKind = "Symbol";
-      break;
-    case mlir::presburger::VarKind::Local:
-      varKind = "Local";
-      break;
-    case mlir::presburger::VarKind::Domain:
-      varKind = "Domain";
-      break;
-    case mlir::presburger::VarKind::Range:
-      varKind = "Range";
-      break;
-    }
-    llvm::outs() << varKind << "\t";
-
-    if (rel.hasValue(i)) {
-      rel.getValue(i).dump();
-    } else {
-      llvm::outs() << "\n";
-    }
-  }
-
-  llvm::outs() << "Dims: " << rel.getNumDomainDims() << " "
-               << rel.getNumRangeDims() << "\n";
-}
-
-void toDot(raw_ostream &os, Scop &scop) {
+void Scop::toDot(raw_ostream &os, Scop &scop) {
   os << "digraph {\n";
 
   // Edges.
-  for (auto um : scop.flowDependencies.get_map_list()) {
+  for (auto um : flowDependencies.get_map_list()) {
     isl::map m = um.as_map();
 
     os << "  " << stringFromIslObj(m.get_tuple_id(isl::dim::in)) << " -> "
@@ -469,7 +434,7 @@ void toDot(raw_ostream &os, Scop &scop) {
   }
 
   // Nodes.
-  for (auto &stmt : scop.stmts) {
+  for (auto &stmt : stmts) {
     os << "  " << stmt.name;
     os << " [shape=box, ";
 
@@ -493,11 +458,11 @@ void toDot(raw_ostream &os, Scop &scop) {
   os << "}\n";
 }
 
-void toDotStmts(raw_ostream &os, Scop &scop) {
+void Scop::toDotStmts(raw_ostream &os, Scop &scop) {
   os << "digraph {\n";
 
   mlir::DenseMap<mlir::Operation *, std::string> opStrs;
-  for (auto &stmt : scop.stmts) {
+  for (auto &stmt : stmts) {
     os << "subgraph cluster_" + stmt.name << " {\n";
     os << "  label = \"" << stmt.name << "\";\n";
 
@@ -534,7 +499,7 @@ void toDotStmts(raw_ostream &os, Scop &scop) {
   mlir::DenseMap<mlir::Operation *, std::string> undefOps;
   os << "subgraph cluster_external {\n";
   os << "  label = \"External Vars and Args\";\n";
-  for (auto &stmt : scop.stmts) {
+  for (auto &stmt : stmts) {
     for (auto &op : stmt.allOps) {
       for (auto operand : op->getOperands()) {
         mlir::Operation *iop = operand.getDefiningOp();
@@ -579,4 +544,39 @@ void toDotStmts(raw_ostream &os, Scop &scop) {
   os << "}\n";
 
   os << "}\n";
+}
+
+void dumpRelDetails(FlatAffineRelation rel) {
+  llvm::outs() << "--------Relation--------\n";
+
+  rel.dump();
+  for (unsigned int i = 0; i < rel.getNumVars(); ++i) {
+    llvm::outs() << "Var " << i << "\t";
+
+    std::string varKind;
+    switch (rel.getVarKindAt(i)) {
+    case mlir::presburger::VarKind::Symbol:
+      varKind = "Symbol";
+      break;
+    case mlir::presburger::VarKind::Local:
+      varKind = "Local";
+      break;
+    case mlir::presburger::VarKind::Domain:
+      varKind = "Domain";
+      break;
+    case mlir::presburger::VarKind::Range:
+      varKind = "Range";
+      break;
+    }
+    llvm::outs() << varKind << "\t";
+
+    if (rel.hasValue(i)) {
+      rel.getValue(i).dump();
+    } else {
+      llvm::outs() << "\n";
+    }
+  }
+
+  llvm::outs() << "Dims: " << rel.getNumDomainDims() << " "
+               << rel.getNumRangeDims() << "\n";
 }

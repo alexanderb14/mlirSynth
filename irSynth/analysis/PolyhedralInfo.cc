@@ -47,12 +47,12 @@ struct PolyhedralInfoPass
     }
 
     if (dot) {
-      toDot(llvm::outs(), scop);
+      scop.toDot(llvm::outs(), scop);
       llvm::outs() << "\n";
     }
 
     if (dotStmts) {
-      toDotStmts(llvm::outs(), scop);
+      scop.toDotStmts(llvm::outs(), scop);
       llvm::outs() << "\n";
     }
   }
