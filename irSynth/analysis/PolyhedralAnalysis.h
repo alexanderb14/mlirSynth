@@ -32,7 +32,6 @@ public:
 
   ScopStmt *lookupStmt(mlir::Operation *op);
   llvm::SmallVector<ScopStmt> lookupStmts(mlir::Block &block);
-  isl::union_map computeFlowDependencies();
 
   void dump(llvm::raw_ostream &os);
   void dumpRelDetails(mlir::FlatAffineRelation rel);
@@ -47,9 +46,10 @@ public:
 
 private:
   void buildScopStmts();
-
   void buildAccessRelationIslMaps();
-  isl::map getAccessRelation(mlir::Operation *op, std::string &opName);
+  void computeFlowDependencies();
+
+  isl::map getAccessRelationForOp(mlir::Operation *op, std::string &opName);
 };
 
 void toDot(llvm::raw_ostream &os, Scop &scop);

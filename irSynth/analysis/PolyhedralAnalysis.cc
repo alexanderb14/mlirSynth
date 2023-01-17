@@ -157,7 +157,7 @@ Scop::Scop(Operation *op) : op(op) {
   buildAccessRelationIslMaps();
 
   schedule = scheduleOperation(op, *this, 0);
-  flowDependencies = computeFlowDependencies();
+  computeFlowDependencies();
 }
 
 ScopStmt *Scop::lookupStmt(mlir::Operation *op) {
@@ -193,37 +193,6 @@ llvm::SmallVector<ScopStmt> Scop::lookupStmts(mlir::Block &block) {
   }
 
   return result;
-}
-
-isl::union_map Scop::computeFlowDependencies() {
-  isl::union_map reads;
-  isl::union_map writes;
-  for (auto &stmt : stmts) {
-    for (unsigned i = 0; i < stmt.accessOps.size(); ++i) {
-      Operation *op = stmt.accessOps[i];
-      isl::union_map acc = stmt.accessRelations[i];
-      if (isa<AffineLoadOp>(op)) {
-        if (reads.is_null()) {
-          reads = acc;
-        } else {
-          reads = reads.unite(acc);
-        }
-      } else if (isa<AffineStoreOp>(op)) {
-        if (writes.is_null()) {
-          writes = acc;
-        } else {
-          writes = writes.unite(acc);
-        }
-      }
-    }
-  }
-
-  isl::union_access_info uai(reads);
-  uai = uai.set_must_source(writes);
-  uai = uai.set_schedule(schedule);
-  isl::union_flow flow = uai.compute_flow();
-
-  return flow.get_may_dependence();
 }
 
 void Scop::buildScopStmts() {
@@ -264,7 +233,50 @@ void Scop::buildScopStmts() {
   }
 }
 
-isl::map Scop::getAccessRelation(Operation *op, std::string &opName) {
+void Scop::buildAccessRelationIslMaps() {
+  for (auto &stmt : stmts) {
+    llvm::SmallVector<isl::map> ms;
+    for (auto &op : stmt.accessOps) {
+      // Build ISL access relation.
+      isl::map m = getAccessRelationForOp(op, stmt.name);
+      ms.push_back(m);
+    }
+    stmt.accessRelations = ms;
+  }
+}
+
+void Scop::computeFlowDependencies() {
+  isl::union_map reads;
+  isl::union_map writes;
+  for (auto &stmt : stmts) {
+    for (unsigned i = 0; i < stmt.accessOps.size(); ++i) {
+      Operation *op = stmt.accessOps[i];
+      isl::union_map acc = stmt.accessRelations[i];
+      if (isa<AffineLoadOp>(op)) {
+        if (reads.is_null()) {
+          reads = acc;
+        } else {
+          reads = reads.unite(acc);
+        }
+      } else if (isa<AffineStoreOp>(op)) {
+        if (writes.is_null()) {
+          writes = acc;
+        } else {
+          writes = writes.unite(acc);
+        }
+      }
+    }
+  }
+
+  isl::union_access_info uai(reads);
+  uai = uai.set_must_source(writes);
+  uai = uai.set_schedule(schedule);
+  isl::union_flow flow = uai.compute_flow();
+
+  flowDependencies = flow.get_may_dependence();
+}
+
+isl::map Scop::getAccessRelationForOp(Operation *op, std::string &opName) {
   // Get the access relation using Presburger lib.
   MemRefAccess access(op);
   FlatAffineRelation rel;
@@ -381,18 +393,6 @@ isl::map Scop::getAccessRelation(Operation *op, std::string &opName) {
   accessRelM = accessRelM.set_tuple_id(isl::dim::out, memrefId);
 
   return accessRelM;
-}
-
-void Scop::buildAccessRelationIslMaps() {
-  for (auto &stmt : stmts) {
-    llvm::SmallVector<isl::map> ms;
-    for (auto &op : stmt.accessOps) {
-      // Build ISL access relation.
-      isl::map m = getAccessRelation(op, stmt.name);
-      ms.push_back(m);
-    }
-    stmt.accessRelations = ms;
-  }
 }
 
 void Scop::dump(raw_ostream &os) {
