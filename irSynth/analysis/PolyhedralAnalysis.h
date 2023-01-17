@@ -59,7 +59,7 @@ public:
 
   ScopStmt *lookupStmtByName(std::string name);
   ScopStmt *lookupStmtByOp(mlir::Operation *op);
-  llvm::SmallVector<ScopStmt> lookupStmts(mlir::Block &block);
+  llvm::SmallVector<ScopStmt> lookupStmtsByBlock(mlir::Block &block);
 
   void toDot(llvm::raw_ostream &os, Scop &scop);
   void toDotStmts(llvm::raw_ostream &os, Scop &scop);

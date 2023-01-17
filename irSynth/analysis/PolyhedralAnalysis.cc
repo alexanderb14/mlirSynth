@@ -293,7 +293,7 @@ ScopStmt *Scop::lookupStmtByOp(mlir::Operation *op) {
   return nullptr;
 }
 
-llvm::SmallVector<ScopStmt> Scop::lookupStmts(mlir::Block &block) {
+llvm::SmallVector<ScopStmt> Scop::lookupStmtsByBlock(mlir::Block &block) {
   llvm::SmallVector<Operation *> ops;
   for (Operation &iop : block) {
     ops.push_back(&iop);
