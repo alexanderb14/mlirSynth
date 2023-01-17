@@ -14,6 +14,6 @@ rm /tmp/isl-0.25.tar.gz
 
 # Build isl.
 pushd isl-0.25
-./configure
+CC=clang CXX=clang++ ./configure
 make -j$(nproc)
 popd
