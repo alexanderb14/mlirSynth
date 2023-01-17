@@ -42,10 +42,10 @@ set(POLY_LIBS
   MLIRIR
   )
 add_llvm_executable(affine-info
-  analysis/affine-info.cpp
-  analysis/Scop.cpp
-  analysis/Exporter.cpp
-  analysis/isl/isl_helper.cpp
+  analysis/affine-info.cc
+  analysis/Scop.cc
+  analysis/Exporter.cc
+  analysis/isl/isl_helper.cc
   )
 target_include_directories(affine-info PRIVATE /devel/tmp/isl/include)
 llvm_update_compile_flags(affine-info)
