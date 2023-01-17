@@ -44,7 +44,6 @@ set(POLY_LIBS
 add_llvm_executable(affine-info
   analysis/affine-info.cc
   analysis/Scop.cc
-  analysis/Exporter.cc
   analysis/isl/isl_helper.cc
   )
 target_include_directories(affine-info PRIVATE /devel/tmp/isl/include)

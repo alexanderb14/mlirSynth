@@ -52,4 +52,7 @@ private:
   isl::map getAccessRelation(mlir::Operation *op, std::string &opName);
 };
 
+void toDot(llvm::raw_ostream &os, Scop &scop);
+void toDotStmts(llvm::raw_ostream &os, Scop &scop);
+
 #endif // SCOP_H

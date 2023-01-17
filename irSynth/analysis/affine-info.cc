@@ -8,7 +8,6 @@
 #include "mlir/Support/FileUtilities.h"
 #include "mlir/Tools/mlir-opt/MlirOptMain.h"
 
-#include "Exporter.h"
 #include "Scop.h"
 
 using namespace llvm;
