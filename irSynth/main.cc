@@ -133,7 +133,8 @@ int main(int argc, char **argv) {
               "chlo.broadcast_multiply",
               "mhlo.dot",
               "mhlo.reduce",
-              "mhlo.dynamic_reshape"};
+              "mhlo.dynamic_reshape",
+              "mhlo.dot_general"};
   } else {
     opsVec = splitString(ops);
   }
