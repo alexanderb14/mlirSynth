@@ -6,8 +6,11 @@
 
 #include "mlir/Dialect/Affine/Analysis/AffineStructures.h"
 #include "mlir/IR/AsmState.h"
+#include "mlir/IR/BuiltinOps.h"
 #include "mlir/IR/Operation.h"
+#include "mlir/Pass/Pass.h"
 #include "llvm/ADT/SmallVector.h"
+#include "llvm/ADT/StringRef.h"
 
 class ScopStmt {
 public:
@@ -83,5 +86,64 @@ private:
 };
 
 void dumpRelDetails(mlir::FlatAffineRelation rel);
+
+namespace {
+struct PolyhedralAnalysisPass
+    : public mlir::PassWrapper<PolyhedralAnalysisPass,
+                               mlir::OperationPass<mlir::ModuleOp>> {
+  MLIR_DEFINE_EXPLICIT_INTERNAL_INLINE_TYPE_ID(PolyhedralAnalysisPass)
+
+  PolyhedralAnalysisPass() = default;
+  PolyhedralAnalysisPass(const PolyhedralAnalysisPass &) {}
+
+  Option<bool> dump{*this, "dump", llvm::cl::desc("Dump all info"),
+                    llvm::cl::init(false)};
+
+  Option<bool> dot{*this, "dot", llvm::cl::desc("Dot graph"),
+                   llvm::cl::init(false)};
+
+  Option<bool> dotStmts{*this, "dot-stmts",
+                        llvm::cl::desc("Dot graph of statement contents"),
+                        llvm::cl::init(false)};
+
+  Option<bool> dumpDependenceGraph{*this, "dump-dependence-graph",
+                                   llvm::cl::desc("Dump dependence graph"),
+                                   llvm::cl::init(false)};
+
+  llvm::StringRef getArgument() const override { return "polyhedral-analysis"; }
+  llvm::StringRef getDescription() const override {
+    return "Polyhedral dependence analysis using ISL.";
+  }
+  void runOnOperation() override {
+    mlir::Operation *op = getOperation();
+    Scop scop(op);
+
+    if (dump) {
+      scop.dump(llvm::outs());
+      llvm::outs() << "\n";
+    }
+
+    if (dot) {
+      scop.toDot(llvm::outs(), scop);
+      llvm::outs() << "\n";
+    }
+
+    if (dotStmts) {
+      scop.toDotStmts(llvm::outs(), scop);
+      llvm::outs() << "\n";
+    }
+
+    if (dumpDependenceGraph) {
+      auto dg = scop.getDependenceGraph();
+      dg->dump(llvm::outs());
+      llvm::outs() << "\n";
+    }
+  }
+};
+} // namespace
+
+namespace mlir {
+inline void registerPolyhedralAnalysisPass() { PassRegistration<PolyhedralAnalysisPass>(); }
+} // namespace mlir
 
 #endif // IRSYNTH_SCOP_H
