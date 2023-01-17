@@ -31,6 +31,10 @@ struct PolyhedralInfoPass
                         llvm::cl::desc("Dot graph of statement contents"),
                         llvm::cl::init(false)};
 
+  Option<bool> dumpDependenceGraph{*this, "dump-dependence-graph",
+                                   llvm::cl::desc("Dump dependence graph"),
+                                   llvm::cl::init(false)};
+
   StringRef getArgument() const final { return "polyhedral-info"; }
   StringRef getDescription() const final {
     return "Print polyhedral analysis info.";
@@ -53,6 +57,12 @@ struct PolyhedralInfoPass
 
     if (dotStmts) {
       scop.toDotStmts(llvm::outs(), scop);
+      llvm::outs() << "\n";
+    }
+
+    if (dumpDependenceGraph) {
+      auto dg = scop.getDependenceGraph();
+      dg->dump(llvm::outs());
       llvm::outs() << "\n";
     }
   }

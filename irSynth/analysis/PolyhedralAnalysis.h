@@ -2,6 +2,7 @@
 #define IRSYNTH_SCOP_H
 
 #include "isl/isl_helper.h"
+#include <unordered_map>
 
 #include "mlir/Dialect/Affine/Analysis/AffineStructures.h"
 #include "mlir/IR/AsmState.h"
@@ -26,11 +27,38 @@ public:
   std::string name;
 };
 
+class DependenceGraph {
+public:
+  class DependenceGraphNode;
+  using DependenceGraphNodePtr = std::shared_ptr<DependenceGraphNode>;
+  using DependenceGraphNodeWPtr = std::weak_ptr<DependenceGraphNode>;
+  class DependenceGraphNode {
+  public:
+    DependenceGraphNode(ScopStmt *stmt) : stmt(stmt) {}
+
+    ScopStmt *stmt;
+    std::vector<DependenceGraphNodeWPtr> dependencies;
+    std::vector<DependenceGraphNodeWPtr> dependents;
+  };
+
+  void computeDependencies();
+  void dump(llvm::raw_ostream &os);
+
+  llvm::SmallVector<DependenceGraphNodePtr> nodes;
+
+private:
+  int getNumDependencies();
+};
+using DependenceGraphPtr = std::shared_ptr<DependenceGraph>;
+
 class Scop {
 public:
   Scop(mlir::Operation *op);
 
-  ScopStmt *lookupStmt(mlir::Operation *op);
+  DependenceGraphPtr getDependenceGraph();
+
+  ScopStmt *lookupStmtByName(std::string name);
+  ScopStmt *lookupStmtByOp(mlir::Operation *op);
   llvm::SmallVector<ScopStmt> lookupStmts(mlir::Block &block);
 
   void toDot(llvm::raw_ostream &os, Scop &scop);
@@ -47,7 +75,7 @@ private:
 
 private:
   mlir::Operation *op;
-  llvm::SmallVector<ScopStmt> stmts;
+  std::unordered_map<std::string, ScopStmt> namesToStmts;
   mlir::AsmState *asmState;
   isl::schedule schedule;
   isl::union_map flowDependencies;

@@ -92,7 +92,7 @@ isl::schedule scheduleOperation(Operation *op, Scop &scop, unsigned depth) {
     sched = combineInSequence(sched, scheduleRegion(region, scop, depth));
   }
 
-  ScopStmt *stmt = scop.lookupStmt(op);
+  ScopStmt *stmt = scop.lookupStmtByOp(op);
   if (stmt) {
     if (seenStmts.find(stmt) == seenStmts.end()) {
       seenStmts[stmt] = true;
@@ -117,6 +117,8 @@ isl::schedule scheduleOperation(Operation *op, Scop &scop, unsigned depth) {
   return sched;
 }
 
+// ScopStmt
+// ----------------------------------------
 void ScopStmt::dump(raw_ostream &os, bool withLabels = true,
                     bool withName = true, bool withDomain = true,
                     bool withAccessOps = false) {
@@ -149,6 +151,69 @@ void ScopStmt::dump(raw_ostream &os, bool withLabels = true,
   }
 }
 
+// DependenceGraph
+// ----------------------------------------
+void DependenceGraph::dump(llvm::raw_ostream &os) {
+  os << "Dependence Graph\n"
+     << "----------------\n";
+
+  os << "Dependences:\n";
+  for (auto &node : nodes) {
+    os << "  " << node->stmt->name << ":\n";
+    for (auto &dep : node->dependents) {
+      os << "    -> " << dep.lock()->stmt->name << "\n";
+    }
+  }
+
+  os << "Dependencies:\n";
+  for (auto &node : nodes) {
+    os << "  " << node->stmt->name << ":\n";
+    for (auto &dep : node->dependencies) {
+      os << "    -> " << dep.lock()->stmt->name << "\n";
+    }
+  }
+}
+
+int DependenceGraph::getNumDependencies() {
+  int numDependencies = 0;
+  for (auto &node : nodes)
+    numDependencies += node->dependencies.size();
+  return numDependencies;
+}
+
+void DependenceGraph::computeDependencies() {
+  // Init all dependencies to dependents.
+  for (auto &node : nodes) {
+    for (auto &dep : node->dependents) {
+      node->dependencies.push_back(dep);
+    }
+  }
+
+  std::vector<DependenceGraphNodePtr> worklist(nodes.begin(), nodes.end());
+  while (!worklist.empty()) {
+    auto node = worklist.back();
+    worklist.pop_back();
+
+    for (auto &dep : node->dependencies) {
+      for (auto &depDep : dep.lock()->dependencies) {
+        bool found = false;
+        for (auto &nodeDep : node->dependencies) {
+          if (nodeDep.lock() == depDep.lock()) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          node->dependencies.push_back(depDep);
+          worklist.push_back(node);
+        }
+      }
+    }
+  }
+}
+
+// Scop
+// ----------------------------------------
 Scop::Scop(Operation *op) : op(op) {
   ctx = isl_ctx_alloc();
   asmState = new AsmState(op);
@@ -160,8 +225,65 @@ Scop::Scop(Operation *op) : op(op) {
   computeFlowDependencies();
 }
 
-ScopStmt *Scop::lookupStmt(mlir::Operation *op) {
-  for (auto &stmt : stmts) {
+DependenceGraphPtr Scop::getDependenceGraph() {
+  DependenceGraphPtr graph = std::make_shared<DependenceGraph>();
+
+  std::unordered_map<ScopStmt *, DependenceGraph::DependenceGraphNodePtr>
+      stmtsToGraphNodes;
+
+  for (auto flowDep : flowDependencies.get_map_list()) {
+    isl::map dep = flowDep.as_map();
+
+    // Get the source and destination ids.
+    isl::id srcId = dep.get_tuple_id(isl::dim::in);
+    isl::id dstId = dep.get_tuple_id(isl::dim::out);
+
+    // Get the source and destination names.
+    std::string srcName = srcId.get_name();
+    std::string dstName = dstId.get_name();
+
+    // Get the source and destination statements.
+    ScopStmt *srcStmt = lookupStmtByName(srcName);
+    ScopStmt *dstStmt = lookupStmtByName(dstName);
+    assert(srcStmt && dstStmt && "Statement not found");
+
+    // Add the source and destination statements to the graph if they are not in
+    // it yet.
+    if (stmtsToGraphNodes.find(srcStmt) == stmtsToGraphNodes.end()) {
+      DependenceGraph::DependenceGraphNodePtr srcNode =
+          std::make_shared<DependenceGraph::DependenceGraphNode>(srcStmt);
+      stmtsToGraphNodes[srcStmt] = srcNode;
+      graph->nodes.push_back(srcNode);
+    }
+    if (stmtsToGraphNodes.find(dstStmt) == stmtsToGraphNodes.end()) {
+      DependenceGraph::DependenceGraphNodePtr dstNode =
+          std::make_shared<DependenceGraph::DependenceGraphNode>(dstStmt);
+      stmtsToGraphNodes[dstStmt] = dstNode;
+      graph->nodes.push_back(dstNode);
+    }
+
+    // Add the dependents to the graph.
+    DependenceGraph::DependenceGraphNodePtr srcNode = stmtsToGraphNodes[srcStmt];
+    DependenceGraph::DependenceGraphNodePtr dstNode = stmtsToGraphNodes[dstStmt];
+    srcNode->dependents.push_back(dstNode);
+  }
+
+  graph->computeDependencies();
+
+  return graph;
+}
+
+ScopStmt* Scop::lookupStmtByName(std::string name) {
+  auto it = namesToStmts.find(name);
+  if (it == namesToStmts.end())
+    return nullptr;
+  return &it->second;
+}
+
+ScopStmt *Scop::lookupStmtByOp(mlir::Operation *op) {
+  for (auto &nameToStmt : namesToStmts) {
+    ScopStmt &stmt = nameToStmt.second;
+
     for (auto &iop : stmt.accessOps) {
       if (op == iop) {
         return &stmt;
@@ -178,7 +300,9 @@ llvm::SmallVector<ScopStmt> Scop::lookupStmts(mlir::Block &block) {
   }
 
   llvm::DenseMap<ScopStmt *, bool> stmtsMap;
-  for (auto &stmt : stmts) {
+  for (auto &nameToStmt : namesToStmts) {
+    ScopStmt &stmt = nameToStmt.second;
+
     for (auto &op : stmt.accessOps) {
       for (auto &iop : ops) {
         if (op == iop) {
@@ -217,9 +341,9 @@ void Scop::buildScopStmts() {
 
     if ((!isSimpleOp || isStoreOp)) {
       if (!currentStmtAccessOps.empty()) {
-        ScopStmt scopStmt(currentStmtAllOps, currentStmtAccessOps,
-                          "Stmt" + std::to_string(stmtIdx++));
-        stmts.push_back(scopStmt);
+        std::string stmtName = "Stmt" + std::to_string(stmtIdx++);
+        ScopStmt scopStmt(currentStmtAllOps, currentStmtAccessOps, stmtName);
+        namesToStmts.insert({stmtName, scopStmt});
       }
       currentStmtAccessOps.clear();
       currentStmtAllOps.clear();
@@ -227,14 +351,16 @@ void Scop::buildScopStmts() {
   });
 
   if (!currentStmtAccessOps.empty()) {
-    ScopStmt scopStmt(currentStmtAllOps, currentStmtAccessOps,
-                      "Stmt" + std::to_string(stmtIdx++));
-    stmts.push_back(scopStmt);
+    std::string stmtName = "Stmt" + std::to_string(stmtIdx++);
+    ScopStmt scopStmt(currentStmtAllOps, currentStmtAccessOps, stmtName);
+    namesToStmts.insert({stmtName, scopStmt});
   }
 }
 
 void Scop::buildAccessRelationIslMaps() {
-  for (auto &stmt : stmts) {
+  for (auto &nameToStmt : namesToStmts) {
+    ScopStmt &stmt = nameToStmt.second;
+
     llvm::SmallVector<isl::map> ms;
     for (auto &op : stmt.accessOps) {
       // Build ISL access relation.
@@ -248,7 +374,9 @@ void Scop::buildAccessRelationIslMaps() {
 void Scop::computeFlowDependencies() {
   isl::union_map reads;
   isl::union_map writes;
-  for (auto &stmt : stmts) {
+  for (auto &nameToStmt : namesToStmts) {
+    ScopStmt &stmt = nameToStmt.second;
+
     for (unsigned i = 0; i < stmt.accessOps.size(); ++i) {
       Operation *op = stmt.accessOps[i];
       isl::union_map acc = stmt.accessRelations[i];
@@ -396,7 +524,9 @@ isl::map Scop::getAccessRelationForOp(Operation *op, std::string &opName) {
 }
 
 void Scop::dump(raw_ostream &os) {
-  for (auto stmt : stmts) {
+  for (auto &nameToStmt : namesToStmts) {
+    ScopStmt &stmt = nameToStmt.second;
+
     stmt.dump(os);
     os << "\n";
   }
@@ -434,7 +564,9 @@ void Scop::toDot(raw_ostream &os, Scop &scop) {
   }
 
   // Nodes.
-  for (auto &stmt : stmts) {
+  for (auto &nameToStmt : namesToStmts) {
+    ScopStmt &stmt = nameToStmt.second;
+
     os << "  " << stmt.name;
     os << " [shape=box, ";
 
@@ -462,7 +594,9 @@ void Scop::toDotStmts(raw_ostream &os, Scop &scop) {
   os << "digraph {\n";
 
   mlir::DenseMap<mlir::Operation *, std::string> opStrs;
-  for (auto &stmt : stmts) {
+  for (auto &nameToStmt : namesToStmts) {
+    ScopStmt &stmt = nameToStmt.second;
+
     os << "subgraph cluster_" + stmt.name << " {\n";
     os << "  label = \"" << stmt.name << "\";\n";
 
@@ -499,7 +633,9 @@ void Scop::toDotStmts(raw_ostream &os, Scop &scop) {
   mlir::DenseMap<mlir::Operation *, std::string> undefOps;
   os << "subgraph cluster_external {\n";
   os << "  label = \"External Vars and Args\";\n";
-  for (auto &stmt : stmts) {
+  for (auto &nameToStmt : namesToStmts) {
+    ScopStmt &stmt = nameToStmt.second;
+
     for (auto &op : stmt.allOps) {
       for (auto operand : op->getOperands()) {
         mlir::Operation *iop = operand.getDefiningOp();
