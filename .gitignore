@@ -3,6 +3,7 @@
 build
 build-dbg
 
+isl-0.25
 mlir-hlo
 
 compile_commands.json

@@ -46,7 +46,8 @@ add_llvm_executable(polyhedral-info
   analysis/PolyhedralAnalysis.cc
   analysis/isl/isl_helper.cc
   )
-target_include_directories(polyhedral-info PRIVATE /devel/tmp/isl/include)
+target_include_directories(polyhedral-info PRIVATE ${CMAKE_SOURCE_DIR}/isl-0.25/include)
 llvm_update_compile_flags(polyhedral-info)
-target_link_libraries(polyhedral-info PRIVATE ${POLY_LIBS} /devel/tmp/isl/.libs/libisl.a gmp)
+target_link_libraries(polyhedral-info PRIVATE ${POLY_LIBS}
+  ${CMAKE_SOURCE_DIR}/isl-0.25/.libs/libisl.a gmp)
 target_compile_options(polyhedral-info PRIVATE -Wno-missing-field-initializers)

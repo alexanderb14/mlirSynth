@@ -18,7 +18,7 @@
 
 #include "llvm/ADT/Sequence.h"
 #include "llvm/ADT/iterator.h"
-#include "isl/isl-noexceptions.h"
+#include "isl_noexceptions.h"
 #include <algorithm>
 #include <cassert>
 
