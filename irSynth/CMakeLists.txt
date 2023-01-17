@@ -25,3 +25,5 @@ llvm_update_compile_flags(synthesizer)
 target_link_libraries(synthesizer PRIVATE ${LIBS} CE ${MHLO_EXPORTED_TARGETS})
 
 mlir_check_all_link_libraries(synthesizer)
+
+add_subdirectory(analysis)
