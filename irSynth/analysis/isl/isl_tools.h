@@ -1,3 +1,5 @@
+// Copied from llvm-project/polly/lib/Support
+
 //===------ ISLTools.h ------------------------------------------*- C++ -*-===//
 //
 // Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
@@ -83,10 +85,12 @@ protected:
   int Position = 0;
 };
 
-template <typename T> isl_iterator<T> begin(const T &t) {
+template <typename T>
+isl_iterator<T> begin(const T &t) {
   return isl_iterator<T>(t, 0);
 }
-template <typename T> isl_iterator<T> end(const T &t) {
+template <typename T>
+isl_iterator<T> end(const T &t) {
   return isl_iterator<T>(t);
 }
 

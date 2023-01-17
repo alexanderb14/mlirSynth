@@ -8,8 +8,8 @@
 #include "mlir/Support/FileUtilities.h"
 #include "mlir/Tools/mlir-opt/MlirOptMain.h"
 
-#include "Scop.h"
 #include "Exporter.h"
+#include "Scop.h"
 
 using namespace llvm;
 using namespace mlir;
@@ -22,17 +22,15 @@ struct AffineInfoPass
   AffineInfoPass() = default;
   AffineInfoPass(const AffineInfoPass &) {}
 
-  Option<bool> dump {
-      *this, "dump",
-      llvm::cl::desc("Dump all info"), llvm::cl::init(false)};
+  Option<bool> dump{*this, "dump", llvm::cl::desc("Dump all info"),
+                    llvm::cl::init(false)};
 
-  Option<bool> dot {
-      *this, "dot",
-      llvm::cl::desc("Dot graph"), llvm::cl::init(false)};
+  Option<bool> dot{*this, "dot", llvm::cl::desc("Dot graph"),
+                   llvm::cl::init(false)};
 
-  Option<bool> dotStmts {
-      *this, "dot-stmts",
-      llvm::cl::desc("Dot graph of statement contents"), llvm::cl::init(false)};
+  Option<bool> dotStmts{*this, "dot-stmts",
+                        llvm::cl::desc("Dot graph of statement contents"),
+                        llvm::cl::init(false)};
 
   StringRef getArgument() const final { return "affine-info"; }
   StringRef getDescription() const final { return "Print affine information."; }

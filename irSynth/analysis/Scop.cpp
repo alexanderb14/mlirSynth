@@ -23,8 +23,9 @@ using namespace mlir;
 //
 // # Example: Domain: { A[i,j]; B[i,j,k] }, N: 1
 // Resulting Mapping: { {A[i,j] -> [(j)]; B[i,j,k] -> [(j)] }
-isl::multi_union_pw_aff mapToDimension(const isl::union_set& uSet, unsigned n) {
-  // llvm::outs() << "mapToDimension " << stringFromIslObj(USet) << " " << N << "\n";
+isl::multi_union_pw_aff mapToDimension(const isl::union_set &uSet, unsigned n) {
+  // llvm::outs() << "mapToDimension " << stringFromIslObj(USet) << " " << N <<
+  // "\n";
   assert(!uSet.is_null());
   assert(!uSet.is_empty());
 
@@ -41,11 +42,14 @@ isl::multi_union_pw_aff mapToDimension(const isl::union_set& uSet, unsigned n) {
     result = result.add_pw_multi_aff(pma);
   }
 
-  // llvm::outs() << "MUPA: " << stringFromIslObj(isl::multi_union_pw_aff(isl::union_pw_multi_aff(Result))) << "\n";
+  // llvm::outs() << "MUPA: " <<
+  // stringFromIslObj(isl::multi_union_pw_aff(isl::union_pw_multi_aff(Result)))
+  // << "\n";
   return isl::multi_union_pw_aff(isl::union_pw_multi_aff(result));
 }
 
-isl::schedule combineInSequence(const isl::schedule& prev, const isl::schedule& succ) {
+isl::schedule combineInSequence(const isl::schedule &prev,
+                                const isl::schedule &succ) {
   if (prev.is_null())
     return succ;
   if (succ.is_null())
@@ -54,7 +58,7 @@ isl::schedule combineInSequence(const isl::schedule& prev, const isl::schedule& 
   return prev.sequence(succ);
 }
 
-mlir::DenseMap<ScopStmt*, bool> seenStmts;
+mlir::DenseMap<ScopStmt *, bool> seenStmts;
 
 isl::schedule scheduleBlock(Block &block, Scop &scop, unsigned depth);
 isl::schedule scheduleRegion(Region &region, Scop &scop, unsigned depth);
@@ -87,11 +91,11 @@ isl::schedule scheduleOperation(Operation *op, Scop &scop, unsigned depth) {
     sched = combineInSequence(sched, scheduleRegion(region, scop, depth));
   }
 
-  ScopStmt* stmt = scop.lookupStmt(op);
-  if (stmt) { 
+  ScopStmt *stmt = scop.lookupStmt(op);
+  if (stmt) {
     if (seenStmts.find(stmt) == seenStmts.end()) {
       seenStmts[stmt] = true;
-  
+
       isl::union_set domain;
       if (sched.is_null()) {
         domain = stmt->domain();
@@ -99,9 +103,9 @@ isl::schedule scheduleOperation(Operation *op, Scop &scop, unsigned depth) {
       } else {
         domain = sched.get_domain();
       }
-  
-      //isl::multi_union_pw_aff mupa = mapToDimension(domain, depth);
-      //sched = sched.insert_partial_schedule(mupa);
+
+      // isl::multi_union_pw_aff mupa = mapToDimension(domain, depth);
+      // sched = sched.insert_partial_schedule(mupa);
     }
 
   } else if (isa<AffineForOp>(op)) {
@@ -155,12 +159,12 @@ Scop::Scop(Operation *op) : op(op) {
   flowDependencies = computeFlowDependencies();
 }
 
-ScopStmt* Scop::lookupStmt(mlir::Operation *op) {
+ScopStmt *Scop::lookupStmt(mlir::Operation *op) {
   for (auto &stmt : stmts) {
     for (auto &iop : stmt.accessOps) {
-        if (op == iop) {
-          return &stmt;
-        }
+      if (op == iop) {
+        return &stmt;
+      }
     }
   }
   return nullptr;
@@ -228,8 +232,8 @@ void Scop::buildScopStmts() {
   unsigned stmtIdx = 0;
   op->walk<WalkOrder::PreOrder>([&](Operation *op) {
     bool isSimpleOp = !isa<AffineForOp>(op) && !isa<AffineYieldOp>(op) &&
-        !isa<FunctionOpInterface>(op) && !isa<ModuleOp>(op) &&
-        !isa<func::ReturnOp>(op);
+                      !isa<FunctionOpInterface>(op) && !isa<ModuleOp>(op) &&
+                      !isa<func::ReturnOp>(op);
     bool isAccessOp = isa<AffineLoadOp>(op) || isa<AffineStoreOp>(op);
     bool isStoreOp = isa<AffineStoreOp>(op);
 
@@ -299,8 +303,7 @@ isl::map Scop::getAccessRelation(Operation *op, std::string &opName) {
     std::string id = asmId;
     // std::string id = "i" + std::to_string(i);
 
-    isl::id islId =
-        isl::id::alloc(ctx, id, rel.getValue(i).getImpl());
+    isl::id islId = isl::id::alloc(ctx, id, rel.getValue(i).getImpl());
     accessRelSpace = accessRelSpace.set_dim_id(isl::dim::in, i, islId);
   }
 
@@ -309,7 +312,8 @@ isl::map Scop::getAccessRelation(Operation *op, std::string &opName) {
     // isl::id id =
     //     isl::id::alloc(ctx, "p_" + std::to_string(i),
     //                    rel.getValue(rel.getNumDimVars() + i).getImpl());
-    accessRelSpace = accessRelSpace.set_dim_id(isl::dim::param, i, isl::id(ctx, "p_" + std::to_string(i)));
+    accessRelSpace = accessRelSpace.set_dim_id(
+        isl::dim::param, i, isl::id(ctx, "p_" + std::to_string(i)));
   }
 
   // Convert the access relation to isl::map.

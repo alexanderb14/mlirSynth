@@ -1,3 +1,5 @@
+// Copied from llvm-project/polly/lib/Support
+
 #ifndef ISL_HELPER_H
 #define ISL_HELPER_H
 
@@ -8,7 +10,6 @@
 #include <isl/options.h>
 
 #include <cassert>
-
 
 #define ISL_CPP_OBJECT_TO_STRING(name)                                         \
   inline std::string stringFromIslObj(const name &Obj,                         \

@@ -1,5 +1,6 @@
-#include "isl_helper.h"
+// Copied from llvm-project/polly/lib/Support
 
+#include "isl_helper.h"
 
 template <typename ISLTy, typename ISL_CTX_GETTER, typename ISL_PRINTER>
 static inline std::string stringFromIslObjInternal(__isl_keep ISLTy *isl_obj,
@@ -23,8 +24,8 @@ static inline std::string stringFromIslObjInternal(__isl_keep ISLTy *isl_obj,
 }
 
 #define ISL_C_OBJECT_TO_STRING(name)                                           \
-  std::string stringFromIslObj(__isl_keep isl_##name *Obj,              \
-                                      std::string DefaultValue) {              \
+  std::string stringFromIslObj(__isl_keep isl_##name *Obj,                     \
+                               std::string DefaultValue) {                     \
     return stringFromIslObjInternal(Obj, isl_##name##_get_ctx,                 \
                                     isl_printer_print_##name, DefaultValue);   \
   }
