@@ -1,5 +1,6 @@
 #include "ContextManager.h"
 #include "Utils.h"
+#include "analysis/PolyhedralAnalysis.h"
 #include "enumeration/ArgTuples.h"
 #include "enumeration/Candidate.h"
 #include "enumeration/Enumerator.h"
@@ -17,6 +18,7 @@
 #include "mlir/Support/FileUtilities.h"
 #include "mlir/Target/LLVMIR/Dialect/All.h"
 #include "mlir/Tools/ParseUtilities.h"
+#include "mlir/Transforms/Passes.h"
 #include "stablehlo/dialect/ChloOps.h"
 #include "stablehlo/dialect/Register.h"
 #include "thlo/transforms/passes.h"
@@ -144,7 +146,7 @@ int main(int argc, char **argv) {
   std::vector<Dialect *> dialects = {hloDialect, chloDialect};
   auto availableOps = getDialectOps(ctx, dialects, opsVec, true);
 
-  // Parse the input file into FuncOps.
+  // Parse the input file.
   std::string errorMessage;
   auto file = openInputFile(inputFilename, &errorMessage);
   if (!file) {
@@ -161,6 +163,15 @@ int main(int argc, char **argv) {
       parseSourceFileForTool(sourceMgr, config, /*insertImplicitModule*/ false);
   assert(inputOp && "Failed to parse input file");
 
+  // Run passes.
+  mlir::PassManager pm(ctx);
+  pm.addNestedPass<mlir::func::FuncOp>(std::make_unique<PolyhedralAnalysisPass>());
+  if (failed(pm.run(*inputOp))) {
+    llvm::errs() << "Failed to run passes on input file\n";
+    return 1;
+  }
+
+  // Parse the funcion ops.
   std::vector<func::FuncOp> functions = getFunctions(inputOp.get());
   func::FuncOp inputFunction = functions[0];
 

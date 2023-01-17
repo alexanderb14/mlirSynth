@@ -8,6 +8,7 @@
 #include "mlir/IR/AsmState.h"
 #include "mlir/IR/BuiltinOps.h"
 #include "mlir/IR/Operation.h"
+#include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/Pass/Pass.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
@@ -90,7 +91,7 @@ void dumpRelDetails(mlir::FlatAffineRelation rel);
 namespace {
 struct PolyhedralAnalysisPass
     : public mlir::PassWrapper<PolyhedralAnalysisPass,
-                               mlir::OperationPass<mlir::ModuleOp>> {
+                               mlir::OperationPass<mlir::func::FuncOp>> {
   MLIR_DEFINE_EXPLICIT_INTERNAL_INLINE_TYPE_ID(PolyhedralAnalysisPass)
 
   PolyhedralAnalysisPass() = default;
