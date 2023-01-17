@@ -1,3 +1,5 @@
+#include "PolyhedralAnalysis.h"
+
 #include "mlir/IR/AsmState.h"
 #include "mlir/IR/Dialect.h"
 #include "mlir/IR/MLIRContext.h"
@@ -8,18 +10,16 @@
 #include "mlir/Support/FileUtilities.h"
 #include "mlir/Tools/mlir-opt/MlirOptMain.h"
 
-#include "Scop.h"
-
 using namespace llvm;
 using namespace mlir;
 
 namespace {
-struct AffineInfoPass
-    : public PassWrapper<AffineInfoPass, OperationPass<ModuleOp>> {
-  MLIR_DEFINE_EXPLICIT_INTERNAL_INLINE_TYPE_ID(AffineInfoPass)
+struct PolyhedralInfoPass
+    : public PassWrapper<PolyhedralInfoPass, OperationPass<ModuleOp>> {
+  MLIR_DEFINE_EXPLICIT_INTERNAL_INLINE_TYPE_ID(PolyhedralInfoPass)
 
-  AffineInfoPass() = default;
-  AffineInfoPass(const AffineInfoPass &) {}
+  PolyhedralInfoPass() = default;
+  PolyhedralInfoPass(const PolyhedralInfoPass &) {}
 
   Option<bool> dump{*this, "dump", llvm::cl::desc("Dump all info"),
                     llvm::cl::init(false)};
@@ -31,8 +31,10 @@ struct AffineInfoPass
                         llvm::cl::desc("Dot graph of statement contents"),
                         llvm::cl::init(false)};
 
-  StringRef getArgument() const final { return "affine-info"; }
-  StringRef getDescription() const final { return "Print affine information."; }
+  StringRef getArgument() const final { return "polyhedral-info"; }
+  StringRef getDescription() const final {
+    return "Print polyhedral analysis info.";
+  }
   void runOnOperation() override {
 
     Operation *op = getOperation();
@@ -58,11 +60,11 @@ struct AffineInfoPass
 } // namespace
 
 namespace mlir {
-void registerAffineInfoPass() { PassRegistration<AffineInfoPass>(); }
+void registerPolyhedralInfoPass() { PassRegistration<PolyhedralInfoPass>(); }
 } // namespace mlir
 
 int main(int argc, char **argv) {
-  registerAffineInfoPass();
+  registerPolyhedralInfoPass();
 
   DialectRegistry registry;
   registerAllDialects(registry);

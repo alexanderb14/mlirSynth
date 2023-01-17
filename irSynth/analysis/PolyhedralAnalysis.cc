@@ -1,3 +1,7 @@
+#include "PolyhedralAnalysis.h"
+
+#include "isl/isl_tools.h"
+
 #include "mlir/Dialect/Affine/Analysis/AffineAnalysis.h"
 #include "mlir/Dialect/Affine/Analysis/AffineStructures.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
@@ -8,9 +12,6 @@
 #include "mlir/Tools/mlir-opt/MlirOptMain.h"
 #include "llvm/Support/ToolOutputFile.h"
 #include "llvm/Support/raw_ostream.h"
-
-#include "Scop.h"
-#include "isl/isl_tools.h"
 
 #include <regex>
 #include <string>

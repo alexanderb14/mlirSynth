@@ -1,5 +1,5 @@
-#ifndef SCOP_H
-#define SCOP_H
+#ifndef IRSYNTH_SCOP_H
+#define IRSYNTH_SCOP_H
 
 #include "isl/isl_helper.h"
 
@@ -55,4 +55,4 @@ private:
 void toDot(llvm::raw_ostream &os, Scop &scop);
 void toDotStmts(llvm::raw_ostream &os, Scop &scop);
 
-#endif // SCOP_H
+#endif // IRSYNTH_SCOP_H

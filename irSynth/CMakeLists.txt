@@ -41,12 +41,12 @@ set(POLY_LIBS
   MLIRSupport
   MLIRIR
   )
-add_llvm_executable(affine-info
-  analysis/affine-info.cc
-  analysis/Scop.cc
+add_llvm_executable(polyhedral-info
+  analysis/PolyhedralInfo.cc
+  analysis/PolyhedralAnalysis.cc
   analysis/isl/isl_helper.cc
   )
-target_include_directories(affine-info PRIVATE /devel/tmp/isl/include)
-llvm_update_compile_flags(affine-info)
-target_link_libraries(affine-info PRIVATE ${POLY_LIBS} /devel/tmp/isl/.libs/libisl.a gmp)
-target_compile_options(affine-info PRIVATE -Wno-missing-field-initializers)
+target_include_directories(polyhedral-info PRIVATE /devel/tmp/isl/include)
+llvm_update_compile_flags(polyhedral-info)
+target_link_libraries(polyhedral-info PRIVATE ${POLY_LIBS} /devel/tmp/isl/.libs/libisl.a gmp)
+target_compile_options(polyhedral-info PRIVATE -Wno-missing-field-initializers)
