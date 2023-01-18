@@ -1,6 +1,6 @@
 #include "ContextManager.h"
 #include "Utils.h"
-#include "analysis/PolyhedralAnalysis.h"
+#include "transforms/LoopDistributionPass.h"
 #include "enumeration/ArgTuples.h"
 #include "enumeration/Candidate.h"
 #include "enumeration/Enumerator.h"
@@ -165,8 +165,8 @@ int main(int argc, char **argv) {
 
   // Run passes.
   mlir::PassManager pm(ctx);
-  pm.addNestedPass<mlir::func::FuncOp>(std::make_unique<PolyhedralAnalysisPass>());
-  if (failed(pm.run(*inputOp))) {
+  //pm.addNestedPass<mlir::func::FuncOp>(createLoopDistributionPass());
+  if (failed(pm.run(inputOp.get()))) {
     llvm::errs() << "Failed to run passes on input file\n";
     return 1;
   }

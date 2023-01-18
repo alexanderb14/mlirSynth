@@ -53,6 +53,7 @@ add_llvm_executable(
   execution/ArrayUtils.cc
   execution/Executor.cc
   execution/Lowering.cc
+  transforms/LoopDistributionPass.cc
   Utils.cc)
 target_include_directories(synthesizer PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 llvm_update_compile_flags(synthesizer)
