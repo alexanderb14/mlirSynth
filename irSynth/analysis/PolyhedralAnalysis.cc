@@ -182,30 +182,39 @@ int DependenceGraph::getNumDependencies() {
 }
 
 void DependenceGraph::computeDependencies() {
-  // Init all dependencies to dependents.
+  // Init dependencies with reverse dependences.
   for (auto &node : nodes) {
-    for (auto &dep : node->dependents) {
-      node->dependencies.push_back(dep);
+    for (auto &succ : node->dependents) {
+      bool exists = false;
+      for (auto &pred : succ.lock()->dependencies) {
+        if (pred.lock() == node) {
+          exists = true;
+          break;
+        }
+      }
+      if (!exists && node != succ.lock())
+        succ.lock()->dependencies.push_back(node);
     }
   }
 
+  // Propagate dependencies with a worklist algorithm.
   std::vector<DependenceGraphNodePtr> worklist(nodes.begin(), nodes.end());
   while (!worklist.empty()) {
     auto node = worklist.back();
     worklist.pop_back();
 
-    for (auto &dep : node->dependencies) {
-      for (auto &depDep : dep.lock()->dependencies) {
-        bool found = false;
-        for (auto &nodeDep : node->dependencies) {
-          if (nodeDep.lock() == depDep.lock()) {
-            found = true;
+    for (auto &succ: node->dependencies) {
+      for (auto &pred : succ.lock()->dependencies) {
+        bool exists = false;
+        for (auto &dep : node->dependencies) {
+          if (dep.lock() == pred.lock()) {
+            exists = true;
             break;
           }
         }
-        if (!found) {
-          node->dependencies.push_back(depDep);
-          worklist.push_back(node);
+        if (!exists && node != pred.lock()) {
+          node->dependencies.push_back(pred.lock());
+          worklist.push_back(pred.lock());
         }
       }
     }
@@ -544,7 +553,7 @@ void Scop::dump(raw_ostream &os) {
   os << "\n";
 }
 
-void Scop::toDot(raw_ostream &os, Scop &scop) {
+void Scop::toDot(raw_ostream &os) {
   os << "digraph {\n";
 
   // Edges.
@@ -590,7 +599,7 @@ void Scop::toDot(raw_ostream &os, Scop &scop) {
   os << "}\n";
 }
 
-void Scop::toDotStmts(raw_ostream &os, Scop &scop) {
+void Scop::toDotStmts(raw_ostream &os) {
   os << "digraph {\n";
 
   mlir::DenseMap<mlir::Operation *, std::string> opStrs;

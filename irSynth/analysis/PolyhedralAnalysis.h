@@ -65,8 +65,8 @@ public:
   ScopStmt *lookupStmtByOp(mlir::Operation *op);
   llvm::SmallVector<ScopStmt> lookupStmtsByBlock(mlir::Block &block);
 
-  void toDot(llvm::raw_ostream &os, Scop &scop);
-  void toDotStmts(llvm::raw_ostream &os, Scop &scop);
+  void toDot(llvm::raw_ostream &os);
+  void toDotStmts(llvm::raw_ostream &os);
 
   void dump(llvm::raw_ostream &os);
 
@@ -85,6 +85,7 @@ private:
   isl::union_map flowDependencies;
   isl_ctx *ctx;
 };
+using ScopPtr = std::shared_ptr<Scop>;
 
 void dumpRelDetails(mlir::FlatAffineRelation rel);
 
@@ -117,29 +118,31 @@ struct PolyhedralAnalysisPass
   }
   void runOnOperation() override {
     mlir::Operation *op = getOperation();
-    Scop scop(op);
+    scop = std::make_shared<Scop>(op);
 
     if (dump) {
-      scop.dump(llvm::outs());
+      scop->dump(llvm::outs());
       llvm::outs() << "\n";
     }
 
     if (dot) {
-      scop.toDot(llvm::outs(), scop);
+      scop->toDot(llvm::outs());
       llvm::outs() << "\n";
     }
 
     if (dotStmts) {
-      scop.toDotStmts(llvm::outs(), scop);
+      scop->toDotStmts(llvm::outs());
       llvm::outs() << "\n";
     }
 
     if (dumpDependenceGraph) {
-      auto dg = scop.getDependenceGraph();
+      auto dg = scop->getDependenceGraph();
       dg->dump(llvm::outs());
       llvm::outs() << "\n";
     }
   }
+
+  ScopPtr scop;
 };
 } // namespace
 
