@@ -156,22 +156,23 @@ void ScopStmt::dump(raw_ostream &os, bool withLabels = true,
 void DependenceGraph::dump(llvm::raw_ostream &os) {
   os << "Dependence Graph\n"
      << "----------------\n";
-
-  os << "Dependences:\n";
   for (auto &node : nodes) {
-    os << "  " << node->stmt->name << ":\n";
+    os << node->stmt->name << ":\n";
     for (auto &dep : node->dependents) {
-      os << "    -> " << dep.lock()->stmt->name << "\n";
+      os << "  -> " << dep.lock()->stmt->name << "\n";
     }
   }
+  os << "\n";
 
-  os << "Dependencies:\n";
+  os << "Dependency Graph\n"
+     << "----------------\n";
   for (auto &node : nodes) {
-    os << "  " << node->stmt->name << ":\n";
+    os << node->stmt->name << ":\n";
     for (auto &dep : node->dependencies) {
-      os << "    -> " << dep.lock()->stmt->name << "\n";
+      os << "  -> " << dep.lock()->stmt->name << "\n";
     }
   }
+  os << "\n";
 }
 
 int DependenceGraph::getNumDependencies() {
