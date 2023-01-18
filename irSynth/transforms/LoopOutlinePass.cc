@@ -114,17 +114,16 @@ void outlineLoops(func::FuncOp &op) {
     for (auto value : undefinedValues) {
       auto *definingOp = value.getDefiningOp();
 
-      if (!definingOp) {
-        auto newArg = bodyBlock.addArgument(value.getType(), unknownLoc);
-        mapper.map(value, newArg);
-      } else
-
-      // If the defining operation is a constant, copy and add it to the new
-      // function.
-      if (auto constantOp = dyn_cast<arith::ConstantOp>(definingOp)) {
+      if (definingOp && dyn_cast<arith::ConstantOp>(definingOp)) {
+        // If the defining operation is a constant, copy and add it to the new
+        // function.
+        auto constantOp = dyn_cast<arith::ConstantOp>(definingOp);
         auto newConstantOp = constantOp.clone();
         bodyBlock.push_back(newConstantOp);
         mapper.map(value, newConstantOp.getResult());
+      } else {
+        auto newArg = bodyBlock.addArgument(value.getType(), unknownLoc);
+        mapper.map(value, newArg);
       }
     }
 
