@@ -28,15 +28,33 @@ llvm::SmallVector<mlir::Operation *> getTopLevelLoops(func::FuncOp &op) {
 }
 
 llvm::SetVector<Value> getOutOfBlockDefValues(mlir::Operation *op) {
-  llvm::SetVector<Value> undefinedValues;
-  op->walk([&](mlir::Operation *subOp) {
-    for (auto operand : subOp->getOperands()) {
-      if (operand.getDefiningOp() &&
-          operand.getDefiningOp()->getBlock() == op->getBlock()) {
-        undefinedValues.insert(operand);
-      }
-    }
+  // Get all values.
+  llvm::DenseMap<Value, bool> allValues;
+  // - Defined in the block.
+  op->walk([&](Operation *op) {
+    for (auto result : op->getResults())
+      allValues[result] = true;
   });
+  // - Defined as arguments.
+  for(int i = 0; i < op->getNumRegions(); i++) {
+    for (auto &block : op->getRegion(i).getBlocks()) {
+      for (auto arg : block.getArguments())
+        allValues[arg] = true;
+    }
+  }
+
+  // Get all ops.
+  llvm::SetVector<Operation *> allOps;
+  op->walk([&](Operation *op) { allOps.insert(op); });
+
+  llvm::SetVector<Value> undefinedValues;
+  for (auto &op : allOps) {
+    for (auto operand : op->getOperands()) {
+      if (allValues.count(operand) == 0 && !operand.getType().isa<IndexType>())
+        undefinedValues.insert(operand);
+    }
+  }
+
   return undefinedValues;
 }
 
@@ -59,7 +77,6 @@ void outlineLoops(func::FuncOp &op) {
 
   auto loops = getTopLevelLoops(op);
   for (auto *loop : loops) {
-
     auto undefinedValues = getOutOfBlockDefValues(loop);
     auto loadedValues = getLoadedMemRefValues(loop);
     auto storedValues = getStoredMemRefValues(loop);
@@ -97,18 +114,17 @@ void outlineLoops(func::FuncOp &op) {
     for (auto value : undefinedValues) {
       auto *definingOp = value.getDefiningOp();
 
+      if (!definingOp) {
+        auto newArg = bodyBlock.addArgument(value.getType(), unknownLoc);
+        mapper.map(value, newArg);
+      } else
+
       // If the defining operation is a constant, copy and add it to the new
       // function.
       if (auto constantOp = dyn_cast<arith::ConstantOp>(definingOp)) {
         auto newConstantOp = constantOp.clone();
         bodyBlock.push_back(newConstantOp);
         mapper.map(value, newConstantOp.getResult());
-      }
-
-      // All the remaining values are added as arguments.
-      else {
-        auto newArg = bodyBlock.addArgument(value.getType(), unknownLoc);
-        mapper.map(value, newArg);
       }
     }
 
@@ -118,7 +134,7 @@ void outlineLoops(func::FuncOp &op) {
       mapper.map(value, newArg);
     }
 
-    // Add the loop to the body block.
+    // Add all ops of the loop to the body block.
     bodyBlock.push_back(loop->clone(mapper));
 
     // Add the stored values as results.
