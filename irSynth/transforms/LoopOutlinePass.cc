@@ -77,60 +77,56 @@ void outlineLoops(func::FuncOp &op) {
   if (debug)
     op.dump();
 
-  std::vector<func::FuncOp *> outlinedLoops;
-
+  auto module = op->getParentOfType<ModuleOp>();
   auto loops = getTopLevelLoops(op);
-  unsigned count = 0;
+  auto builder = OpBuilder::atBlockBegin(module.getBody());
+
+  unsigned loopCounter = 0;
   for (auto *loop : loops) {
     auto undefinedValues = getOutOfBlockDefValues(loop);
     auto loadedValues = getLoadedMemRefValues(loop);
     auto storedValues = getStoredMemRefValues(loop);
 
     if (debug) {
-      llvm::outs() << "--------------------------------\n";
+      llvm::outs() << "-----------------\n";
       loop->dump();
-
       llvm::outs() << "Undefined values:\n";
-      for (auto value : undefinedValues) {
+      for (auto value : undefinedValues)
         value.dump();
-      }
-
       llvm::outs() << "Loaded:\n";
-      for (auto value : loadedValues) {
+      for (auto value : loadedValues)
         value.dump();
-      }
-
       llvm::outs() << "Stored:\n";
-      for (auto value : storedValues) {
+      for (auto value : storedValues)
         value.dump();
-      }
     }
 
     // Create a new function.
+    // ---------------------------------------------
     OpBuilder builder(op.getContext());
     auto func = builder.create<func::FuncOp>(unknownLoc,
-                                             "fn_" + std::to_string(count++),
+                                             "fn_" + std::to_string(loopCounter++),
                                              builder.getFunctionType({}, {}));
     auto &bodyBlock = *func.addEntryBlock();
 
+    // Add arguments to function.
     BlockAndValueMapping mapper;
 
-    // Add unknown / loaded values as arguments or constants.
-    // - Loaded values.
+    // - Add loaded values as arguments.
     for (auto value : loadedValues) {
       auto newArg = bodyBlock.addArgument(value.getType(), unknownLoc);
       mapper.map(value, newArg);
     }
-    // - Undefined values.
+    // - Add undefined values as arguments or as local variables if they are
+    // constants.
     for (auto value : undefinedValues) {
       if (mapper.contains(value))
         continue;
 
+      // If the defining operation is a constant, copy and add it to the new
+      // function. Else, add it as an argument.
       auto *definingOp = value.getDefiningOp();
-
       if (definingOp && dyn_cast<arith::ConstantOp>(definingOp)) {
-        // If the defining operation is a constant, copy and add it to the new
-        // function.
         auto constantOp = dyn_cast<arith::ConstantOp>(definingOp);
         auto newConstantOp = constantOp.clone();
         bodyBlock.push_back(newConstantOp);
@@ -141,7 +137,7 @@ void outlineLoops(func::FuncOp &op) {
       }
     }
 
-    // Add the stored values as last arguments.
+    // - Add the stored values as last arguments.
     for (auto value : storedValues) {
       if (mapper.contains(value))
         continue;
@@ -149,80 +145,38 @@ void outlineLoops(func::FuncOp &op) {
       mapper.map(value, newArg);
     }
 
-    // Add all ops of the loop to the body block.
+    // Add body.
     bodyBlock.push_back(loop->clone(mapper));
 
-    //// Add the stored values as results.
-    //// - Create return operation.
-    //llvm::SmallVector<Value> results;
-    //for (auto value : storedValues)
-    //  results.push_back(mapper.lookup(value));
-    //builder.setInsertionPoint(&bodyBlock, bodyBlock.end());
-    //auto returnOp = builder.create<func::ReturnOp>(unknownLoc, results);
+    // Add return.
     llvm::SmallVector<Value> results;
     builder.setInsertionPoint(&bodyBlock, bodyBlock.end());
     auto returnOp = builder.create<func::ReturnOp>(unknownLoc, results);
 
-    //// - Add the results to function type.
-    //llvm::SmallVector<Type> resultTypes;
-    //for (auto value : storedValues)
-    //  resultTypes.push_back(value.getType());
-    //func.setFunctionType(
-    //    builder.getFunctionType(bodyBlock.getArgumentTypes(), resultTypes));
+    // Add function type, as it has been created without any earlier.
     func.setFunctionType(
         builder.getFunctionType(bodyBlock.getArgumentTypes(), {}));
-
-    for (auto value : func.getArguments())
-      llvm::outs() << "arg x: " << value << "\n";
-
     func.dump();
-    outlinedLoops.push_back(&func);
-  }
 
-  // Get the module and add outlined functions.
-  auto module = op->getParentOfType<ModuleOp>();
-  auto builder = OpBuilder::atBlockBegin(module.getBody());
-
-  // - Insert the functions.
-  unsigned idx = 0;
-  for (auto *loop : loops) {
-    auto *func = outlinedLoops[idx++];
-
-    // Insert the function to the start of the body of the module.
+    // Insert the new function and replace the loop with a call to it.
+    // ---------------------------------------------
     builder.setInsertionPointToStart(module.getBody());
-    builder.insert(*func);
-  }
+    builder.insert(func);
 
-  // - Replace the loops with calls to the functions.
-  idx = 0;
-  for (auto *loop : loops) {
-    auto *func = outlinedLoops[idx++];
-
-    auto storedValues = getStoredMemRefValues(loop);
-
-    // Create args.
     llvm::SmallVector<Value> args;
-    for (auto value : func->getArguments())
+    for (auto value : func.getArguments())
       args.push_back(value);
 
     // Create function call.
     builder.setInsertionPoint(loop);
-    auto callOp = builder.create<func::CallOp>(unknownLoc, func->getSymName(),
+    auto callOp = builder.create<func::CallOp>(unknownLoc, func.getSymName(),
                                                func->getResultTypes(),
                                                args);
 
-    //// Replace the stored values with the results of the call operation.
-    //for (int i = 0; i < storedValues.size(); i++) {
-    //  auto value = storedValues[i];
-    //  auto result = callOp.getResult(i);
-    //  value.replaceAllUsesWith(result);
-    //}
-
-    // Remove the loop from the function.
+    // Remove the loop.
     loop->erase();
   }
 
-  llvm::outs() << "--------------------------------\n";
   module.dump();
 }
 
