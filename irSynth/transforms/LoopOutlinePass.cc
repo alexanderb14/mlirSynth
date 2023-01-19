@@ -179,11 +179,6 @@ void outlineLoops(func::FuncOp &origFunc) {
     builder.setInsertionPoint(loop);
     auto callOp = builder.create<func::CallOp>(unknownLoc, func.getSymName(),
                                                func.getResultTypes(), args);
-    llvm::outs() << "-----------------\n";
-    for (auto result : func.getResultTypes())
-      result.dump();
-    llvm::outs() << "-----------------\n";
-
     // Remove the loop.
     loop->erase();
   }
