@@ -159,7 +159,7 @@ void DependenceGraph::dump(llvm::raw_ostream &os) {
   for (auto &node : nodes) {
     os << node->stmt->name << ":\n";
     for (auto &dep : node->dependents) {
-      os << "  -> " << dep.lock()->stmt->name << "\n";
+      os << "  -> " << dep->stmt->name << "\n";
     }
   }
   os << "\n";
@@ -169,7 +169,7 @@ void DependenceGraph::dump(llvm::raw_ostream &os) {
   for (auto &node : nodes) {
     os << node->stmt->name << ":\n";
     for (auto &dep : node->dependencies) {
-      os << "  -> " << dep.lock()->stmt->name << "\n";
+      os << "  -> " << dep->stmt->name << "\n";
     }
   }
   os << "\n";
@@ -184,38 +184,43 @@ int DependenceGraph::getNumDependencies() {
 
 void DependenceGraph::computeDependencies() {
   // Init dependencies with reverse dependences.
-  for (auto &node : nodes) {
+  for (auto &nodePtr : nodes) {
+    Node *node = nodePtr.get();
     for (auto &succ : node->dependents) {
       bool exists = false;
-      for (auto &pred : succ.lock()->dependencies) {
-        if (pred.lock() == node) {
+      for (auto &pred : succ->dependencies) {
+        if (pred == node) {
           exists = true;
           break;
         }
       }
-      if (!exists && node != succ.lock())
-        succ.lock()->dependencies.push_back(node);
+      if (!exists && node != succ)
+        succ->dependencies.push_back(node);
     }
   }
 
   // Propagate dependencies with a worklist algorithm.
-  std::vector<NodePtr> worklist(nodes.begin(), nodes.end());
+  std::vector<Node*> worklist;
+  for (auto &node : nodes)
+    worklist.push_back(node.get());
+
   while (!worklist.empty()) {
-    auto node = worklist.back();
+    auto *node = worklist.back();
     worklist.pop_back();
 
-    for (auto &succ: node->dependencies) {
-      for (auto &pred : succ.lock()->dependencies) {
+    auto nodeDependencies = node->dependencies;
+    for (auto *succ: nodeDependencies) {
+      for (auto *pred : succ->dependencies) {
         bool exists = false;
         for (auto &dep : node->dependencies) {
-          if (dep.lock() == pred.lock()) {
+          if (dep == pred) {
             exists = true;
             break;
           }
         }
-        if (!exists && node != pred.lock()) {
-          node->dependencies.push_back(pred.lock());
-          worklist.push_back(pred.lock());
+        if (!exists && node != pred) {
+          node->dependencies.push_back(pred);
+          worklist.push_back(pred);
         }
       }
     }
@@ -238,7 +243,7 @@ Scop::Scop(Operation *op) : op(op) {
 DependenceGraphPtr Scop::getDependenceGraph() {
   DependenceGraphPtr graph = std::make_shared<DependenceGraph>();
 
-  std::unordered_map<ScopStmt *, DependenceGraph::NodePtr>
+  std::unordered_map<ScopStmt *, DependenceGraph::Node*>
       stmtsToGraphNodes;
 
   for (auto flowDep : flowDependencies.get_map_list()) {
@@ -262,19 +267,19 @@ DependenceGraphPtr Scop::getDependenceGraph() {
     if (stmtsToGraphNodes.find(srcStmt) == stmtsToGraphNodes.end()) {
       DependenceGraph::NodePtr srcNode =
           std::make_shared<DependenceGraph::Node>(srcStmt);
-      stmtsToGraphNodes[srcStmt] = srcNode;
+      stmtsToGraphNodes[srcStmt] = srcNode.get();
       graph->nodes.push_back(srcNode);
     }
     if (stmtsToGraphNodes.find(dstStmt) == stmtsToGraphNodes.end()) {
       DependenceGraph::NodePtr dstNode =
           std::make_shared<DependenceGraph::Node>(dstStmt);
-      stmtsToGraphNodes[dstStmt] = dstNode;
+      stmtsToGraphNodes[dstStmt] = dstNode.get();
       graph->nodes.push_back(dstNode);
     }
 
     // Add the dependents to the graph.
-    DependenceGraph::NodePtr srcNode = stmtsToGraphNodes[srcStmt];
-    DependenceGraph::NodePtr dstNode = stmtsToGraphNodes[dstStmt];
+    DependenceGraph::Node* srcNode = stmtsToGraphNodes[srcStmt];
+    DependenceGraph::Node* dstNode = stmtsToGraphNodes[dstStmt];
     srcNode->dependents.push_back(dstNode);
   }
 

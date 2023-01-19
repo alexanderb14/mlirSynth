@@ -35,7 +35,7 @@ Graph constructBoostGraph(DependenceGraphPtr& dg) {
   for (auto &node : dg->nodes) {
     for (auto &dep : node->dependents) {
       auto *src = node->stmt;
-      auto *dst = dep.lock()->stmt;
+      auto *dst = dep->stmt;
 
       auto srcVertex = vertexMap[src];
       auto dstVertex = vertexMap[dst];

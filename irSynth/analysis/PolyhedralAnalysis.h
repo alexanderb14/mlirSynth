@@ -35,14 +35,13 @@ class DependenceGraph {
 public:
   class Node;
   using NodePtr = std::shared_ptr<Node>;
-  using NodeWPtr = std::weak_ptr<Node>;
   class Node {
   public:
     Node(ScopStmt *stmt) : stmt(stmt) {}
 
     ScopStmt *stmt;
-    std::vector<NodeWPtr> dependencies;
-    std::vector<NodeWPtr> dependents;
+    std::vector<Node*> dependencies;
+    std::vector<Node*> dependents;
   };
 
   void computeDependencies();
