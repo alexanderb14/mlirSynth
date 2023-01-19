@@ -36,7 +36,7 @@ llvm::SetVector<Value> getOutOfBlockDefValues(mlir::Operation *op) {
       allValues[result] = true;
   });
   // - Defined as arguments.
-  for(int i = 0; i < op->getNumRegions(); i++) {
+  for (int i = 0; i < op->getNumRegions(); i++) {
     for (auto &block : op->getRegion(i).getBlocks()) {
       for (auto arg : block.getArguments())
         allValues[arg] = true;
@@ -68,6 +68,13 @@ llvm::SetVector<Value> getStoredMemRefValues(mlir::Operation *op) {
   llvm::SetVector<Value> values;
   op->walk([&](AffineStoreOp storeOp) { values.insert(storeOp.getMemRef()); });
   return values;
+}
+
+BlockAndValueMapping reverseMap(BlockAndValueMapping &mapper) {
+  BlockAndValueMapping reverseMapper;
+  for (auto &pair : mapper.getValueMap())
+    reverseMapper.map(pair.second, pair.first);
+  return reverseMapper;
 }
 
 void outlineLoops(func::FuncOp &op) {
@@ -104,9 +111,9 @@ void outlineLoops(func::FuncOp &op) {
     // Create a new function.
     // ---------------------------------------------
     OpBuilder builder(op.getContext());
-    auto func = builder.create<func::FuncOp>(unknownLoc,
-                                             "fn_" + std::to_string(loopCounter++),
-                                             builder.getFunctionType({}, {}));
+    auto func = builder.create<func::FuncOp>(
+        unknownLoc, "fn_" + std::to_string(loopCounter++),
+        builder.getFunctionType({}, {}));
     auto &bodyBlock = *func.addEntryBlock();
 
     // Add arguments to function.
@@ -164,14 +171,14 @@ void outlineLoops(func::FuncOp &op) {
     builder.insert(func);
 
     llvm::SmallVector<Value> args;
+    auto reverseMapper = reverseMap(mapper);
     for (auto value : func.getArguments())
-      args.push_back(value);
+      args.push_back(reverseMapper.lookupOrNull(value));
 
     // Create function call.
     builder.setInsertionPoint(loop);
     auto callOp = builder.create<func::CallOp>(unknownLoc, func.getSymName(),
-                                               func->getResultTypes(),
-                                               args);
+                                               func->getResultTypes(), args);
 
     // Remove the loop.
     loop->erase();
