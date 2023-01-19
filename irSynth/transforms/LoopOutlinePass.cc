@@ -80,7 +80,7 @@ BlockAndValueMapping reverseMap(BlockAndValueMapping &mapper) {
 void outlineLoops(func::FuncOp &op) {
   auto unknownLoc = UnknownLoc::get(op.getContext());
 
-  bool debug = true;
+  bool debug = false;
   if (debug)
     op.dump();
 
