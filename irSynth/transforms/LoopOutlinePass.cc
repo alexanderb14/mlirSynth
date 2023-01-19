@@ -71,11 +71,16 @@ llvm::SetVector<Value> getStoredMemRefValues(mlir::Operation *op) {
 }
 
 void outlineLoops(func::FuncOp &op) {
-  bool debug = false;
+  auto unknownLoc = UnknownLoc::get(op.getContext());
+
+  bool debug = true;
   if (debug)
     op.dump();
 
+  std::vector<func::FuncOp *> outlinedLoops;
+
   auto loops = getTopLevelLoops(op);
+  unsigned count = 0;
   for (auto *loop : loops) {
     auto undefinedValues = getOutOfBlockDefValues(loop);
     auto loadedValues = getLoadedMemRefValues(loop);
@@ -102,16 +107,25 @@ void outlineLoops(func::FuncOp &op) {
     }
 
     // Create a new function.
-    auto unknownLoc = UnknownLoc::get(op.getContext());
     OpBuilder builder(op.getContext());
-    auto func = builder.create<func::FuncOp>(unknownLoc, "foo",
+    auto func = builder.create<func::FuncOp>(unknownLoc,
+                                             "fn_" + std::to_string(count++),
                                              builder.getFunctionType({}, {}));
     auto &bodyBlock = *func.addEntryBlock();
 
     BlockAndValueMapping mapper;
 
-    // Add the undefined values as arguments or operations.
+    // Add unknown / loaded values as arguments or constants.
+    // - Loaded values.
+    for (auto value : loadedValues) {
+      auto newArg = bodyBlock.addArgument(value.getType(), unknownLoc);
+      mapper.map(value, newArg);
+    }
+    // - Undefined values.
     for (auto value : undefinedValues) {
+      if (mapper.contains(value))
+        continue;
+
       auto *definingOp = value.getDefiningOp();
 
       if (definingOp && dyn_cast<arith::ConstantOp>(definingOp)) {
@@ -127,8 +141,10 @@ void outlineLoops(func::FuncOp &op) {
       }
     }
 
-    // Add the loaded values as arguments.
-    for (auto value : loadedValues) {
+    // Add the stored values as last arguments.
+    for (auto value : storedValues) {
+      if (mapper.contains(value))
+        continue;
       auto newArg = bodyBlock.addArgument(value.getType(), unknownLoc);
       mapper.map(value, newArg);
     }
@@ -136,23 +152,78 @@ void outlineLoops(func::FuncOp &op) {
     // Add all ops of the loop to the body block.
     bodyBlock.push_back(loop->clone(mapper));
 
-    // Add the stored values as results.
-    // - Create return operation.
+    //// Add the stored values as results.
+    //// - Create return operation.
+    //llvm::SmallVector<Value> results;
+    //for (auto value : storedValues)
+    //  results.push_back(mapper.lookup(value));
+    //builder.setInsertionPoint(&bodyBlock, bodyBlock.end());
+    //auto returnOp = builder.create<func::ReturnOp>(unknownLoc, results);
     llvm::SmallVector<Value> results;
-    for (auto value : storedValues)
-      results.push_back(mapper.lookup(value));
     builder.setInsertionPoint(&bodyBlock, bodyBlock.end());
     auto returnOp = builder.create<func::ReturnOp>(unknownLoc, results);
 
-    // - Add the results to function type.
-    llvm::SmallVector<Type> resultTypes;
-    for (auto value : storedValues)
-      resultTypes.push_back(value.getType());
-    func.setType(
-        builder.getFunctionType(bodyBlock.getArgumentTypes(), resultTypes));
+    //// - Add the results to function type.
+    //llvm::SmallVector<Type> resultTypes;
+    //for (auto value : storedValues)
+    //  resultTypes.push_back(value.getType());
+    //func.setFunctionType(
+    //    builder.getFunctionType(bodyBlock.getArgumentTypes(), resultTypes));
+    func.setFunctionType(
+        builder.getFunctionType(bodyBlock.getArgumentTypes(), {}));
+
+    for (auto value : func.getArguments())
+      llvm::outs() << "arg x: " << value << "\n";
 
     func.dump();
+    outlinedLoops.push_back(&func);
   }
+
+  // Get the module and add outlined functions.
+  auto module = op->getParentOfType<ModuleOp>();
+  auto builder = OpBuilder::atBlockBegin(module.getBody());
+
+  // - Insert the functions.
+  unsigned idx = 0;
+  for (auto *loop : loops) {
+    auto *func = outlinedLoops[idx++];
+
+    // Insert the function to the start of the body of the module.
+    builder.setInsertionPointToStart(module.getBody());
+    builder.insert(*func);
+  }
+
+  // - Replace the loops with calls to the functions.
+  idx = 0;
+  for (auto *loop : loops) {
+    auto *func = outlinedLoops[idx++];
+
+    auto storedValues = getStoredMemRefValues(loop);
+
+    // Create args.
+    llvm::SmallVector<Value> args;
+    for (auto value : func->getArguments())
+      args.push_back(value);
+
+    // Create function call.
+    builder.setInsertionPoint(loop);
+    auto callOp = builder.create<func::CallOp>(unknownLoc, func->getSymName(),
+                                               func->getResultTypes(),
+                                               args);
+
+    //// Replace the stored values with the results of the call operation.
+    //for (int i = 0; i < storedValues.size(); i++) {
+    //  auto value = storedValues[i];
+    //  auto result = callOp.getResult(i);
+    //  value.replaceAllUsesWith(result);
+    //}
+
+    // Remove the loop from the function.
+    loop->erase();
+  }
+
+  llvm::outs() << "--------------------------------\n";
+  module.dump();
 }
 
 struct LoopOutlinePass
