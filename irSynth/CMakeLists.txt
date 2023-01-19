@@ -48,6 +48,7 @@ add_llvm_executable(
   enumeration/AttributeGen.cc
   enumeration/Candidate.cc
   enumeration/Enumerator.cc
+  enumeration/Guide.cc
   enumeration/Stats.cc
   execution/ArgUtils.cc
   execution/ArrayUtils.cc
@@ -56,6 +57,6 @@ add_llvm_executable(
   transforms/LoopDistributionPass.cc
   transforms/LoopOutlinePass.cc
   Utils.cc)
-target_include_directories(synthesizer PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+target_include_directories(synthesizer PRIVATE ${CMAKE_CURRENT_LIST_DIR} ${Boost_INCLUDE_DIR})
 llvm_update_compile_flags(synthesizer)
-target_link_libraries(synthesizer PRIVATE ${SYNTH_LIBS} CE ${MHLO_EXPORTED_TARGETS} ${POLY_LIBS} polyhedral-analysis)
+target_link_libraries(synthesizer PRIVATE ${SYNTH_LIBS} CE ${MHLO_EXPORTED_TARGETS} ${POLY_LIBS} polyhedral-analysis ${Boost_LIBRARIES})

@@ -5,6 +5,7 @@
 #include "enumeration/ArgTuples.h"
 #include "enumeration/Candidate.h"
 #include "enumeration/Enumerator.h"
+#include "enumeration/Guide.h"
 #include "execution/Executor.h"
 
 #include "lhlo/IR/lhlo_ops.h"
@@ -113,6 +114,8 @@ int main(int argc, char **argv) {
       "ignore-equivalent-candidates",
       cl::desc("Ignore computationally equivalent candidates"),
       cl::init(false));
+  cl::opt<bool> guide("guide", cl::desc("Use guide to select allowed ops"),
+                      cl::init(false));
 
   cl::ParseCommandLineOptions(argc, argv, "MLIR enumerator\n");
 
@@ -127,25 +130,9 @@ int main(int argc, char **argv) {
       std::make_shared<ContextManager>(printErrors);
   auto *ctx = contextManager->createContext();
 
-  // Get ops.
-  std::vector<std::string> opsVec;
-  if (ops.empty()) {
-    opsVec = {"chlo.broadcast_divide",
-              "chlo.broadcast_add",
-              "chlo.broadcast_subtract",
-              "chlo.broadcast_multiply",
-              "mhlo.dot",
-              "mhlo.reduce",
-              "mhlo.dynamic_reshape",
-              "mhlo.dot_general"};
-  } else {
-    opsVec = splitString(ops);
-  }
-
   Dialect *hloDialect = ctx->getOrLoadDialect<mhlo::MhloDialect>();
   Dialect *chloDialect = ctx->getOrLoadDialect<chlo::ChloDialect>();
   std::vector<Dialect *> dialects = {hloDialect, chloDialect};
-  auto availableOps = getDialectOps(ctx, dialects, opsVec, true);
 
   // Parse the input file.
   std::string errorMessage;
@@ -164,10 +151,28 @@ int main(int argc, char **argv) {
       parseSourceFileForTool(sourceMgr, config, /*insertImplicitModule*/ false);
   assert(inputOp && "Failed to parse input file");
 
+  // Get ops.
+  std::vector<std::string> opsVec;
+  if (guide) {
+    opsVec = predictOps(inputOp.get());
+  } else if (!ops.empty()) {
+    opsVec = splitString(ops);
+  } else {
+    opsVec = {"chlo.broadcast_divide",
+              "chlo.broadcast_add",
+              "chlo.broadcast_subtract",
+              "chlo.broadcast_multiply",
+              "mhlo.dot",
+              "mhlo.reduce",
+              "mhlo.dynamic_reshape",
+              "mhlo.dot_general"};
+  }
+  auto availableOps = getDialectOps(ctx, dialects, opsVec, true);
+
   // Run passes.
   mlir::PassManager pm(ctx);
   //pm.addNestedPass<mlir::func::FuncOp>(createLoopDistributionPass());
-  pm.addNestedPass<mlir::func::FuncOp>(createLoopOutlinePass());
+  //pm.addNestedPass<mlir::func::FuncOp>(createLoopOutlinePass());
   if (failed(pm.run(inputOp.get()))) {
     llvm::errs() << "Failed to run passes on input file\n";
     return 1;

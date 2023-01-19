@@ -199,7 +199,7 @@ void DependenceGraph::computeDependencies() {
   }
 
   // Propagate dependencies with a worklist algorithm.
-  std::vector<DependenceGraphNodePtr> worklist(nodes.begin(), nodes.end());
+  std::vector<NodePtr> worklist(nodes.begin(), nodes.end());
   while (!worklist.empty()) {
     auto node = worklist.back();
     worklist.pop_back();
@@ -238,7 +238,7 @@ Scop::Scop(Operation *op) : op(op) {
 DependenceGraphPtr Scop::getDependenceGraph() {
   DependenceGraphPtr graph = std::make_shared<DependenceGraph>();
 
-  std::unordered_map<ScopStmt *, DependenceGraph::DependenceGraphNodePtr>
+  std::unordered_map<ScopStmt *, DependenceGraph::NodePtr>
       stmtsToGraphNodes;
 
   for (auto flowDep : flowDependencies.get_map_list()) {
@@ -260,21 +260,21 @@ DependenceGraphPtr Scop::getDependenceGraph() {
     // Add the source and destination statements to the graph if they are not in
     // it yet.
     if (stmtsToGraphNodes.find(srcStmt) == stmtsToGraphNodes.end()) {
-      DependenceGraph::DependenceGraphNodePtr srcNode =
-          std::make_shared<DependenceGraph::DependenceGraphNode>(srcStmt);
+      DependenceGraph::NodePtr srcNode =
+          std::make_shared<DependenceGraph::Node>(srcStmt);
       stmtsToGraphNodes[srcStmt] = srcNode;
       graph->nodes.push_back(srcNode);
     }
     if (stmtsToGraphNodes.find(dstStmt) == stmtsToGraphNodes.end()) {
-      DependenceGraph::DependenceGraphNodePtr dstNode =
-          std::make_shared<DependenceGraph::DependenceGraphNode>(dstStmt);
+      DependenceGraph::NodePtr dstNode =
+          std::make_shared<DependenceGraph::Node>(dstStmt);
       stmtsToGraphNodes[dstStmt] = dstNode;
       graph->nodes.push_back(dstNode);
     }
 
     // Add the dependents to the graph.
-    DependenceGraph::DependenceGraphNodePtr srcNode = stmtsToGraphNodes[srcStmt];
-    DependenceGraph::DependenceGraphNodePtr dstNode = stmtsToGraphNodes[dstStmt];
+    DependenceGraph::NodePtr srcNode = stmtsToGraphNodes[srcStmt];
+    DependenceGraph::NodePtr dstNode = stmtsToGraphNodes[dstStmt];
     srcNode->dependents.push_back(dstNode);
   }
 

@@ -33,22 +33,22 @@ public:
 
 class DependenceGraph {
 public:
-  class DependenceGraphNode;
-  using DependenceGraphNodePtr = std::shared_ptr<DependenceGraphNode>;
-  using DependenceGraphNodeWPtr = std::weak_ptr<DependenceGraphNode>;
-  class DependenceGraphNode {
+  class Node;
+  using NodePtr = std::shared_ptr<Node>;
+  using NodeWPtr = std::weak_ptr<Node>;
+  class Node {
   public:
-    DependenceGraphNode(ScopStmt *stmt) : stmt(stmt) {}
+    Node(ScopStmt *stmt) : stmt(stmt) {}
 
     ScopStmt *stmt;
-    std::vector<DependenceGraphNodeWPtr> dependencies;
-    std::vector<DependenceGraphNodeWPtr> dependents;
+    std::vector<NodeWPtr> dependencies;
+    std::vector<NodeWPtr> dependents;
   };
 
   void computeDependencies();
   void dump(llvm::raw_ostream &os);
 
-  llvm::SmallVector<DependenceGraphNodePtr> nodes;
+  llvm::SmallVector<NodePtr> nodes;
 
 private:
   int getNumDependencies();
