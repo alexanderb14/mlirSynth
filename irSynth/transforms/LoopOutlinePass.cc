@@ -77,15 +77,15 @@ BlockAndValueMapping reverseMap(BlockAndValueMapping &mapper) {
   return reverseMapper;
 }
 
-void outlineLoops(func::FuncOp &op) {
-  auto unknownLoc = UnknownLoc::get(op.getContext());
+void outlineLoops(func::FuncOp &origFunc) {
+  auto unknownLoc = UnknownLoc::get(origFunc.getContext());
 
   bool debug = false;
   if (debug)
-    op.dump();
+    origFunc.dump();
 
-  auto module = op->getParentOfType<ModuleOp>();
-  auto loops = getTopLevelLoops(op);
+  auto module = origFunc->getParentOfType<ModuleOp>();
+  auto loops = getTopLevelLoops(origFunc);
   auto builder = OpBuilder::atBlockBegin(module.getBody());
 
   unsigned loopCounter = 0;
@@ -110,7 +110,7 @@ void outlineLoops(func::FuncOp &op) {
 
     // Create a new function.
     // ---------------------------------------------
-    OpBuilder builder(op.getContext());
+    OpBuilder builder(origFunc.getContext());
     auto func = builder.create<func::FuncOp>(
         unknownLoc, "fn_" + std::to_string(loopCounter++),
         builder.getFunctionType({}, {}));
@@ -118,17 +118,17 @@ void outlineLoops(func::FuncOp &op) {
     auto &bodyBlock = *func.addEntryBlock();
 
     // Add arguments to function.
-    BlockAndValueMapping mapper;
+    BlockAndValueMapping argMapper;
 
     // - Add loaded values as arguments.
     for (auto value : loadedValues) {
       auto newArg = bodyBlock.addArgument(value.getType(), unknownLoc);
-      mapper.map(value, newArg);
+      argMapper.map(value, newArg);
     }
     // - Add undefined values as arguments or as local variables if they are
     // constants.
     for (auto value : undefinedValues) {
-      if (mapper.contains(value))
+      if (argMapper.contains(value))
         continue;
 
       // If the defining operation is a constant, copy and add it to the new
@@ -138,23 +138,23 @@ void outlineLoops(func::FuncOp &op) {
         auto constantOp = dyn_cast<arith::ConstantOp>(definingOp);
         auto newConstantOp = constantOp.clone();
         bodyBlock.push_back(newConstantOp);
-        mapper.map(value, newConstantOp.getResult());
+        argMapper.map(value, newConstantOp.getResult());
       } else {
         auto newArg = bodyBlock.addArgument(value.getType(), unknownLoc);
-        mapper.map(value, newArg);
+        argMapper.map(value, newArg);
       }
     }
 
     // - Add the stored values as last arguments.
     for (auto value : storedValues) {
-      if (mapper.contains(value))
+      if (argMapper.contains(value))
         continue;
       auto newArg = bodyBlock.addArgument(value.getType(), unknownLoc);
-      mapper.map(value, newArg);
+      argMapper.map(value, newArg);
     }
 
     // Add body.
-    bodyBlock.push_back(loop->clone(mapper));
+    bodyBlock.push_back(loop->clone(argMapper));
 
     // Add return.
     llvm::SmallVector<Value> results;
@@ -172,7 +172,7 @@ void outlineLoops(func::FuncOp &op) {
     builder.insert(func);
 
     llvm::SmallVector<Value> args;
-    auto reverseMapper = reverseMap(mapper);
+    auto reverseMapper = reverseMap(argMapper);
     for (auto value : func.getArguments())
       args.push_back(reverseMapper.lookupOrNull(value));
 
