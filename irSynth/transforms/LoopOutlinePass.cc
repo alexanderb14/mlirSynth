@@ -145,25 +145,23 @@ void outlineLoops(func::FuncOp &origFunc) {
       }
     }
 
-    // - Add the stored values as last arguments.
-    for (auto value : storedValues) {
-      if (argMapper.contains(value))
-        continue;
-      auto newArg = bodyBlock.addArgument(value.getType(), unknownLoc);
-      argMapper.map(value, newArg);
-    }
-
     // Add body.
     bodyBlock.push_back(loop->clone(argMapper));
 
-    // Add return.
+    // Add the stored values as results.
+    // - Create return operation.
     llvm::SmallVector<Value> results;
+    for (auto value : storedValues)
+      results.push_back(argMapper.lookup(value));
     builder.setInsertionPoint(&bodyBlock, bodyBlock.end());
     auto returnOp = builder.create<func::ReturnOp>(unknownLoc, results);
 
-    // Add function type, as it has been created without any earlier.
+    // - Add the results to function type.
+    llvm::SmallVector<Type> resultTypes;
+    for (auto value : storedValues)
+      resultTypes.push_back(value.getType());
     func.setFunctionType(
-        builder.getFunctionType(bodyBlock.getArgumentTypes(), {}));
+        builder.getFunctionType(bodyBlock.getArgumentTypes(), resultTypes));
     func.dump();
 
     // Insert the new function and replace the loop with a call to it.
@@ -171,6 +169,7 @@ void outlineLoops(func::FuncOp &origFunc) {
     builder.setInsertionPointToStart(module.getBody());
     builder.insert(func);
 
+    // Create args for the call.
     llvm::SmallVector<Value> args;
     auto reverseMapper = reverseMap(argMapper);
     for (auto value : func.getArguments())
@@ -179,7 +178,11 @@ void outlineLoops(func::FuncOp &origFunc) {
     // Create function call.
     builder.setInsertionPoint(loop);
     auto callOp = builder.create<func::CallOp>(unknownLoc, func.getSymName(),
-                                               func->getResultTypes(), args);
+                                               func.getResultTypes(), args);
+    llvm::outs() << "-----------------\n";
+    for (auto result : func.getResultTypes())
+      result.dump();
+    llvm::outs() << "-----------------\n";
 
     // Remove the loop.
     loop->erase();
@@ -190,10 +193,8 @@ void outlineLoops(func::FuncOp &origFunc) {
 
 struct LoopOutlinePass
     : public PassWrapper<LoopOutlinePass, OperationPass<func::FuncOp>> {
-
   void runOnOperation() override {
     func::FuncOp op = getOperation();
-
     outlineLoops(op);
   }
 };
