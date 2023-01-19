@@ -88,6 +88,8 @@ void outlineLoops(func::FuncOp &origFunc) {
   auto loops = getTopLevelLoops(origFunc);
   auto builder = OpBuilder::atBlockBegin(module.getBody());
 
+  BlockAndValueMapping fnResultMapper;
+
   unsigned loopCounter = 0;
   for (auto *loop : loops) {
     auto undefinedValues = getOutOfBlockDefValues(loop);
@@ -172,13 +174,26 @@ void outlineLoops(func::FuncOp &origFunc) {
     // Create args for the call.
     llvm::SmallVector<Value> args;
     auto reverseMapper = reverseMap(argMapper);
-    for (auto value : func.getArguments())
-      args.push_back(reverseMapper.lookupOrNull(value));
+    for (auto arg : func.getArguments()) {
+      auto value = reverseMapper.lookupOrNull(arg);
+
+      // If the arg value was already recomputed by an earlier call, use this
+      // one.
+      if (fnResultMapper.contains(value))
+        args.push_back(fnResultMapper.lookup(value));
+      else
+        args.push_back(value);
+    }
 
     // Create function call.
     builder.setInsertionPoint(loop);
     auto callOp = builder.create<func::CallOp>(unknownLoc, func.getSymName(),
                                                func.getResultTypes(), args);
+
+    // Add function call results to the fnResultMapper.
+    for (int i = 0; i < callOp.getNumResults(); i++)
+      fnResultMapper.map(storedValues[i], callOp.getResult(i));
+
     // Remove the loop.
     loop->erase();
   }
