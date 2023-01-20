@@ -89,6 +89,7 @@ void outlineLoops(func::FuncOp &origFunc) {
   auto builder = OpBuilder::atBlockBegin(module.getBody());
 
   BlockAndValueMapping fnResultMapper;
+  Operation* lastFunc = nullptr;
 
   unsigned loopCounter = 0;
   for (auto *loop : loops) {
@@ -167,8 +168,13 @@ void outlineLoops(func::FuncOp &origFunc) {
 
     // Insert the new function and replace the loop with a call to it.
     // ---------------------------------------------
-    builder.setInsertionPointToStart(module.getBody());
+    if (!lastFunc)
+      builder.setInsertionPointToStart(module.getBody());
+    else
+      builder.setInsertionPointAfter(lastFunc);
+
     builder.insert(func);
+    lastFunc = func;
 
     // Create args for the call.
     llvm::SmallVector<Value> args;
