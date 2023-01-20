@@ -1,5 +1,6 @@
 #include "ContextManager.h"
 #include "Utils.h"
+#include "transforms/CopyModifiedMemrefsPass.h"
 #include "transforms/LoopDistributionPass.h"
 #include "transforms/LoopOutlinePass.h"
 #include "enumeration/ArgTuples.h"
@@ -173,6 +174,7 @@ int main(int argc, char **argv) {
   mlir::PassManager pm(ctx);
   //pm.addNestedPass<mlir::func::FuncOp>(createLoopDistributionPass());
   pm.addNestedPass<mlir::func::FuncOp>(createLoopOutlinePass());
+  pm.addNestedPass<mlir::func::FuncOp>(createCopyModifiedMemrefsPass());
   if (failed(pm.run(inputOp.get()))) {
     llvm::errs() << "Failed to run passes on input file\n";
     return 1;

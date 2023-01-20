@@ -54,6 +54,7 @@ add_llvm_executable(
   execution/ArrayUtils.cc
   execution/Executor.cc
   execution/Lowering.cc
+  transforms/CopyModifiedMemrefsPass.cc
   transforms/LoopDistributionPass.cc
   transforms/LoopOutlinePass.cc
   Utils.cc)
