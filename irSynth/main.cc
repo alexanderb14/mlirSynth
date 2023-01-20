@@ -174,11 +174,13 @@ int main(int argc, char **argv) {
   mlir::PassManager pm(ctx);
   //pm.addNestedPass<mlir::func::FuncOp>(createLoopDistributionPass());
   pm.addPass(createLoopOutlinePass());
-  pm.addNestedPass<mlir::func::FuncOp>(createCopyModifiedMemrefsPass());
+  pm.addPass(createCopyModifiedMemrefsPass());
   if (failed(pm.run(inputOp.get()))) {
     llvm::errs() << "Failed to run passes on input file\n";
     return 1;
   }
+  llvm::outs() << "After passes:\n";
+  inputOp.get()->dump();
 
   // Parse the funcion ops.
   std::vector<func::FuncOp> functions = getFunctions(inputOp.get());
