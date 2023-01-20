@@ -181,6 +181,7 @@ void addAffineToLLVMPasses(std::shared_ptr<mlir::PassManager> pm) {
   pm->addPass(cf::createConvertControlFlowToLLVMPass());
   pm->addPass(mlir::createMemRefToLLVMConversionPass());
   pm->addNestedPass<func::FuncOp>(mlir::createArithToLLVMConversionPass());
+  pm->addPass(createConvertMathToLLVMPass());
   pm->addPass(createConvertFuncToLLVMPass());
   pm->addPass(mlir::createReconcileUnrealizedCastsPass());
 }
