@@ -164,7 +164,6 @@ void outlineLoops(func::FuncOp &origFunc) {
       resultTypes.push_back(value.getType());
     func.setFunctionType(
         builder.getFunctionType(bodyBlock.getArgumentTypes(), resultTypes));
-    func.dump();
 
     // Insert the new function and replace the loop with a call to it.
     // ---------------------------------------------
