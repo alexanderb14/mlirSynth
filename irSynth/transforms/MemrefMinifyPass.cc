@@ -12,6 +12,8 @@
 
 using namespace mlir;
 
+bool debug = false;
+
 int nextPrime(int n) {
   if (n <= 2)
     return 2;
@@ -26,8 +28,6 @@ int nextPrime(int n) {
 }
 
 llvm::DenseMap<int64_t, int64_t> getMinifedDimensionMap(ModuleOp &op) {
-  bool debug = false;
-
   // Collect all memref types.
   llvm::SetVector<MemRefType> memrefTypes;
   op->walk([&](Operation *op) {
@@ -90,10 +90,8 @@ llvm::DenseMap<int64_t, int64_t> getMinifedDimensionMap(ModuleOp &op) {
   return minifiedDimensions;
 }
 
-void minifyMemrefs(ModuleOp &op) {
-  // Get the minified dimensions.
-  auto minifiedDimensions = getMinifedDimensionMap(op);
-
+void minifyMemrefs(ModuleOp &op,
+                   llvm::DenseMap<int64_t, int64_t> &minifiedDimensions) {
   // In function signatures.
   for (auto func : op.getOps<func::FuncOp>()) {
     auto type = func.getFunctionType();
@@ -188,11 +186,58 @@ void minifyMemrefs(ModuleOp &op) {
   });
 }
 
+void minifyLoopBounds(ModuleOp &op,
+                      llvm::DenseMap<int64_t, int64_t> &minifiedDimensions) {
+  op->walk([&](Operation *op) {
+    if (isa<AffineForOp>(op)) {
+      auto forOp = cast<AffineForOp>(op);
+      auto ubMap = forOp.getUpperBoundMap();
+      llvm::SmallVector<AffineExpr> lbExprs;
+      llvm::SmallVector<AffineExpr> ubExprs;
+      llvm::SmallVector<AffineExpr> stepExprs;
+      for (auto expr : ubMap.getResults()) {
+        if (expr.isa<AffineDimExpr>()) {
+          auto dimExpr = expr.cast<AffineDimExpr>();
+          auto dim = dimExpr.getPosition();
+          if (minifiedDimensions.count(dim) == 0)
+            ubExprs.push_back(expr);
+          else
+            ubExprs.push_back(getAffineConstantExpr(minifiedDimensions[dim],
+                                                    op->getContext()));
+        } else if (expr.isa<AffineConstantExpr>()) {
+          auto dim = expr.cast<AffineConstantExpr>().getValue();
+          if (minifiedDimensions.count(dim) == 0)
+            ubExprs.push_back(expr);
+          else
+            ubExprs.push_back(getAffineConstantExpr(minifiedDimensions[dim],
+                                                    op->getContext()));
+        } else {
+          llvm::outs() << "expr type: " << (unsigned int) expr.getKind() << "\n";
+          assert(false && "Unexpected expression type");
+        }
+      }
+      auto ubMapMinified = AffineMap::get(ubMap.getNumDims(), ubMap.getNumSymbols(),
+                                          ubExprs, op->getContext());
+
+      forOp.setUpperBoundMap(ubMapMinified);
+
+      if (debug) {
+        llvm::outs() << "Loop bounds: " << ubMap << "\n";
+        llvm::outs() << "Minified loop bounds: " << ubMapMinified << "\n";
+      }
+    }
+  });
+}
+
 struct MemrefMinifyPass
     : public PassWrapper<MemrefMinifyPass, OperationPass<ModuleOp>> {
   void runOnOperation() override {
     auto operation = getOperation();
-    minifyMemrefs(operation);
+
+    auto minifiedDimensions = getMinifedDimensionMap(operation);
+
+    minifyMemrefs(operation, minifiedDimensions);
+    minifyLoopBounds(operation, minifiedDimensions);
   }
 };
 
