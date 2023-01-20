@@ -209,6 +209,7 @@ int main(int argc, char **argv) {
   llvm::DenseMap<func::FuncOp, OwningOpRef<ModuleOp>> originaToSynthesizedFns;
   for (auto inputFunc : functions) {
     llvm::outs() << "Synthesizing funcion " << inputFunc.getName() << "\n";
+    inputFunc.dump();
 
     CandidateStorePtr candidateStore = std::make_shared<CandidateStore>();
 

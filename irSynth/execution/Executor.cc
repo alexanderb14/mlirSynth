@@ -43,8 +43,12 @@ LogicalResult jitAndInvoke(OwningOpRef<ModuleOp> module,
                            ReturnAndArgType &ret, bool hlo) {
   // JIT.
   auto jitOrError = ExecutionEngine::create(*module);
-  if (!jitOrError)
+  if (!jitOrError) {
+    llvm::outs() << "Error creating JIT: " << jitOrError.takeError() << "\n";
+    llvm::outs() << "Module:\n";
+    module->dump();
     return failure();
+  }
   std::unique_ptr<ExecutionEngine> jit = std::move(jitOrError.get());
 
   // Prepare return and args.
@@ -106,8 +110,10 @@ LogicalResult jitAndInvoke(OwningOpRef<ModuleOp> module,
   const std::string adapterName = std::string("_mlir_ciface_") + "foo";
   llvm::Error error = jit->invokePacked(adapterName, argsArray);
 
-  if (error)
+  if (error) {
+    llvm::errs() << "Error invoking function: " << error << "\n";
     return failure();
+  }
 
   return success();
 }
