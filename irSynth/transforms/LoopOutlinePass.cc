@@ -152,16 +152,21 @@ void outlineLoops(func::FuncOp &origFunc) {
     bodyBlock.push_back(loop->clone(argMapper));
 
     // Add the stored values as results.
+    // As a heuristic, we use only the last-stored value as the result.
+    // - Get the last stored value.
+    llvm::SetVector<Value> storedValue;
+    storedValue.insert(storedValues.back());
+
     // - Create return operation.
     llvm::SmallVector<Value> results;
-    for (auto value : storedValues)
+    for (auto value : storedValue)
       results.push_back(argMapper.lookup(value));
     builder.setInsertionPoint(&bodyBlock, bodyBlock.end());
     auto returnOp = builder.create<func::ReturnOp>(unknownLoc, results);
 
     // - Add the results to function type.
     llvm::SmallVector<Type> resultTypes;
-    for (auto value : storedValues)
+    for (auto value : storedValue)
       resultTypes.push_back(value.getType());
     func.setFunctionType(
         builder.getFunctionType(bodyBlock.getArgumentTypes(), resultTypes));
@@ -197,7 +202,7 @@ void outlineLoops(func::FuncOp &origFunc) {
 
     // Add function call results to the fnResultMapper.
     for (int i = 0; i < callOp.getNumResults(); i++)
-      fnResultMapper.map(storedValues[i], callOp.getResult(i));
+      fnResultMapper.map(storedValue[i], callOp.getResult(i));
 
     // Remove the loop.
     loop->erase();

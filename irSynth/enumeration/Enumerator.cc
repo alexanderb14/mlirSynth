@@ -546,7 +546,7 @@ process(MLIRContext &ctx, EnumerationStats &stats,
   return accept_candidate;
 }
 
-bool enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
+OwningOpRef<ModuleOp> enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                          func::FuncOp inputFunction,
                          CandidateStorePtr &candidateStore,
                          std::vector<RegisteredOperationName> &avaliableOps,
@@ -582,6 +582,8 @@ bool enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                    candidateStore, candidate, options, module);
   }
 
+  OwningOpRef<ModuleOp> acceptedModule = nullptr;
+
   // - Enumerate candidates.
   EnumerationStats stats;
   for (int numOps = 0; numOps <= options.maxNumOps; numOps++) {
@@ -607,8 +609,11 @@ bool enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                         localCandidateStore, refOut, options,
                         operandArgTuple, newCandidate, module, targetShape);
 
-            if (status == accept_solution)
+            if (status == accept_solution) {
+              acceptedModule = std::move(module);
+
               return failure();
+            }
 
             // Print candidate.
             printCandidate(status, localCandidateStore, candidateStore,
@@ -616,7 +621,7 @@ bool enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
             return success();
           });
       if (failed(status))
-        return true;
+        return acceptedModule;
     }
 
     candidateStore->merge(localCandidateStore);
@@ -625,5 +630,5 @@ bool enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   llvm::outs() << "\n";
   stats.dump();
 
-  return false;
+  return nullptr;
 }

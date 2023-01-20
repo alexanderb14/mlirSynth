@@ -206,6 +206,7 @@ int main(int argc, char **argv) {
   }
 
   // Synthesize functions.
+  llvm::DenseMap<func::FuncOp, OwningOpRef<ModuleOp>> originaToSynthesizedFns;
   for (auto inputFunc : functions) {
     llvm::outs() << "Synthesizing funcion " << inputFunc.getName() << "\n";
 
@@ -220,11 +221,27 @@ int main(int argc, char **argv) {
     options.maxNumOps = maxNumOps;
     options.ignoreEquivalentCandidates = ignoreEquivalentCandidates;
 
-    bool status = enumerateCandidates(*ctx, executor, inputFunc,
-                                      candidateStore, availableOps, options);
+    OwningOpRef<ModuleOp> module = enumerateCandidates(
+        *ctx, executor, inputFunc, candidateStore, availableOps, options);
+    originaToSynthesizedFns[inputFunc] = std::move(module);
 
     candidateStore->dumpSizes();
   }
+
+  // Replace the original functions with the synthesized ones.
+  for (auto &kv : originaToSynthesizedFns) {
+    // Get the function to replace.
+    auto inputFunc = kv.first;
+    // Get the synthesized function.
+    auto synthesizedFunc = getFunctions(kv.second.get(), "llvm.emit_c_interface")[0];
+
+    synthesizedFunc.dump();
+    //// Move the synthesized function to the original location.
+    //synthesizedFunc->moveBefore(inputFunc);
+    //// Remove the original function.
+    //inputFunc.erase();
+  }
+  //inputOp.get()->dump();
 
   //if (status)
   //  return 0;

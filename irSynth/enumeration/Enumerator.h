@@ -27,10 +27,11 @@ void initializeCandidates(mlir::MLIRContext &ctx,
 mlir::OwningOpRef<mlir::ModuleOp> createModule(mlir::MLIRContext &ctx,
                                                mlir::func::FuncOp *function);
 
-bool enumerateCandidates(
-    mlir::MLIRContext &ctx, IExecutorPtr executor,
-    mlir::func::FuncOp inputFunction, CandidateStorePtr &candidateStore,
-    std::vector<mlir::RegisteredOperationName> &avaliableOps,
-    EnumerationOptions &options);
+mlir::OwningOpRef<mlir::ModuleOp>
+enumerateCandidates(mlir::MLIRContext &ctx, IExecutorPtr executor,
+                    mlir::func::FuncOp inputFunction,
+                    CandidateStorePtr &candidateStore,
+                    std::vector<mlir::RegisteredOperationName> &avaliableOps,
+                    EnumerationOptions &options);
 
 #endif // IRSYNTH_ENUMERATOR_H
