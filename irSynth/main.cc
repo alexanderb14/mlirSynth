@@ -3,6 +3,7 @@
 #include "transforms/CopyModifiedMemrefsPass.h"
 #include "transforms/LoopDistributionPass.h"
 #include "transforms/LoopOutlinePass.h"
+#include "transforms/MemrefMinifyPass.h"
 #include "enumeration/ArgTuples.h"
 #include "enumeration/Candidate.h"
 #include "enumeration/Enumerator.h"
@@ -181,6 +182,7 @@ int main(int argc, char **argv) {
 
   // Transform the input op to prepare for synthesis.
   mlir::PassManager pm(ctx);
+  pm.addPass(createMemrefMinifyPass());
   //pm.addNestedPass<mlir::func::FuncOp>(createLoopDistributionPass());
   pm.addPass(createLoopOutlinePass());
   pm.addPass(createCopyModifiedMemrefsPass());

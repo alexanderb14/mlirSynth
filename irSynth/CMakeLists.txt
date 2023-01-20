@@ -55,6 +55,7 @@ add_llvm_executable(
   execution/Executor.cc
   execution/Lowering.cc
   transforms/CopyModifiedMemrefsPass.cc
+  transforms/MemrefMinifyPass.cc
   transforms/LoopDistributionPass.cc
   transforms/LoopOutlinePass.cc
   Utils.cc)
