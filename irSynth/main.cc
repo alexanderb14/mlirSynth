@@ -196,17 +196,18 @@ int main(int argc, char **argv) {
   // Parse the funcion ops.
   std::vector<func::FuncOp> functions = getFunctions(inputOp.get(), "irsynth.synthesize");
   llvm::outs() << "Found " << functions.size() << " functions to synthesize\n";
+
+  IExecutorPtr executor;
+  if (numThreads == 1) {
+    ctx->disableMultithreading();
+    executor = std::make_shared<Executor>(ctx);
+  } else {
+    executor = std::make_shared<ThreadedExecutor>(contextManager, numThreads);
+  }
+
+  // Synthesize functions.
   for (auto inputFunc : functions) {
     llvm::outs() << "Synthesizing funcion " << inputFunc.getName() << "\n";
-
-    // Synthesis.
-    IExecutorPtr executor;
-    if (numThreads == 1) {
-      ctx->disableMultithreading();
-      executor = std::make_shared<Executor>(ctx);
-    } else {
-      executor = std::make_shared<ThreadedExecutor>(contextManager, numThreads);
-    }
 
     CandidateStorePtr candidateStore = std::make_shared<CandidateStore>();
 
