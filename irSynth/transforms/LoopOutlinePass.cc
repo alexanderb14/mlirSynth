@@ -15,8 +15,6 @@
 
 using namespace mlir;
 
-bool debug = false;
-
 llvm::SmallVector<mlir::Operation *> getTopLevelLoops(func::FuncOp &op) {
   llvm::SmallVector<mlir::Operation *> loops;
   assert(op.getBody().getBlocks().size() == 1);
@@ -82,6 +80,7 @@ BlockAndValueMapping reverseMap(BlockAndValueMapping &mapper) {
 void outlineLoops(func::FuncOp &origFunc) {
   auto unknownLoc = UnknownLoc::get(origFunc.getContext());
 
+  bool debug = false;
   if (debug)
     origFunc.dump();
 

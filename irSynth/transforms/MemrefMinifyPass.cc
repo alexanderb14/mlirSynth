@@ -12,8 +12,6 @@
 
 using namespace mlir;
 
-bool debug = false;
-
 int nextPrime(int n) {
   if (n <= 2)
     return 2;
@@ -28,6 +26,8 @@ int nextPrime(int n) {
 }
 
 llvm::DenseMap<int64_t, int64_t> getMinifedDimensionMap(ModuleOp &op) {
+  bool debug = false;
+
   // Collect all memref types.
   llvm::SetVector<MemRefType> memrefTypes;
   op->walk([&](Operation *op) {
@@ -188,6 +188,8 @@ void minifyMemrefs(ModuleOp &op,
 
 void minifyLoopBounds(ModuleOp &op,
                       llvm::DenseMap<int64_t, int64_t> &minifiedDimensions) {
+  bool debug = false;
+
   op->walk([&](Operation *op) {
     if (isa<AffineForOp>(op)) {
       auto forOp = cast<AffineForOp>(op);
