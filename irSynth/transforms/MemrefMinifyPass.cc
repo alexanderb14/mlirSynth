@@ -212,12 +212,12 @@ void minifyLoopBounds(ModuleOp &op,
             ubExprs.push_back(getAffineConstantExpr(minifiedDimensions[dim],
                                                     op->getContext()));
         } else {
-          llvm::outs() << "expr type: " << (unsigned int) expr.getKind() << "\n";
+          llvm::outs() << "expr type: " << (unsigned int)expr.getKind() << "\n";
           assert(false && "Unexpected expression type");
         }
       }
-      auto ubMapMinified = AffineMap::get(ubMap.getNumDims(), ubMap.getNumSymbols(),
-                                          ubExprs, op->getContext());
+      auto ubMapMinified = AffineMap::get(
+          ubMap.getNumDims(), ubMap.getNumSymbols(), ubExprs, op->getContext());
 
       forOp.setUpperBoundMap(ubMapMinified);
 
