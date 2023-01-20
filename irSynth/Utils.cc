@@ -12,12 +12,6 @@
 
 using namespace mlir;
 
-std::vector<func::FuncOp> getFunctions(mlir::Operation *op) {
-  std::vector<func::FuncOp> functions;
-  op->walk([&](func::FuncOp func) { functions.push_back(func); });
-  return functions;
-}
-
 std::vector<std::shared_ptr<Region>> getRegions(OpBuilder &builder) {
   auto unknownLoc = builder.getUnknownLoc();
 

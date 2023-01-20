@@ -128,6 +128,12 @@ void printCandidate(ProcessingStatus status,
   }
 }
 
+void prepareInputFunction(func::FuncOp &inputFunction) {
+  inputFunction->setAttr("llvm.emit_c_interface",
+                         UnitAttr::get(inputFunction->getContext()));
+  inputFunction.setName("foo");
+}
+
 OwningOpRef<ModuleOp> createModule(MLIRContext &ctx, func::FuncOp *function) {
   // Create an empty module.
   auto unknownLoc = UnknownLoc::get(&ctx);
@@ -545,6 +551,7 @@ bool enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                          CandidateStorePtr &candidateStore,
                          std::vector<RegisteredOperationName> &avaliableOps,
                          EnumerationOptions &options) {
+  prepareInputFunction(inputFunction);
   auto targetShape = getReturnShape(inputFunction);
 
   // Compile and run reference.

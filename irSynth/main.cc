@@ -49,6 +49,15 @@ std::vector<std::string> splitString(std::string &str) {
   return vect;
 }
 
+std::vector<func::FuncOp> getFunctions(mlir::Operation *op, std::string attrName) {
+  std::vector<func::FuncOp> functions;
+  op->walk([&](func::FuncOp func) {
+    if (attrName.empty() || func->getAttr(attrName))
+      functions.push_back(func);
+  });
+  return functions;
+}
+
 std::vector<RegisteredOperationName>
 getDialectOps(MLIRContext *ctx, std::vector<Dialect *> &dialects,
               const std::vector<std::string> &ops = {}, bool printOps = false) {
@@ -170,7 +179,7 @@ int main(int argc, char **argv) {
   }
   auto availableOps = getDialectOps(ctx, dialects, opsVec, true);
 
-  // Run passes.
+  // Transform the input op to prepare for synthesis.
   mlir::PassManager pm(ctx);
   //pm.addNestedPass<mlir::func::FuncOp>(createLoopDistributionPass());
   pm.addPass(createLoopOutlinePass());
@@ -179,39 +188,42 @@ int main(int argc, char **argv) {
     llvm::errs() << "Failed to run passes on input file\n";
     return 1;
   }
-  llvm::outs() << "After passes:\n";
+  llvm::outs() << "After preparation transformations:\n";
   inputOp.get()->dump();
 
   // Parse the funcion ops.
-  std::vector<func::FuncOp> functions = getFunctions(inputOp.get());
-  func::FuncOp inputFunction = functions[0];
+  std::vector<func::FuncOp> functions = getFunctions(inputOp.get(), "irsynth.synthesize");
+  llvm::outs() << "Found " << functions.size() << " functions to synthesize\n";
+  for (auto inputFunc : functions) {
+    llvm::outs() << "Synthesizing funcion " << inputFunc.getName() << "\n";
 
-  // Synthesis.
-  IExecutorPtr executor;
-  if (numThreads == 1) {
-    ctx->disableMultithreading();
-    executor = std::make_shared<Executor>(ctx);
-  } else {
-    executor = std::make_shared<ThreadedExecutor>(contextManager, numThreads);
+    // Synthesis.
+    IExecutorPtr executor;
+    if (numThreads == 1) {
+      ctx->disableMultithreading();
+      executor = std::make_shared<Executor>(ctx);
+    } else {
+      executor = std::make_shared<ThreadedExecutor>(contextManager, numThreads);
+    }
+
+    CandidateStorePtr candidateStore = std::make_shared<CandidateStore>();
+
+    EnumerationOptions options;
+    options.printStatusNames = printStatusNames;
+    options.printStatusTiles = printStatusTiles;
+    options.printValidCandidates = printValidCandidates;
+    options.printInvalidCandidates = printInvalidCandidates;
+    options.printStats = printStats;
+    options.maxNumOps = maxNumOps;
+    options.ignoreEquivalentCandidates = ignoreEquivalentCandidates;
+
+    bool status = enumerateCandidates(*ctx, executor, inputFunc,
+                                      candidateStore, availableOps, options);
+
+    candidateStore->dumpSizes();
   }
 
-  CandidateStorePtr candidateStore = std::make_shared<CandidateStore>();
-
-  EnumerationOptions options;
-  options.printStatusNames = printStatusNames;
-  options.printStatusTiles = printStatusTiles;
-  options.printValidCandidates = printValidCandidates;
-  options.printInvalidCandidates = printInvalidCandidates;
-  options.printStats = printStats;
-  options.maxNumOps = maxNumOps;
-  options.ignoreEquivalentCandidates = ignoreEquivalentCandidates;
-
-  bool status = enumerateCandidates(*ctx, executor, inputFunction,
-                                    candidateStore, availableOps, options);
-
-  candidateStore->dumpSizes();
-
-  if (status)
-    return 0;
-  return 1;
+  //if (status)
+  //  return 0;
+  //return 1;
 }
