@@ -197,18 +197,17 @@ void outlineLoops(func::FuncOp &origFunc) {
     // Remove the loop.
     loop->erase();
   }
-
-  module.dump();
 }
 
 struct LoopOutlinePass
-    : public PassWrapper<LoopOutlinePass, OperationPass<func::FuncOp>> {
+    : public PassWrapper<LoopOutlinePass, OperationPass<ModuleOp>> {
   void runOnOperation() override {
-    func::FuncOp op = getOperation();
-    outlineLoops(op);
+    auto operation = getOperation();
+    for (auto func : operation.getOps<func::FuncOp>())
+      outlineLoops(func);
   }
 };
 
-std::unique_ptr<OperationPass<func::FuncOp>> createLoopOutlinePass() {
+std::unique_ptr<OperationPass<ModuleOp>> createLoopOutlinePass() {
   return std::make_unique<LoopOutlinePass>();
 }

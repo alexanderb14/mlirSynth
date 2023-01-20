@@ -173,7 +173,7 @@ int main(int argc, char **argv) {
   // Run passes.
   mlir::PassManager pm(ctx);
   //pm.addNestedPass<mlir::func::FuncOp>(createLoopDistributionPass());
-  pm.addNestedPass<mlir::func::FuncOp>(createLoopOutlinePass());
+  pm.addPass(createLoopOutlinePass());
   pm.addNestedPass<mlir::func::FuncOp>(createCopyModifiedMemrefsPass());
   if (failed(pm.run(inputOp.get()))) {
     llvm::errs() << "Failed to run passes on input file\n";
