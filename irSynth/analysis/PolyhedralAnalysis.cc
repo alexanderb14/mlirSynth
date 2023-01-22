@@ -261,6 +261,15 @@ DependenceGraphPtr Scop::getDependenceGraph() {
   std::unordered_map<ScopStmt *, DependenceGraph::Node*>
       stmtsToGraphNodes;
 
+  // Create a node for each statement.
+  for (auto &nameToStmt : namesToStmts) {
+    ScopStmt &stmt = nameToStmt.second;
+    DependenceGraph::NodePtr node =
+        std::make_shared<DependenceGraph::Node>(&stmt);
+    stmtsToGraphNodes[&stmt] = node.get();
+    graph->nodes.push_back(node);
+  }
+
   for (auto flowDep : flowDependencies.get_map_list()) {
     isl::map dep = flowDep.as_map();
 
@@ -276,21 +285,6 @@ DependenceGraphPtr Scop::getDependenceGraph() {
     ScopStmt *srcStmt = lookupStmtByName(srcName);
     ScopStmt *dstStmt = lookupStmtByName(dstName);
     assert(srcStmt && dstStmt && "Statement not found");
-
-    // Add the source and destination statements to the graph if they are not in
-    // it yet.
-    if (stmtsToGraphNodes.find(srcStmt) == stmtsToGraphNodes.end()) {
-      DependenceGraph::NodePtr srcNode =
-          std::make_shared<DependenceGraph::Node>(srcStmt);
-      stmtsToGraphNodes[srcStmt] = srcNode.get();
-      graph->nodes.push_back(srcNode);
-    }
-    if (stmtsToGraphNodes.find(dstStmt) == stmtsToGraphNodes.end()) {
-      DependenceGraph::NodePtr dstNode =
-          std::make_shared<DependenceGraph::Node>(dstStmt);
-      stmtsToGraphNodes[dstStmt] = dstNode.get();
-      graph->nodes.push_back(dstNode);
-    }
 
     // Add the dependents to the graph.
     DependenceGraph::Node* srcNode = stmtsToGraphNodes[srcStmt];
