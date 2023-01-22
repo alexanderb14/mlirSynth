@@ -119,7 +119,6 @@ struct LoopDistributionPass
       distributeLoops(func);
     }
     operation->dump();
-    exit(1);
   };
 };
 

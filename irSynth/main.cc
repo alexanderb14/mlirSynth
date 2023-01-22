@@ -127,6 +127,10 @@ int main(int argc, char **argv) {
       cl::init(false));
   cl::opt<bool> guide("guide", cl::desc("Use guide to select allowed ops"),
                       cl::init(false));
+  cl::opt<bool> distribute(
+      "distribute",
+      cl::desc("Distribute loops to split synthesis into smaller subproblems"),
+      cl::init(false));
 
   cl::ParseCommandLineOptions(argc, argv, "MLIR enumerator\n");
 
@@ -164,7 +168,8 @@ int main(int argc, char **argv) {
 
   // Transform the input op to prepare for synthesis.
   mlir::PassManager pm(ctx);
-  pm.addPass(createLoopDistributionPass());
+  if (distribute)
+    pm.addPass(createLoopDistributionPass());
   pm.addPass(createMemrefMinifyPass());
   pm.addPass(createLoopOutlinePass());
   pm.addPass(createCopyModifiedMemrefsPass());
