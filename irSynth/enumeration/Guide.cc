@@ -50,7 +50,8 @@ int computeNumCyclesWithSelfEdges(BoostGraph &g) {
   return numCycles;
 }
 
-std::vector<std::string> predictOps(mlir::Operation *op) {
+std::vector<std::string> predictOps(std::vector<std::string> &supportedOps,
+                                    mlir::Operation *op) {
   Scop scop(op);
   auto dg = scop.getDependenceGraph();
   auto g = constructBoostGraph(dg);
@@ -71,5 +72,10 @@ std::vector<std::string> predictOps(mlir::Operation *op) {
     ops.emplace_back("mhlo.dot_general");
     ops.emplace_back("mhlo.reduce");
   }
+
+  // If we didn't match any ops, add all of them.
+  if (ops.empty())
+    return supportedOps;
+
   return ops;
 }

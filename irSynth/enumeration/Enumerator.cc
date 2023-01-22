@@ -444,7 +444,12 @@ process(MLIRContext &ctx, EnumerationStats &stats,
 
   // Set up results types.
   // TODO: Parse number of results from the op definition.
-  SmallVector<mlir::Type> resultTypes = {operands[0].getType()};
+  SmallVector<mlir::Type> resultTypes;
+  if (operands.empty()) {
+    resultTypes.push_back(builder.getNoneType());
+  } else {
+    resultTypes.push_back(operands[0].getType());
+  }
 
   // Create operation.
   Operation *op =
