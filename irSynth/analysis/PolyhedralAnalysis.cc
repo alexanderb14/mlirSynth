@@ -59,43 +59,45 @@ isl::schedule combineInSequence(const isl::schedule &prev,
   return prev.sequence(succ);
 }
 
-mlir::DenseMap<ScopStmt *, bool> seenStmts;
+using ScopStmtMap = mlir::DenseMap<ScopStmt *, bool>;
 
-isl::schedule scheduleBlock(Block &block, Scop &scop, unsigned depth);
-isl::schedule scheduleRegion(Region &region, Scop &scop, unsigned depth);
-isl::schedule scheduleOperation(Operation *op, Scop &scop, unsigned depth);
+isl::schedule scheduleBlock(ScopStmtMap *seenStmts, Block &block, Scop &scop, unsigned depth);
+isl::schedule scheduleRegion(ScopStmtMap *seenStmts, Region &region, Scop &scop, unsigned depth);
+isl::schedule scheduleOperation(ScopStmtMap *seenStmts, Operation *op,
+                                Scop &scop, unsigned depth);
 
-isl::schedule scheduleBlock(Block &block, Scop &scop, unsigned depth) {
+isl::schedule scheduleBlock(ScopStmtMap *seenStmts, Block &block, Scop &scop, unsigned depth) {
   isl::schedule sched;
   for (Operation &op : block.getOperations()) {
     unsigned depthNew = depth;
     if (isa<AffineForOp>(op))
       depthNew++;
 
-    sched = combineInSequence(sched, scheduleOperation(&op, scop, depthNew));
+    sched = combineInSequence(sched, scheduleOperation(seenStmts, &op, scop, depthNew));
   }
 
   return sched;
 }
 
-isl::schedule scheduleRegion(Region &region, Scop &scop, unsigned depth) {
+isl::schedule scheduleRegion(ScopStmtMap *seenStmts, Region &region, Scop &scop, unsigned depth) {
   isl::schedule sched;
   for (Block &block : region.getBlocks())
-    sched = combineInSequence(sched, scheduleBlock(block, scop, depth));
+    sched = combineInSequence( sched, scheduleBlock(seenStmts, block, scop, depth));
   return sched;
 }
 
-isl::schedule scheduleOperation(Operation *op, Scop &scop, unsigned depth) {
+isl::schedule scheduleOperation(ScopStmtMap *seenStmts, Operation *op,
+                                Scop &scop, unsigned depth) {
   isl::schedule sched;
 
   for (Region &region : op->getRegions()) {
-    sched = combineInSequence(sched, scheduleRegion(region, scop, depth));
+    sched = combineInSequence(sched, scheduleRegion(seenStmts, region, scop, depth));
   }
 
   ScopStmt *stmt = scop.lookupStmtByOp(op);
   if (stmt) {
-    if (seenStmts.find(stmt) == seenStmts.end()) {
-      seenStmts[stmt] = true;
+    if (seenStmts->find(stmt) == seenStmts->end()) {
+      (*seenStmts)[stmt] = true;
 
       isl::union_set domain;
       if (sched.is_null()) {
@@ -236,8 +238,14 @@ Scop::Scop(Operation *op) : op(op) {
   buildScopStmts();
   buildAccessRelationIslMaps();
 
-  schedule = scheduleOperation(op, *this, 0);
+  ScopStmtMap seenStmts;
+  schedule = scheduleOperation(&seenStmts, op, *this, 0);
   computeFlowDependencies();
+}
+
+Scop::~Scop() {
+  isl_ctx_free(ctx);
+  delete asmState;
 }
 
 DependenceGraphPtr Scop::getDependenceGraph() {

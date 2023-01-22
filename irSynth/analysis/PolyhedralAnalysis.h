@@ -57,6 +57,7 @@ using DependenceGraphPtr = std::shared_ptr<DependenceGraph>;
 class Scop {
 public:
   Scop(mlir::Operation *op);
+  ~Scop();
 
   DependenceGraphPtr getDependenceGraph();
 
