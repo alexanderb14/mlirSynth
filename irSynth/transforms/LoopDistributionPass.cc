@@ -1,5 +1,6 @@
 #include "LoopDistributionPass.h"
 
+#include "Utils.h"
 #include "analysis/PolyhedralAnalysis.h"
 
 #include "mlir/Dialect/Func/IR/FuncOps.h"
@@ -12,8 +13,8 @@
 
 using namespace mlir;
 
-void distributeLoops(func::FuncOp &op) {
-  op.dump();
+void distributeLoops(Operation *op) {
+  op->dump();
 
   Scop scop(op);
   auto dependenceGraph = scop.getDependenceGraph();
@@ -22,15 +23,15 @@ void distributeLoops(func::FuncOp &op) {
 }
 
 struct LoopDistributionPass
-    : public PassWrapper<LoopDistributionPass, OperationPass<func::FuncOp>> {
-
+    : public PassWrapper<LoopDistributionPass, OperationPass<ModuleOp>> {
   void runOnOperation() override {
-    func::FuncOp op = getOperation();
-
-    distributeLoops(op);
-  }
+    auto operation = getOperation();
+    for (auto func : operation.getOps<func::FuncOp>()) {
+      distributeLoops(func);
+    }
+  };
 };
 
-std::unique_ptr<OperationPass<func::FuncOp>> createLoopDistributionPass() {
+std::unique_ptr<OperationPass<ModuleOp>> createLoopDistributionPass() {
   return std::make_unique<LoopDistributionPass>();
 }

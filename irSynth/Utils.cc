@@ -1,6 +1,7 @@
 #include "Utils.h"
 
 #include "mlir-hlo/Dialect/mhlo/IR/hlo_ops.h"
+#include "mlir/Dialect/Affine/IR/AffineOps.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/IR/Attributes.h"
 #include "mlir/IR/BuiltinAttributes.h"
@@ -11,6 +12,18 @@
 #include "llvm/ADT/ArrayRef.h"
 
 using namespace mlir;
+
+llvm::SmallVector<mlir::Operation *> getTopLevelLoops(func::FuncOp &op) {
+  llvm::SmallVector<mlir::Operation *> loops;
+  assert(op.getBody().getBlocks().size() == 1);
+  auto &block = op.getBody().getBlocks().front();
+  for (auto &op : block.getOperations()) {
+    if (dyn_cast<AffineForOp>(op)) {
+      loops.push_back(&op);
+    }
+  }
+  return loops;
+}
 
 std::vector<std::shared_ptr<Region>> getRegions(OpBuilder &builder) {
   auto unknownLoc = builder.getUnknownLoc();

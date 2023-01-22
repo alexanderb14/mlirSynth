@@ -10,6 +10,8 @@
 
 int randomInteger(int min, int max);
 
+llvm::SmallVector<mlir::Operation *> getTopLevelLoops(mlir::func::FuncOp &op);
+
 std::vector<std::shared_ptr<mlir::Region>> getRegions(mlir::OpBuilder &builder);
 
 mlir::Operation *createDummyOperation(mlir::MLIRContext &ctx,
