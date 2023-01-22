@@ -127,6 +127,10 @@ int main(int argc, char **argv) {
       cl::init(false));
   cl::opt<bool> guide("guide", cl::desc("Use guide to select allowed ops"),
                       cl::init(false));
+  cl::opt<bool> distribute(
+      "distribute",
+      cl::desc("Distribute loops to split synthesis into smaller subproblems"),
+      cl::init(false));
 
   cl::ParseCommandLineOptions(argc, argv, "MLIR enumerator\n");
 
@@ -164,7 +168,8 @@ int main(int argc, char **argv) {
 
   // Transform the input op to prepare for synthesis.
   mlir::PassManager pm(ctx);
-  pm.addPass(createLoopDistributionPass());
+  if (distribute)
+    pm.addPass(createLoopDistributionPass());
   pm.addPass(createMemrefMinifyPass());
   pm.addPass(createLoopOutlinePass());
   pm.addPass(createCopyModifiedMemrefsPass());
@@ -188,16 +193,7 @@ int main(int argc, char **argv) {
   }
 
   // Synthesize functions.
-  llvm::DenseMap<func::FuncOp, OwningOpRef<ModuleOp>> originaToSynthesizedFns;
-  for (auto inputFunc : functions) {
-    // Get ops.
-    std::vector<std::string> opsVec;
-    if (guide) {
-      opsVec = predictOps(inputFunc);
-    } else if (!ops.empty()) {
-      opsVec = splitString(ops);
-    } else {
-      opsVec = {"chlo.broadcast_divide",
+  std::vector<std::string> supportedOps = {"chlo.broadcast_divide",
                 "chlo.broadcast_add",
                 "chlo.broadcast_subtract",
                 "chlo.broadcast_multiply",
@@ -205,6 +201,16 @@ int main(int argc, char **argv) {
                 "mhlo.reduce",
                 "mhlo.dynamic_reshape",
                 "mhlo.dot_general"};
+  llvm::DenseMap<func::FuncOp, OwningOpRef<ModuleOp>> originaToSynthesizedFns;
+  for (auto inputFunc : functions) {
+    // Get ops.
+    std::vector<std::string> opsVec;
+    if (guide) {
+      opsVec = predictOps(supportedOps, inputFunc);
+    } else if (!ops.empty()) {
+      opsVec = splitString(ops);
+    } else {
+      opsVec = supportedOps;
     }
     auto availableOps = getDialectOps(ctx, dialects, opsVec, true);
 

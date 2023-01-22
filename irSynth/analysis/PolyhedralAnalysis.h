@@ -1,9 +1,6 @@
 #ifndef IRSYNTH_SCOP_H
 #define IRSYNTH_SCOP_H
 
-#include "isl/isl_helper.h"
-#include <unordered_map>
-
 #include "mlir/Dialect/Affine/Analysis/AffineStructures.h"
 #include "mlir/IR/AsmState.h"
 #include "mlir/IR/BuiltinOps.h"
@@ -13,6 +10,10 @@
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
 
+#include "isl/isl_helper.h"
+#include <boost/graph/adjacency_list.hpp>
+#include <unordered_map>
+
 class ScopStmt {
 public:
   ScopStmt(llvm::SmallVector<mlir::Operation *> allOps,
@@ -21,8 +22,8 @@ public:
 
   isl::set domain() { return accessRelations[0].domain(); }
 
-  void dump(llvm::raw_ostream &os, bool withLabels, bool withName,
-            bool withDomain, bool withAccessOps);
+  void dump(llvm::raw_ostream &os, bool withLabels = true, bool withName = true,
+            bool withDomain = true, bool withAccessOps = false);
 
 public:
   llvm::SmallVector<mlir::Operation *> allOps;
@@ -149,5 +150,24 @@ struct PolyhedralAnalysisPass
 namespace mlir {
 inline void registerPolyhedralAnalysisPass() { PassRegistration<PolyhedralAnalysisPass>(); }
 } // namespace mlir
+
+struct VertexInfoT {
+  ScopStmt *stmt;
+};
+using BoostGraph = boost::adjacency_list<boost::vecS, boost::vecS,
+                                         boost::directedS, VertexInfoT>;
+
+namespace boost {
+inline void throw_exception(std::exception const &e) {
+  llvm::errs() << "Boost exception: " << e.what() << "\n";
+}
+//inline void throw_exception(std::exception const &e, boost::source_location const &loc) {
+//  llvm::errs() << "Boost exception: " << e.what() << "\n";
+//}
+} // namespace boost
+
+BoostGraph constructBoostGraph(DependenceGraphPtr &dg);
+void printBoostGraph(BoostGraph &g);
+int computeNumCycles(BoostGraph const &g);
 
 #endif // IRSYNTH_SCOP_H

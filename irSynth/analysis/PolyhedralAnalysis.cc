@@ -13,6 +13,11 @@
 #include "llvm/Support/ToolOutputFile.h"
 #include "llvm/Support/raw_ostream.h"
 
+#include <boost/graph/graph_traits.hpp>
+#include <boost/graph/connected_components.hpp>
+#include <boost/graph/dijkstra_shortest_paths.hpp>
+#include <boost/graph/tiernan_all_cycles.hpp>
+
 #include <regex>
 #include <string>
 
@@ -121,9 +126,8 @@ isl::schedule scheduleOperation(ScopStmtMap *seenStmts, Operation *op,
 
 // ScopStmt
 // ----------------------------------------
-void ScopStmt::dump(raw_ostream &os, bool withLabels = true,
-                    bool withName = true, bool withDomain = true,
-                    bool withAccessOps = false) {
+void ScopStmt::dump(raw_ostream &os, bool withLabels, bool withName,
+                    bool withDomain, bool withAccessOps) {
   if (withName)
     os << name << "\n";
 
@@ -244,8 +248,11 @@ Scop::Scop(Operation *op) : op(op) {
 }
 
 Scop::~Scop() {
-  isl_ctx_free(ctx);
-  delete asmState;
+  // TODO: Properly handle lifetime of all the isl objects, so that we don't get
+  // a isl freeing warning when freeing the context.
+
+  // isl_ctx_free(ctx);
+  // delete asmState;
 }
 
 DependenceGraphPtr Scop::getDependenceGraph() {
@@ -253,6 +260,15 @@ DependenceGraphPtr Scop::getDependenceGraph() {
 
   std::unordered_map<ScopStmt *, DependenceGraph::Node*>
       stmtsToGraphNodes;
+
+  // Create a node for each statement.
+  for (auto &nameToStmt : namesToStmts) {
+    ScopStmt &stmt = nameToStmt.second;
+    DependenceGraph::NodePtr node =
+        std::make_shared<DependenceGraph::Node>(&stmt);
+    stmtsToGraphNodes[&stmt] = node.get();
+    graph->nodes.push_back(node);
+  }
 
   for (auto flowDep : flowDependencies.get_map_list()) {
     isl::map dep = flowDep.as_map();
@@ -269,21 +285,6 @@ DependenceGraphPtr Scop::getDependenceGraph() {
     ScopStmt *srcStmt = lookupStmtByName(srcName);
     ScopStmt *dstStmt = lookupStmtByName(dstName);
     assert(srcStmt && dstStmt && "Statement not found");
-
-    // Add the source and destination statements to the graph if they are not in
-    // it yet.
-    if (stmtsToGraphNodes.find(srcStmt) == stmtsToGraphNodes.end()) {
-      DependenceGraph::NodePtr srcNode =
-          std::make_shared<DependenceGraph::Node>(srcStmt);
-      stmtsToGraphNodes[srcStmt] = srcNode.get();
-      graph->nodes.push_back(srcNode);
-    }
-    if (stmtsToGraphNodes.find(dstStmt) == stmtsToGraphNodes.end()) {
-      DependenceGraph::NodePtr dstNode =
-          std::make_shared<DependenceGraph::Node>(dstStmt);
-      stmtsToGraphNodes[dstStmt] = dstNode.get();
-      graph->nodes.push_back(dstNode);
-    }
 
     // Add the dependents to the graph.
     DependenceGraph::Node* srcNode = stmtsToGraphNodes[srcStmt];
@@ -738,4 +739,59 @@ void dumpRelDetails(FlatAffineRelation rel) {
 
   llvm::outs() << "Dims: " << rel.getNumDomainDims() << " "
                << rel.getNumRangeDims() << "\n";
+}
+
+BoostGraph constructBoostGraph(DependenceGraphPtr& dg) {
+  BoostGraph g;
+  std::unordered_map<ScopStmt *, BoostGraph::vertex_descriptor> vertexMap;
+
+  // Add nodes.
+  for (auto &node : dg->nodes) {
+    vertexMap[node->stmt] = boost::add_vertex(g);
+    g[vertexMap[node->stmt]].stmt = node->stmt;
+  }
+
+  // Add edges.
+  for (auto &node : dg->nodes) {
+    for (auto &dep : node->dependents) {
+      auto *src = node->stmt;
+      auto *dst = dep->stmt;
+
+      auto srcVertex = vertexMap[src];
+      auto dstVertex = vertexMap[dst];
+
+      boost::add_edge(srcVertex, dstVertex, g);
+    }
+  }
+
+  return g;
+}
+
+void printBoostGraph(BoostGraph &g) {
+  // Print the graph
+  for (auto v : boost::make_iterator_range(boost::vertices(g))) {
+    llvm::outs() << "Vertex " << v << " has edges to: ";
+    for (auto e : boost::make_iterator_range(boost::out_edges(v, g))) {
+      llvm::outs() << boost::target(e, g) << " ";
+    }
+    llvm::outs() << "\n";
+  }
+}
+
+namespace boost {
+void renumber_vertex_indices(BoostGraph const &) {}
+} // namespace boost
+
+struct CycleRecorder {
+  template <typename Path, typename BoostGraph>
+  void cycle(const Path &p, const BoostGraph &g) {
+    numCycles++;
+  }
+  int numCycles = 0;
+};
+
+int computeNumCycles(BoostGraph const &g) {
+  CycleRecorder cycleRecorder;
+  boost::tiernan_all_cycles(g, cycleRecorder);
+  return cycleRecorder.numCycles;
 }
