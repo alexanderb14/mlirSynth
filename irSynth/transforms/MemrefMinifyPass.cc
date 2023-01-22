@@ -231,17 +231,14 @@ void minifyLoopBounds(ModuleOp &op,
   });
 }
 
-struct MemrefMinifyPass
-    : public PassWrapper<MemrefMinifyPass, OperationPass<ModuleOp>> {
-  void runOnOperation() override {
-    auto operation = getOperation();
+void MemrefMinifyPass::runOnOperation() {
+  auto operation = getOperation();
 
-    auto minifiedDimensions = getMinifedDimensionMap(operation);
+  auto minifiedDimensions = getMinifedDimensionMap(operation);
 
-    minifyMemrefs(operation, minifiedDimensions);
-    minifyLoopBounds(operation, minifiedDimensions);
-  }
-};
+  minifyMemrefs(operation, minifiedDimensions);
+  minifyLoopBounds(operation, minifiedDimensions);
+}
 
 std::unique_ptr<OperationPass<ModuleOp>> createMemrefMinifyPass() {
   return std::make_unique<MemrefMinifyPass>();

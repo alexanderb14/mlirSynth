@@ -38,14 +38,11 @@ void copyModifiedMemrefs(func::FuncOp &op) {
   }
 }
 
-struct CopyModifiedMemrefsPass
-    : public PassWrapper<CopyModifiedMemrefsPass, OperationPass<ModuleOp>> {
-  void runOnOperation() override {
-    auto operation = getOperation();
-    for (auto func : operation.getOps<func::FuncOp>())
-      copyModifiedMemrefs(func);
-  }
-};
+void CopyModifiedMemrefsPass::runOnOperation() {
+  auto operation = getOperation();
+  for (auto func : operation.getOps<func::FuncOp>())
+    copyModifiedMemrefs(func);
+}
 
 std::unique_ptr<OperationPass<ModuleOp>> createCopyModifiedMemrefsPass() {
   return std::make_unique<CopyModifiedMemrefsPass>();

@@ -27,15 +27,28 @@ add_library(polyhedral-analysis
   analysis/PolyhedralAnalysis.cc
   analysis/isl/isl_helper.cc)
 target_include_directories(polyhedral-analysis PUBLIC ${CMAKE_SOURCE_DIR}/isl-0.25/include)
-llvm_update_compile_flags(polyhedral-analysis)
 target_link_libraries(polyhedral-analysis PUBLIC ${POLY_LIBS}
   ${CMAKE_SOURCE_DIR}/isl-0.25/.libs/libisl.a gmp)
+llvm_update_compile_flags(polyhedral-analysis)
 target_compile_options(polyhedral-analysis PRIVATE -Wno-missing-field-initializers)
 
-# Exe: Polyhedral Analysis Tool
-add_llvm_executable(polyhedral-analysis-tool
-  analysis/PolyhedralInfo.cc)
-target_link_libraries(polyhedral-analysis-tool PRIVATE polyhedral-analysis)
+# Lib: Transform
+add_library(transform
+  transforms/CopyModifiedMemrefsPass.cc
+  transforms/MemrefMinifyPass.cc
+  transforms/LoopDistributionPass.cc
+  transforms/LoopOutlinePass.cc
+  Utils.cc)
+target_include_directories(transform
+  PUBLIC ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(transform
+  PUBLIC polyhedral-analysis)
+llvm_update_compile_flags(transform)
+
+# Exe: Transform Tool
+add_llvm_executable(opt
+  tools/Opt.cc)
+target_link_libraries(opt PRIVATE transform polyhedral-analysis)
 
 # Exe: Synthesizer
 set(SYNTH_LIBS ${dialect_libs}
@@ -43,7 +56,7 @@ set(SYNTH_LIBS ${dialect_libs}
   MLIROptLib)
 add_llvm_executable(
   synthesizer
-  main.cc
+  tools/Synthesizer.cc
   ContextManager.cc
   enumeration/AttributeGen.cc
   enumeration/Candidate.cc
@@ -53,12 +66,7 @@ add_llvm_executable(
   execution/ArgUtils.cc
   execution/ArrayUtils.cc
   execution/Executor.cc
-  execution/Lowering.cc
-  transforms/CopyModifiedMemrefsPass.cc
-  transforms/MemrefMinifyPass.cc
-  transforms/LoopDistributionPass.cc
-  transforms/LoopOutlinePass.cc
-  Utils.cc)
+  execution/Lowering.cc)
 target_include_directories(synthesizer PRIVATE ${CMAKE_CURRENT_LIST_DIR} ${Boost_INCLUDE_DIR})
+target_link_libraries(synthesizer PRIVATE ${SYNTH_LIBS} CE ${MHLO_EXPORTED_TARGETS} ${POLY_LIBS} polyhedral-analysis transform ${Boost_LIBRARIES})
 llvm_update_compile_flags(synthesizer)
-target_link_libraries(synthesizer PRIVATE ${SYNTH_LIBS} CE ${MHLO_EXPORTED_TARGETS} ${POLY_LIBS} polyhedral-analysis ${Boost_LIBRARIES})

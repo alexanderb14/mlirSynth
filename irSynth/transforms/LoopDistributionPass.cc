@@ -22,14 +22,11 @@ void distributeLoops(Operation *op) {
   dependenceGraph->dump(llvm::outs());
 }
 
-struct LoopDistributionPass
-    : public PassWrapper<LoopDistributionPass, OperationPass<ModuleOp>> {
-  void runOnOperation() override {
-    auto operation = getOperation();
-    for (auto func : operation.getOps<func::FuncOp>()) {
-      distributeLoops(func);
-    }
-  };
+void LoopDistributionPass::runOnOperation() {
+  auto operation = getOperation();
+  for (auto func : operation.getOps<func::FuncOp>()) {
+    distributeLoops(func);
+  }
 };
 
 std::unique_ptr<OperationPass<ModuleOp>> createLoopDistributionPass() {
