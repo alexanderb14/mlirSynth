@@ -231,6 +231,12 @@ int main(int argc, char **argv) {
 
     OwningOpRef<ModuleOp> module = enumerateCandidates(
         *ctx, executor, inputFunc, candidateStore, availableOps, options);
+    if (!module) {
+      llvm::errs() << "Failed to synthesize function " << inputFunc.getName()
+                   << "\n";
+      return 1;
+    }
+    module->dump();
     originaToSynthesizedFns[inputFunc] = std::move(module);
 
     candidateStore->dumpSizes();
@@ -249,7 +255,7 @@ int main(int argc, char **argv) {
     //// Remove the original function.
     //inputFunc.erase();
   }
-  //inputOp.get()->dump();
+  inputOp.get()->dump();
 
   //if (status)
   //  return 0;
