@@ -14,7 +14,7 @@ tests = [
     ('benchmarks/atax.mlir', ['mhlo.dot','chlo.broadcast_add','chlo.broadcast_subtract']),
     ('benchmarks/3mm.mlir', ['mhlo.dot']),
     ('benchmarks/mvt.mlir', ['mhlo.dot', 'chlo.broadcast_add']),
-    ('benchmarks/bicg.mlir', ['mhlo.dot']),
+    ('benchmarks/bicg.mlir', ['mhlo.dot', 'chlo.broadcast_subtract']),
     ('benchmarks/2mm.mlir', ['mhlo.dot', 'chlo.broadcast_multiply', 'chlo.broadcast_add']),
     ('benchmarks/gemm.mlir', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
 #    ('benchmarks/gemver.mlir', []),
@@ -23,7 +23,7 @@ tests = [
 
 # Get script directory
 script_dir = os.path.dirname(os.path.realpath(__file__))
-timeout = 60
+timeout = 600
 
 # Run program x and get output as string
 def run_program(x):
@@ -102,7 +102,7 @@ def main():
         stats_all = json.load(f)
         df = pd.DataFrame(stats_all)
     df.to_csv('/tmp/stats.csv', index=False)
-    
+
     df = pd.read_csv('/tmp/stats.csv')
     plot = (p9.ggplot(df[df['ignoreEquivalentCandidates']==True],
             p9.aes(x='testFile', y='synth_time', fill='ops'))
