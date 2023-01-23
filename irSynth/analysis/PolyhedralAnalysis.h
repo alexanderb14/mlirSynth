@@ -161,9 +161,9 @@ namespace boost {
 inline void throw_exception(std::exception const &e) {
   llvm::errs() << "Boost exception: " << e.what() << "\n";
 }
-//inline void throw_exception(std::exception const &e, boost::source_location const &loc) {
-//  llvm::errs() << "Boost exception: " << e.what() << "\n";
-//}
+inline void throw_exception(std::exception const &e, boost::source_location const &loc) {
+  llvm::errs() << "Boost exception: " << e.what() << "\n";
+}
 } // namespace boost
 
 BoostGraph constructBoostGraph(DependenceGraphPtr &dg);

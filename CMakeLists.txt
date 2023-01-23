@@ -52,6 +52,6 @@ list(APPEND MHLO_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/mlir-hlo/build/stable
 include_directories(${MHLO_INCLUDE_DIRS})
 
 # Boost
-find_package(Boost 1.71 COMPONENTS graph REQUIRED)
+find_package(Boost 1.74 COMPONENTS graph REQUIRED)
 
 add_subdirectory(irSynth)
