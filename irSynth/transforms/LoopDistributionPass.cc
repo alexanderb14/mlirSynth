@@ -105,7 +105,6 @@ void distributeLoops(Operation *op) {
   // Remove the original loops, which are empty by now.
   for (auto *loop : originalLoops) {
     loop->walk([](Operation *op) {
-      llvm::outs() << op->getName().getStringRef() << "\n";
       op->erase();
     });
   }
