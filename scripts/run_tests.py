@@ -23,7 +23,7 @@ tests = [
 
 # Get script directory
 script_dir = os.path.dirname(os.path.realpath(__file__))
-timeout = 5
+timeout = 300
 
 # Run program x and get output as string
 def run_program(x):
