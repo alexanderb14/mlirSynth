@@ -48,7 +48,8 @@ llvm_update_compile_flags(transform)
 # Exe: Transform Tool
 add_llvm_executable(opt
   tools/Opt.cc)
-target_link_libraries(opt PRIVATE transform polyhedral-analysis)
+target_include_directories(opt PRIVATE ${CMAKE_CURRENT_LIST_DIR} ${Boost_INCLUDE_DIR})
+target_link_libraries(opt PRIVATE ${SYNTH_LIBS} CE ${MHLO_EXPORTED_TARGETS} ${POLY_LIBS} polyhedral-analysis transform ${Boost_LIBRARIES})
 
 # Exe: Synthesizer
 set(SYNTH_LIBS ${dialect_libs}
