@@ -8,23 +8,22 @@ import pandas as pd
 import plotnine as p9
 
 tests = [
-    ('doitgen.mlir', ['mhlo.dot_general']),
-    ('correlation_1.mlir', ['chlo.broadcast_divide', 'mhlo.reduce']),
-    ('correlation_3.mlir', ['chlo.broadcast_subtract', 'chlo.broadcast_multiply', 'chlo.broadcast_divide']),
-    ('atax.mlir', ['mhlo.dot']),
-    ('3mm.mlir', ['mhlo.dot']),
-    ('mvt_1.mlir', ['mhlo.dot', 'chlo.broadcast_add']),
-    ('mvt_2.mlir', ['mhlo.dot', 'chlo.broadcast_add']),
-    ('bicg_1.mlir', ['mhlo.dot']),
-    ('bicg_2.mlir', ['mhlo.dot']),
-    ('2mm.mlir', ['mhlo.dot', 'chlo.broadcast_multiply', 'chlo.broadcast_add']),
-    ('gemm.mlir', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
-    ('gesummv.mlir', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
+    ('benchmarks/doitgen.mlir', ['mhlo.dot_general']),
+    ('test/correlation_1.mlir', ['chlo.broadcast_divide', 'mhlo.reduce']),
+#    ('test/correlation_3.mlir', ['chlo.broadcast_subtract', 'chlo.broadcast_multiply', 'chlo.broadcast_divide']),
+    ('benchmarks/atax.mlir', ['mhlo.dot','chlo.broadcast_add','chlo.broadcast_subtract']),
+    ('benchmarks/3mm.mlir', ['mhlo.dot']),
+    ('benchmarks/mvt.mlir', ['mhlo.dot', 'chlo.broadcast_add']),
+    ('benchmarks/bicg.mlir', ['mhlo.dot']),
+    ('benchmarks/2mm.mlir', ['mhlo.dot', 'chlo.broadcast_multiply', 'chlo.broadcast_add']),
+    ('benchmarks/gemm.mlir', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
+#    ('benchmarks/gemver.mlir', []),
+    ('benchmarks/gesummv.mlir', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
 ]
 
 # Get script directory
 script_dir = os.path.dirname(os.path.realpath(__file__))
-timeout = 600
+timeout = 60
 
 # Run program x and get output as string
 def run_program(x):
@@ -45,40 +44,49 @@ def run_tests(tests):
         test_file, allowed_ops = test
         print('Running test: ' + test_file)
 
-        test = os.path.join(script_dir, '../test/' + test_file)
+        test = os.path.join(script_dir, '../' + test_file)
 
         for ignore_equivalent_candidates in [True]:
-            for guides in [True]:
-                args = ['--num-threads=%d' % cpu_count,
-                        '--max-num-ops=6']
-                if ignore_equivalent_candidates:
-                    args += ['--ignore-equivalent-candidates']
-                if guides:
-                    args += ['--ops=' + ','.join(allowed_ops)]
+            for ops in ['ground_truth', 'heuristic', 'all']:
+                for distribute in [True, False]:
+                    args = ['--num-threads=%d' % cpu_count,
+                            '--max-num-ops=6']
+                    if ignore_equivalent_candidates:
+                        args += ['--ignore-equivalent-candidates']
 
-                try:
-                    # Run synthesis
-                    out, synth_time, returncode = run_program([program, test] + args)
-                    if returncode != 0:
-                        raise RuntimeError('Synthesis failed')
+                    if ops == 'ground_truth':
+                        args += ['--ops=' + ','.join(allowed_ops)]
+                    elif ops == 'heuristic':
+                        args += ['--guide']
 
-                    # Parse stats
-                    statsStr = out.split('JSON: ')[1].split('\n')[0]
-                    stats = json.loads(statsStr)
-                    stats['synth_time'] = synth_time
-                except (subprocess.TimeoutExpired, RuntimeError) as e:
-                    stats = {}
-                    stats['synth_time'] = timeout
+                    if distribute:
+                        args += ['--distribute']
 
-                stats['testFile'] = test_file.split('.')[0]
-                stats['ignoreEquivalentCandidates'] = ignore_equivalent_candidates
-                stats['guides'] = guides
+                    try:
+                        # Run synthesis
+                        out, synth_time, returncode = run_program([program, test] + args)
+                        if returncode != 0:
+                            raise RuntimeError('Synthesis failed')
 
-                print(stats)
-                stats_all.append(stats)
+                        # Parse stats
+                        statsStr = out.split('JSON: ')[1].split('\n')[0]
+                        stats = json.loads(statsStr)
+                        stats['synth_time'] = synth_time
+                    except (subprocess.TimeoutExpired, RuntimeError) as e:
+                        stats = {}
+                        stats['synth_time'] = timeout
 
-                with open('/tmp/stats.json', 'w') as f:
-                    json.dump(stats_all, f, indent=2)
+                    stats['testFile'] = test_file.split('.')[0]
+                    stats['ignoreEquivalentCandidates'] = ignore_equivalent_candidates
+                    stats['ops'] = ops
+                    stats['distribute'] = distribute
+                    stats['cmd'] = ' '.join([program, test] + args)
+
+                    print(stats)
+                    stats_all.append(stats)
+
+                    with open('/tmp/stats.json', 'w') as f:
+                        json.dump(stats_all, f, indent=2)
 
 def main():
     # Parse command line arguments
@@ -97,7 +105,7 @@ def main():
     
     df = pd.read_csv('/tmp/stats.csv')
     plot = (p9.ggplot(df[df['ignoreEquivalentCandidates']==True],
-            p9.aes(x='testFile', y='synth_time', fill='guides'))
+            p9.aes(x='testFile', y='synth_time', fill='ops'))
     + p9.geom_col(stat="identity", width=.5, position = "dodge")
     + p9.scale_y_sqrt()
     + p9.geom_hline(yintercept=1)
