@@ -8,22 +8,22 @@ import pandas as pd
 import plotnine as p9
 
 tests = [
-    ('benchmarks/doitgen.mlir', ['mhlo.dot_general']),
-    ('test/correlation_1.mlir', ['chlo.broadcast_divide', 'mhlo.reduce']),
-#    ('test/correlation_3.mlir', ['chlo.broadcast_subtract', 'chlo.broadcast_multiply', 'chlo.broadcast_divide']),
-    ('benchmarks/atax.mlir', ['mhlo.dot','chlo.broadcast_add','chlo.broadcast_subtract']),
-    ('benchmarks/3mm.mlir', ['mhlo.dot']),
-    ('benchmarks/mvt.mlir', ['mhlo.dot', 'chlo.broadcast_add']),
-    ('benchmarks/bicg.mlir', ['mhlo.dot', 'chlo.broadcast_subtract']),
-    ('benchmarks/2mm.mlir', ['mhlo.dot', 'chlo.broadcast_multiply', 'chlo.broadcast_add']),
-    ('benchmarks/gemm.mlir', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
-#    ('benchmarks/gemver.mlir', []),
-    ('benchmarks/gesummv.mlir', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
+    ('benchmarks/doitgen.mlir', 'doitgen', ['mhlo.dot_general']),
+    ('test/correlation_1.mlir', 'correlation_1', ['chlo.broadcast_divide', 'mhlo.reduce']),
+#    ('test/correlation_3.mlir', 'correlation_3', ['chlo.broadcast_subtract', 'chlo.broadcast_multiply', 'chlo.broadcast_divide']),
+    ('benchmarks/atax.mlir', 'atax', ['mhlo.dot','chlo.broadcast_add','chlo.broadcast_subtract']),
+    ('benchmarks/3mm.mlir', '3mm', ['mhlo.dot']),
+    ('benchmarks/mvt.mlir', 'mvt', ['mhlo.dot', 'chlo.broadcast_add']),
+    ('benchmarks/bicg.mlir', 'bicg', ['mhlo.dot', 'chlo.broadcast_subtract']),
+    ('benchmarks/2mm.mlir', '2mm', ['mhlo.dot', 'chlo.broadcast_multiply', 'chlo.broadcast_add']),
+    ('benchmarks/gemm.mlir', 'gemm', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
+#    ('benchmarks/gemver.mlir', 'gemver', []),
+    ('benchmarks/gesummv.mlir', 'gesummv', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
 ]
 
 # Get script directory
 script_dir = os.path.dirname(os.path.realpath(__file__))
-timeout = 600
+timeout = 5
 
 # Run program x and get output as string
 def run_program(x):
@@ -41,17 +41,17 @@ def run_tests(tests):
 
     stats_all = []
     for test in tests:
-        test_file, allowed_ops = test
+        test_file, test_name, allowed_ops = test
         print('Running test: ' + test_file)
 
         test = os.path.join(script_dir, '../' + test_file)
 
-        for ignore_equivalent_candidates in [True]:
+        for prune_equivalent_candidates in [True]:
             for ops in ['ground_truth', 'heuristic', 'all']:
                 for distribute in [True, False]:
                     args = ['--num-threads=%d' % cpu_count,
                             '--max-num-ops=6']
-                    if ignore_equivalent_candidates:
+                    if prune_equivalent_candidates:
                         args += ['--ignore-equivalent-candidates']
 
                     if ops == 'ground_truth':
@@ -76,9 +76,10 @@ def run_tests(tests):
                         stats = {}
                         stats['synth_time'] = timeout
 
-                    stats['testFile'] = test_file.split('.')[0]
-                    stats['ignoreEquivalentCandidates'] = ignore_equivalent_candidates
-                    stats['ops'] = ops
+                    stats['test_file'] = test_file.split('.')[0]
+                    stats['benchmark'] = test_name
+                    stats['prune_equivalent_candidates'] = prune_equivalent_candidates
+                    stats['operations'] = ops
                     stats['distribute'] = distribute
                     stats['cmd'] = ' '.join([program, test] + args)
 
@@ -104,8 +105,8 @@ def main():
     df.to_csv('/tmp/stats.csv', index=False)
 
     df = pd.read_csv('/tmp/stats.csv')
-    plot = (p9.ggplot(df[df['ignoreEquivalentCandidates']==True],
-            p9.aes(x='testFile', y='synth_time', fill='ops'))
+    plot = (p9.ggplot(df[df['prune_equivalent_candidates']==True],
+            p9.aes(x='benchmark', y='synth_time', fill='operations'))
     + p9.geom_col(stat="identity", width=.5, position = "dodge")
     + p9.scale_y_sqrt()
     + p9.geom_hline(yintercept=1)
