@@ -255,9 +255,6 @@ int main(int argc, char **argv) {
     //// Remove the original function.
     //inputFunc.erase();
   }
-  inputOp.get()->dump();
 
-  //if (status)
-  //  return 0;
-  //return 1;
+  return 0;
 }
