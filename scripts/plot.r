@@ -46,6 +46,7 @@ plot_and_save <- function(plot_obj, filename) {
          width = 12,
          height = 8)
 }
+dev.off()
 
 # General
 plot_and_save(
@@ -61,7 +62,7 @@ plot_and_save(
     ) +
     geom_hline(yintercept = 1) +
     geom_hline(yintercept = 300),
-  "overview.pdf"
+  "overview.png"
 )
 
 # Feature: prune_equivalent_candidates
@@ -79,7 +80,7 @@ plot_and_save(
     ) +
     geom_hline(yintercept = 1) +
     geom_hline(yintercept = 300),
-  "feature_distribute.pdf"
+  "feature_distribute.png"
 )
 
 # Feature: distribute
@@ -96,7 +97,7 @@ plot_and_save(
     ) +
     geom_hline(yintercept = 1) +
     geom_hline(yintercept = 300),
-  "feature_prune_equivalent_candidates.pdf"
+  "feature_prune_equivalent_candidates.png"
 )
 
 # All best
@@ -116,5 +117,5 @@ plot_and_save(
     ) +
     geom_hline(yintercept = 1) +
     geom_hline(yintercept = 300),
-  "all_best.pdf"
+  "all_best.png"
 )
