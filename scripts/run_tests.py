@@ -5,7 +5,6 @@ import os
 import subprocess
 import time
 import pandas as pd
-import plotnine as p9
 
 tests = [
     ('benchmarks/doitgen.mlir', 'doitgen', ['mhlo.dot_general']),
@@ -46,7 +45,7 @@ def run_tests(tests):
 
         test = os.path.join(script_dir, '../' + test_file)
 
-        for prune_equivalent_candidates in [True]:
+        for prune_equivalent_candidates in [True, False]:
             for ops in ['ground_truth', 'heuristic', 'all']:
                 for distribute in [True, False]:
                     args = ['--num-threads=%d' % cpu_count,
@@ -89,6 +88,18 @@ def run_tests(tests):
                     with open('/tmp/stats.json', 'w') as f:
                         json.dump(stats_all, f, indent=2)
 
+
+def plot_results():
+    # Convert to csv.
+    with open('/tmp/stats.json', 'r') as f:
+        stats_all = json.load(f)
+        df = pd.DataFrame(stats_all)
+    df.to_csv('/tmp/stats.csv', index=False)
+
+    # Call RScript on plotting script.
+    subprocess.run(['Rscript', os.path.join(script_dir, 'plot.r'), '/tmp/stats.csv'])
+
+
 def main():
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Run tests')
@@ -99,20 +110,7 @@ def main():
         run_tests(tests)
     
     # Plot results.
-    with open('/tmp/stats.json', 'r') as f:
-        stats_all = json.load(f)
-        df = pd.DataFrame(stats_all)
-    df.to_csv('/tmp/stats.csv', index=False)
-
-    df = pd.read_csv('/tmp/stats.csv')
-    plot = (p9.ggplot(df[df['prune_equivalent_candidates']==True],
-            p9.aes(x='benchmark', y='synth_time', fill='operations'))
-    + p9.geom_col(stat="identity", width=.5, position = "dodge")
-    + p9.scale_y_sqrt()
-    + p9.geom_hline(yintercept=1)
-    + p9.annotate("text", x=0.6, y=2, label="1s")
-    + p9.theme(axis_text_x=p9.element_text(rotation=45, hjust=1)))
-    plot.save('/tmp/plot.pdf', width=10, height=5)
+    plot_results()
 
 
 if __name__ == '__main__':

@@ -3,13 +3,16 @@ library(ggdark)
 library(scales)
 library(dplyr)
 
+# Prevent Rplots.pdf from being created
+pdf(NULL)
+
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) > 0) {
-  inputfile <- read.csv(args[1])
+  inputfile <- args[1]
   } else {
     inputfile <- "2/stats.csv"
 }
-read.csv(inputfile)
+data <- read.csv(inputfile)
 
 out_dir <- "/tmp/plots/"
 if (!file.exists(out_dir)) {
