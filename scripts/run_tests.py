@@ -97,7 +97,7 @@ def plot_results():
     df.to_csv('/tmp/stats.csv', index=False)
 
     # Call RScript on plotting script.
-    subprocess.run(['Rscript', os.path.join(script_dir, 'plot.r'), '/tmp/stats.csv'])
+    subprocess.run(['Rscript', os.path.join(script_dir, 'plot.r'), '/tmp/stats.csv', 'plot_white'])
 
 
 def main():
