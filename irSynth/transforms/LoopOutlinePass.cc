@@ -25,7 +25,7 @@ llvm::SetVector<Value> getOutOfBlockDefValues(mlir::Operation *op) {
       allValues[result] = true;
   });
   // - Defined as arguments.
-  for (int i = 0; i < op->getNumRegions(); i++) {
+  for (unsigned i = 0; i < op->getNumRegions(); i++) {
     for (auto &block : op->getRegion(i).getBlocks()) {
       for (auto arg : block.getArguments())
         allValues[arg] = true;
@@ -152,7 +152,7 @@ void outlineLoops(func::FuncOp &origFunc) {
     for (auto value : storedValue)
       results.push_back(argMapper.lookup(value));
     builder.setInsertionPoint(&bodyBlock, bodyBlock.end());
-    auto returnOp = builder.create<func::ReturnOp>(unknownLoc, results);
+    builder.create<func::ReturnOp>(unknownLoc, results);
 
     // - Add the results to function type.
     llvm::SmallVector<Type> resultTypes;
@@ -192,7 +192,7 @@ void outlineLoops(func::FuncOp &origFunc) {
     lastCall = callOp;
 
     // Add function call results to the fnResultMapper.
-    for (int i = 0; i < callOp.getNumResults(); i++)
+    for (unsigned i = 0; i < callOp.getNumResults(); i++)
       fnResultMapper.map(storedValue[i], callOp.getResult(i));
 
     // Remove the loop.

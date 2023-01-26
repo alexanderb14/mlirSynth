@@ -245,7 +245,7 @@ int main(int argc, char **argv) {
   // Replace the original functions with the synthesized ones.
   for (auto &kv : originaToSynthesizedFns) {
     // Get the function to replace.
-    auto inputFunc = kv.first;
+    //auto inputFunc = kv.first;
     // Get the synthesized function.
     auto synthesizedFunc = getFunctions(kv.second.get(), "llvm.emit_c_interface")[0];
 
