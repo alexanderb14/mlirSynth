@@ -29,5 +29,5 @@ int main(int argc, char **argv) {
   registerMemrefMinifyPass();
 
   return mlir::asMainReturnCode(mlir::MlirOptMain(
-      argc, argv, "Synthesizer opt driver\n", registry, false));
+      argc, argv, "Synthesizer opt driver\n", registry, true));
 }

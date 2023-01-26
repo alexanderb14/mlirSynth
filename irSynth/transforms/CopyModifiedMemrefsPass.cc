@@ -22,8 +22,8 @@ void copyModifiedMemrefs(func::FuncOp &op) {
   op->walk([&](AffineStoreOp op) { storedMemrefs.insert(op.getMemRef()); });
 
   // Copy all stored memref values and put them into the top of the function.
-  auto builder =
-      mlir::OpBuilder::atBlockBegin(&op.getBody().getBlocks().front());
+  OpBuilder builder(op->getContext());
+  builder.setInsertionPointToStart(&op.getBody().getBlocks().front());
   for (auto value : storedMemrefs) {
     // Create a new memref with the name of the old one.
     auto memreftype = value.getType().cast<MemRefType>();
