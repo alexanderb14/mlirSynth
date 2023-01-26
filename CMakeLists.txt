@@ -55,3 +55,4 @@ include_directories(${MHLO_INCLUDE_DIRS})
 find_package(Boost 1.74 COMPONENTS graph REQUIRED)
 
 add_subdirectory(irSynth)
+add_subdirectory(test)
