@@ -20,6 +20,7 @@ using namespace mlir;
 int main(int argc, char **argv) {
   DialectRegistry registry;
   registerAllDialects(registry);
+  registerAllPasses();
 
   registerPolyhedralAnalysisPass();
 
