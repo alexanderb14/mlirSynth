@@ -5,15 +5,14 @@ configure_lit_site_cfg(
         ${CMAKE_CURRENT_SOURCE_DIR}/lit.cfg.py
 )
 
-set(SYNTHESIZER_TEST_DEPENDS
+set(IRSYNTH_TEST_DEPENDS
         FileCheck count not
+        opt
         synthesizer
         )
-
-add_lit_testsuite(check-synthesizer "Running the synthesizer tests"
+add_lit_testsuite(check-irsynth "Running irsynth tests"
         ${CMAKE_CURRENT_BINARY_DIR}
-        DEPENDS ${SYNTHESIZER_TEST_DEPENDS}
+        DEPENDS ${IRSYNTH_TEST_DEPENDS}
         )
-set_target_properties(check-synthesizer PROPERTIES FOLDER "Tests")
-
-add_lit_testsuites(SYNTHESIZER ${CMAKE_CURRENT_SOURCE_DIR} DEPENDS ${SYNTHESIZER_TEST_DEPENDS})
+set_target_properties(check-irsynth PROPERTIES FOLDER "Tests")
+add_lit_testsuites(IRSYNTH ${CMAKE_CURRENT_SOURCE_DIR} DEPENDS ${IRSYNTH_TEST_DEPENDS})
