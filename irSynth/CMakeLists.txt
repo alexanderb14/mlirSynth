@@ -37,7 +37,8 @@ target_compile_options(polyhedral-analysis
 add_library(
   transform
   transforms/CopyModifiedMemrefsPass.cc transforms/MemrefMinifyPass.cc
-  transforms/LoopDistributionPass.cc transforms/LoopOutlinePass.cc Utils.cc)
+  transforms/LoopDistributionPass.cc transforms/LoopOutlinePass.cc
+  transforms/CleanupPass.cc Utils.cc)
 target_include_directories(transform PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(transform PUBLIC polyhedral-analysis)
 llvm_update_compile_flags(transform)

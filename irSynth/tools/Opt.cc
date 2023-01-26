@@ -1,4 +1,5 @@
 #include "analysis/PolyhedralAnalysis.h"
+#include "transforms/CleanupPass.h"
 #include "transforms/CopyModifiedMemrefsPass.h"
 #include "transforms/LoopDistributionPass.h"
 #include "transforms/LoopOutlinePass.h"
@@ -25,6 +26,7 @@ int main(int argc, char **argv) {
   registerPolyhedralAnalysisPass();
 
   registerCopyModifiedMemrefsPass();
+  registerCleanupPass();
   registerLoopDistributionPass();
   registerLoopOutlinePass();
   registerMemrefMinifyPass();
