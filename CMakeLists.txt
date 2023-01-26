@@ -48,11 +48,15 @@ list(APPEND MHLO_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/mlir-hlo/lhlo")
 list(APPEND MHLO_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/mlir-hlo/stablehlo")
 list(APPEND MHLO_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/mlir-hlo/build")
 list(APPEND MHLO_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/mlir-hlo/build/lhlo")
-list(APPEND MHLO_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/mlir-hlo/build/stablehlo")
+list(APPEND MHLO_INCLUDE_DIRS
+     "${CMAKE_CURRENT_SOURCE_DIR}/mlir-hlo/build/stablehlo")
 include_directories(${MHLO_INCLUDE_DIRS})
 
 # Boost
-find_package(Boost 1.74 COMPONENTS graph REQUIRED)
+find_package(
+  Boost 1.74
+  COMPONENTS graph
+  REQUIRED)
 
 add_subdirectory(irSynth)
 add_subdirectory(test)
