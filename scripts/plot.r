@@ -102,7 +102,10 @@ plot_and_save(
 
 # All best
 data_best <-
-  data %>% group_by(benchmark, operations) %>% summarise(synth_time_best = min(synth_time))
+  data %>% group_by(benchmark, operations)%>% summarise(synth_time_best = min(synth_time))
+data_best %>%
+  group_by(operations) %>%
+  summarise(ymean = mean(synth_time_best))
 
 plot_and_save(
   ggplot(
