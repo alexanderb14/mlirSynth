@@ -6,6 +6,7 @@ import subprocess
 import time
 import pandas as pd
 
+# fmt: off
 tests = [
     ('benchmarks/doitgen.mlir', 'doitgen', ['mhlo.dot_general']),
     ('test/correlation_1.mlir', 'correlation_1', ['chlo.broadcast_divide', 'mhlo.reduce']),
@@ -19,18 +20,23 @@ tests = [
 #    ('benchmarks/gemver.mlir', 'gemver', []),
     ('benchmarks/gesummv.mlir', 'gesummv', ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply']),
 ]
+# fmt: on
 
 # Get script directory
 script_dir = os.path.dirname(os.path.realpath(__file__))
 timeout = 300
 
 # Run program x and get output as string
+
+
 def run_program(x):
     start = time.time()
     print(' '.join(x))
-    p = subprocess.run(x, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
+    p = subprocess.run(x, stdout=subprocess.PIPE,
+                       stderr=subprocess.PIPE, timeout=timeout)
     end = time.time()
     return p.stdout.decode('utf-8'), end-start, p.returncode
+
 
 def run_tests(tests):
     cpu_count = multiprocessing.cpu_count()
@@ -63,7 +69,8 @@ def run_tests(tests):
 
                     try:
                         # Run synthesis
-                        out, synth_time, returncode = run_program([program, test] + args)
+                        out, synth_time, returncode = run_program(
+                            [program, test] + args)
                         if returncode != 0:
                             raise RuntimeError('Synthesis failed')
 
@@ -97,18 +104,20 @@ def plot_results():
     df.to_csv('/tmp/stats.csv', index=False)
 
     # Call RScript on plotting script.
-    subprocess.run(['Rscript', os.path.join(script_dir, 'plot.r'), '/tmp/stats.csv', 'plot_white'])
+    subprocess.run(['Rscript', os.path.join(
+        script_dir, 'plot.r'), '/tmp/stats.csv', 'plot_white'])
 
 
 def main():
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Run tests')
-    parser.add_argument('--exp', action='store_true', default=False, help='Run experiments')
+    parser.add_argument('--exp', action='store_true',
+                        default=False, help='Run experiments')
     args = parser.parse_args()
 
     if args.exp:
         run_tests(tests)
-    
+
     # Plot results.
     plot_results()
 
