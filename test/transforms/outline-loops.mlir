@@ -1,8 +1,7 @@
 // RUN: opt %s --outline-loops | FileCheck %s
 
-// CHECK: %0 = call @fn_0
-// CHECK-NEXT: %1 = call @fn_1
-
+// CHECK:       %0 = call @fn_0
+// CHECK-NEXT:  %1 = call @fn_1
 module {
   func.func @foo(%arg0: memref<3x5xf64>, %arg1: memref<3x5xf64>) -> memref<3x5xf64> {
     %res = memref.alloc() : memref<3x5xf64>
