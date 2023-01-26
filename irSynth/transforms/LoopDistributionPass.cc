@@ -115,7 +115,6 @@ void LoopDistributionPass::runOnOperation() {
   for (auto func : operation.getOps<func::FuncOp>()) {
     distributeLoops(func);
   }
-  operation->dump();
 }
 
 std::unique_ptr<OperationPass<ModuleOp>> createLoopDistributionPass() {
