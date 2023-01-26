@@ -1,7 +1,7 @@
 #include "LoopOutlinePass.h"
 
-#include "analysis/PolyhedralAnalysis.h"
 #include "Utils.h"
+#include "analysis/PolyhedralAnalysis.h"
 
 #include "mlir/Dialect/Affine/IR/AffineOps.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
@@ -79,6 +79,7 @@ void outlineLoops(func::FuncOp &origFunc) {
 
   BlockAndValueMapping fnResultMapper;
   Operation *lastFunc = nullptr;
+  Operation *lastCall = nullptr;
 
   unsigned loopCounter = 0;
   for (auto *loop : loops) {
@@ -188,6 +189,7 @@ void outlineLoops(func::FuncOp &origFunc) {
     builder.setInsertionPoint(loop);
     auto callOp = builder.create<func::CallOp>(unknownLoc, func.getSymName(),
                                                func.getResultTypes(), args);
+    lastCall = callOp;
 
     // Add function call results to the fnResultMapper.
     for (int i = 0; i < callOp.getNumResults(); i++)
@@ -196,6 +198,21 @@ void outlineLoops(func::FuncOp &origFunc) {
     // Remove the loop.
     loop->erase();
   }
+
+  // Change the original function result to the result of the last outlined
+  // function.
+  // - Original function return type.
+  auto lastFuncOp = dyn_cast<func::CallOp>(lastCall);
+  auto lastFuncResultType = lastFuncOp.getResultTypes();
+  origFunc.setFunctionType(
+      builder.getFunctionType(origFunc.getArgumentTypes(), lastFuncResultType));
+
+  // - Return value.
+  auto *lastOp = origFunc.getBody().back().getTerminator();
+  assert(isa<func::ReturnOp>(lastOp) && "Expected return op at the end of the "
+                                        "function body.");
+  auto returnOp = dyn_cast<func::ReturnOp>(lastOp);
+  returnOp->setOperands(lastFuncOp->getResults());
 }
 
 void LoopOutlinePass::runOnOperation() {
