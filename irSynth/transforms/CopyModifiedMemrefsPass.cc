@@ -13,8 +13,8 @@
 using namespace mlir;
 
 void copyModifiedMemrefs(func::FuncOp &op) {
-  // Onlyt do it on functions with the "irsynth.synthesize" attribute.
-  if (!op->hasAttr("irsynth.synthesize"))
+  // Onlyt do it on functions with the "irsynth.original" attribute.
+  if (!op->hasAttr("irsynth.original"))
     return;
 
   // Get all stored memref values.

@@ -17,7 +17,7 @@ void CleanupPass::runOnOperation() {
 
   llvm::SetVector<Operation *> toErase;
   for (auto func : operation.getOps<func::FuncOp>()) {
-    if (func->hasAttr("irsynth.synthesize"))
+    if (func->hasAttr("irsynth.original") || func->hasAttr("irsynth.raised"))
       toErase.insert(func);
   }
 

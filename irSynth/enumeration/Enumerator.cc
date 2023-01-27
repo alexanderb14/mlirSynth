@@ -619,6 +619,8 @@ OwningOpRef<ModuleOp> enumerateCandidates(MLIRContext &ctx, IExecutorPtr executo
 
               auto func = acceptedModule->lookupSymbol<func::FuncOp>("foo");
               func.setName(inputFunctionName);
+              func->removeAttr("llvm.emit_c_interface");
+              func->setAttr("irsynth.raised", UnitAttr::get(&ctx));
 
               return failure();
             }

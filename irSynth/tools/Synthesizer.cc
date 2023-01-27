@@ -183,7 +183,7 @@ int main(int argc, char **argv) {
 
   // Parse the funcion ops.
   std::vector<func::FuncOp> functions =
-      getFunctions(inputOp.get(), "irsynth.synthesize");
+      getFunctions(inputOp.get(), "irsynth.original");
   LLVM_DEBUG(llvm::dbgs() << "Found " << functions.size()
                           << " functions to synthesize\n");
 
@@ -252,7 +252,7 @@ int main(int argc, char **argv) {
     // Get the function to replace.
     //auto inputFunc = kv.first;
     // Get the synthesized function.
-    auto synthesizedFunc = getFunctions(kv.second.get(), "llvm.emit_c_interface")[0];
+    auto synthesizedFunc = getFunctions(kv.second.get(), "irsynth.raised")[0];
 
     synthesizedFunc.print(llvm::outs());
     //// Move the synthesized function to the original location.

@@ -107,7 +107,7 @@ void outlineLoops(func::FuncOp &origFunc) {
     auto func = builder.create<func::FuncOp>(
         unknownLoc, "fn_" + std::to_string(loopCounter++),
         builder.getFunctionType({}, {}));
-    func->setAttr("irsynth.synthesize", builder.getUnitAttr());
+    func->setAttr("irsynth.original", builder.getUnitAttr());
     auto &bodyBlock = *func.addEntryBlock();
 
     // Add arguments to function.
