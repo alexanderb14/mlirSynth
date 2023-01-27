@@ -3,7 +3,7 @@ import argparse
 header = """
 #include "ArgTuples.h"
 
-#include "AttributeGen.h"
+#include "Generators.h"
 
 #include "Utils.h"
 
