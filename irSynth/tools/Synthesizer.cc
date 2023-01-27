@@ -1,13 +1,15 @@
 #include "ContextManager.h"
-#include "transforms/CopyModifiedMemrefsPass.h"
-#include "transforms/LoopDistributionPass.h"
-#include "transforms/LoopOutlinePass.h"
-#include "transforms/MemrefMinifyPass.h"
+
+#include "Common.h"
 #include "enumeration/ArgTuples.h"
 #include "enumeration/Candidate.h"
 #include "enumeration/Enumerator.h"
 #include "enumeration/Guide.h"
 #include "execution/Executor.h"
+#include "transforms/CopyModifiedMemrefsPass.h"
+#include "transforms/LoopDistributionPass.h"
+#include "transforms/LoopOutlinePass.h"
+#include "transforms/MemrefMinifyPass.h"
 
 #include "lhlo/IR/lhlo_ops.h"
 #include "lhlo/transforms/passes.h"
@@ -176,12 +178,14 @@ int main(int argc, char **argv) {
     llvm::errs() << "Failed to run passes on input file\n";
     return 1;
   }
-  llvm::outs() << "After preparation transformations:\n";
-  inputOp.get()->dump();
+  LLVM_DEBUG(llvm::dbgs() << "After preparation transformations:\n");
+  LLVM_DEBUG(inputOp.get()->print(llvm::dbgs()));
 
   // Parse the funcion ops.
-  std::vector<func::FuncOp> functions = getFunctions(inputOp.get(), "irsynth.synthesize");
-  llvm::outs() << "Found " << functions.size() << " functions to synthesize\n";
+  std::vector<func::FuncOp> functions =
+      getFunctions(inputOp.get(), "irsynth.synthesize");
+  LLVM_DEBUG(llvm::dbgs() << "Found " << functions.size()
+                          << " functions to synthesize\n");
 
   IExecutorPtr executor;
   if (numThreads == 1) {
@@ -211,11 +215,12 @@ int main(int argc, char **argv) {
     } else {
       opsVec = supportedOps;
     }
-    auto availableOps = getDialectOps(ctx, dialects, opsVec, true);
+    auto availableOps = getDialectOps(ctx, dialects, opsVec, false);
 
     // Synthesize.
-    llvm::outs() << "Synthesizing funcion " << inputFunc.getName() << "\n";
-    inputFunc.dump();
+    LLVM_DEBUG(llvm::dbgs()
+               << "Synthesizing function " << inputFunc.getName() << "\n");
+    LLVM_DEBUG(inputFunc.print(llvm::dbgs()));
 
     CandidateStorePtr candidateStore = std::make_shared<CandidateStore>();
 

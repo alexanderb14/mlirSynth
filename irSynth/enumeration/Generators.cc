@@ -1,4 +1,4 @@
-#include "AttributeGen.h"
+#include "Generators.h"
 
 #include "mlir-hlo/Dialect/mhlo/IR/hlo_ops.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"

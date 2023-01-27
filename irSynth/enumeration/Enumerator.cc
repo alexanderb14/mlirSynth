@@ -1,7 +1,8 @@
 #include "Enumerator.h"
 
 #include "ArgTuples.h"
-#include "AttributeGen.h"
+#include "Generators.h"
+#include "Common.h"
 #include "Utils.h"
 #include "enumeration/Candidate.h"
 #include "execution/ArgUtils.h"
@@ -536,9 +537,9 @@ process(MLIRContext &ctx, EnumerationStats &stats,
 
   if (returnShape == targetShape) {
     if (areArraysEqual(refOut, out, returnShape)) {
-      llvm::outs() << "Found a match!\n";
+      LLVM_DEBUG(llvm::dbgs() << "Found a match!\n");
+      LLVM_DEBUG(module->print(llvm::dbgs()));
       // printArray(out, returnShape);
-      module->dump();
 
       candidateStore->merge(localCandidateStore);
       stats.numOps = newCandidate->getNumOps();
@@ -573,7 +574,7 @@ OwningOpRef<ModuleOp> enumerateCandidates(MLIRContext &ctx, IExecutorPtr executo
   assert(succeeded(jitAndInvoke(inputModule, args, ret, false)));
 
   double *refOut = getReturnDataPtr(ret);
-  printArray(refOut, targetShape);
+  LLVM_DEBUG(printArray(refOut, targetShape));
 
   convertScalarToMemrefArgs(args);
 

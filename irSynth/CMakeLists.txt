@@ -63,7 +63,7 @@ add_llvm_executable(
   synthesizer
   tools/Synthesizer.cc
   ContextManager.cc
-  enumeration/AttributeGen.cc
+  enumeration/Generators.cc
   enumeration/Candidate.cc
   enumeration/Enumerator.cc
   enumeration/Guide.cc

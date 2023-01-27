@@ -1,5 +1,7 @@
 #include "ContextManager.h"
 
+#include "Common.h"
+
 #include "gml_st/IR/gml_st_ops.h"
 #include "gml_st/transforms/passes.h"
 #include "gml_st/transforms/test_passes.h"
@@ -59,7 +61,7 @@ MLIRContext *ContextManager::createContext() {
   ctx->getOrLoadDialect<mhlo::MhloDialect>();
   ctx->getOrLoadDialect<chlo::ChloDialect>();
 
-  llvm::outs() << "Created new context " << ctx.get() << "\n";
+  LLVM_DEBUG(llvm::dbgs() << "Created new context " << ctx.get() << "\n");
 
   contexts.push_back(ctx);
   return ctx.get();
