@@ -249,7 +249,7 @@ int main(int argc, char **argv) {
     // Get the synthesized function.
     auto synthesizedFunc = getFunctions(kv.second.get(), "llvm.emit_c_interface")[0];
 
-    synthesizedFunc.dump();
+    synthesizedFunc.print(llvm::outs());
     //// Move the synthesized function to the original location.
     //synthesizedFunc->moveBefore(inputFunc);
     //// Remove the original function.
