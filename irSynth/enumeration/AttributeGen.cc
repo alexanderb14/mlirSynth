@@ -1,5 +1,6 @@
 #include "AttributeGen.h"
 
+#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/IR/BuiltinAttributes.h"
 #include "mlir/IR/BuiltinTypeInterfaces.h"
@@ -138,4 +139,33 @@ genAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
   // printAttributes(attributes);
 
   return attributes;
+}
+
+std::vector<std::shared_ptr<Region>> getRegions(OpBuilder &builder) {
+  auto unknownLoc = builder.getUnknownLoc();
+
+  // Create region with a single block.
+  std::shared_ptr<Region> region = std::make_shared<Region>();
+  Block *block = new Block();
+  region->push_back(block);
+
+  // Add two arguments to the block.
+  auto tensorType = RankedTensorType::get({}, builder.getF64Type());
+  block->addArgument(tensorType, unknownLoc);
+  block->addArgument(tensorType, unknownLoc);
+
+  // Create a add operation with the two arguments.
+  auto addOp = builder.create<mhlo::AddOp>(unknownLoc, block->getArgument(0),
+                                           block->getArgument(1));
+  block->push_back(addOp);
+
+  // Create a mhlo return operation with the result of the add operation.
+  auto returnOp =
+      builder.create<mhlo::ReturnOp>(unknownLoc, block->back().getResults());
+  block->push_back(returnOp);
+
+  std::vector<std::shared_ptr<Region>> regions;
+  regions.push_back(region);
+
+  return regions;
 }

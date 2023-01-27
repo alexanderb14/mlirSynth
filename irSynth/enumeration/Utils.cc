@@ -1,58 +1,6 @@
-#include "Utils.h"
-
-#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops.h"
-#include "mlir/Dialect/Affine/IR/AffineOps.h"
-#include "mlir/Dialect/Func/IR/FuncOps.h"
-#include "mlir/IR/Attributes.h"
-#include "mlir/IR/BuiltinAttributes.h"
-#include "mlir/IR/BuiltinTypes.h"
-#include "mlir/IR/MLIRContext.h"
-#include "mlir/IR/OpDefinition.h"
-#include "mlir/IR/ValueRange.h"
-#include "llvm/ADT/ArrayRef.h"
+#include "enumeration/Utils.h"
 
 using namespace mlir;
-
-llvm::SmallVector<mlir::Operation *> getTopLevelLoops(func::FuncOp &op) {
-  llvm::SmallVector<mlir::Operation *> loops;
-  assert(op.getBody().getBlocks().size() == 1);
-  auto &block = op.getBody().getBlocks().front();
-  for (auto &op : block.getOperations()) {
-    if (dyn_cast<AffineForOp>(op)) {
-      loops.push_back(&op);
-    }
-  }
-  return loops;
-}
-
-std::vector<std::shared_ptr<Region>> getRegions(OpBuilder &builder) {
-  auto unknownLoc = builder.getUnknownLoc();
-
-  // Create region with a single block.
-  std::shared_ptr<Region> region = std::make_shared<Region>();
-  Block *block = new Block();
-  region->push_back(block);
-
-  // Add two arguments to the block.
-  auto tensorType = RankedTensorType::get({}, builder.getF64Type());
-  block->addArgument(tensorType, unknownLoc);
-  block->addArgument(tensorType, unknownLoc);
-
-  // Create a add operation with the two arguments.
-  auto addOp = builder.create<mhlo::AddOp>(unknownLoc, block->getArgument(0),
-                                           block->getArgument(1));
-  block->push_back(addOp);
-
-  // Create a mhlo return operation with the result of the add operation.
-  auto returnOp =
-      builder.create<mhlo::ReturnOp>(unknownLoc, block->back().getResults());
-  block->push_back(returnOp);
-
-  std::vector<std::shared_ptr<Region>> regions;
-  regions.push_back(region);
-
-  return regions;
-}
 
 Operation *createDummyOperation(MLIRContext &ctx, OperationName &opName) {
   OpBuilder builder1(&ctx);
@@ -94,7 +42,7 @@ getFilteredAttributeNames(RegisteredOperationName opName) {
   std::vector<StringAttr> filteredAttrNames;
   for (auto attrName : opName.getAttributeNames()) {
     if (attrName == "precision_config" || attrName == "broadcast_dimensions" ||
-    attrName == "dot_dimension_numbers")
+        attrName == "dot_dimension_numbers")
       continue;
     filteredAttrNames.push_back(attrName);
   }

@@ -1,7 +1,7 @@
 #include "LoopOutlinePass.h"
 
-#include "Utils.h"
 #include "analysis/PolyhedralAnalysis.h"
+#include "transforms/Utils.h"
 
 #include "mlir/Dialect/Affine/IR/AffineOps.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"

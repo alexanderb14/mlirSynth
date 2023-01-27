@@ -38,7 +38,7 @@ add_library(
   transform
   transforms/CopyModifiedMemrefsPass.cc transforms/MemrefMinifyPass.cc
   transforms/LoopDistributionPass.cc transforms/LoopOutlinePass.cc
-  transforms/CleanupPass.cc Utils.cc)
+  transforms/CleanupPass.cc transforms/Utils.cc)
 target_include_directories(transform PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(transform PUBLIC polyhedral-analysis)
 llvm_update_compile_flags(transform)
@@ -68,6 +68,7 @@ add_llvm_executable(
   enumeration/Enumerator.cc
   enumeration/Guide.cc
   enumeration/Stats.cc
+  enumeration/Utils.cc
   execution/ArgUtils.cc
   execution/ArrayUtils.cc
   execution/Executor.cc

@@ -9,4 +9,6 @@ std::vector<mlir::Attribute>
 genAttributes(mlir::OpBuilder &builder,
               mlir::Region::BlockArgListType &functionArgs, int maxRank);
 
+std::vector<std::shared_ptr<mlir::Region>> getRegions(mlir::OpBuilder &builder);
+
 #endif // IRSYNTH_ATTRIBUTEGEN_H
