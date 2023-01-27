@@ -454,7 +454,7 @@ getOperandArgTuples(MLIRContext &ctx, RegisteredOperationName opName,
       genAttributes(builder, blockArgs, 2);
   int numRegions = getRequiredNumRegions(op);
 
-  std::vector<std::shared_ptr<Region>> regionCandidates = getRegions(builder);
+  std::vector<std::shared_ptr<Region>> regionCandidates = genRegions(builder);
   if (numOperands == 0 && numAttributes == 0 && numRegions == 1) {
     return get0operands0attributes1regions(
         operandCandidates, attributeCandidates, regionCandidates);

@@ -33,7 +33,7 @@ getOperandArgTuples(MLIRContext &ctx, RegisteredOperationName opName,
       genAttributes(builder, blockArgs, 2);
   int numRegions = getRequiredNumRegions(op);
 
-  std::vector<std::shared_ptr<Region>> regionCandidates = getRegions(builder);
+  std::vector<std::shared_ptr<Region>> regionCandidates = genRegions(builder);
 """
 
 body_footer = """

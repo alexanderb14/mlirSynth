@@ -141,7 +141,7 @@ genAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
   return attributes;
 }
 
-std::vector<std::shared_ptr<Region>> getRegions(OpBuilder &builder) {
+std::vector<std::shared_ptr<Region>> genRegions(OpBuilder &builder) {
   auto unknownLoc = builder.getUnknownLoc();
 
   // Create region with a single block.
