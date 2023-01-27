@@ -1,3 +1,6 @@
+#ifndef IRSYNTH_TRANSFORMS_CLEANUPPASS_H
+#define IRSYNTH_TRANSFORMS_CLEANUPPASS_H
+
 #include "mlir/IR/BuiltinOps.h"
 #include "mlir/Pass/Pass.h"
 
@@ -18,3 +21,5 @@ struct CleanupPass
 namespace mlir {
 inline void registerCleanupPass() { PassRegistration<CleanupPass>(); }
 } // namespace mlir
+
+#endif // IRSYNTH_TRANSFORMS_CLEANUPPASS_H

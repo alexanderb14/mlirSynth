@@ -1,3 +1,6 @@
+#ifndef IRSYNTH_TRANSFORMS_MEMREFMINIFYPASS_H
+#define IRSYNTH_TRANSFORMS_MEMREFMINIFYPASS_H
+
 #include "mlir/IR/BuiltinOps.h"
 #include "mlir/Pass/Pass.h"
 
@@ -18,3 +21,5 @@ struct MemrefMinifyPass
 namespace mlir {
 inline void registerMemrefMinifyPass() { PassRegistration<MemrefMinifyPass>(); }
 } // namespace mlir
+
+#endif // IRSYNTH_TRANSFORMS_MEMREFMINIFYPASS_H

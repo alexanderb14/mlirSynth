@@ -1,3 +1,6 @@
+#ifndef IRSYNTH_TRANSFORMS_LOOPOUTLINEPASS_H
+#define IRSYNTH_TRANSFORMS_LOOPOUTLINEPASS_H
+
 #include "mlir/IR/BuiltinOps.h"
 #include "mlir/Pass/Pass.h"
 
@@ -19,3 +22,5 @@ struct LoopOutlinePass
 namespace mlir {
 inline void registerLoopOutlinePass() { PassRegistration<LoopOutlinePass>(); }
 } // namespace mlir
+
+#endif // IRSYNTH_TRANSFORMS_LOOPOUTLINEPASS_H

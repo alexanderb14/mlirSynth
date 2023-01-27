@@ -1,3 +1,6 @@
+#ifndef IRSYNTH_TRANSFORMS_COPYMODIFIEDMEMREFSPASS_H
+#define IRSYNTH_TRANSFORMS_COPYMODIFIEDMEMREFSPASS_H
+
 #include "mlir/IR/BuiltinOps.h"
 #include "mlir/Pass/Pass.h"
 
@@ -24,3 +27,5 @@ inline void registerCopyModifiedMemrefsPass() {
   PassRegistration<CopyModifiedMemrefsPass>();
 }
 } // namespace mlir
+
+#endif // IRSYNTH_TRANSFORMS_COPYMODIFIEDMEMREFSPASS_H

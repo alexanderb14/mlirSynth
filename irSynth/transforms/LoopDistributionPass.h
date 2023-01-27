@@ -1,3 +1,6 @@
+#ifndef IRSYNTH_TRANSFORMS_LOOPDISTRIBUTIONPASS_H
+#define IRSYNTH_TRANSFORMS_LOOPDISTRIBUTIONPASS_H
+
 #include "mlir/IR/BuiltinOps.h"
 #include "mlir/Pass/Pass.h"
 
@@ -21,3 +24,5 @@ inline void registerLoopDistributionPass() {
   PassRegistration<LoopDistributionPass>();
 }
 } // namespace mlir
+
+#endif // IRSYNTH_TRANSFORMS_LOOPDISTRIBUTIONPASS_H
