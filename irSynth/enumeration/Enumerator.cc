@@ -1,10 +1,10 @@
 #include "Enumerator.h"
 
-#include "ArgTuples.h"
-#include "Generators.h"
 #include "Common.h"
-#include "Utils.h"
+#include "enumeration/ArgTuples.h"
 #include "enumeration/Candidate.h"
+#include "enumeration/Generators.h"
+#include "enumeration/Utils.h"
 #include "execution/ArgUtils.h"
 #include "execution/ArrayUtils.h"
 

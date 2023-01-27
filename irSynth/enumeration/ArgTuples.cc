@@ -2,9 +2,9 @@
 // scripts/gen_ArgTuples.py
 
 #include "ArgTuples.h"
-#include "Generators.h"
 
-#include "Utils.h"
+#include "enumeration/Generators.h"
+#include "enumeration/Utils.h"
 
 #include <range/v3/all.hpp>
 #include <range/v3/view/cartesian_product.hpp>

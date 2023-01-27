@@ -1,9 +1,8 @@
 #ifndef IRSYNTH_ENUMERATOR_H
 #define IRSYNTH_ENUMERATOR_H
 
-#include "Candidate.h"
-#include "Stats.h"
-
+#include "enumeration/Candidate.h"
+#include "enumeration/Stats.h"
 #include "execution/Executor.h"
 
 #include "mlir/Dialect/Func/IR/FuncOps.h"

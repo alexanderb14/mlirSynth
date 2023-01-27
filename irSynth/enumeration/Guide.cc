@@ -1,14 +1,15 @@
 #include "Guide.h"
 
+#include "analysis/PolyhedralAnalysis.h"
+
 #include "mlir/Dialect/Arith/IR/Arith.h"
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/connected_components.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/tiernan_all_cycles.hpp>
-#include <unordered_map>
 
-#include "analysis/PolyhedralAnalysis.h"
+#include <unordered_map>
 
 int countNumArithDiv(mlir::Operation *op) {
   int numArithDiv = 0;

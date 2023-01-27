@@ -1,16 +1,17 @@
 #ifndef IRSYNTH_SCOP_H
 #define IRSYNTH_SCOP_H
 
+#include "isl/isl_helper.h"
+
 #include "mlir/Dialect/Affine/Analysis/AffineStructures.h"
+#include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/IR/AsmState.h"
 #include "mlir/IR/BuiltinOps.h"
 #include "mlir/IR/Operation.h"
-#include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/Pass/Pass.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
 
-#include "isl/isl_helper.h"
 #include <boost/graph/adjacency_list.hpp>
 #include <unordered_map>
 

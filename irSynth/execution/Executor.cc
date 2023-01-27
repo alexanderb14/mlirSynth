@@ -1,7 +1,7 @@
 #include "Executor.h"
 
-#include "ArgUtils.h"
-#include "Lowering.h"
+#include "execution/ArgUtils.h"
+#include "execution/Lowering.h"
 
 #include "mlir/Bytecode/BytecodeReader.h"
 #include "mlir/Bytecode/BytecodeWriter.h"
