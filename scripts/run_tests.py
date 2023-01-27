@@ -55,6 +55,7 @@ def run_tests(tests):
             for ops in ['ground_truth', 'heuristic', 'all']:
                 for distribute in [True, False]:
                     args = ['--num-threads=%d' % cpu_count,
+                            '--print-stats',
                             '--max-num-ops=6']
                     if prune_equivalent_candidates:
                         args += ['--ignore-equivalent-candidates']

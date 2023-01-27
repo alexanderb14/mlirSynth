@@ -543,7 +543,10 @@ process(MLIRContext &ctx, EnumerationStats &stats,
 
       candidateStore->merge(localCandidateStore);
       stats.numOps = newCandidate->getNumOps();
-      stats.dump();
+
+      if (options.printStats) {
+        stats.dump();
+      }
 
       return accept_solution;
     }
@@ -593,11 +596,6 @@ OwningOpRef<ModuleOp> enumerateCandidates(MLIRContext &ctx, IExecutorPtr executo
   // - Enumerate candidates.
   EnumerationStats stats;
   for (int numOps = 0; numOps <= options.maxNumOps; numOps++) {
-    if (options.printStats) {
-      llvm::outs() << "\nLength: " << numOps << "\n";
-      candidateStore->dumpSizes();
-    }
-
     CandidateStorePtr localCandidateStore = std::make_shared<CandidateStore>();
 
     for (auto opName : avaliableOps) {
@@ -633,8 +631,10 @@ OwningOpRef<ModuleOp> enumerateCandidates(MLIRContext &ctx, IExecutorPtr executo
     candidateStore->merge(localCandidateStore);
   }
 
-  llvm::outs() << "\n";
-  stats.dump();
+  if (options.printStats) {
+    llvm::outs() << "\n";
+    stats.dump();
+  }
 
   return nullptr;
 }

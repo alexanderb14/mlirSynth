@@ -240,10 +240,11 @@ int main(int argc, char **argv) {
                    << "\n";
       return 1;
     }
-    module->dump();
     originaToSynthesizedFns[inputFunc] = std::move(module);
 
-    candidateStore->dumpSizes();
+    if (options.printStats) {
+      candidateStore->dumpSizes();
+    }
   }
 
   // Replace the original functions with the synthesized ones.
