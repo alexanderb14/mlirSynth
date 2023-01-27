@@ -560,8 +560,9 @@ OwningOpRef<ModuleOp> enumerateCandidates(MLIRContext &ctx, IExecutorPtr executo
                          CandidateStorePtr &candidateStore,
                          std::vector<RegisteredOperationName> &avaliableOps,
                          EnumerationOptions &options) {
-  prepareInputFunction(inputFunction);
+  auto inputFunctionName = inputFunction.getName().str();
   auto targetShape = getReturnShape(inputFunction);
+  prepareInputFunction(inputFunction);
 
   // Compile and run reference.
   // - Create argument vector.
@@ -615,6 +616,9 @@ OwningOpRef<ModuleOp> enumerateCandidates(MLIRContext &ctx, IExecutorPtr executo
 
             if (status == accept_solution) {
               acceptedModule = std::move(module);
+
+              auto func = acceptedModule->lookupSymbol<func::FuncOp>("foo");
+              func.setName(inputFunctionName);
 
               return failure();
             }
