@@ -29,7 +29,7 @@ breaks = c(0, 1, 10, 100)
 breaks_detailed = unique(c(seq(0, 1, 0.1),
                            seq(1, 10, 1),
                            seq(10, 100, 10),
-                           seq(100, 300, 100)))
+                           seq(100, 500, 100)))
 
 plot_and_save <- function(plot_obj, filename) {
   if (PLOT_DARK == TRUE) {
@@ -61,7 +61,7 @@ plot_and_save(
       labels = breaks
     ) +
     geom_hline(yintercept = 1) +
-    geom_hline(yintercept = 300),
+    geom_hline(yintercept = 500),
   "overview.png"
 )
 
@@ -79,7 +79,7 @@ plot_and_save(
       labels = breaks_detailed
     ) +
     geom_hline(yintercept = 1) +
-    geom_hline(yintercept = 300),
+    geom_hline(yintercept = 500),
   "feature_distribute.png"
 )
 
@@ -96,13 +96,13 @@ plot_and_save(
       labels = breaks_detailed
     ) +
     geom_hline(yintercept = 1) +
-    geom_hline(yintercept = 300),
+    geom_hline(yintercept = 500),
   "feature_prune_equivalent_candidates.png"
 )
 
 # All best
 data_best <-
-  data %>% group_by(benchmark, operations)%>% summarise(synth_time_best = min(synth_time))
+  data %>% group_by(benchmark, operations)%>% summarise(synth_time_best = min(synth_time, na.rm = TRUE))
 data_best %>%
   group_by(operations) %>%
   summarise(ymean = mean(synth_time_best))
@@ -119,6 +119,6 @@ plot_and_save(
       labels = breaks_detailed
     ) +
     geom_hline(yintercept = 1) +
-    geom_hline(yintercept = 300),
+    geom_hline(yintercept = 500),
   "all_best.png"
 )

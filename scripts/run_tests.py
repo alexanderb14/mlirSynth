@@ -1,3 +1,5 @@
+import tqdm
+
 import argparse
 import json
 import multiprocessing
@@ -9,7 +11,7 @@ import pandas as pd
 # fmt: off
 tests = [
     ('benchmarks/doitgen.mlir', 'doitgen', ['mhlo.dot_general']),
-    ('test/correlation_1.mlir', 'correlation_1', ['chlo.broadcast_divide', 'mhlo.reduce']),
+    ('testfiles/correlation_1.mlir', 'correlation_1', ['chlo.broadcast_divide', 'mhlo.reduce']),
 #    ('test/correlation_3.mlir', 'correlation_3', ['chlo.broadcast_subtract', 'chlo.broadcast_multiply', 'chlo.broadcast_divide']),
     ('benchmarks/atax.mlir', 'atax', ['mhlo.dot','chlo.broadcast_add','chlo.broadcast_subtract']),
     ('benchmarks/3mm.mlir', '3mm', ['mhlo.dot']),
@@ -26,14 +28,12 @@ tests = [
 script_dir = os.path.dirname(os.path.realpath(__file__))
 timeout = 300
 
-# Run program x and get output as string
-
 
 def run_program(x):
     start = time.time()
     print(' '.join(x))
     p = subprocess.run(x, stdout=subprocess.PIPE,
-                       stderr=subprocess.PIPE, timeout=timeout)
+                       stderr=subprocess.PIPE)
     end = time.time()
     return p.stdout.decode('utf-8'), end-start, p.returncode
 
@@ -45,7 +45,7 @@ def run_tests(tests):
     program = os.path.join(script_dir, '../build/bin/synthesizer')
 
     stats_all = []
-    for test in tests:
+    for test in tqdm.tqdm(tests):
         test_file, test_name, allowed_ops = test
         print('Running test: ' + test_file)
 
@@ -68,27 +68,32 @@ def run_tests(tests):
                     if distribute:
                         args += ['--distribute']
 
-                    try:
-                        # Run synthesis
-                        out, synth_time, returncode = run_program(
-                            [program, test] + args)
-                        if returncode != 0:
-                            raise RuntimeError('Synthesis failed')
+                    # Run
+                    out, synth_time, returncode = run_program(
+                        ['timeout', str(timeout)] + [program, test] + args)
 
-                        # Parse stats
-                        statsStr = out.split('JSON: ')[1].split('\n')[0]
-                        stats = json.loads(statsStr)
-                        stats['synth_time'] = synth_time
-                    except (subprocess.TimeoutExpired, RuntimeError) as e:
-                        stats = {}
-                        stats['synth_time'] = timeout
-
+                    # Record stats
+                    stats = {}
                     stats['test_file'] = test_file.split('.')[0]
                     stats['benchmark'] = test_name
                     stats['prune_equivalent_candidates'] = prune_equivalent_candidates
                     stats['operations'] = ops
                     stats['distribute'] = distribute
                     stats['cmd'] = ' '.join([program, test] + args)
+
+                    stats['status'] = returncode
+
+                    if returncode == 0:
+                        statsStr = out.split('JSON: ')[1].split('\n')[0]
+                        stats.update(json.loads(statsStr))
+
+                        stats['synth_time'] = synth_time
+                    else:
+                        print('Synthesis failed')
+
+                        # Timeout
+                        if returncode == 124:
+                            stats['synth_time'] = synth_time
 
                     print(stats)
                     stats_all.append(stats)
