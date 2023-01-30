@@ -6,6 +6,8 @@
 #include "enumeration/Enumerator.h"
 #include "enumeration/Guide.h"
 #include "execution/Executor.h"
+#include "mlir/IR/BuiltinTypes.h"
+#include "mlir/IR/Location.h"
 #include "transforms/CopyModifiedMemrefsPass.h"
 #include "transforms/LoopDistributionPass.h"
 #include "transforms/LoopOutlinePass.h"
@@ -33,6 +35,8 @@
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Support/ThreadPool.h"
 #include "llvm/Support/Threading.h"
+
+#include <iterator>
 
 using namespace llvm;
 using namespace mlir;
@@ -204,8 +208,9 @@ int main(int argc, char **argv) {
                 "mhlo.reduce",
                 "mhlo.dynamic_reshape",
                 "mhlo.dot_general"};
-  llvm::DenseMap<func::FuncOp, OwningOpRef<ModuleOp>> originaToSynthesizedFns;
-  for (auto inputFunc : functions) {
+  llvm::DenseMap<func::FuncOp, OwningOpRef<ModuleOp>> originalToSynthesizedFns;
+  for (auto inputFuncOrig : functions) {
+    auto inputFunc = inputFuncOrig.clone();
     // Get ops.
     std::vector<std::string> opsVec;
     if (guide) {
@@ -240,26 +245,105 @@ int main(int argc, char **argv) {
                    << "\n";
       return 1;
     }
-    originaToSynthesizedFns[inputFunc] = std::move(module);
+    originalToSynthesizedFns[inputFuncOrig] = std::move(module);
 
     if (options.printStats) {
       candidateStore->dumpSizes();
     }
   }
 
-  // Replace the original functions with the synthesized ones.
-  for (auto &kv : originaToSynthesizedFns) {
-    // Get the function to replace.
-    //auto inputFunc = kv.first;
-    // Get the synthesized function.
-    auto synthesizedFunc = getFunctions(kv.second.get(), "irsynth.raised")[0];
+  OpBuilder builder(ctx);
 
-    synthesizedFunc.print(llvm::outs());
-    //// Move the synthesized function to the original location.
-    //synthesizedFunc->moveBefore(inputFunc);
-    //// Remove the original function.
-    //inputFunc.erase();
+  for (auto &kv : originalToSynthesizedFns) {
+    auto inputFunc = kv.first;
+    auto synthesizedFunc = getFunctions(kv.second.get(), "irsynth.raised")[0];
+    synthesizedFunc.setName(
+        StringAttr::get(ctx, inputFunc.getName() + "_raised"));
+
+    // Insert the synthesized functions into the original module.
+    synthesizedFunc->moveAfter(inputFunc);
+
+
+    // Get the call sites of the original function.
+    std::vector<func::CallOp> callSites;
+    inputOp.get()->walk([&](func::CallOp callOp) {
+      if (callOp.getCallee() == inputFunc.getName())
+        callSites.push_back(callOp);
+    });
+
+    // Change the called function to the synthesized function and
+    // insert conversion ops for their arguments and results.
+    for (auto callSite : callSites) {
+      callSite.setCallee(synthesizedFunc.getName());
+
+      // Arguments: Memref to tensor.
+      assert(callSite.getNumOperands() == synthesizedFunc.getNumArguments() &&
+             "Number of call site operands and function arguments must match");
+      for (unsigned operandIdx = 0; operandIdx < callSite.getNumOperands(); ++operandIdx) {
+        auto callArg = callSite.getOperand(operandIdx);
+        auto synthesizedArg = synthesizedFunc.getArgument(operandIdx);
+
+        // If types are the same, no need to insert conversion.
+        if (callArg.getType() == synthesizedArg.getType())
+          continue;
+
+        // If call site type is not a memref, no need to insert conversion.
+        if (!callArg.getType().isa<MemRefType>())
+          continue;
+
+        // Shapes have to match.
+        auto callArgShape = callArg.getType().cast<MemRefType>().getShape();
+        auto synthesizedArgShape =
+            synthesizedArg.getType().cast<TensorType>().getShape();
+        assert(callArgShape.size() == synthesizedArgShape.size() &&
+               "Shapes of call site and synthesized function arguments do not "
+               "match");
+
+        // Insert bufferization.to_tensor ops for the call arguments.
+        builder.setInsertionPoint(callSite);
+        auto toTensorOp = builder.create<bufferization::ToTensorOp>(
+            callSite.getLoc(), callArg);
+
+        // Replace the call site argument with the result of the to_tensor op.
+        callSite.setOperand(operandIdx, toTensorOp.getResult());
+      }
+
+      // Results: Tensor to memref.
+      assert(callSite.getNumResults() == synthesizedFunc.getNumResults() &&
+             "Number of call site results and function results must match");
+      for (unsigned resultIdx = 0; resultIdx < callSite.getNumResults();
+           resultIdx++) {
+        auto callResType = callSite.getResultTypes()[resultIdx];
+        auto synthesizedResType = synthesizedFunc.getResultTypes()[resultIdx];
+
+        // If types are the same, no need to insert conversion.
+        if (callResType == synthesizedResType)
+          continue;
+
+        // If call site type is not a memref, no need to insert conversion.
+        if (!callResType.isa<MemRefType>())
+          continue;
+
+        // Get call site result.
+        auto callRes = callSite.getResult(resultIdx);
+
+        // Insert bufferization.to_memref ops for the call results.
+        builder.setInsertionPointAfter(callSite);
+        auto toMemrefOp = builder.create<bufferization::ToMemrefOp>(
+            UnknownLoc::get(ctx), callResType, callRes);
+
+        // Set the result type of the call site to the type of the synthesized
+        // function result.
+        callSite.getResult(resultIdx).setType(synthesizedResType);
+
+        // Replace the uses of the call site result with the result of the
+        // to_memref op.
+        callRes.replaceAllUsesExcept(toMemrefOp.getResult(), toMemrefOp);
+      }
+    }
   }
+
+  inputOp.get()->print(llvm::outs());
 
   return 0;
 }
