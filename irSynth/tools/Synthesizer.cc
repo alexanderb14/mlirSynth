@@ -285,14 +285,12 @@ int main(int argc, char **argv) {
       callSite.setCallee(synthesizedFunc.getName());
 
       // Arguments: Memref to tensor.
-      assert(callSite.getNumOperands() == synthesizedFunc.getNumArguments() &&
-             "Number of call site operands and function arguments must match");
-
       std::vector<mlir::Value> callSiteOperands;
       for (auto operand : callSite.getOperands())
         callSiteOperands.push_back(operand);
 
-      for (unsigned operandIdx = 0; operandIdx < argIds.size(); ++operandIdx) {
+      unsigned operandIdx = 0;
+      for (operandIdx = 0; operandIdx < argIds.size(); ++operandIdx) {
         unsigned argId = argIds[operandIdx];
 
         auto callArg = callSiteOperands[argId];
@@ -314,6 +312,11 @@ int main(int argc, char **argv) {
         // Replace the call site argument with the result of the to_tensor op.
         callSite.setOperand(operandIdx, toTensorOp.getResult());
       }
+      // Remove the remaining call site arguments.
+      for (; operandIdx < callSite.getNumOperands(); ++operandIdx) {
+        callSite->eraseOperand(operandIdx);
+      }
+
 
       // Results: Tensor to memref.
       assert(callSite.getNumResults() == synthesizedFunc.getNumResults() &&
