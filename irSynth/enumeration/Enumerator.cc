@@ -555,11 +555,12 @@ process(MLIRContext &ctx, EnumerationStats &stats,
   return accept_candidate;
 }
 
-OwningOpRef<ModuleOp> enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
-                         func::FuncOp inputFunction,
-                         CandidateStorePtr &candidateStore,
-                         std::vector<RegisteredOperationName> &avaliableOps,
-                         EnumerationOptions &options) {
+ModuleAndArgIds
+enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
+                    func::FuncOp inputFunction,
+                    CandidateStorePtr &candidateStore,
+                    std::vector<RegisteredOperationName> &avaliableOps,
+                    EnumerationOptions &options) {
   auto inputFunctionName = inputFunction.getName().str();
   auto targetShape = getReturnShape(inputFunction);
   prepareInputFunction(inputFunction);
@@ -593,6 +594,7 @@ OwningOpRef<ModuleOp> enumerateCandidates(MLIRContext &ctx, IExecutorPtr executo
   }
 
   OwningOpRef<ModuleOp> acceptedModule = nullptr;
+  CandidatePtr acceptedCandidate = nullptr;
 
   // - Enumerate candidates.
   EnumerationStats stats;
@@ -616,6 +618,7 @@ OwningOpRef<ModuleOp> enumerateCandidates(MLIRContext &ctx, IExecutorPtr executo
 
             if (status == accept_solution) {
               acceptedModule = std::move(module);
+              acceptedCandidate = newCandidate;
 
               auto func = acceptedModule->lookupSymbol<func::FuncOp>("foo");
               func.setName(inputFunctionName);
@@ -630,8 +633,10 @@ OwningOpRef<ModuleOp> enumerateCandidates(MLIRContext &ctx, IExecutorPtr executo
                            newCandidate, options, module);
             return success();
           });
-      if (failed(status))
-        return acceptedModule;
+      if (failed(status)) {
+        auto argIds = acceptedCandidate->getArgIds();
+        return std::make_tuple(std::move(acceptedModule), argIds);
+      }
     }
 
     candidateStore->merge(localCandidateStore);
@@ -642,5 +647,5 @@ OwningOpRef<ModuleOp> enumerateCandidates(MLIRContext &ctx, IExecutorPtr executo
     stats.dump();
   }
 
-  return nullptr;
+  return std::make_tuple(nullptr, std::vector<unsigned>());
 }

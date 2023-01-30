@@ -26,7 +26,9 @@ void initializeCandidates(mlir::MLIRContext &ctx,
 mlir::OwningOpRef<mlir::ModuleOp> createModule(mlir::MLIRContext &ctx,
                                                mlir::func::FuncOp *function);
 
-mlir::OwningOpRef<mlir::ModuleOp>
+using ModuleAndArgIds =
+    std::tuple<mlir::OwningOpRef<mlir::ModuleOp>, std::vector<unsigned>>;
+ModuleAndArgIds
 enumerateCandidates(mlir::MLIRContext &ctx, IExecutorPtr executor,
                     mlir::func::FuncOp inputFunction,
                     CandidateStorePtr &candidateStore,

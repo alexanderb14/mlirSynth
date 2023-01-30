@@ -55,7 +55,8 @@ std::vector<std::string> splitString(std::string &str) {
   return vect;
 }
 
-std::vector<func::FuncOp> getFunctions(mlir::Operation *op, std::string attrName) {
+std::vector<func::FuncOp> getFunctions(mlir::Operation *op,
+                                       std::string attrName) {
   std::vector<func::FuncOp> functions;
   op->walk([&](func::FuncOp func) {
     if (attrName.empty() || func->getAttr(attrName))
@@ -201,14 +202,16 @@ int main(int argc, char **argv) {
 
   // Synthesize functions.
   std::vector<std::string> supportedOps = {"chlo.broadcast_divide",
-                "chlo.broadcast_add",
-                "chlo.broadcast_subtract",
-                "chlo.broadcast_multiply",
-                "mhlo.dot",
-                "mhlo.reduce",
-                "mhlo.dynamic_reshape",
-                "mhlo.dot_general"};
+                                           "chlo.broadcast_add",
+                                           "chlo.broadcast_subtract",
+                                           "chlo.broadcast_multiply",
+                                           "mhlo.dot",
+                                           "mhlo.reduce",
+                                           "mhlo.dynamic_reshape",
+                                           "mhlo.dot_general"};
   llvm::DenseMap<func::FuncOp, OwningOpRef<ModuleOp>> originalToSynthesizedFns;
+  llvm::DenseMap<func::FuncOp, std::vector<unsigned>>
+      originalToSynthesizedArgIds;
   for (auto inputFuncOrig : functions) {
     auto inputFunc = inputFuncOrig.clone();
     // Get ops.
@@ -238,14 +241,18 @@ int main(int argc, char **argv) {
     options.maxNumOps = maxNumOps;
     options.ignoreEquivalentCandidates = ignoreEquivalentCandidates;
 
-    OwningOpRef<ModuleOp> module = enumerateCandidates(
+    ModuleAndArgIds enumerated = enumerateCandidates(
         *ctx, executor, inputFunc, candidateStore, availableOps, options);
+    auto module = std::move(std::get<0>(enumerated));
+    auto argIds = std::get<1>(enumerated);
+
     if (!module) {
       llvm::errs() << "Failed to synthesize function " << inputFunc.getName()
                    << "\n";
       return 1;
     }
     originalToSynthesizedFns[inputFuncOrig] = std::move(module);
+    originalToSynthesizedArgIds[inputFuncOrig] = argIds;
 
     if (options.printStats) {
       candidateStore->dumpSizes();
@@ -257,12 +264,13 @@ int main(int argc, char **argv) {
   for (auto &kv : originalToSynthesizedFns) {
     auto inputFunc = kv.first;
     auto synthesizedFunc = getFunctions(kv.second.get(), "irsynth.raised")[0];
+    auto argIds = originalToSynthesizedArgIds[inputFunc];
+
     synthesizedFunc.setName(
         StringAttr::get(ctx, inputFunc.getName() + "_raised"));
 
     // Insert the synthesized functions into the original module.
     synthesizedFunc->moveAfter(inputFunc);
-
 
     // Get the call sites of the original function.
     std::vector<func::CallOp> callSites;
@@ -279,8 +287,15 @@ int main(int argc, char **argv) {
       // Arguments: Memref to tensor.
       assert(callSite.getNumOperands() == synthesizedFunc.getNumArguments() &&
              "Number of call site operands and function arguments must match");
-      for (unsigned operandIdx = 0; operandIdx < callSite.getNumOperands(); ++operandIdx) {
-        auto callArg = callSite.getOperand(operandIdx);
+
+      std::vector<mlir::Value> callSiteOperands;
+      for (auto operand : callSite.getOperands())
+        callSiteOperands.push_back(operand);
+
+      for (unsigned operandIdx = 0; operandIdx < argIds.size(); ++operandIdx) {
+        unsigned argId = argIds[operandIdx];
+
+        auto callArg = callSiteOperands[argId];
         auto synthesizedArg = synthesizedFunc.getArgument(operandIdx);
 
         // If types are the same, no need to insert conversion.
@@ -290,14 +305,6 @@ int main(int argc, char **argv) {
         // If call site type is not a memref, no need to insert conversion.
         if (!callArg.getType().isa<MemRefType>())
           continue;
-
-        // Shapes have to match.
-        auto callArgShape = callArg.getType().cast<MemRefType>().getShape();
-        auto synthesizedArgShape =
-            synthesizedArg.getType().cast<TensorType>().getShape();
-        assert(callArgShape.size() == synthesizedArgShape.size() &&
-               "Shapes of call site and synthesized function arguments do not "
-               "match");
 
         // Insert bufferization.to_tensor ops for the call arguments.
         builder.setInsertionPoint(callSite);

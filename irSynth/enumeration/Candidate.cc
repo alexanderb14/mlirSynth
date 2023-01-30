@@ -17,7 +17,10 @@ SmallVector<Value> Candidate::merge(MLIRContext &ctx,
     unsigned argIdx = 0;
     for (auto &arg : other->region->getArguments()) {
       unsigned argId = other->argIds[argIdx++];
-      argIds.push_back(argId);
+
+      if (std::find(argIds.begin(), argIds.end(), argId) == argIds.end()) {
+        argIds.push_back(argId);
+      }
 
       if (seenArgs.count(argId) == 0) {
         auto newArg = block.addArgument(arg.getType(), UnknownLoc::get(&ctx));
