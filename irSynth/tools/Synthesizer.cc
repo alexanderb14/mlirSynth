@@ -300,23 +300,35 @@ int main(int argc, char **argv) {
         if (callArg.getType() == synthesizedArg.getType())
           continue;
 
-        // If call site type is not a memref, no need to insert conversion.
-        if (!callArg.getType().isa<MemRefType>())
-          continue;
+        // If call arg type is a memref, insert conversion from memref to
+        // tensor.
+        if (callArg.getType().isa<MemRefType>()) {
+          // Insert bufferization.to_tensor ops for the call arguments.
+          builder.setInsertionPoint(callSite);
+          auto toTensorOp = builder.create<bufferization::ToTensorOp>(
+              callSite.getLoc(), callArg);
 
-        // Insert bufferization.to_tensor ops for the call arguments.
-        builder.setInsertionPoint(callSite);
-        auto toTensorOp = builder.create<bufferization::ToTensorOp>(
-            callSite.getLoc(), callArg);
+          // Replace the call site argument with the result of the to_tensor op.
+          callSite.setOperand(operandIdx, toTensorOp.getResult());
 
-        // Replace the call site argument with the result of the to_tensor op.
-        callSite.setOperand(operandIdx, toTensorOp.getResult());
+          // If call arg type is a scalar float, insert conversion from float to
+          // tensor.
+        } else if (callArg.getType().isa<FloatType>()) {
+          // Insert tensor.from_elements ops for the call arguments.
+          builder.setInsertionPoint(callSite);
+          auto tensorType = RankedTensorType::get({}, callArg.getType());
+          auto fromElementsOp = builder.create<tensor::FromElementsOp>(
+              callSite.getLoc(), tensorType, callArg);
+
+          // Replace the call site argument with the result of the
+          // from_elements op.
+          callSite.setOperand(operandIdx, fromElementsOp.getResult());
+        }
       }
       // Remove the remaining call site arguments.
       for (; operandIdx < callSite.getNumOperands(); ++operandIdx) {
         callSite->eraseOperand(operandIdx);
       }
-
 
       // Results: Tensor to memref.
       assert(callSite.getNumResults() == synthesizedFunc.getNumResults() &&
