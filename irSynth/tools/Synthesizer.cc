@@ -119,6 +119,10 @@ int main(int argc, char **argv) {
   cl::opt<bool> printStats("print-stats", cl::desc("Print stats"),
                            cl::init(false));
 
+  cl::opt<bool> printSynthesisSteps(
+      "print-synthesis-steps", cl::desc("Print synthesis steps"),
+      cl::init(false));
+
   cl::opt<std::string> ops(
       "ops", cl::desc("Comma separated list of allowed ops"), cl::init(""));
   cl::opt<int> maxNumOps("max-num-ops", cl::desc("Max number of operations"),
@@ -226,9 +230,11 @@ int main(int argc, char **argv) {
     auto availableOps = getDialectOps(ctx, dialects, opsVec, false);
 
     // Synthesize.
-    LLVM_DEBUG(llvm::dbgs()
-               << "Synthesizing function " << inputFunc.getName() << "\n");
-    LLVM_DEBUG(inputFunc.print(llvm::dbgs()));
+    if (printSynthesisSteps) {
+      llvm::outs() << "Synthesizing function " << inputFunc.getName() << "\n"
+        << "--------------------------\n";
+      inputFunc.print(llvm::outs());
+    }
 
     CandidateStorePtr candidateStore = std::make_shared<CandidateStore>();
 
@@ -253,6 +259,12 @@ int main(int argc, char **argv) {
     }
     originalToSynthesizedFns[inputFuncOrig] = std::move(module);
     originalToSynthesizedArgIds[inputFuncOrig] = argIds;
+
+    if (printSynthesisSteps) {
+      llvm::outs() << "Synthesized function " << inputFunc.getName() << ":\n"
+        << "--------------------------\n";
+      module->print(llvm::outs());
+    }
 
     if (options.printStats) {
       candidateStore->dumpSizes();
