@@ -40,8 +40,8 @@ enum ProcessingStatus {
   reject_hasEmptyReturnShape,
   reject_isNotExecutable,
   reject_hashNotUnique,
-  accept_candidate,
-  accept_solution,
+  accept_as_candidate,
+  accept_as_solution,
 };
 
 std::string processingStatusToStr(ProcessingStatus &status) {
@@ -67,10 +67,10 @@ std::string processingStatusToStr(ProcessingStatus &status) {
     return "reject_isNotExecutable";
   if (status == reject_hashNotUnique)
     return "reject_hashNotUnique";
-  if (status == accept_candidate)
-    return "accept_candidate";
-  if (status == accept_solution)
-    return "accept_solution";
+  if (status == accept_as_candidate)
+    return "accept_as_candidate";
+  if (status == accept_as_solution)
+    return "accept_as_solution";
   assert(false && "Processing Status not known");
 }
 
@@ -112,7 +112,7 @@ void printCandidate(ProcessingStatus status,
       }
     }
 
-    if (status == accept_candidate) {
+    if (status == accept_as_candidate) {
       statusStr = "\033[1;42m" + statusStr + "\033[0m";
     } else {
       statusStr = "\033[1;41m" + statusStr + "\033[0m";
@@ -120,8 +120,8 @@ void printCandidate(ProcessingStatus status,
   }
 
   // Print the module.
-  if ((status == accept_candidate && options.printValidCandidates) ||
-      (!(status == accept_candidate) && options.printInvalidCandidates) ||
+  if ((status == accept_as_candidate && options.printValidCandidates) ||
+      (!(status == accept_as_candidate) && options.printInvalidCandidates) ||
       options.printStatusNames) {
     llvm::outs() << statusStr << "\n";
     if (status > reject_hasUnsupportedShapeRank)
@@ -548,11 +548,11 @@ process(MLIRContext &ctx, EnumerationStats &stats,
         stats.dump();
       }
 
-      return accept_solution;
+      return accept_as_solution;
     }
   }
 
-  return accept_candidate;
+  return accept_as_candidate;
 }
 
 ModuleAndArgIds
@@ -589,7 +589,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   // - Print them.
   for (auto &candidate : candidateStore->getCandidates()) {
     auto module = createModule(ctx, candidate->getRegion());
-    printCandidate(ProcessingStatus::accept_candidate, candidateStore,
+    printCandidate(ProcessingStatus::accept_as_candidate, candidateStore,
                    candidateStore, candidate, options, module);
   }
 
@@ -616,7 +616,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                         localCandidateStore, refOut, options,
                         operandArgTuple, newCandidate, module, targetShape);
 
-            if (status == accept_solution) {
+            if (status == accept_as_solution) {
               acceptedModule = std::move(module);
               acceptedCandidate = newCandidate;
 
