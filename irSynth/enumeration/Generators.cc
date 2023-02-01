@@ -50,6 +50,22 @@ genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
       dimIdx++;
     }
     attributes.push_back(getDenseElementsAttr(attrVect));
+
+    // Leading dimension inserted: E.g. [5] -> [1, 5] or [3, 5] -> [1, 3, 5]
+    attrVect = std::vector<Attribute>();
+    attrVect.push_back(builder.getI64IntegerAttr(1));
+    for (auto dim : shape) {
+      attrVect.push_back(builder.getI64IntegerAttr(dim));
+    }
+    attributes.push_back(getDenseElementsAttr(attrVect));
+
+    // Trailing dimension inserted: E.g. [5] -> [5, 1] or [3, 5] -> [3, 5, 1]
+    attrVect = std::vector<Attribute>();
+    for (auto dim : shape) {
+      attrVect.push_back(builder.getI64IntegerAttr(dim));
+    }
+    attrVect.push_back(builder.getI64IntegerAttr(1));
+    attributes.push_back(getDenseElementsAttr(attrVect));
   }
 
   return attributes;
