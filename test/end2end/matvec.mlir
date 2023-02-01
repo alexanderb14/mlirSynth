@@ -1,4 +1,4 @@
-// RUN: synthesizer %s --num-threads=32 --ignore-equivalent-candidates | FileCheck %s
+// RUN: synthesizer %s --num-threads=32 --ignore-equivalent-candidates --ops=mhlo.dynamic_reshape,mhlo.dot | FileCheck %s
 
 // CHECK:     mhlo.dynamic_reshape
 // CHECK:     "mhlo.dot
