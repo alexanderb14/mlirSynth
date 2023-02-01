@@ -257,18 +257,17 @@ int main(int argc, char **argv) {
                    << "\n";
       return 1;
     }
-    originalToSynthesizedFns[inputFuncOrig] = std::move(module);
-    originalToSynthesizedArgIds[inputFuncOrig] = argIds;
-
     if (printSynthesisSteps) {
       llvm::outs() << "Synthesized function " << inputFunc.getName() << ":\n"
         << "--------------------------\n";
       module->print(llvm::outs());
     }
-
     if (options.printStats) {
       candidateStore->dumpSizes();
     }
+
+    originalToSynthesizedFns[inputFuncOrig] = std::move(module);
+    originalToSynthesizedArgIds[inputFuncOrig] = argIds;
   }
 
   OpBuilder builder(ctx);
