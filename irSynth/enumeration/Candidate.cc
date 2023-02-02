@@ -112,6 +112,8 @@ void CandidateStore::addCandidate(const CandidatePtr &candidate,
 }
 
 std::vector<CandidatePtr> CandidateStore::getCandidates() {
+  std::lock_guard<std::mutex> lock(addCandidatesMutex);
+
   std::vector<CandidatePtr> candidates;
   for (auto &weightToCandidate : weightToCandidates) {
     for (auto &candidate : weightToCandidate.second) {
@@ -122,6 +124,8 @@ std::vector<CandidatePtr> CandidateStore::getCandidates() {
 }
 
 std::vector<CandidatePtr> CandidateStore::getCandidates(unsigned weight) {
+  std::lock_guard<std::mutex> lock(addCandidatesMutex);
+
   std::vector<CandidatePtr> candidates;
   for (unsigned i = 0; i < weight; i++) {
     if (weightToCandidates.find(i) != weightToCandidates.end()) {

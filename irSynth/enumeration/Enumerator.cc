@@ -22,6 +22,7 @@
 
 #include <cstdint>
 #include <math.h>
+#include <mutex>
 #include <optional>
 #include <variant>
 
@@ -80,7 +81,8 @@ void printCandidate(ProcessingStatus status,
                     CandidateStorePtr &localCandidateStore,
                     CandidateStorePtr &candidateStore, CandidatePtr &candidate,
                     EnumerationOptions &options,
-                    OwningOpRef<ModuleOp> &module) {
+                    OwningOpRef<ModuleOp> &module,
+                    std::mutex &printMutex) {
   // If there is nothing to print, return early.
   if (!(options.printStatusNames || options.printStatusTiles ||
         options.printValidCandidates || options.printInvalidCandidates)) {
@@ -123,6 +125,7 @@ void printCandidate(ProcessingStatus status,
   if ((status == accept_as_candidate && options.printValidCandidates) ||
       (!(status == accept_as_candidate) && options.printInvalidCandidates) ||
       options.printStatusNames) {
+    std::lock_guard<std::mutex> lock(printMutex);
     llvm::outs() << statusStr << "\n";
     if (status > reject_hasUnsupportedShapeRank)
       module->print(llvm::outs());
@@ -395,7 +398,7 @@ process(MLIRContext &ctx, EnumerationStats &stats,
         CandidateStorePtr &localCandidateStore, double *refOut,
         EnumerationOptions &options, ArgTuple operandArgTuple,
         CandidatePtr &newCandidate, OwningOpRef<ModuleOp> &module,
-        ArrayRef<int64_t> &targetShape) {
+        ArrayRef<int64_t> &targetShape, std::mutex &printMutex) {
   stats.numEnumerated++;
 
   // Create candidate.
@@ -521,7 +524,7 @@ process(MLIRContext &ctx, EnumerationStats &stats,
   stats.numExecuted++;
 
   double *out = getReturnDataPtr(retCand);
-  // printArray(out, returnShape);
+  //printArray(out, returnShape, printMutex);
 
   // Hash and add to store if hash doesn't exist yet.
   double hash = hashArray(out, returnShape);
@@ -539,7 +542,7 @@ process(MLIRContext &ctx, EnumerationStats &stats,
     if (areArraysEqual(refOut, out, returnShape)) {
       LLVM_DEBUG(llvm::dbgs() << "Found a match!\n");
       LLVM_DEBUG(module->print(llvm::dbgs()));
-      // printArray(out, returnShape);
+      //printArray(out, returnShape, printMutex);
 
       candidateStore->merge(localCandidateStore);
       stats.numOps = newCandidate->getNumOps();
@@ -561,6 +564,8 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                     CandidateStorePtr &candidateStore,
                     std::vector<RegisteredOperationName> &avaliableOps,
                     EnumerationOptions &options) {
+  std::mutex printMutex;
+
   auto inputFunctionName = inputFunction.getName().str();
   auto targetShape = getReturnShape(inputFunction);
   prepareInputFunction(inputFunction);
@@ -579,7 +584,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   assert(succeeded(jitAndInvoke(inputModule, args, ret, false)));
 
   double *refOut = getReturnDataPtr(ret);
-  LLVM_DEBUG(printArray(refOut, targetShape));
+  //printArray(refOut, targetShape, printMutex);
 
   convertScalarToMemrefArgs(args);
 
@@ -590,7 +595,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   for (auto &candidate : candidateStore->getCandidates()) {
     auto module = createModule(ctx, candidate->getRegion());
     printCandidate(ProcessingStatus::accept_as_candidate, candidateStore,
-                   candidateStore, candidate, options, module);
+                   candidateStore, candidate, options, module, printMutex);
   }
 
   OwningOpRef<ModuleOp> acceptedModule = nullptr;
@@ -614,7 +619,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
             ProcessingStatus status =
                 process(ctx, stats, opName, executor, args, candidateStore,
                         localCandidateStore, refOut, options,
-                        operandArgTuple, newCandidate, module, targetShape);
+                        operandArgTuple, newCandidate, module, targetShape, printMutex);
 
             if (status == accept_as_solution) {
               acceptedModule = std::move(module);
@@ -630,7 +635,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
 
             // Print candidate.
             printCandidate(status, localCandidateStore, candidateStore,
-                           newCandidate, options, module);
+                           newCandidate, options, module, printMutex);
             return success();
           });
       if (failed(status)) {
