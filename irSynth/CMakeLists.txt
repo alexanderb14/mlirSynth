@@ -85,3 +85,31 @@ target_link_libraries(
           transform
           ${Boost_LIBRARIES})
 llvm_update_compile_flags(synthesizer)
+
+# Exe: Test Executor
+add_llvm_executable(
+  test-executor
+  tools/TestExecutor.cc
+  ContextManager.cc
+  enumeration/Generators.cc
+  enumeration/Candidate.cc
+  enumeration/Enumerator.cc
+  enumeration/Guide.cc
+  enumeration/Stats.cc
+  enumeration/Utils.cc
+  execution/ArgUtils.cc
+  execution/ArrayUtils.cc
+  execution/Executor.cc
+  execution/Lowering.cc)
+target_include_directories(test-executor PRIVATE ${CMAKE_CURRENT_LIST_DIR}
+                                               ${Boost_INCLUDE_DIR})
+target_link_libraries(
+  test-executor
+  PRIVATE ${SYNTH_LIBS}
+          CE
+          ${MHLO_EXPORTED_TARGETS}
+          ${POLY_LIBS}
+          polyhedral-analysis
+          transform
+          ${Boost_LIBRARIES})
+llvm_update_compile_flags(test-executor)
