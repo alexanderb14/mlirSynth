@@ -5,6 +5,10 @@
 #include "transforms/LoopOutlinePass.h"
 #include "transforms/MemrefMinifyPass.h"
 
+#include "lhlo/transforms/passes.h"
+#include "mlir-hlo/Dialect/mhlo/IR/register.h"
+#include "mlir-hlo/Dialect/mhlo/transforms/passes.h"
+#include "mlir-hlo/Transforms/passes.h"
 #include "mlir/IR/AsmState.h"
 #include "mlir/IR/Dialect.h"
 #include "mlir/IR/MLIRContext.h"
@@ -14,6 +18,8 @@
 #include "mlir/Pass/PassManager.h"
 #include "mlir/Support/FileUtilities.h"
 #include "mlir/Tools/mlir-opt/MlirOptMain.h"
+#include "stablehlo/dialect/Register.h"
+#include "thlo/transforms/passes.h"
 
 using namespace llvm;
 using namespace mlir;
@@ -21,7 +27,14 @@ using namespace mlir;
 int main(int argc, char **argv) {
   DialectRegistry registry;
   registerAllDialects(registry);
+  mlir::mhlo::registerAllMhloDialects(registry);
+  mlir::stablehlo::registerAllDialects(registry);
+
   registerAllPasses();
+  mlir::hlo::registerLMHLOTransformsPasses();
+  mlir::mhlo::registerAllMhloPasses();
+  mlir::lmhlo::registerAllLmhloPasses();
+  mlir::thlo::registerAllThloPasses();
 
   registerPolyhedralAnalysisPass();
 
