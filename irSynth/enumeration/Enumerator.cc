@@ -535,6 +535,7 @@ process(MLIRContext &ctx, EnumerationStats &stats,
     stats.numIgnored++;
     return reject_hashNotUnique;
   }
+  llvm::outs() << "Hash: " << hash << "\n";
 
   localCandidateStore->addCandidate(newCandidate, newCandidate->getNumOps());
 

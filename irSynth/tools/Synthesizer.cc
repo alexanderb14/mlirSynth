@@ -227,7 +227,7 @@ int main(int argc, char **argv) {
     } else {
       opsVec = supportedOps;
     }
-    auto availableOps = getDialectOps(ctx, dialects, opsVec, false);
+    auto availableOps = getDialectOps(ctx, dialects, opsVec, true);
 
     // Synthesize.
     if (printSynthesisSteps) {

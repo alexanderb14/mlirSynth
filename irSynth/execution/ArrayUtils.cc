@@ -85,14 +85,23 @@ void printArray(double *arr, ArrayRef<int64_t> shape, std::mutex &printMutex) {
   }
 }
 
+// Hash an array of doubles by
+// - Summing the elements
+// - Multiplying each dimension by a constant
+// - Multiplying each element by a position dependent constant
 double hashArray(double *arr, ArrayRef<int64_t> shape) {
+  double posIncrement = 0.1;
+  double pos = 1;
+
   if (shape.empty()) {
     return *arr;
   }
+
   if (shape.size() == 1) {
     double sum = 0;
     for (int i = 0; i < shape[0]; i++) {
-      sum += arr[i];
+      sum += arr[i] * pos;
+      pos += posIncrement;
     }
     return sum / shape[0] * 7.331;
   }
@@ -100,7 +109,8 @@ double hashArray(double *arr, ArrayRef<int64_t> shape) {
     double sum = 0;
     for (int i = 0; i < shape[0]; i++) {
       for (int j = 0; j < shape[1]; j++) {
-        sum += arr[i * shape[1] + j];
+        sum += arr[i * shape[1] + j] * pos;
+        pos += posIncrement;
       }
     }
     return sum / (shape[0] * 1.337 + shape[1] * 0.337);
@@ -110,7 +120,8 @@ double hashArray(double *arr, ArrayRef<int64_t> shape) {
     for (int i = 0; i < shape[0]; i++) {
       for (int j = 0; j < shape[1]; j++) {
         for (int k = 0; k < shape[2]; k++) {
-          sum += arr[i * shape[1] * shape[2] + j * shape[2] + k];
+          sum += arr[i * shape[1] * shape[2] + j * shape[2] + k] * pos;
+          pos += posIncrement;
         }
       }
     }
@@ -123,7 +134,9 @@ double hashArray(double *arr, ArrayRef<int64_t> shape) {
         for (int k = 0; k < shape[2]; k++) {
           for (int l = 0; l < shape[3]; l++) {
             sum += arr[i * shape[1] * shape[2] * shape[3] +
-                       j * shape[2] * shape[3] + k * shape[3] + l];
+                       j * shape[2] * shape[3] + k * shape[3] + l] *
+                   pos;
+            pos += posIncrement;
           }
         }
       }
