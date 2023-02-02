@@ -32,9 +32,13 @@
 using namespace llvm;
 using namespace mlir;
 
-std::vector<func::FuncOp> getFunctions(mlir::Operation *op) {
+std::vector<func::FuncOp> getFunctions(mlir::Operation *op,
+                                       std::string attrName) {
   std::vector<func::FuncOp> functions;
-  op->walk([&](func::FuncOp func) { functions.push_back(func); });
+  op->walk([&](func::FuncOp func) {
+    if (attrName.empty() || func->getAttr(attrName))
+      functions.push_back(func);
+  });
   return functions;
 }
 
@@ -84,24 +88,55 @@ int main(int argc, char **argv) {
       parseSourceFileForTool(sourceMgr, config, /*insertImplicitModule*/ false);
   assert(inputOp && "Failed to parse input file");
 
-  std::vector<func::FuncOp> functions = getFunctions(inputOp.get());
-  auto inputFunction = functions[0];
+  // Load modules.
+  // - Original function (in affine).
+  auto originalFunction = getFunctions(inputOp.get(), "irsynth.original")[0];
+  originalFunction->setAttr("llvm.emit_c_interface", UnitAttr::get(&ctx));
+  originalFunction.setSymName("foo");
 
-  auto inputModuleRef = createModule(ctx, &inputFunction);
-  auto inputModule = inputModuleRef.release();
+  auto originalModuleRef = createModule(ctx, &originalFunction);
+  auto originalModule = originalModuleRef.release();
 
-  // Create args.
-  auto args = createArgs(inputFunction.getArguments());
+  // - HLO function.
+  auto hloFunction = getFunctions(inputOp.get(), "irsynth.raised")[0];
+  hloFunction->setAttr("llvm.emit_c_interface", UnitAttr::get(&ctx));
+  hloFunction.setSymName("foo");
+  auto hloModuleRef = createModule(ctx, &hloFunction);
+  auto hloModule = hloModuleRef.release();
+
+  // Create inputs.
+  auto args = createArgs(originalFunction.getArguments());
   randomlyInitializeArgs(args);
+  auto targetShape = getReturnShape(originalFunction);
   // printArgs(args);
-  auto targetShape = getReturnShape(inputFunction);
-  auto ret = getOwningMemRefForShape(targetShape);
 
-  // Create an executor.
+  // Lower and run the functions on the inputs.
   auto executor = std::make_shared<Executor>(&ctx);
-  assert(succeeded(executor->lowerAffineToLLVMDialect(inputModule)) &&
+
+  // - Original function (in affine).
+  assert(succeeded(executor->lowerAffineToLLVMDialect(originalModule)) &&
          "Failed to lower affine to LLVM dialect");
-  assert(succeeded(jitAndInvoke(inputModule, args, ret, false)));
-  double *refOut = getReturnDataPtr(ret);
+  auto refRet = getOwningMemRefForShape(targetShape);
+  assert(succeeded(jitAndInvoke(originalModule, args, refRet, false)));
+  double *refOut = getReturnDataPtr(refRet);
+
+  // - HLO function.
+  assert(succeeded(executor->lowerCHLOToLLVMDialect(hloModule)) &&
+         "Failed to lower chlo to LLVM dialect");
+  auto hloRet = getOwningMemRefForShape(targetShape);
+  assert(succeeded(jitAndInvoke(hloModule, args, hloRet, false)));
+  double *hloOut = getReturnDataPtr(hloRet);
+
+  // Print the results.
+  if (areArraysEqual(refOut, hloOut, targetShape)) {
+    llvm::outs() << "\033[1;42mResults are equal.\033[0m";
+  } else {
+    llvm::outs() << "\033[1;41mResults are different.\033[0m";
+  }
+  llvm::outs() << "\n";
+
   printArray(refOut, targetShape);
+  llvm::outs() << "\n";
+  printArray(hloOut, targetShape);
+  llvm::outs() << "\n";
 }
