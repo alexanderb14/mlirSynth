@@ -569,7 +569,8 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   // - Create argument vector.
   auto args = createArgs(inputFunction.getArguments());
   randomlyInitializeArgs(args);
-  // printArgs(args);
+  if (options.printArgsAndResults)
+    printArgs(args);
   auto ret = getOwningMemRefForShape(targetShape);
 
   // - Run on argument vector gives the reference out.
@@ -579,7 +580,8 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   assert(succeeded(jitAndInvoke(inputModule, args, ret, false)));
 
   double *refOut = getReturnDataPtr(ret);
-  LLVM_DEBUG(printArray(refOut, targetShape));
+  if (options.printArgsAndResults)
+    printArray(refOut, targetShape);
 
   convertScalarToMemrefArgs(args);
 

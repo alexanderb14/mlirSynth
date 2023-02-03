@@ -118,6 +118,9 @@ int main(int argc, char **argv) {
                             cl::init(false));
   cl::opt<bool> printStats("print-stats", cl::desc("Print stats"),
                            cl::init(false));
+  cl::opt<bool> printArgsAndResults("print-args-and-results",
+                                    cl::desc("Print args and results"),
+                                    cl::init(false));
 
   cl::opt<bool> printSynthesisSteps(
       "print-synthesis-steps", cl::desc("Print synthesis steps"),
@@ -244,6 +247,7 @@ int main(int argc, char **argv) {
     options.printValidCandidates = printValidCandidates;
     options.printInvalidCandidates = printInvalidCandidates;
     options.printStats = printStats;
+    options.printArgsAndResults = printArgsAndResults;
     options.maxNumOps = maxNumOps;
     options.ignoreEquivalentCandidates = ignoreEquivalentCandidates;
 

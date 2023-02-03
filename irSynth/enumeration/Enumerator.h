@@ -16,6 +16,7 @@ struct EnumerationOptions {
   bool printValidCandidates;
   bool printInvalidCandidates;
   bool printStats;
+  bool printArgsAndResults;
   int maxNumOps;
   bool ignoreEquivalentCandidates;
 };
