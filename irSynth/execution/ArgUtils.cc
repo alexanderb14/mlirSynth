@@ -171,55 +171,107 @@ void printArgs(std::vector<ReturnAndArgType> args) {
                << "\n--------\n";
   unsigned argIdx = 0;
   for (auto &arg : args) {
-    llvm::outs() << "Arg " << argIdx++ << "\n";
+    llvm::outs() << "\"arg" << argIdx++ << "\": ";
     if (auto *memRef = std::get_if<OwningMemRef0DPtr>(&arg)) {
       llvm::outs() << (**memRef)[{}] << "\n";
     } else if (auto *memRef = std::get_if<OwningMemRef1DPtr>(&arg)) {
       auto *shape = (**memRef)->sizes;
+      llvm::outs() << "[";
       for (int i = 0; i < shape[0]; i++) {
-        llvm::outs() << (**memRef)[{i}] << ", ";
+        llvm::outs() << (**memRef)[{i}];
+        if (i != shape[0] - 1) {
+          llvm::outs() << ", ";
+        }
       }
-      llvm::outs() << "\n";
+      llvm::outs() << "]";
     } else if (auto *memRef = std::get_if<OwningMemRef2DPtr>(&arg)) {
       auto *shape = (**memRef)->sizes;
+      llvm::outs() << "[";
       for (int i = 0; i < shape[0]; i++) {
+        if (i != 0)
+          llvm::outs() << "         ";
+        llvm::outs() << "[";
         for (int j = 0; j < shape[1]; j++) {
-          llvm::outs() << (**memRef)[{i, j}] << ", ";
+          llvm::outs() << (**memRef)[{i, j}];
+          if (j != shape[1] - 1) {
+            llvm::outs() << ", ";
+          }
         }
-        llvm::outs() << "\n";
+        llvm::outs() << "]";
+        if (i != shape[0] - 1) {
+          llvm::outs() << ",\n";
+        }
       }
-      llvm::outs() << "\n";
+      llvm::outs() << "]";
     } else if (auto *memRef = std::get_if<OwningMemRef3DPtr>(&arg)) {
       auto *shape = (**memRef)->sizes;
+      llvm::outs() << "[";
       for (int i = 0; i < shape[0]; i++) {
+        if (i != 0)
+          llvm::outs() << "         ";
+        llvm::outs() << "[";
         for (int j = 0; j < shape[1]; j++) {
+          llvm::outs() << "[";
           for (int k = 0; k < shape[2]; k++) {
-            llvm::outs() << (**memRef)[{i, j, k}] << ", ";
+            llvm::outs() << (**memRef)[{i, j, k}];
+            if (k != shape[2] - 1) {
+              llvm::outs() << ", ";
+            }
           }
-          llvm::outs() << "\n";
+          llvm::outs() << "]\n";
+          if (j != shape[1] - 1) {
+            llvm::outs() << ", ";
+          }
         }
-        llvm::outs() << "\n";
+        llvm::outs() << "]";
+        if (i != shape[0] - 1) {
+          llvm::outs() << ", ";
+        }
       }
-      llvm::outs() << "\n";
+      llvm::outs() << "]";
     } else if (auto *memRef = std::get_if<OwningMemRef4DPtr>(&arg)) {
       auto *shape = (**memRef)->sizes;
+      llvm::outs() << "[";
       for (int i = 0; i < shape[0]; i++) {
+        if (i != 0)
+          llvm::outs() << "         ";
+        llvm::outs() << "[";
         for (int j = 0; j < shape[1]; j++) {
+          llvm::outs() << "[";
           for (int k = 0; k < shape[2]; k++) {
+            llvm::outs() << "[";
             for (int l = 0; l < shape[3]; l++) {
-              llvm::outs() << (**memRef)[{i, j, k, l}] << ", ";
+              llvm::outs() << (**memRef)[{i, j, k, l}];
+              if (l != shape[3] - 1) {
+                llvm::outs() << ", ";
+              }
             }
-            llvm::outs() << "\n";
+            llvm::outs() << "]\n";
+            if (k != shape[2] - 1) {
+              llvm::outs() << ", ";
+            }
           }
-          llvm::outs() << "\n";
+          llvm::outs() << "]";
+          if (j != shape[1] - 1) {
+            llvm::outs() << ", ";
+          }
         }
-        llvm::outs() << "\n";
+        llvm::outs() << "]";
+        if (i != shape[0] - 1) {
+          llvm::outs() << ", ";
+        }
       }
-      llvm::outs() << "\n";
+      llvm::outs() << "]";
     } else if (auto *val = std::get_if<DoublePtr>(&arg)) {
-      llvm::outs() << **val << "\n";
+      llvm::outs() << **val;
     } else {
       assert(false && "Unsupported type");
+    }
+
+    if (argIdx != args.size()) {
+      llvm::outs() << ",\n";
+    } else {
+      llvm::outs() << "\n";
     }
   }
 }
