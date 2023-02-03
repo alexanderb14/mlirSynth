@@ -555,6 +555,16 @@ process(MLIRContext &ctx, EnumerationStats &stats,
   return accept_as_candidate;
 }
 
+void printArgsAndResultsInPython(std::vector<ReturnAndArgType> &args,
+                               double *refOut,
+                               llvm::ArrayRef<int64_t> targetShape) {
+  llvm::outs() << "inputs = {\n";
+  printArgs(args, llvm::outs());
+  llvm::outs() << "},\n";
+  llvm::outs() << "output = ";
+  printArray(refOut, targetShape, llvm::outs());
+}
+
 ModuleAndArgIds
 enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                     func::FuncOp inputFunction,
@@ -569,8 +579,6 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   // - Create argument vector.
   auto args = createArgs(inputFunction.getArguments());
   randomlyInitializeArgs(args);
-  if (options.printArgsAndResults)
-    printArgs(args, llvm::outs());
   auto ret = getOwningMemRefForShape(targetShape);
 
   // - Run on argument vector gives the reference out.
@@ -581,7 +589,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
 
   double *refOut = getReturnDataPtr(ret);
   if (options.printArgsAndResults)
-    printArray(refOut, targetShape, llvm::outs());
+    printArgsAndResultsInPython(args, refOut, targetShape);
 
   convertScalarToMemrefArgs(args);
 

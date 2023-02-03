@@ -167,8 +167,9 @@ void randomlyInitializeArgs(std::vector<ReturnAndArgType> args) {
 }
 
 void printArgs(std::vector<ReturnAndArgType> args, llvm::raw_ostream &os) {
-  os << "\nArgument data:"
-               << "\n--------\n";
+  std::string space = " ";
+  std::string tab = "    ";
+
   unsigned argIdx = 0;
   for (auto &arg : args) {
     os << "\"arg" << argIdx++ << "\": ";
@@ -189,7 +190,7 @@ void printArgs(std::vector<ReturnAndArgType> args, llvm::raw_ostream &os) {
       os << "[";
       for (int i = 0; i < shape[0]; i++) {
         if (i != 0)
-          os << "         ";
+          os << tab << space;
         os << "[";
         for (int j = 0; j < shape[1]; j++) {
           os << (**memRef)[{i, j}];
@@ -199,7 +200,7 @@ void printArgs(std::vector<ReturnAndArgType> args, llvm::raw_ostream &os) {
         }
         os << "]";
         if (i != shape[0] - 1) {
-          os << ",\n";
+          os << ",\n" << tab;
         }
       }
       os << "]";
@@ -208,7 +209,7 @@ void printArgs(std::vector<ReturnAndArgType> args, llvm::raw_ostream &os) {
       os << "[";
       for (int i = 0; i < shape[0]; i++) {
         if (i != 0)
-          os << "         ";
+          os << tab << space;
         os << "[";
         for (int j = 0; j < shape[1]; j++) {
           os << "[";
@@ -218,14 +219,14 @@ void printArgs(std::vector<ReturnAndArgType> args, llvm::raw_ostream &os) {
               os << ", ";
             }
           }
-          os << "]\n";
+          os << "]";
           if (j != shape[1] - 1) {
-            os << ", ";
+            os << ",\n" << tab << tab << space << space;
           }
         }
         os << "]";
         if (i != shape[0] - 1) {
-          os << ", ";
+          os << ",\n" << tab;
         }
       }
       os << "]";
@@ -234,7 +235,7 @@ void printArgs(std::vector<ReturnAndArgType> args, llvm::raw_ostream &os) {
       os << "[";
       for (int i = 0; i < shape[0]; i++) {
         if (i != 0)
-          os << "         ";
+          os << tab << space;
         os << "[";
         for (int j = 0; j < shape[1]; j++) {
           os << "[";
