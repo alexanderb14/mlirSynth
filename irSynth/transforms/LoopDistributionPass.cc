@@ -50,12 +50,24 @@ void isolateStmt(ScopStmt *stmt) {
   // one.
   BlockAndValueMapping mapping;
   auto newLoop = dyn_cast<AffineForOp>(outestForOp);
-  for (auto *loop : loopStack) {
-    auto forOp = dyn_cast<AffineForOp>(loop);
+
+  // Traverse the loop stack in reverse order.
+  for (auto it = loopStack.rbegin(); it != loopStack.rend(); it++) {
+    auto forOp = dyn_cast<AffineForOp>(*it);
+
+    // Remap the loop bounds.
+    SmallVector<Value, 4> newLowerBoundOperands;
+    for (auto lb : forOp.getLowerBoundOperands())
+      newLowerBoundOperands.push_back(mapping.lookupOrDefault(lb));
+
+    SmallVector<Value, 4> newUpperBoundOperands;
+    for (auto ub : forOp.getUpperBoundOperands())
+      newUpperBoundOperands.push_back(mapping.lookupOrDefault(ub));
+
+    // Create the new loop.
     newLoop = builder.create<AffineForOp>(
-        forOp.getLoc(), forOp.getLowerBoundOperands(), forOp.getLowerBoundMap(),
-        forOp.getUpperBoundOperands(), forOp.getUpperBoundMap(),
-        forOp.getStep());
+        forOp.getLoc(), newLowerBoundOperands, forOp.getLowerBoundMap(),
+        newUpperBoundOperands, forOp.getUpperBoundMap(), forOp.getStep());
     builder.setInsertionPointToStart(newLoop.getBody());
     mapping.map(forOp.getInductionVar(), newLoop.getInductionVar());
   }
@@ -74,7 +86,6 @@ void isolateStmt(ScopStmt *stmt) {
 void distributeLoops(Operation *op) {
   auto funcOp = dyn_cast<func::FuncOp>(op);
   auto originalLoops = getTopLevelLoops(funcOp);
-
   Scop scop(op);
   auto dg = scop.getDependenceGraph();
 
