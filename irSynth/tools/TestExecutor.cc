@@ -135,8 +135,8 @@ int main(int argc, char **argv) {
   }
   llvm::outs() << "\n";
 
-  printArray(refOut, targetShape);
+  printArray(refOut, targetShape, llvm::outs());
   llvm::outs() << "\n";
-  printArray(hloOut, targetShape);
+  printArray(hloOut, targetShape, llvm::outs());
   llvm::outs() << "\n";
 }

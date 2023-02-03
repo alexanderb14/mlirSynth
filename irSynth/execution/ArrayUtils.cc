@@ -6,78 +6,78 @@
 
 using namespace llvm;
 
-void printArray(double *arr, ArrayRef<int64_t> shape) {
+void printArray(double *arr, ArrayRef<int64_t> shape, llvm::raw_ostream &os) {
   if (shape.empty()) {
-    llvm::outs() << arr[0] << "\n";
+    os << arr[0] << "\n";
   } else if (shape.size() == 1) {
-    llvm::outs() << "[";
+    os << "[";
     for (int i = 0; i < shape[0]; i++) {
-      llvm::outs() << arr[i];
+      os << arr[i];
       if (i < shape[0] - 1)
-        llvm::outs() << ", ";
+        os << ", ";
     }
-    llvm::outs() << "]\n";
+    os << "]\n";
   } else if (shape.size() == 2) {
-    llvm::outs() << "[";
+    os << "[";
     for (int i = 0; i < shape[0]; i++) {
-      llvm::outs() << "[";
+      os << "[";
       for (int j = 0; j < shape[1]; j++) {
-        llvm::outs() << arr[i * shape[1] + j];
+        os << arr[i * shape[1] + j];
         if (j < shape[1] - 1)
-          llvm::outs() << ", ";
+          os << ", ";
       }
-      llvm::outs() << "]";
+      os << "]";
       if (i < shape[0] - 1)
-        llvm::outs() << ",\n";
+        os << ",\n";
     }
-    llvm::outs() << "]\n";
+    os << "]\n";
   } else if (shape.size() == 3) {
-    llvm::outs() << "[";
+    os << "[";
     for (int i = 0; i < shape[0]; i++) {
-      llvm::outs() << "[";
+      os << "[";
       for (int j = 0; j < shape[1]; j++) {
-        llvm::outs() << "[";
+        os << "[";
         for (int k = 0; k < shape[2]; k++) {
-          llvm::outs() << arr[i * shape[1] * shape[2] + j * shape[2] + k];
+          os << arr[i * shape[1] * shape[2] + j * shape[2] + k];
           if (k < shape[2] - 1)
-            llvm::outs() << ", ";
+            os << ", ";
         }
-        llvm::outs() << "]";
+        os << "]";
         if (j < shape[1] - 1)
-          llvm::outs() << ",\n";
+          os << ",\n";
       }
-      llvm::outs() << "]";
+      os << "]";
       if (i < shape[0] - 1)
-        llvm::outs() << ",\n";
+        os << ",\n";
     }
-    llvm::outs() << "]\n";
+    os << "]\n";
   } else if (shape.size() == 4) {
-    llvm::outs() << "[";
+    os << "[";
     for (int i = 0; i < shape[0]; i++) {
-      llvm::outs() << "[";
+      os << "[";
       for (int j = 0; j < shape[1]; j++) {
-        llvm::outs() << "[";
+        os << "[";
         for (int k = 0; k < shape[2]; k++) {
-          llvm::outs() << "[";
+          os << "[";
           for (int l = 0; l < shape[3]; l++) {
-            llvm::outs() << arr[i * shape[1] * shape[2] * shape[3] +
+            os << arr[i * shape[1] * shape[2] * shape[3] +
                                 j * shape[2] * shape[3] + k * shape[3] + l];
             if (l < shape[3] - 1)
-              llvm::outs() << ", ";
+              os << ", ";
           }
-          llvm::outs() << "]";
+          os << "]";
           if (k < shape[2] - 1)
-            llvm::outs() << ",\n";
+            os << ",\n";
         }
-        llvm::outs() << "]";
+        os << "]";
         if (j < shape[1] - 1)
-          llvm::outs() << ",\n";
+          os << ",\n";
       }
-      llvm::outs() << "]";
+      os << "]";
       if (i < shape[0] - 1)
-        llvm::outs() << ",\n";
+        os << ",\n";
     }
-    llvm::outs() << "]\n";
+    os << "]\n";
   } else {
     assert(false && "Unsupported shape");
   }

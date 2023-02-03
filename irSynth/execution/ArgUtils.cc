@@ -166,112 +166,112 @@ void randomlyInitializeArgs(std::vector<ReturnAndArgType> args) {
   }
 }
 
-void printArgs(std::vector<ReturnAndArgType> args) {
-  llvm::outs() << "\nArgument data:"
+void printArgs(std::vector<ReturnAndArgType> args, llvm::raw_ostream &os) {
+  os << "\nArgument data:"
                << "\n--------\n";
   unsigned argIdx = 0;
   for (auto &arg : args) {
-    llvm::outs() << "\"arg" << argIdx++ << "\": ";
+    os << "\"arg" << argIdx++ << "\": ";
     if (auto *memRef = std::get_if<OwningMemRef0DPtr>(&arg)) {
-      llvm::outs() << (**memRef)[{}] << "\n";
+      os << (**memRef)[{}] << "\n";
     } else if (auto *memRef = std::get_if<OwningMemRef1DPtr>(&arg)) {
       auto *shape = (**memRef)->sizes;
-      llvm::outs() << "[";
+      os << "[";
       for (int i = 0; i < shape[0]; i++) {
-        llvm::outs() << (**memRef)[{i}];
+        os << (**memRef)[{i}];
         if (i != shape[0] - 1) {
-          llvm::outs() << ", ";
+          os << ", ";
         }
       }
-      llvm::outs() << "]";
+      os << "]";
     } else if (auto *memRef = std::get_if<OwningMemRef2DPtr>(&arg)) {
       auto *shape = (**memRef)->sizes;
-      llvm::outs() << "[";
+      os << "[";
       for (int i = 0; i < shape[0]; i++) {
         if (i != 0)
-          llvm::outs() << "         ";
-        llvm::outs() << "[";
+          os << "         ";
+        os << "[";
         for (int j = 0; j < shape[1]; j++) {
-          llvm::outs() << (**memRef)[{i, j}];
+          os << (**memRef)[{i, j}];
           if (j != shape[1] - 1) {
-            llvm::outs() << ", ";
+            os << ", ";
           }
         }
-        llvm::outs() << "]";
+        os << "]";
         if (i != shape[0] - 1) {
-          llvm::outs() << ",\n";
+          os << ",\n";
         }
       }
-      llvm::outs() << "]";
+      os << "]";
     } else if (auto *memRef = std::get_if<OwningMemRef3DPtr>(&arg)) {
       auto *shape = (**memRef)->sizes;
-      llvm::outs() << "[";
+      os << "[";
       for (int i = 0; i < shape[0]; i++) {
         if (i != 0)
-          llvm::outs() << "         ";
-        llvm::outs() << "[";
+          os << "         ";
+        os << "[";
         for (int j = 0; j < shape[1]; j++) {
-          llvm::outs() << "[";
+          os << "[";
           for (int k = 0; k < shape[2]; k++) {
-            llvm::outs() << (**memRef)[{i, j, k}];
+            os << (**memRef)[{i, j, k}];
             if (k != shape[2] - 1) {
-              llvm::outs() << ", ";
+              os << ", ";
             }
           }
-          llvm::outs() << "]\n";
+          os << "]\n";
           if (j != shape[1] - 1) {
-            llvm::outs() << ", ";
+            os << ", ";
           }
         }
-        llvm::outs() << "]";
+        os << "]";
         if (i != shape[0] - 1) {
-          llvm::outs() << ", ";
+          os << ", ";
         }
       }
-      llvm::outs() << "]";
+      os << "]";
     } else if (auto *memRef = std::get_if<OwningMemRef4DPtr>(&arg)) {
       auto *shape = (**memRef)->sizes;
-      llvm::outs() << "[";
+      os << "[";
       for (int i = 0; i < shape[0]; i++) {
         if (i != 0)
-          llvm::outs() << "         ";
-        llvm::outs() << "[";
+          os << "         ";
+        os << "[";
         for (int j = 0; j < shape[1]; j++) {
-          llvm::outs() << "[";
+          os << "[";
           for (int k = 0; k < shape[2]; k++) {
-            llvm::outs() << "[";
+            os << "[";
             for (int l = 0; l < shape[3]; l++) {
-              llvm::outs() << (**memRef)[{i, j, k, l}];
+              os << (**memRef)[{i, j, k, l}];
               if (l != shape[3] - 1) {
-                llvm::outs() << ", ";
+                os << ", ";
               }
             }
-            llvm::outs() << "]\n";
+            os << "]\n";
             if (k != shape[2] - 1) {
-              llvm::outs() << ", ";
+              os << ", ";
             }
           }
-          llvm::outs() << "]";
+          os << "]";
           if (j != shape[1] - 1) {
-            llvm::outs() << ", ";
+            os << ", ";
           }
         }
-        llvm::outs() << "]";
+        os << "]";
         if (i != shape[0] - 1) {
-          llvm::outs() << ", ";
+          os << ", ";
         }
       }
-      llvm::outs() << "]";
+      os << "]";
     } else if (auto *val = std::get_if<DoublePtr>(&arg)) {
-      llvm::outs() << **val;
+      os << **val;
     } else {
       assert(false && "Unsupported type");
     }
 
     if (argIdx != args.size()) {
-      llvm::outs() << ",\n";
+      os << ",\n";
     } else {
-      llvm::outs() << "\n";
+      os << "\n";
     }
   }
 }
@@ -288,27 +288,28 @@ selectArgs(const std::vector<ReturnAndArgType> &args,
   return selectedArgs;
 }
 
-void printArgTypes(std::vector<ReturnAndArgType> args) {
-  llvm::outs() << "\nArgument types:"
-               << "\n--------\n";
+void printArgTypes(std::vector<ReturnAndArgType> args, llvm::raw_ostream &os) {
+  os << "\nArgument types:"
+     << "\n--------\n";
   for (auto &arg : args) {
     if (auto *memRef = std::get_if<OwningMemRef0DPtr>(&arg))
-      llvm::outs() << "0D MemRef\n";
+      os << "0D MemRef";
 
-    if (auto *memRef = std::get_if<OwningMemRef1DPtr>(&arg))
-      llvm::outs() << "1D MemRef\n";
+    else if (auto *memRef = std::get_if<OwningMemRef1DPtr>(&arg))
+      os << "1D MemRef";
 
-    if (auto *memRef = std::get_if<OwningMemRef2DPtr>(&arg))
-      llvm::outs() << "2D MemRef\n";
+    else if (auto *memRef = std::get_if<OwningMemRef2DPtr>(&arg))
+      os << "2D MemRef";
 
-    if (auto *memRef = std::get_if<OwningMemRef3DPtr>(&arg))
-      llvm::outs() << "3D MemRef\n";
+    else if (auto *memRef = std::get_if<OwningMemRef3DPtr>(&arg))
+      os << "3D MemRef";
 
-    if (auto *memRef = std::get_if<OwningMemRef4DPtr>(&arg))
-      llvm::outs() << "4D MemRef\n";
+    else if (auto *memRef = std::get_if<OwningMemRef4DPtr>(&arg))
+      os << "4D MemRef";
 
-    if (auto *val = std::get_if<DoublePtr>(&arg))
-      llvm::outs() << "Double\n";
+    else if (auto *val = std::get_if<DoublePtr>(&arg))
+      os << "Double";
+    os << "\n";
   }
 }
 
