@@ -3,6 +3,7 @@
 #include "mlir/Dialect/Affine/IR/AffineOps.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/Dialect/MemRef/IR/MemRef.h"
+#include "mlir/IR/AffineExpr.h"
 #include "mlir/IR/BlockAndValueMapping.h"
 #include "mlir/IR/Builders.h"
 #include "mlir/IR/BuiltinOps.h"
@@ -213,6 +214,7 @@ void minifyLoopBounds(ModuleOp &op,
           else
             ubExprs.push_back(getAffineConstantExpr(minifiedDimensions[dim],
                                                     op->getContext()));
+        } else if (expr.isa<AffineBinaryOpExpr>()) {
         } else {
           llvm::outs() << "expr type: " << (unsigned int)expr.getKind() << "\n";
           assert(false && "Unexpected expression type");
