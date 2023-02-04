@@ -222,8 +222,8 @@ void minifyLoopBounds(ModuleOp &op,
       }
       auto ubMapMinified = AffineMap::get(
           ubMap.getNumDims(), ubMap.getNumSymbols(), ubExprs, op->getContext());
-
-      forOp.setUpperBoundMap(ubMapMinified);
+      if (ubMapMinified.getNumResults())
+        forOp.setUpperBoundMap(ubMapMinified);
 
       if (debug) {
         llvm::outs() << "Loop bounds: " << ubMap << "\n";
