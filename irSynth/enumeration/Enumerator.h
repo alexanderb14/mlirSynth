@@ -34,6 +34,6 @@ enumerateCandidates(mlir::MLIRContext &ctx, IExecutorPtr executor,
                     mlir::func::FuncOp inputFunction,
                     CandidateStorePtr &candidateStore,
                     std::vector<mlir::RegisteredOperationName> &avaliableOps,
-                    EnumerationOptions &options);
+                    EnumerationOptions &options, bool &continueSynthesis);
 
 #endif // IRSYNTH_ENUMERATOR_H

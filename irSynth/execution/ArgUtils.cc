@@ -1,6 +1,7 @@
 #include "ArgUtils.h"
 
 #include "mlir/ExecutionEngine/ExecutionEngine.h"
+#include "llvm/Support/raw_ostream.h"
 
 #include <cstdint>
 #include <random>
@@ -117,12 +118,33 @@ double *getReturnDataPtr(ReturnAndArgType &returnAndArgs) {
   assert(false && "Unsupported return type");
 }
 
-void randomlyInitializeArgs(std::vector<ReturnAndArgType> args) {
+bool hasAttribute(Attribute attr, StringRef attrName) {
+  if (auto dictAttr = attr.dyn_cast<DictionaryAttr>()) {
+    return dictAttr.get(attrName) != nullptr;
+  }
+  return false;
+}
+
+void randomlyInitializeArgs(func::FuncOp function,
+                            std::vector<ReturnAndArgType> args) {
   std::random_device rd;
   std::mt19937 e2(rd());
   std::uniform_real_distribution<> dist(0, 100);
 
-  for (auto &arg : args) {
+  auto attrs = function.getAllArgAttrs();
+  if (!attrs) {
+    auto attrs = llvm::SmallVector<Attribute, 4>();
+    for (auto &arg : function.getArguments()) {
+      attrs.push_back(nullptr);
+    }
+  }
+
+  for (auto argAndAttribute : llvm::zip(args, attrs)) {
+    auto arg = std::get<0>(argAndAttribute);
+    auto attr = std::get<1>(argAndAttribute);
+
+    bool symmetric = hasAttribute(attr, "irsynth.symmetric");
+
     if (auto *memRef = std::get_if<OwningMemRef0DPtr>(&arg)) {
       (**memRef)[{}] = dist(e2);
     }
@@ -136,6 +158,13 @@ void randomlyInitializeArgs(std::vector<ReturnAndArgType> args) {
       for (int i = 0; i < shape[0]; i++) {
         for (int j = 0; j < shape[1]; j++) {
           (**memRef)[{i, j}] = dist(e2);
+        }
+      }
+      if (symmetric) {
+        for (int i = 0; i < shape[0]; i++) {
+          for (int j = 0; j < i; j++) {
+            (**memRef)[{j, i}] = (**memRef)[{i, j}];
+          }
         }
       }
     } else if (auto *memRef = std::get_if<OwningMemRef3DPtr>(&arg)) {

@@ -570,7 +570,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                     func::FuncOp inputFunction,
                     CandidateStorePtr &candidateStore,
                     std::vector<RegisteredOperationName> &avaliableOps,
-                    EnumerationOptions &options) {
+                    EnumerationOptions &options, bool &continueSynthesis) {
   auto inputFunctionName = inputFunction.getName().str();
   auto targetShape = getReturnShape(inputFunction);
   prepareInputFunction(inputFunction);
@@ -578,7 +578,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   // Compile and run reference.
   // - Create argument vector.
   auto args = createArgs(inputFunction);
-  randomlyInitializeArgs(args);
+  randomlyInitializeArgs(inputFunction, args);
   auto ret = getOwningMemRefForShape(targetShape);
 
   // - Run on argument vector gives the reference out.
@@ -618,6 +618,9 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
 
       auto status = failableParallelForEach(
           &ctx, operandArgTuples, [&](auto &operandArgTuple) {
+            if (!continueSynthesis)
+              return failure();
+
             CandidatePtr newCandidate;
             OwningOpRef<ModuleOp> module;
 
@@ -644,8 +647,11 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
             return success();
           });
       if (failed(status)) {
-        auto argIds = acceptedCandidate->getArgIds();
-        return std::make_tuple(std::move(acceptedModule), argIds);
+        if (acceptedCandidate) {
+          auto argIds = acceptedCandidate->getArgIds();
+          return std::make_tuple(std::move(acceptedModule), argIds);
+        }
+        return std::make_tuple(nullptr, std::vector<unsigned>());
       }
     }
 

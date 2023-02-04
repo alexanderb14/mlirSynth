@@ -220,6 +220,7 @@ int main(int argc, char **argv) {
   llvm::DenseMap<func::FuncOp, std::vector<unsigned>>
       originalToSynthesizedArgIds;
   for (auto inputFuncOrig : functions) {
+    llvm::outs() << "2 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
     auto inputFunc = inputFuncOrig.clone();
     // Get ops.
     std::vector<std::string> opsVec;
@@ -251,27 +252,40 @@ int main(int argc, char **argv) {
     options.maxNumOps = maxNumOps;
     options.ignoreEquivalentCandidates = ignoreEquivalentCandidates;
 
-    ModuleAndArgIds enumerated = enumerateCandidates(
-        *ctx, executor, inputFunc, candidateStore, availableOps, options);
-    auto module = std::move(std::get<0>(enumerated));
-    auto argIds = std::get<1>(enumerated);
+    int timeout = 1;
+    bool continueSynthesis = true;
 
-    if (!module) {
+    std::thread timeoutThread;
+    if (timeout > 0) {
+      timeoutThread = std::thread([timeout, &continueSynthesis]() {
+        std::this_thread::sleep_for(std::chrono::seconds(timeout));
+        continueSynthesis = false;
+      });
+    }
+
+    ModuleAndArgIds enumerated =
+        enumerateCandidates(*ctx, executor, inputFunc, candidateStore,
+                            availableOps, options, continueSynthesis);
+
+    bool success = std::get<0>(enumerated).get() != nullptr;
+    if (success) {
+      auto module = std::move(std::get<0>(enumerated));
+      auto argIds = std::get<1>(enumerated);
+
+      if (printSynthesisSteps) {
+        llvm::outs() << "Synthesized function " << inputFunc.getName() << ":\n"
+          << "--------------------------\n";
+        module->print(llvm::outs());
+      }
+
+      originalToSynthesizedFns[inputFuncOrig] = std::move(module);
+      originalToSynthesizedArgIds[inputFuncOrig] = argIds;
+    } else {
       llvm::errs() << "Failed to synthesize function " << inputFunc.getName()
                    << "\n";
-      return 1;
-    }
-    if (printSynthesisSteps) {
-      llvm::outs() << "Synthesized function " << inputFunc.getName() << ":\n"
-        << "--------------------------\n";
-      module->print(llvm::outs());
-    }
-    if (options.printStats) {
-      candidateStore->dumpSizes();
-    }
 
-    originalToSynthesizedFns[inputFuncOrig] = std::move(module);
-    originalToSynthesizedArgIds[inputFuncOrig] = argIds;
+    }
+    llvm::outs() << "1 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
   }
 
   OpBuilder builder(ctx);

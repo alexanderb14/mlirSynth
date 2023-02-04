@@ -105,8 +105,8 @@ int main(int argc, char **argv) {
   auto hloModule = hloModuleRef.release();
 
   // Create inputs.
-  auto args = createArgs(originalFunction.getArguments());
-  randomlyInitializeArgs(args);
+  auto args = createArgs(originalFunction);
+  randomlyInitializeArgs(originalFunction, args);
   auto targetShape = getReturnShape(originalFunction);
   // printArgs(args);
 

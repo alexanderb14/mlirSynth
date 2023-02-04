@@ -34,7 +34,8 @@ void addReturn(mlir::ArrayRef<int64_t> returnShape,
                std::vector<ReturnAndArgType> &returnAndArgs);
 std::vector<ReturnAndArgType> createArgs(mlir::func::FuncOp function);
 double *getReturnDataPtr(ReturnAndArgType &returnAndArgs);
-void randomlyInitializeArgs(std::vector<ReturnAndArgType> args);
+void randomlyInitializeArgs(mlir::func::FuncOp function,
+                            std::vector<ReturnAndArgType> args);
 void printArgs(std::vector<ReturnAndArgType> args, llvm::raw_ostream &os);
 std::vector<ReturnAndArgType>
 selectArgs(const std::vector<ReturnAndArgType> &args,
