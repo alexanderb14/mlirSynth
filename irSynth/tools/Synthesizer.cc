@@ -97,6 +97,16 @@ getDialectOps(MLIRContext *ctx, std::vector<Dialect *> &dialects,
   return opNames;
 }
 
+std::thread createTimeoutThread(unsigned timeout, bool &continueSynthesis) {
+  std::thread timeoutThread;
+  timeoutThread = std::thread([timeout, &continueSynthesis]() {
+    std::this_thread::sleep_for(std::chrono::seconds(timeout));
+    continueSynthesis = false;
+  });
+
+  return timeoutThread;
+}
+
 int main(int argc, char **argv) {
   // Parse command line arguments.
   cl::opt<std::string> inputFilename(cl::Positional, cl::desc("<input file>"),
@@ -220,7 +230,6 @@ int main(int argc, char **argv) {
   llvm::DenseMap<func::FuncOp, std::vector<unsigned>>
       originalToSynthesizedArgIds;
   for (auto inputFuncOrig : functions) {
-    llvm::outs() << "2 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
     auto inputFunc = inputFuncOrig.clone();
     // Get ops.
     std::vector<std::string> opsVec;
@@ -254,18 +263,12 @@ int main(int argc, char **argv) {
 
     int timeout = 1;
     bool continueSynthesis = true;
-
-    std::thread timeoutThread;
-    if (timeout > 0) {
-      timeoutThread = std::thread([timeout, &continueSynthesis]() {
-        std::this_thread::sleep_for(std::chrono::seconds(timeout));
-        continueSynthesis = false;
-      });
-    }
+    auto timeoutThread = createTimeoutThread(timeout, continueSynthesis);
 
     ModuleAndArgIds enumerated =
         enumerateCandidates(*ctx, executor, inputFunc, candidateStore,
                             availableOps, options, continueSynthesis);
+    timeoutThread.join();
 
     bool success = std::get<0>(enumerated).get() != nullptr;
     if (success) {
@@ -285,7 +288,6 @@ int main(int argc, char **argv) {
                    << "\n";
 
     }
-    llvm::outs() << "1 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
   }
 
   OpBuilder builder(ctx);
