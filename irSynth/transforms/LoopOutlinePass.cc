@@ -1,6 +1,7 @@
 #include "LoopOutlinePass.h"
 
 #include "analysis/PolyhedralAnalysis.h"
+#include "mlir/IR/BuiltinAttributes.h"
 #include "transforms/Utils.h"
 
 #include "mlir/Dialect/Affine/IR/AffineOps.h"
@@ -137,6 +138,7 @@ void outlineLoops(func::FuncOp &origFunc) {
         argMapper.map(value, newArg);
       }
     }
+    auto reverseMapper = reverseMap(argMapper);
 
     // Add body.
     bodyBlock.push_back(loop->clone(argMapper));
@@ -161,6 +163,17 @@ void outlineLoops(func::FuncOp &origFunc) {
     func.setFunctionType(
         builder.getFunctionType(bodyBlock.getArgumentTypes(), resultTypes));
 
+    // - Add arg attributes of the original function.
+    llvm::SmallVector<Attribute> argAttrs;
+    if (auto origFuncArgAttrs = origFunc.getAllArgAttrs()) {
+      for (auto arg : bodyBlock.getArguments()) {
+        auto value = reverseMapper.lookup(arg).cast<BlockArgument>();
+        auto attribute = origFuncArgAttrs[value.getArgNumber()];
+        argAttrs.push_back(attribute);
+      }
+      func.setAllArgAttrs(argAttrs);
+    }
+
     // Insert the new function and replace the loop with a call to it.
     // ---------------------------------------------
     if (!lastFunc)
@@ -173,7 +186,6 @@ void outlineLoops(func::FuncOp &origFunc) {
 
     // Create args for the call.
     llvm::SmallVector<Value> args;
-    auto reverseMapper = reverseMap(argMapper);
     for (auto arg : func.getArguments()) {
       auto value = reverseMapper.lookupOrNull(arg);
 

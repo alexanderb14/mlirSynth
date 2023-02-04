@@ -32,7 +32,7 @@ ReturnAndArgType getReturnMemRefForShape(mlir::ArrayRef<int64_t> shape);
 llvm::ArrayRef<int64_t> getReturnShape(mlir::func::FuncOp function);
 void addReturn(mlir::ArrayRef<int64_t> returnShape,
                std::vector<ReturnAndArgType> &returnAndArgs);
-std::vector<ReturnAndArgType> createArgs(mlir::Region::BlockArgListType args);
+std::vector<ReturnAndArgType> createArgs(mlir::func::FuncOp function);
 double *getReturnDataPtr(ReturnAndArgType &returnAndArgs);
 void randomlyInitializeArgs(std::vector<ReturnAndArgType> args);
 void printArgs(std::vector<ReturnAndArgType> args, llvm::raw_ostream &os);

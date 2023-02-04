@@ -78,11 +78,11 @@ void addReturn(ArrayRef<int64_t> returnShape,
                         getOwningMemRefForShape(returnShape));
 }
 
-std::vector<ReturnAndArgType> createArgs(Region::BlockArgListType args) {
+std::vector<ReturnAndArgType> createArgs(func::FuncOp function) {
   std::vector<ReturnAndArgType> returnAndArgs;
 
   // Create memref for each argument.
-  for (auto arg : args) {
+  for (auto arg : function.getArguments()) {
     if (arg.getType().isa<ShapedType>()) {
       auto argShape = arg.getType().cast<ShapedType>().getShape();
       returnAndArgs.emplace_back(getOwningMemRefForShape(argShape));

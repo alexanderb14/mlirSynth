@@ -577,7 +577,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
 
   // Compile and run reference.
   // - Create argument vector.
-  auto args = createArgs(inputFunction.getArguments());
+  auto args = createArgs(inputFunction);
   randomlyInitializeArgs(args);
   auto ret = getOwningMemRefForShape(targetShape);
 
