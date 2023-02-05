@@ -97,16 +97,6 @@ getDialectOps(MLIRContext *ctx, std::vector<Dialect *> &dialects,
   return opNames;
 }
 
-std::thread createTimeoutThread(unsigned timeout, bool &continueSynthesis) {
-  std::thread timeoutThread;
-  timeoutThread = std::thread([timeout, &continueSynthesis]() {
-    std::this_thread::sleep_for(std::chrono::seconds(timeout));
-    continueSynthesis = false;
-  });
-
-  return timeoutThread;
-}
-
 int main(int argc, char **argv) {
   // Parse command line arguments.
   cl::opt<std::string> inputFilename(cl::Positional, cl::desc("<input file>"),
@@ -140,6 +130,9 @@ int main(int argc, char **argv) {
       "ops", cl::desc("Comma separated list of allowed ops"), cl::init(""));
   cl::opt<int> maxNumOps("max-num-ops", cl::desc("Max number of operations"),
                          cl::init(3));
+  cl::opt<int> timeoutPerFunction(
+      "timeout-per-function",
+      cl::desc("Enumeration timeout per function in seconds"), cl::init(10));
 
   cl::opt<int> numThreads("num-threads", cl::desc("Number of threads"),
                           cl::init(1));
@@ -259,16 +252,11 @@ int main(int argc, char **argv) {
     options.printStats = printStats;
     options.printArgsAndResults = printArgsAndResults;
     options.maxNumOps = maxNumOps;
+    options.timeoutPerFunction = timeoutPerFunction;
     options.ignoreEquivalentCandidates = ignoreEquivalentCandidates;
 
-    int timeout = 1;
-    bool continueSynthesis = true;
-    auto timeoutThread = createTimeoutThread(timeout, continueSynthesis);
-
-    ModuleAndArgIds enumerated =
-        enumerateCandidates(*ctx, executor, inputFunc, candidateStore,
-                            availableOps, options, continueSynthesis);
-    timeoutThread.join();
+    ModuleAndArgIds enumerated = enumerateCandidates(
+        *ctx, executor, inputFunc, candidateStore, availableOps, options);
 
     bool success = std::get<0>(enumerated).get() != nullptr;
     if (success) {

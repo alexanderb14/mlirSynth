@@ -20,6 +20,7 @@
 #include "mlir/Support/LogicalResult.h"
 #include "llvm/ADT/ArrayRef.h"
 
+#include <chrono>
 #include <cstdint>
 #include <math.h>
 #include <optional>
@@ -421,7 +422,7 @@ process(MLIRContext &ctx, EnumerationStats &stats,
 
   auto unfilteredAttrNames = opName.getAttributeNames();
   for (auto attrName : unfilteredAttrNames) {
-     if (attrName.str() == "dot_dimension_numbers") {
+    if (attrName.str() == "dot_dimension_numbers") {
       // Last element of lhsOpShape is the dimension to be contracted
       auto lhsOpShape = operands[0].getType().cast<ShapedType>().getShape();
       int64_t lhsContracting = lhsOpShape.size() - 1;
@@ -526,7 +527,7 @@ process(MLIRContext &ctx, EnumerationStats &stats,
   // Hash and add to store if hash doesn't exist yet.
   double hash = hashArray(out, returnShape);
   newCandidate->setHash(hash);
-  //llvm::outs() << "Hash: " << hash << "\n";
+  // llvm::outs() << "Hash: " << hash << "\n";
   if (options.ignoreEquivalentCandidates &&
       !candidateStore->addCandidateHash(hash)) {
     stats.numIgnored++;
@@ -556,8 +557,8 @@ process(MLIRContext &ctx, EnumerationStats &stats,
 }
 
 void printArgsAndResultsInPython(std::vector<ReturnAndArgType> &args,
-                               double *refOut,
-                               llvm::ArrayRef<int64_t> targetShape) {
+                                 double *refOut,
+                                 llvm::ArrayRef<int64_t> targetShape) {
   llvm::outs() << "inputs = {\n";
   printArgs(args, llvm::outs());
   llvm::outs() << "},\n";
@@ -565,12 +566,18 @@ void printArgsAndResultsInPython(std::vector<ReturnAndArgType> &args,
   printArray(refOut, targetShape, llvm::outs());
 }
 
+float getElapsedTimeSince(
+    std::chrono::time_point<std::chrono::high_resolution_clock> start) {
+  auto now = std::chrono::high_resolution_clock::now();
+  return std::chrono::duration_cast<std::chrono::seconds>(now - start).count();
+}
+
 ModuleAndArgIds
 enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                     func::FuncOp inputFunction,
                     CandidateStorePtr &candidateStore,
                     std::vector<RegisteredOperationName> &avaliableOps,
-                    EnumerationOptions &options, bool &continueSynthesis) {
+                    EnumerationOptions &options) {
   auto inputFunctionName = inputFunction.getName().str();
   auto targetShape = getReturnShape(inputFunction);
   prepareInputFunction(inputFunction);
@@ -603,6 +610,9 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                    candidateStore, candidate, options, module);
   }
 
+  // Get the current time.
+  auto startTime = std::chrono::high_resolution_clock::now();
+
   OwningOpRef<ModuleOp> acceptedModule = nullptr;
   CandidatePtr acceptedCandidate = nullptr;
 
@@ -618,7 +628,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
 
       auto status = failableParallelForEach(
           &ctx, operandArgTuples, [&](auto &operandArgTuple) {
-            if (!continueSynthesis)
+            if (getElapsedTimeSince(startTime) > options.timeoutPerFunction)
               return failure();
 
             CandidatePtr newCandidate;
@@ -626,8 +636,8 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
 
             ProcessingStatus status =
                 process(ctx, stats, opName, executor, args, candidateStore,
-                        localCandidateStore, refOut, options,
-                        operandArgTuple, newCandidate, module, targetShape);
+                        localCandidateStore, refOut, options, operandArgTuple,
+                        newCandidate, module, targetShape);
 
             if (status == accept_as_solution) {
               acceptedModule = std::move(module);

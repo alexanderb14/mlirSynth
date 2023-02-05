@@ -18,6 +18,7 @@ struct EnumerationOptions {
   bool printStats;
   bool printArgsAndResults;
   int maxNumOps;
+  int timeoutPerFunction;
   bool ignoreEquivalentCandidates;
 };
 
@@ -34,6 +35,6 @@ enumerateCandidates(mlir::MLIRContext &ctx, IExecutorPtr executor,
                     mlir::func::FuncOp inputFunction,
                     CandidateStorePtr &candidateStore,
                     std::vector<mlir::RegisteredOperationName> &avaliableOps,
-                    EnumerationOptions &options, bool &continueSynthesis);
+                    EnumerationOptions &options);
 
 #endif // IRSYNTH_ENUMERATOR_H

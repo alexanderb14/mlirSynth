@@ -119,6 +119,8 @@ double *getReturnDataPtr(ReturnAndArgType &returnAndArgs) {
 }
 
 bool hasAttribute(Attribute attr, StringRef attrName) {
+  if (!attr)
+    return false;
   if (auto dictAttr = attr.dyn_cast<DictionaryAttr>()) {
     return dictAttr.get(attrName) != nullptr;
   }
@@ -131,11 +133,17 @@ void randomlyInitializeArgs(func::FuncOp function,
   std::mt19937 e2(rd());
   std::uniform_real_distribution<> dist(0, 100);
 
-  auto attrs = function.getAllArgAttrs();
-  if (!attrs) {
-    auto attrs = llvm::SmallVector<Attribute, 4>();
+
+  ArrayAttr argAttrs = function.getAllArgAttrs();
+
+  std::vector<Attribute> attrs;
+  if (argAttrs) {
+    for (auto attr : argAttrs) {
+      attrs.emplace_back(attr);
+    }
+  } else {
     for (auto &arg : function.getArguments()) {
-      attrs.push_back(nullptr);
+      attrs.emplace_back(nullptr);
     }
   }
 
