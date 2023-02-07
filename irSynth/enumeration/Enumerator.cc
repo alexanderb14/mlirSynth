@@ -23,6 +23,7 @@
 #include <chrono>
 #include <cstdint>
 #include <math.h>
+#include <memory>
 #include <optional>
 #include <variant>
 
@@ -401,12 +402,13 @@ process(MLIRContext &ctx, EnumerationStats &stats,
         std::vector<ReturnAndArgType> &args, CandidateStorePtr &candidateStore,
         CandidateStorePtr &localCandidateStore, double *refOut,
         EnumerationOptions &options, ArgTuple operandArgTuple,
-        CandidatePtr &newCandidate, OwningOpRef<ModuleOp> &module,
+        EnumerationResultPtr &processingResult,
         ArrayRef<int64_t> &targetShape) {
   stats.numEnumerated++;
 
   // Create candidate.
-  newCandidate.reset(new Candidate(operandArgTuple.operands));
+  CandidatePtr newCandidate =
+      std::make_shared<Candidate>(operandArgTuple.operands);
   auto builder = OpBuilder(&ctx);
 
   // Set up operands.
@@ -488,7 +490,7 @@ process(MLIRContext &ctx, EnumerationStats &stats,
   }
 
   // Verify candidate.
-  module = createModule(ctx, newCandidate->getRegion());
+  OwningOpRef<ModuleOp> module = createModule(ctx, newCandidate->getRegion());
 
   if (!verifyDefsAreUsed(&module->getRegion().getBlocks().front())) {
     return reject_isNotAllDefsAreUsed;
@@ -555,10 +557,16 @@ process(MLIRContext &ctx, EnumerationStats &stats,
         stats.dump();
       }
 
+      processingResult = std::make_shared<EnumerationResult>();
+      processingResult->candidate = newCandidate;
+      processingResult->module = module.release();
       return accept_as_solution;
     }
   }
 
+  processingResult = std::make_shared<EnumerationResult>();
+  processingResult->candidate = newCandidate;
+  processingResult->module = module.release();
   return accept_as_candidate;
 }
 
@@ -578,7 +586,7 @@ float getElapsedTimeSince(
   return std::chrono::duration_cast<std::chrono::seconds>(now - start).count();
 }
 
-ModuleAndArgIds
+EnumerationResultPtr
 enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                     func::FuncOp inputFunction,
                     CandidateStorePtr &candidateStore,
@@ -619,8 +627,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   // Get the current time.
   auto startTime = std::chrono::high_resolution_clock::now();
 
-  OwningOpRef<ModuleOp> acceptedModule = nullptr;
-  CandidatePtr acceptedCandidate = nullptr;
+  EnumerationResultPtr result;
 
   // - Enumerate candidates.
   EnumerationStats stats;
@@ -637,35 +644,30 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
             if (getElapsedTimeSince(startTime) > options.timeoutPerFunction)
               return failure();
 
-            CandidatePtr newCandidate;
-            OwningOpRef<ModuleOp> module;
-
+            EnumerationResultPtr candidateResult;
             ProcessingStatus status =
                 process(ctx, stats, opName, executor, args, candidateStore,
                         localCandidateStore, refOut, options, operandArgTuple,
-                        newCandidate, module, targetShape);
+                        candidateResult, targetShape);
 
             if (status == accept_as_solution) {
-              acceptedModule = std::move(module);
-              acceptedCandidate = newCandidate;
-
-              auto func = acceptedModule->lookupSymbol<func::FuncOp>("foo");
-              finalizeFunction(func, inputFunctionName);
+              result = candidateResult;
+              finalizeFunction(
+                  result->module->lookupSymbol<func::FuncOp>("foo"),
+                  inputFunctionName);
 
               return failure();
             }
 
             // Print candidate.
             printCandidate(status, localCandidateStore, candidateStore,
-                           newCandidate, options, module);
+                           candidateResult->candidate, options, result->module);
             return success();
           });
       if (failed(status)) {
-        if (acceptedCandidate) {
-          auto argIds = acceptedCandidate->getArgIds();
-          return std::make_tuple(std::move(acceptedModule), argIds);
-        }
-        return std::make_tuple(nullptr, std::vector<unsigned>());
+        if (result)
+          return result;
+        return result;
       }
     }
 
@@ -677,5 +679,5 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
     stats.dump();
   }
 
-  return std::make_tuple(nullptr, std::vector<unsigned>());
+  return result;
 }

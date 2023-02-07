@@ -255,26 +255,23 @@ int main(int argc, char **argv) {
     options.timeoutPerFunction = timeoutPerFunction;
     options.ignoreEquivalentCandidates = ignoreEquivalentCandidates;
 
-    ModuleAndArgIds enumerated = enumerateCandidates(
+    auto result = enumerateCandidates(
         *ctx, executor, inputFunc, candidateStore, availableOps, options);
 
-    bool success = std::get<0>(enumerated).get() != nullptr;
-    if (success) {
-      auto module = std::move(std::get<0>(enumerated));
-      auto argIds = std::get<1>(enumerated);
-
+    if (result) {
       if (printSynthesisSteps) {
         llvm::outs() << "Synthesized function " << inputFunc.getName() << ":\n"
           << "--------------------------\n";
-        module->print(llvm::outs());
+        result->module->print(llvm::outs());
       }
-
-      originalToSynthesizedFns[inputFuncOrig] = std::move(module);
-      originalToSynthesizedArgIds[inputFuncOrig] = argIds;
     } else {
       llvm::errs() << "Failed to synthesize function " << inputFunc.getName()
                    << "\n";
+    }
 
+    if (result) {
+      originalToSynthesizedFns[inputFuncOrig] = std::move(result->module);
+      originalToSynthesizedArgIds[inputFuncOrig] = result->candidate->getArgIds();
     }
   }
 

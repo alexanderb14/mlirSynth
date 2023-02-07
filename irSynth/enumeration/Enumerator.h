@@ -22,15 +22,19 @@ struct EnumerationOptions {
   bool ignoreEquivalentCandidates;
 };
 
+struct EnumerationResult {
+  CandidatePtr candidate;
+  mlir::OwningOpRef<mlir::ModuleOp> module;
+};
+using EnumerationResultPtr = std::shared_ptr<EnumerationResult>;
+
 void initializeCandidates(mlir::MLIRContext &ctx,
                           CandidateStorePtr &candidateStore);
 
 mlir::OwningOpRef<mlir::ModuleOp> createModule(mlir::MLIRContext &ctx,
                                                mlir::func::FuncOp *function);
 
-using ModuleAndArgIds =
-    std::tuple<mlir::OwningOpRef<mlir::ModuleOp>, std::vector<unsigned>>;
-ModuleAndArgIds
+EnumerationResultPtr
 enumerateCandidates(mlir::MLIRContext &ctx, IExecutorPtr executor,
                     mlir::func::FuncOp inputFunction,
                     CandidateStorePtr &candidateStore,
