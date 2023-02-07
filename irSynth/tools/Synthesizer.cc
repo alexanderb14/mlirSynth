@@ -230,7 +230,8 @@ int main(int argc, char **argv) {
                                            "mhlo.dot",
                                            "mhlo.reduce",
                                            "mhlo.dynamic_reshape",
-                                           "mhlo.dot_general"};
+                                           "mhlo.dot_general"
+                                           "mhlo.transpose"};
   llvm::DenseMap<func::FuncOp, OwningOpRef<ModuleOp>> originalToSynthesizedFns;
   llvm::DenseMap<func::FuncOp, std::vector<unsigned>>
       originalToSynthesizedArgIds;

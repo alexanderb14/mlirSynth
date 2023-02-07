@@ -46,6 +46,8 @@ int main(int argc, char **argv) {
   // Parse command line arguments.
   cl::opt<std::string> inputFilename(cl::Positional, cl::desc("<input file>"),
                                      cl::init("-"));
+  cl::opt<bool> printArgsArg("print-args", cl::desc("Print args"),
+                             cl::init(false));
   cl::ParseCommandLineOptions(argc, argv, "MLIR enumerator\n");
 
   // Initialize LLVM.
@@ -108,7 +110,8 @@ int main(int argc, char **argv) {
   auto args = createArgs(originalFunction);
   randomlyInitializeArgs(originalFunction, args);
   auto targetShape = getReturnShape(originalFunction);
-  // printArgs(args);
+  if (printArgsArg)
+    printArgs(args, llvm::outs());
 
   // Lower and run the functions on the inputs.
   auto executor = std::make_shared<Executor>(&ctx);

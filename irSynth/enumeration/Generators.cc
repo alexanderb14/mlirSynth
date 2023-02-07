@@ -66,6 +66,14 @@ genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
     }
     attrVect.push_back(builder.getI64IntegerAttr(1));
     attributes.push_back(getDenseElementsAttr(attrVect));
+
+    // Transpose: E.g. [3, 5] -> [5, 3]
+    attrVect = std::vector<Attribute>();
+    for (unsigned i = 0; i < shape.size(); i++) {
+      attrVect.push_back(builder.getI64IntegerAttr(i));
+    }
+    std::reverse(attrVect.begin(), attrVect.end());
+    attributes.push_back(getDenseElementsAttr(attrVect));
   }
 
   return attributes;
