@@ -136,6 +136,12 @@ void prepareInputFunction(func::FuncOp &inputFunction) {
   inputFunction.setName("foo");
 }
 
+void finalizeFunction(func::FuncOp func, std::string &funcName) {
+  func.setName(funcName);
+  func->removeAttr("llvm.emit_c_interface");
+  func->setAttr("irsynth.raised", UnitAttr::get(func->getContext()));
+}
+
 OwningOpRef<ModuleOp> createModule(MLIRContext &ctx, func::FuncOp *function) {
   // Create an empty module.
   auto unknownLoc = UnknownLoc::get(&ctx);
@@ -644,9 +650,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
               acceptedCandidate = newCandidate;
 
               auto func = acceptedModule->lookupSymbol<func::FuncOp>("foo");
-              func.setName(inputFunctionName);
-              func->removeAttr("llvm.emit_c_interface");
-              func->setAttr("irsynth.raised", UnitAttr::get(&ctx));
+              finalizeFunction(func, inputFunctionName);
 
               return failure();
             }
