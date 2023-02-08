@@ -122,6 +122,9 @@ int main(int argc, char **argv) {
                                     cl::desc("Print args and results"),
                                     cl::init(false));
 
+  cl::opt<bool> printAvailableOps("print-available-ops",
+                                  cl::desc("Print available ops"),
+                                  cl::init(false));
   cl::opt<bool> printSynthesisSteps(
       "print-synthesis-steps", cl::desc("Print synthesis steps"),
       cl::init(false));
@@ -249,6 +252,14 @@ int main(int argc, char **argv) {
       opsVec = supportedOps;
     }
     auto availableOps = getDialectOps(ctx, dialects, opsVec, false);
+
+    // Print available ops
+    if (printAvailableOps) {
+      llvm::outs() << "Available ops:\n";
+      for (auto op : availableOps) {
+        llvm::outs() << op << "\n";
+      }
+    }
 
     // Synthesize.
     if (printSynthesisSteps) {
