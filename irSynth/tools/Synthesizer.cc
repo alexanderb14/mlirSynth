@@ -150,6 +150,18 @@ int main(int argc, char **argv) {
 
   cl::ParseCommandLineOptions(argc, argv, "MLIR enumerator\n");
 
+  // Parse options.
+  EnumerationOptions options;
+  options.printStatusNames = printStatusNames;
+  options.printStatusTiles = printStatusTiles;
+  options.printValidCandidates = printValidCandidates;
+  options.printInvalidCandidates = printInvalidCandidates;
+  options.printStats = printStats;
+  options.printArgsAndResults = printArgsAndResults;
+  options.maxNumOps = maxNumOps;
+  options.timeoutPerFunction = timeoutPerFunction;
+  options.ignoreEquivalentCandidates = ignoreEquivalentCandidates;
+
   // Initialize LLVM.
   llvm::InitLLVM y(argc, argv);
   llvm::InitializeNativeTarget();
@@ -222,6 +234,8 @@ int main(int argc, char **argv) {
   llvm::DenseMap<func::FuncOp, OwningOpRef<ModuleOp>> originalToSynthesizedFns;
   llvm::DenseMap<func::FuncOp, std::vector<unsigned>>
       originalToSynthesizedArgIds;
+
+  EnumerationStats stats;
   for (auto inputFuncOrig : functions) {
     auto inputFunc = inputFuncOrig.clone();
     // Get ops.
@@ -244,23 +258,8 @@ int main(int argc, char **argv) {
 
     CandidateStorePtr candidateStore = std::make_shared<CandidateStore>();
 
-    EnumerationOptions options;
-    options.printStatusNames = printStatusNames;
-    options.printStatusTiles = printStatusTiles;
-    options.printValidCandidates = printValidCandidates;
-    options.printInvalidCandidates = printInvalidCandidates;
-    options.printStats = printStats;
-    options.printArgsAndResults = printArgsAndResults;
-    options.maxNumOps = maxNumOps;
-    options.timeoutPerFunction = timeoutPerFunction;
-    options.ignoreEquivalentCandidates = ignoreEquivalentCandidates;
-
-    EnumerationStats stats;
     auto result = enumerateCandidates(*ctx, executor, inputFunc, candidateStore,
                                       availableOps, options, stats);
-
-    if (options.printStats)
-      stats.dump();
 
     if (result) {
       if (printSynthesisSteps) {
@@ -278,6 +277,9 @@ int main(int argc, char **argv) {
       originalToSynthesizedArgIds[inputFuncOrig] = result->candidate->getArgIds();
     }
   }
+
+  if (options.printStats)
+    stats.dump();
 
   OpBuilder builder(ctx);
 
