@@ -81,9 +81,9 @@ unsigned maxShapeRank = 4;
 
 void printCandidate(ProcessingStatus status,
                     CandidateStorePtr &localCandidateStore,
-                    CandidateStorePtr &candidateStore, CandidatePtr &candidate,
+                    CandidateStorePtr &candidateStore,
                     EnumerationOptions &options,
-                    OwningOpRef<ModuleOp> &module) {
+                    EnumerationResultPtr &result) {
   // If there is nothing to print, return early.
   if (!(options.printStatusNames || options.printStatusTiles ||
         options.printValidCandidates || options.printInvalidCandidates)) {
@@ -91,7 +91,7 @@ void printCandidate(ProcessingStatus status,
   }
 
   // Build and print the status string.
-  int candidateId = localCandidateStore->getCandidateId(candidate);
+  int candidateId = localCandidateStore->getCandidateId(result->candidate);
 
   std::string statusStr;
   bool printStatus = options.printStatusNames || options.printStatusTiles ||
@@ -107,7 +107,7 @@ void printCandidate(ProcessingStatus status,
 
       statusStr += ", preds:";
       bool first = true;
-      for (auto &pred : candidate->getPredecessors()) {
+      for (auto &pred : result->candidate->getPredecessors()) {
         if (!first)
           statusStr += ",";
         first = false;
@@ -127,8 +127,9 @@ void printCandidate(ProcessingStatus status,
       (!(status == accept_as_candidate) && options.printInvalidCandidates) ||
       options.printStatusNames) {
     llvm::outs() << statusStr << "\n";
-    if (status > reject_hasUnsupportedShapeRank)
-      module->print(llvm::outs());
+    if (status > reject_hasUnsupportedShapeRank) {
+      result->module->print(llvm::outs());
+    }
   }
 }
 
@@ -607,8 +608,12 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   // - Print them.
   for (auto &candidate : candidateStore->getCandidates()) {
     auto module = createModule(ctx, candidate->getRegion());
+
+    EnumerationResultPtr processingResult = std::make_shared<EnumerationResult>();
+    processingResult->candidate = candidate;
+    processingResult->module = module.release();
     printCandidate(ProcessingStatus::accept_as_candidate, candidateStore,
-                   candidateStore, candidate, options, module);
+                   candidateStore, options, processingResult);
   }
 
   // Get the current time.
@@ -639,6 +644,11 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                         operandArgTuple, processingResult, targetShape);
             stats.merge(processingStats);
 
+            // Print candidate.
+            if (processingResult)
+              printCandidate(status, localCandidateStore, candidateStore,
+                             options, processingResult);
+
             if (status == accept_as_solution) {
               result = processingResult;
               finalizeFunction(
@@ -648,9 +658,6 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
               return failure();
             }
 
-            // Print candidate.
-            printCandidate(status, localCandidateStore, candidateStore,
-                           processingResult->candidate, options, result->module);
             return success();
           });
       if (failed(status)) {
