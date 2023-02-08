@@ -31,3 +31,13 @@ void EnumerationStats::dump() {
                << "\"numIgnored\":" << numIgnored << ","
                << "\"numOps\":" << numOps << "}\n";
 }
+
+void EnumerationStats::merge(EnumerationStats &other) {
+  std::lock_guard<std::mutex> lock(mutex);
+
+  numEnumerated += other.numEnumerated;
+  numValid += other.numValid;
+  numExecuted += other.numExecuted;
+  numIgnored += other.numIgnored;
+  numOps += other.numOps;
+}

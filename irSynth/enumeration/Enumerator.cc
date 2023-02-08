@@ -640,14 +640,16 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
             if (getElapsedTimeSince(startTime) > options.timeoutPerFunction)
               return failure();
 
-            EnumerationResultPtr candidateResult;
+            EnumerationResultPtr processingResult;
+            EnumerationStats processingStats;
             ProcessingStatus status =
-                process(ctx, stats, opName, executor, args, candidateStore,
-                        localCandidateStore, refOut, options, operandArgTuple,
-                        candidateResult, targetShape);
+                process(ctx, processingStats, opName, executor, args,
+                        candidateStore, localCandidateStore, refOut, options,
+                        operandArgTuple, processingResult, targetShape);
+            stats.merge(processingStats);
 
             if (status == accept_as_solution) {
-              result = candidateResult;
+              result = processingResult;
               finalizeFunction(
                   result->module->lookupSymbol<func::FuncOp>("foo"),
                   inputFunctionName);
@@ -657,7 +659,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
 
             // Print candidate.
             printCandidate(status, localCandidateStore, candidateStore,
-                           candidateResult->candidate, options, result->module);
+                           processingResult->candidate, options, result->module);
             return success();
           });
       if (failed(status)) {
