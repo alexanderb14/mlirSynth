@@ -39,6 +39,10 @@ module {
 
     %6 = "mhlo.add"(%5, %3) : (tensor<5x5xf64>, tensor<5x5xf64>) -> tensor<5x5xf64>
 
-    return %6 : tensor<5x5xf64>
+    // Create a mask for the lower triangular part of the matrix.
+    %mask = "mhlo.constant"() {value = dense<[[1, 0, 0, 0, 0], [1, 1, 0, 0, 0], [1, 1, 1, 0, 0], [1, 1, 1, 1, 0], [1, 1, 1, 1, 1]]> : tensor<5x5xi1>} : () -> tensor<5x5xi1>
+    %7 = "mhlo.select"(%mask, %6, %arg0) : (tensor<5x5xi1>, tensor<5x5xf64>, tensor<5x5xf64>) -> tensor<5x5xf64>
+
+    return %7 : tensor<5x5xf64>
   }
 }
