@@ -4,6 +4,7 @@
 #include "enumeration/ArgTuples.h"
 #include "enumeration/Candidate.h"
 #include "enumeration/Generators.h"
+#include "enumeration/Stats.h"
 #include "enumeration/Utils.h"
 #include "execution/ArgUtils.h"
 #include "execution/ArrayUtils.h"
@@ -553,10 +554,6 @@ process(MLIRContext &ctx, EnumerationStats &stats,
       candidateStore->merge(localCandidateStore);
       stats.numOps = newCandidate->getNumOps();
 
-      if (options.printStats) {
-        stats.dump();
-      }
-
       processingResult = std::make_shared<EnumerationResult>();
       processingResult->candidate = newCandidate;
       processingResult->module = module.release();
@@ -591,7 +588,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                     func::FuncOp inputFunction,
                     CandidateStorePtr &candidateStore,
                     std::vector<RegisteredOperationName> &avaliableOps,
-                    EnumerationOptions &options) {
+                    EnumerationOptions &options, EnumerationStats &stats) {
   auto inputFunctionName = inputFunction.getName().str();
   auto targetShape = getReturnShape(inputFunction);
   prepareInputFunction(inputFunction);
@@ -630,7 +627,6 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   EnumerationResultPtr result;
 
   // - Enumerate candidates.
-  EnumerationStats stats;
   for (int numOps = 0; numOps <= options.maxNumOps; numOps++) {
     CandidateStorePtr localCandidateStore = std::make_shared<CandidateStore>();
 
@@ -672,11 +668,6 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
     }
 
     candidateStore->merge(localCandidateStore);
-  }
-
-  if (options.printStats) {
-    llvm::outs() << "\n";
-    stats.dump();
   }
 
   return result;

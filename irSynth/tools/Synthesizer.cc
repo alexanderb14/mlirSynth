@@ -255,8 +255,12 @@ int main(int argc, char **argv) {
     options.timeoutPerFunction = timeoutPerFunction;
     options.ignoreEquivalentCandidates = ignoreEquivalentCandidates;
 
-    auto result = enumerateCandidates(
-        *ctx, executor, inputFunc, candidateStore, availableOps, options);
+    EnumerationStats stats;
+    auto result = enumerateCandidates(*ctx, executor, inputFunc, candidateStore,
+                                      availableOps, options, stats);
+
+    if (options.printStats)
+      stats.dump();
 
     if (result) {
       if (printSynthesisSteps) {

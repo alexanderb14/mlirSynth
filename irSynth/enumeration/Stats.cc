@@ -3,7 +3,7 @@
 #include "llvm/Support/raw_ostream.h"
 
 void EnumerationStats::dump() {
-  llvm::outs() << "\nEnumeration Stats"
+  llvm::outs() << "Enumeration Stats"
                << "\n--------\n";
   llvm::outs() << "Number of enumerated candidates:             "
                << numEnumerated << "\n";
