@@ -37,6 +37,9 @@ double *getReturnDataPtr(ReturnAndArgType &returnAndArgs);
 void randomlyInitializeArgs(mlir::func::FuncOp function,
                             std::vector<ReturnAndArgType> args);
 void printArgs(std::vector<ReturnAndArgType> args, llvm::raw_ostream &os);
+void printArgsAndResultsInPython(std::vector<ReturnAndArgType> &args,
+                                 double *refOut,
+                                 llvm::ArrayRef<int64_t> targetShape);
 std::vector<ReturnAndArgType>
 selectArgs(const std::vector<ReturnAndArgType> &args,
            const std::vector<unsigned> &argIds);

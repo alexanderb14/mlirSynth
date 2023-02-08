@@ -567,16 +567,6 @@ process(MLIRContext &ctx, EnumerationStats &stats,
   return accept_as_candidate;
 }
 
-void printArgsAndResultsInPython(std::vector<ReturnAndArgType> &args,
-                                 double *refOut,
-                                 llvm::ArrayRef<int64_t> targetShape) {
-  llvm::outs() << "inputs = {\n";
-  printArgs(args, llvm::outs());
-  llvm::outs() << "},\n";
-  llvm::outs() << "output = ";
-  printArray(refOut, targetShape, llvm::outs());
-}
-
 float getElapsedTimeSince(
     std::chrono::time_point<std::chrono::high_resolution_clock> start) {
   auto now = std::chrono::high_resolution_clock::now();

@@ -1,5 +1,6 @@
 #include "analysis/PolyhedralAnalysis.h"
 #include "enumeration/Enumerator.h"
+#include "execution/ArgUtils.h"
 #include "execution/ArrayUtils.h"
 #include "execution/Executor.h"
 #include "mlir/Target/LLVMIR/Dialect/LLVMIR/LLVMToLLVMIRTranslation.h"
@@ -46,8 +47,9 @@ int main(int argc, char **argv) {
   // Parse command line arguments.
   cl::opt<std::string> inputFilename(cl::Positional, cl::desc("<input file>"),
                                      cl::init("-"));
-  cl::opt<bool> printArgsArg("print-args", cl::desc("Print args"),
-                             cl::init(false));
+  cl::opt<bool> printArgsAndResults("print-args-and-results",
+                                    cl::desc("Print args and results"),
+                                    cl::init(false));
   cl::ParseCommandLineOptions(argc, argv, "MLIR enumerator\n");
 
   // Initialize LLVM.
@@ -110,8 +112,6 @@ int main(int argc, char **argv) {
   auto args = createArgs(originalFunction);
   randomlyInitializeArgs(originalFunction, args);
   auto targetShape = getReturnShape(originalFunction);
-  if (printArgsArg)
-    printArgs(args, llvm::outs());
 
   // Lower and run the functions on the inputs.
   auto executor = std::make_shared<Executor>(&ctx);
@@ -122,6 +122,9 @@ int main(int argc, char **argv) {
   auto refRet = getOwningMemRefForShape(targetShape);
   assert(succeeded(jitAndInvoke(originalModule, args, refRet, false)));
   double *refOut = getReturnDataPtr(refRet);
+
+  if (printArgsAndResults)
+    printArgsAndResultsInPython(args, refOut, targetShape);
 
   // - HLO function.
   assert(succeeded(executor->lowerCHLOToLLVMDialect(hloModule)) &&

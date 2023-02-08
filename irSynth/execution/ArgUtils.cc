@@ -1,5 +1,6 @@
 #include "ArgUtils.h"
 
+#include "execution/ArrayUtils.h"
 #include "mlir/ExecutionEngine/ExecutionEngine.h"
 #include "llvm/Support/raw_ostream.h"
 
@@ -312,6 +313,16 @@ void printArgs(std::vector<ReturnAndArgType> args, llvm::raw_ostream &os) {
       os << "\n";
     }
   }
+}
+
+void printArgsAndResultsInPython(std::vector<ReturnAndArgType> &args,
+                                 double *refOut,
+                                 llvm::ArrayRef<int64_t> targetShape) {
+  llvm::outs() << "inputs = {\n";
+  printArgs(args, llvm::outs());
+  llvm::outs() << "},\n";
+  llvm::outs() << "output = ";
+  printArray(refOut, targetShape, llvm::outs());
 }
 
 std::vector<ReturnAndArgType>
