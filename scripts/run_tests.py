@@ -38,7 +38,9 @@ def run_program(x):
     return p.stdout.decode('utf-8'), end-start, p.returncode
 
 
-def run_tests(tests):
+def run_tests(tests, prune_eq_configs=[True, False],
+              ops_configs=['ground_truth', 'heuristic', 'all'],
+              distribute_configs=[True, False]):
     cpu_count = multiprocessing.cpu_count()
     print('Running experiments on %d cores' % cpu_count)
 
@@ -51,9 +53,9 @@ def run_tests(tests):
 
         test = os.path.join(script_dir, '../' + test_file)
 
-        for prune_equivalent_candidates in [True, False]:
-            for ops in ['ground_truth', 'heuristic', 'all']:
-                for distribute in [True, False]:
+        for prune_equivalent_candidates in prune_eq_configs:
+            for ops in ops_configs:
+                for distribute in distribute_configs:
                     args = ['--num-threads=%d' % cpu_count,
                             '--print-stats',
                             '--max-num-ops=6']
@@ -117,12 +119,17 @@ def plot_results():
 def main():
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Run tests')
-    parser.add_argument('--exp', action='store_true',
-                        default=False, help='Run experiments')
+    parser.add_argument('--exp_all', action='store_true',
+                        default=False, help='Run all experiments')
+    parser.add_argument('--exp_fast', action='store_true',
+                        default=False, help='Run fast experiments')
     args = parser.parse_args()
 
-    if args.exp:
+    if args.exp_all:
         run_tests(tests)
+    elif args.exp_fast:
+        run_tests(tests, prune_eq_configs=[True], ops_configs=['heuristic'],
+                  distribute_configs=[False])
 
     # Plot results.
     plot_results()
