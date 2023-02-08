@@ -153,6 +153,10 @@ void randomlyInitializeArgs(func::FuncOp function,
     auto attr = std::get<1>(argAndAttribute);
 
     bool symmetric = hasAttribute(attr, "irsynth.symmetric");
+    bool lowerTriangular = hasAttribute(attr, "irsynth.lower_triangular");
+    bool regular = !symmetric && !lowerTriangular;
+    assert(!(symmetric && lowerTriangular) &&
+           "Cannot be both symmetric and lower triangular");
 
     if (auto *memRef = std::get_if<OwningMemRef0DPtr>(&arg)) {
       (**memRef)[{}] = dist(e2);
@@ -173,6 +177,13 @@ void randomlyInitializeArgs(func::FuncOp function,
         for (int i = 0; i < shape[0]; i++) {
           for (int j = 0; j < i; j++) {
             (**memRef)[{j, i}] = (**memRef)[{i, j}];
+          }
+        }
+      }
+      if (lowerTriangular) {
+        for (int i = 0; i < shape[0]; i++) {
+          for (int j = i + 1; j < shape[1]; j++) {
+            (**memRef)[{i, j}] = 0;
           }
         }
       }
@@ -320,7 +331,7 @@ void printArgsAndResultsInPython(std::vector<ReturnAndArgType> &args,
                                  llvm::ArrayRef<int64_t> targetShape) {
   llvm::outs() << "inputs = {\n";
   printArgs(args, llvm::outs());
-  llvm::outs() << "},\n";
+  llvm::outs() << "}\n";
   llvm::outs() << "output = ";
   printArray(refOut, targetShape, llvm::outs());
 }
