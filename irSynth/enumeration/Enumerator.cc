@@ -581,6 +581,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                     std::vector<RegisteredOperationName> &avaliableOps,
                     EnumerationOptions &options, EnumerationStats &stats) {
   auto inputFunctionName = inputFunction.getName().str();
+  auto inputFunctionArgs = inputFunction.getArguments();
   auto targetShape = getReturnShape(inputFunction);
   prepareInputFunction(inputFunction);
 
@@ -604,7 +605,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
 
   // Synthesize.
   // - Initialize candidate store with constant and argument candidates.
-  initializeCandidates(ctx, candidateStore, inputFunction.getArguments());
+  initializeCandidates(ctx, candidateStore, inputFunctionArgs);
   // - Print them.
   for (auto &candidate : candidateStore->getCandidates()) {
     auto module = createModule(ctx, candidate->getRegion());
@@ -627,8 +628,8 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
 
     for (auto opName : avaliableOps) {
       auto operandCandidates = candidateStore->getCandidates(numOps);
-      auto operandArgTuples =
-          getOperandArgTuples(ctx, opName, operandCandidates);
+      auto operandArgTuples = getOperandArgTuples(
+          ctx, opName, operandCandidates, inputFunctionArgs);
 
       auto status = failableParallelForEach(
           &ctx, operandArgTuples, [&](auto &operandArgTuple) {

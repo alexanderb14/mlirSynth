@@ -441,7 +441,8 @@ std::vector<ArgTuple> get2operands2attributes2regions(
 
 std::vector<ArgTuple>
 getOperandArgTuples(MLIRContext &ctx, RegisteredOperationName opName,
-                    std::vector<CandidatePtr> &operandCandidates) {
+                    std::vector<CandidatePtr> &operandCandidates,
+                    Block::BlockArgListType &functionArgs) {
   OpBuilder builder(&ctx);
   Operation *op =
       builder.create(UnknownLoc::get(&ctx), opName.getIdentifier(), {});
@@ -449,9 +450,8 @@ getOperandArgTuples(MLIRContext &ctx, RegisteredOperationName opName,
   int numOperands = getRequiredNumOperands(op);
   int numAttributes = getRequiredNumAttributes(op);
 
-  Block::BlockArgListType blockArgs;
   std::vector<Attribute> attributeCandidates =
-      genAttributes(builder, blockArgs, 2);
+      genAttributes(builder, functionArgs, 2);
   int numRegions = getRequiredNumRegions(op);
 
   std::vector<std::shared_ptr<Region>> regionCandidates = genRegions(builder);

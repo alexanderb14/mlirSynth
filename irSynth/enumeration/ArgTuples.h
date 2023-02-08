@@ -11,7 +11,8 @@ struct ArgTuple {
 
 std::vector<ArgTuple>
 getOperandArgTuples(mlir::MLIRContext &ctx,
-                          mlir::RegisteredOperationName opName,
-                          std::vector<CandidatePtr> &operandCandidates);
+                    mlir::RegisteredOperationName opName,
+                    std::vector<CandidatePtr> &operandCandidates,
+                    mlir::Block::BlockArgListType &functionArgs);
 
 #endif // IRSYNTH_CANDIDATETUPLES_H
