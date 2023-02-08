@@ -637,7 +637,8 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
 
       auto status = failableParallelForEach(
           &ctx, operandArgTuples, [&](auto &operandArgTuple) {
-            if (getElapsedTimeSince(startTime) > options.timeoutPerFunction)
+            if (options.timeoutPerFunction &&
+                getElapsedTimeSince(startTime) > options.timeoutPerFunction)
               return failure();
 
             EnumerationResultPtr processingResult;

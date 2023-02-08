@@ -132,7 +132,7 @@ int main(int argc, char **argv) {
                          cl::init(3));
   cl::opt<int> timeoutPerFunction(
       "timeout-per-function",
-      cl::desc("Enumeration timeout per function in seconds"), cl::init(10));
+      cl::desc("Enumeration timeout per function in seconds"), cl::init(0));
 
   cl::opt<int> numThreads("num-threads", cl::desc("Number of threads"),
                           cl::init(1));
