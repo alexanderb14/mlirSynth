@@ -13,6 +13,7 @@ std::vector<ArgTuple>
 getOperandArgTuples(mlir::MLIRContext &ctx,
                     mlir::RegisteredOperationName opName,
                     std::vector<CandidatePtr> &operandCandidates,
-                    mlir::Block::BlockArgListType &functionArgs);
+                    mlir::Block::BlockArgListType &functionArgs,
+                    llvm::ArrayRef<int64_t> &targetShape);
 
 #endif // IRSYNTH_CANDIDATETUPLES_H

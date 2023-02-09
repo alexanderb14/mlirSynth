@@ -29,7 +29,9 @@ struct EnumerationResult {
 using EnumerationResultPtr = std::shared_ptr<EnumerationResult>;
 
 void initializeCandidates(mlir::MLIRContext &ctx,
-                          CandidateStorePtr &candidateStore);
+                          CandidateStorePtr &candidateStore,
+                          mlir::Region::BlockArgListType functionArgs,
+                          llvm::ArrayRef<int64_t> targetShape);
 
 mlir::OwningOpRef<mlir::ModuleOp> createModule(mlir::MLIRContext &ctx,
                                                mlir::func::FuncOp *function);

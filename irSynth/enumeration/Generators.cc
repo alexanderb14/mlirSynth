@@ -149,9 +149,10 @@ void printAttributes(std::vector<Attribute>& attributes) {
   }
 }
 
-std::vector<Attribute>
-genAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
-              int maxRank) {
+std::vector<Attribute> genAttributes(OpBuilder &builder,
+                                     Region::BlockArgListType &functionArgs,
+                                     llvm::ArrayRef<int64_t> &targetShape,
+                                     int maxRank) {
   std::vector<Attribute> attributes;
 
   auto shapeValues = genShapeAttributes(builder, functionArgs);

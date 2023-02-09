@@ -7,7 +7,8 @@
 
 std::vector<mlir::Attribute>
 genAttributes(mlir::OpBuilder &builder,
-              mlir::Region::BlockArgListType &functionArgs, int maxRank);
+              mlir::Region::BlockArgListType &functionArgs,
+              llvm::ArrayRef<int64_t> &targetShape, int maxRank);
 
 std::vector<std::shared_ptr<mlir::Region>> genRegions(mlir::OpBuilder &builder);
 

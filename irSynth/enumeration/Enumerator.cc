@@ -328,11 +328,12 @@ LogicalResult inferResultTypes(MLIRContext &ctx, Operation *op,
 }
 
 void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
-                          Region::BlockArgListType functionArgs) {
+                          Region::BlockArgListType functionArgs,
+                          llvm::ArrayRef<int64_t> targetShape) {
   OpBuilder builder(&ctx);
 
   // Constant candidates.
-  for (auto &attr : genAttributes(builder, functionArgs, 0)) {
+  for (auto &attr : genAttributes(builder, functionArgs, targetShape, 0)) {
     CandidatePtr candidate(new Candidate({}));
     candidate->addOperation(
         ctx, builder.create<mhlo::ConstantOp>(UnknownLoc::get(&ctx), attr),
@@ -605,7 +606,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
 
   // Synthesize.
   // - Initialize candidate store with constant and argument candidates.
-  initializeCandidates(ctx, candidateStore, inputFunctionArgs);
+  initializeCandidates(ctx, candidateStore, inputFunctionArgs, targetShape);
   // - Print them.
   for (auto &candidate : candidateStore->getCandidates()) {
     auto module = createModule(ctx, candidate->getRegion());
@@ -629,7 +630,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
     for (auto opName : avaliableOps) {
       auto operandCandidates = candidateStore->getCandidates(numOps);
       auto operandArgTuples = getOperandArgTuples(
-          ctx, opName, operandCandidates, inputFunctionArgs);
+          ctx, opName, operandCandidates, inputFunctionArgs, targetShape);
 
       auto status = failableParallelForEach(
           &ctx, operandArgTuples, [&](auto &operandArgTuple) {
