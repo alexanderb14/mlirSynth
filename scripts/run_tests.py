@@ -128,7 +128,7 @@ def main():
     if args.exp_all:
         run_tests(tests)
     elif args.exp_fast:
-        run_tests(tests, prune_eq_configs=[True], ops_configs=['heuristic'],
+        run_tests(tests, prune_eq_configs=[True], ops_configs=['ground_truth'],
                   distribute_configs=[False])
 
     # Plot results.
