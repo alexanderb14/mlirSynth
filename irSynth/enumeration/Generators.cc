@@ -117,6 +117,16 @@ genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
                                       builder.getI1Type());
     auto attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attrVect);
     tensorValues.push_back(attrDense);
+
+    // Create a matrix with 0 values.
+    attrVect = std::vector<Attribute>();
+    for (int i = 0; i < targetShape[0] * targetShape[1]; i++) {
+      attrVect.push_back(builder.getF64FloatAttr(0.0));
+    }
+    type = RankedTensorType::get({targetShape[0], targetShape[1]},
+                                 builder.getF64Type());
+    attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attrVect);
+    tensorValues.push_back(attrDense);
   }
 
   return tensorValues;
