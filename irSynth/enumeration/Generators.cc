@@ -81,7 +81,7 @@ genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
 
 std::vector<Attribute>
 genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
-                    int maxRank) {
+                    llvm::ArrayRef<int64_t> &targetShape, int maxRank) {
   std::vector<Attribute> tensorValues;
 
   if (maxRank >= 0) {
@@ -101,41 +101,22 @@ genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
     }
   }
 
-  if (maxRank >= 1) {
-    std::vector<std::vector<Attribute>> attrs = {
-        std::vector<Attribute>{builder.getF64FloatAttr(0)},
-        std::vector<Attribute>{builder.getF64FloatAttr(1)}};
-    for (int i = 0; i < 2; i++) {
-      for (int j = 0; j < 2; j++) {
-        attrs.push_back(std::vector<Attribute>{builder.getF64FloatAttr(i),
-                                               builder.getF64FloatAttr(j)});
+  if (targetShape.size() == 2) {
+    // Create lower triangular mask containing of i1 values
+    std::vector<Attribute> attrVect;
+    for (int i = 0; i < targetShape[0]; i++) {
+      for (int j = 0; j < targetShape[1]; j++) {
+        if (i >= j) {
+          attrVect.push_back(builder.getBoolAttr(true));
+        } else {
+          attrVect.push_back(builder.getBoolAttr(false));
+        }
       }
     }
-    for (auto attr : attrs) {
-      Type type = RankedTensorType::get({static_cast<long>(attr.size())},
-                                        attr[0].cast<TypedAttr>().getType());
-      auto attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attr);
-      tensorValues.push_back(attrDense);
-    }
-  }
-
-  if (maxRank >= 2) {
-    int n = 2;
-    std::vector<Attribute> attr;
-    attr.reserve(n * n);
-    for (int i = 0; i < n * n; i++) {
-      attr.push_back(builder.getF64FloatAttr(randomInteger(0, 10)));
-    }
-
-    std::vector<std::vector<Attribute>> attrs;
-    attrs.push_back(attr);
-
-    for (auto attr : attrs) {
-      Type type =
-          RankedTensorType::get({n, n}, attr[0].cast<TypedAttr>().getType());
-      auto attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attr);
-      tensorValues.push_back(attrDense);
-    }
+    Type type = RankedTensorType::get({targetShape[0], targetShape[1]},
+                                      builder.getI1Type());
+    auto attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attrVect);
+    tensorValues.push_back(attrDense);
   }
 
   return tensorValues;
@@ -158,7 +139,7 @@ std::vector<Attribute> genAttributes(OpBuilder &builder,
   auto shapeValues = genShapeAttributes(builder, functionArgs);
   attributes.insert(attributes.end(), shapeValues.begin(), shapeValues.end());
 
-  auto tensorValues = genTensorAttributes(builder, functionArgs, maxRank);
+  auto tensorValues = genTensorAttributes(builder, functionArgs, targetShape, maxRank);
   attributes.insert(attributes.end(), tensorValues.begin(), tensorValues.end());
 
   // printAttributes(attributes);
