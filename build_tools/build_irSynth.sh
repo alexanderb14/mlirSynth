@@ -10,8 +10,8 @@ fi
 # Autogenerate arg tuple construction source file.
 python3 build_tools/gen_ArgTuples.py \
   --max_operands 3 \
-  --max_attributes 3 \
-  --max_regions 3 \
+  --max_attributes 2 \
+  --max_regions 2 \
   --output irSynth/enumeration/ArgTuples.cc
 clang-format -i irSynth/enumeration/ArgTuples.cc --style=file
 

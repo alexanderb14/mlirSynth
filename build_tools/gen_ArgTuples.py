@@ -20,7 +20,8 @@ using namespace mlir;
 body_header = """
 std::vector<ArgTuple>
 getOperandArgTuples(MLIRContext &ctx, RegisteredOperationName opName,
-                          std::vector<CandidatePtr> &operandCandidates) {
+                          std::vector<CandidatePtr> &operandCandidates,
+                          Block::BlockArgListType &functionArgs) {
   OpBuilder builder(&ctx);
   Operation *op =
       builder.create(UnknownLoc::get(&ctx), opName.getIdentifier(), {});
@@ -28,9 +29,8 @@ getOperandArgTuples(MLIRContext &ctx, RegisteredOperationName opName,
   int numOperands = getRequiredNumOperands(op);
   int numAttributes = getRequiredNumAttributes(op);
 
-  Block::BlockArgListType blockArgs;
   std::vector<Attribute> attributeCandidates =
-      genAttributes(builder, blockArgs, 2);
+      genAttributes(builder, functionArgs, 2);
   int numRegions = getRequiredNumRegions(op);
 
   std::vector<std::shared_ptr<Region>> regionCandidates = genRegions(builder);
@@ -115,17 +115,17 @@ def main():
     src += "// scripts/gen_ArgTuples.py\n"
     src += header
 
-    for i in range(0, args.max_operands):
-        for j in range(0, args.max_attributes):
-            for k in range(0, args.max_regions):
+    for i in range(0, args.max_operands + 1):
+        for j in range(0, args.max_attributes + 1):
+            for k in range(0, args.max_regions + 1):
                 if i == 0 and j == 0 and k == 0:
                     continue
                 src += get_function(i, j, k)
     
     src += body_header
-    for i in range(0, args.max_operands):
-        for j in range(0, args.max_attributes):
-            for k in range(0, args.max_regions):
+    for i in range(0, args.max_operands + 1):
+        for j in range(0, args.max_attributes + 1):
+            for k in range(0, args.max_regions + 1):
                 if i == 0 and j == 0 and k == 0:
                     continue
                 src += get_call(i, j, k)

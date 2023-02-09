@@ -439,6 +439,162 @@ std::vector<ArgTuple> get2operands2attributes2regions(
   return ret;
 }
 
+std::vector<ArgTuple> get3operands0attributes0regions(
+    std::vector<CandidatePtr> &operandCandidates,
+    std::vector<Attribute> &attributeCandidates,
+    std::vector<std::shared_ptr<Region>> &regionCandidates) {
+  auto cands = ranges::views::cartesian_product(
+      operandCandidates, operandCandidates, operandCandidates);
+  std::vector<ArgTuple> ret;
+  for (auto cand : cands) {
+    ArgTuple tuple;
+    tuple.operands = {std::get<0>(cand), std::get<1>(cand), std::get<2>(cand)};
+    ret.push_back(tuple);
+  }
+  return ret;
+}
+
+std::vector<ArgTuple> get3operands0attributes1regions(
+    std::vector<CandidatePtr> &operandCandidates,
+    std::vector<Attribute> &attributeCandidates,
+    std::vector<std::shared_ptr<Region>> &regionCandidates) {
+  auto cands =
+      ranges::views::cartesian_product(operandCandidates, operandCandidates,
+                                       operandCandidates, regionCandidates);
+  std::vector<ArgTuple> ret;
+  for (auto cand : cands) {
+    ArgTuple tuple;
+    tuple.operands = {std::get<0>(cand), std::get<1>(cand), std::get<2>(cand)};
+    tuple.regions = {std::get<3>(cand)};
+    ret.push_back(tuple);
+  }
+  return ret;
+}
+
+std::vector<ArgTuple> get3operands0attributes2regions(
+    std::vector<CandidatePtr> &operandCandidates,
+    std::vector<Attribute> &attributeCandidates,
+    std::vector<std::shared_ptr<Region>> &regionCandidates) {
+  auto cands = ranges::views::cartesian_product(
+      operandCandidates, operandCandidates, operandCandidates, regionCandidates,
+      regionCandidates);
+  std::vector<ArgTuple> ret;
+  for (auto cand : cands) {
+    ArgTuple tuple;
+    tuple.operands = {std::get<0>(cand), std::get<1>(cand), std::get<2>(cand)};
+    tuple.regions = {std::get<3>(cand), std::get<4>(cand)};
+    ret.push_back(tuple);
+  }
+  return ret;
+}
+
+std::vector<ArgTuple> get3operands1attributes0regions(
+    std::vector<CandidatePtr> &operandCandidates,
+    std::vector<Attribute> &attributeCandidates,
+    std::vector<std::shared_ptr<Region>> &regionCandidates) {
+  auto cands =
+      ranges::views::cartesian_product(operandCandidates, operandCandidates,
+                                       operandCandidates, attributeCandidates);
+  std::vector<ArgTuple> ret;
+  for (auto cand : cands) {
+    ArgTuple tuple;
+    tuple.operands = {std::get<0>(cand), std::get<1>(cand), std::get<2>(cand)};
+    tuple.attributes = {std::get<3>(cand)};
+    ret.push_back(tuple);
+  }
+  return ret;
+}
+
+std::vector<ArgTuple> get3operands1attributes1regions(
+    std::vector<CandidatePtr> &operandCandidates,
+    std::vector<Attribute> &attributeCandidates,
+    std::vector<std::shared_ptr<Region>> &regionCandidates) {
+  auto cands = ranges::views::cartesian_product(
+      operandCandidates, operandCandidates, operandCandidates,
+      attributeCandidates, regionCandidates);
+  std::vector<ArgTuple> ret;
+  for (auto cand : cands) {
+    ArgTuple tuple;
+    tuple.operands = {std::get<0>(cand), std::get<1>(cand), std::get<2>(cand)};
+    tuple.attributes = {std::get<3>(cand)};
+    tuple.regions = {std::get<4>(cand)};
+    ret.push_back(tuple);
+  }
+  return ret;
+}
+
+std::vector<ArgTuple> get3operands1attributes2regions(
+    std::vector<CandidatePtr> &operandCandidates,
+    std::vector<Attribute> &attributeCandidates,
+    std::vector<std::shared_ptr<Region>> &regionCandidates) {
+  auto cands = ranges::views::cartesian_product(
+      operandCandidates, operandCandidates, operandCandidates,
+      attributeCandidates, regionCandidates, regionCandidates);
+  std::vector<ArgTuple> ret;
+  for (auto cand : cands) {
+    ArgTuple tuple;
+    tuple.operands = {std::get<0>(cand), std::get<1>(cand), std::get<2>(cand)};
+    tuple.attributes = {std::get<3>(cand)};
+    tuple.regions = {std::get<4>(cand), std::get<5>(cand)};
+    ret.push_back(tuple);
+  }
+  return ret;
+}
+
+std::vector<ArgTuple> get3operands2attributes0regions(
+    std::vector<CandidatePtr> &operandCandidates,
+    std::vector<Attribute> &attributeCandidates,
+    std::vector<std::shared_ptr<Region>> &regionCandidates) {
+  auto cands = ranges::views::cartesian_product(
+      operandCandidates, operandCandidates, operandCandidates,
+      attributeCandidates, attributeCandidates);
+  std::vector<ArgTuple> ret;
+  for (auto cand : cands) {
+    ArgTuple tuple;
+    tuple.operands = {std::get<0>(cand), std::get<1>(cand), std::get<2>(cand)};
+    tuple.attributes = {std::get<3>(cand), std::get<4>(cand)};
+    ret.push_back(tuple);
+  }
+  return ret;
+}
+
+std::vector<ArgTuple> get3operands2attributes1regions(
+    std::vector<CandidatePtr> &operandCandidates,
+    std::vector<Attribute> &attributeCandidates,
+    std::vector<std::shared_ptr<Region>> &regionCandidates) {
+  auto cands = ranges::views::cartesian_product(
+      operandCandidates, operandCandidates, operandCandidates,
+      attributeCandidates, attributeCandidates, regionCandidates);
+  std::vector<ArgTuple> ret;
+  for (auto cand : cands) {
+    ArgTuple tuple;
+    tuple.operands = {std::get<0>(cand), std::get<1>(cand), std::get<2>(cand)};
+    tuple.attributes = {std::get<3>(cand), std::get<4>(cand)};
+    tuple.regions = {std::get<5>(cand)};
+    ret.push_back(tuple);
+  }
+  return ret;
+}
+
+std::vector<ArgTuple> get3operands2attributes2regions(
+    std::vector<CandidatePtr> &operandCandidates,
+    std::vector<Attribute> &attributeCandidates,
+    std::vector<std::shared_ptr<Region>> &regionCandidates) {
+  auto cands = ranges::views::cartesian_product(
+      operandCandidates, operandCandidates, operandCandidates,
+      attributeCandidates, attributeCandidates, regionCandidates,
+      regionCandidates);
+  std::vector<ArgTuple> ret;
+  for (auto cand : cands) {
+    ArgTuple tuple;
+    tuple.operands = {std::get<0>(cand), std::get<1>(cand), std::get<2>(cand)};
+    tuple.attributes = {std::get<3>(cand), std::get<4>(cand)};
+    tuple.regions = {std::get<5>(cand), std::get<6>(cand)};
+    ret.push_back(tuple);
+  }
+  return ret;
+}
+
 std::vector<ArgTuple>
 getOperandArgTuples(MLIRContext &ctx, RegisteredOperationName opName,
                     std::vector<CandidatePtr> &operandCandidates,
@@ -557,6 +713,42 @@ getOperandArgTuples(MLIRContext &ctx, RegisteredOperationName opName,
   }
   if (numOperands == 2 && numAttributes == 2 && numRegions == 2) {
     return get2operands2attributes2regions(
+        operandCandidates, attributeCandidates, regionCandidates);
+  }
+  if (numOperands == 3 && numAttributes == 0 && numRegions == 0) {
+    return get3operands0attributes0regions(
+        operandCandidates, attributeCandidates, regionCandidates);
+  }
+  if (numOperands == 3 && numAttributes == 0 && numRegions == 1) {
+    return get3operands0attributes1regions(
+        operandCandidates, attributeCandidates, regionCandidates);
+  }
+  if (numOperands == 3 && numAttributes == 0 && numRegions == 2) {
+    return get3operands0attributes2regions(
+        operandCandidates, attributeCandidates, regionCandidates);
+  }
+  if (numOperands == 3 && numAttributes == 1 && numRegions == 0) {
+    return get3operands1attributes0regions(
+        operandCandidates, attributeCandidates, regionCandidates);
+  }
+  if (numOperands == 3 && numAttributes == 1 && numRegions == 1) {
+    return get3operands1attributes1regions(
+        operandCandidates, attributeCandidates, regionCandidates);
+  }
+  if (numOperands == 3 && numAttributes == 1 && numRegions == 2) {
+    return get3operands1attributes2regions(
+        operandCandidates, attributeCandidates, regionCandidates);
+  }
+  if (numOperands == 3 && numAttributes == 2 && numRegions == 0) {
+    return get3operands2attributes0regions(
+        operandCandidates, attributeCandidates, regionCandidates);
+  }
+  if (numOperands == 3 && numAttributes == 2 && numRegions == 1) {
+    return get3operands2attributes1regions(
+        operandCandidates, attributeCandidates, regionCandidates);
+  }
+  if (numOperands == 3 && numAttributes == 2 && numRegions == 2) {
+    return get3operands2attributes2regions(
         operandCandidates, attributeCandidates, regionCandidates);
   }
 
