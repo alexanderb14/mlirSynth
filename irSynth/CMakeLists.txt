@@ -113,3 +113,13 @@ target_link_libraries(
           transform
           ${Boost_LIBRARIES})
 llvm_update_compile_flags(test-executor)
+
+# Exe: Tablegen Extractor
+set(LLVM_LINK_COMPONENTS TableGen)
+add_llvm_executable(
+  tablegen-extractor
+  tools/TablegenExtractor.cc)
+target_link_libraries(tablegen-extractor
+  PRIVATE MLIRIR
+          MLIRTableGen
+          MLIRSupport)
