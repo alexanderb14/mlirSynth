@@ -1,22 +1,69 @@
-From f9cc712e4567bb13a2882590aa6637b73b70009b Mon Sep 17 00:00:00 2001
+From 8941e2640eed8a7ae4f6df548c70798d889c715a Mon Sep 17 00:00:00 2001
 From: Alexander Brauckmann <a.brauckmann@gmail.com>
-Date: Sun, 18 Dec 2022 17:34:31 +0100
+Date: Fri, 10 Feb 2023 11:41:13 +0000
 Subject: [PATCH] Add trait verification function
 
 ---
- mlir/include/mlir/IR/ExtensibleDialect.h |  1 +
- mlir/include/mlir/IR/OpDefinition.h      | 10 ++++++++++
- mlir/include/mlir/IR/OperationSupport.h  | 14 +++++++++++---
- mlir/lib/IR/ExtensibleDialect.cpp        |  4 ++--
- mlir/lib/IR/MLIRContext.cpp              |  3 ++-
- 5 files changed, 26 insertions(+), 6 deletions(-)
+ mlir/include/mlir/IR/ExtensibleDialect.h | 10 ++++++++++
+ mlir/include/mlir/IR/OpDefinition.h      |  9 +++++++++
+ mlir/include/mlir/IR/OperationSupport.h  | 10 ++++++++++
+ mlir/lib/IR/ExtensibleDialect.cpp        | 12 ++++++++----
+ mlir/lib/IR/MLIRContext.cpp              |  4 ++++
+ 5 files changed, 41 insertions(+), 4 deletions(-)
 
 diff --git a/mlir/include/mlir/IR/ExtensibleDialect.h b/mlir/include/mlir/IR/ExtensibleDialect.h
-index 662a7353bfd0..1bcd861240ca 100644
+index 304ff96e0f73..94f65c6a2de2 100644
 --- a/mlir/include/mlir/IR/ExtensibleDialect.h
 +++ b/mlir/include/mlir/IR/ExtensibleDialect.h
-@@ -435,6 +435,7 @@ private:
-   ExtensibleDialect *dialect;
+@@ -350,16 +350,19 @@ public:
+   static std::unique_ptr<DynamicOpDefinition>
+   get(StringRef name, ExtensibleDialect *dialect,
+       OperationName::VerifyInvariantsFn &&verifyFn,
++      OperationName::VerifyTraitsFn &&verifyTraitsFn,
+       OperationName::VerifyRegionInvariantsFn &&verifyRegionFn);
+   static std::unique_ptr<DynamicOpDefinition>
+   get(StringRef name, ExtensibleDialect *dialect,
+       OperationName::VerifyInvariantsFn &&verifyFn,
++      OperationName::VerifyTraitsFn &&verifyTraitsFn,
+       OperationName::VerifyRegionInvariantsFn &&verifyRegionFn,
+       OperationName::ParseAssemblyFn &&parseFn,
+       OperationName::PrintAssemblyFn &&printFn);
+   static std::unique_ptr<DynamicOpDefinition>
+   get(StringRef name, ExtensibleDialect *dialect,
+       OperationName::VerifyInvariantsFn &&verifyFn,
++      OperationName::VerifyTraitsFn &&verifyTraitsFn,
+       OperationName::VerifyRegionInvariantsFn &&verifyRegionFn,
+       OperationName::ParseAssemblyFn &&parseFn,
+       OperationName::PrintAssemblyFn &&printFn,
+@@ -377,6 +380,10 @@ public:
+     verifyFn = std::move(verify);
+   }
+ 
++  void setVerifyTraitsFn(OperationName::VerifyTraitsFn &&verify) {
++    verifyTraitsFn = std::move(verify);
++  }
++
+   /// Sets the region verifier function for this operation. It should emits an
+   /// error message and returns failure if a problem is detected, or returns
+   /// success if everything is ok.
+@@ -436,6 +443,7 @@ public:
+     printFn(op, printer, name);
+   }
+   LogicalResult verifyInvariants(Operation *op) final { return verifyFn(op); }
++  LogicalResult verifyTraits(Operation *op) final { return verifyTraitsFn(op); }
+   LogicalResult verifyRegionInvariants(Operation *op) final {
+     return verifyRegionFn(op);
+   }
+@@ -444,6 +452,7 @@ private:
+   DynamicOpDefinition(
+       StringRef name, ExtensibleDialect *dialect,
+       OperationName::VerifyInvariantsFn &&verifyFn,
++      OperationName::VerifyTraitsFn &&verifyTraitsFn,
+       OperationName::VerifyRegionInvariantsFn &&verifyRegionFn,
+       OperationName::ParseAssemblyFn &&parseFn,
+       OperationName::PrintAssemblyFn &&printFn,
+@@ -455,6 +464,7 @@ private:
+   ExtensibleDialect *getdialect();
  
    OperationName::VerifyInvariantsFn verifyFn;
 +  OperationName::VerifyTraitsFn verifyTraitsFn;
@@ -24,10 +71,10 @@ index 662a7353bfd0..1bcd861240ca 100644
    OperationName::ParseAssemblyFn parseFn;
    OperationName::PrintAssemblyFn printFn;
 diff --git a/mlir/include/mlir/IR/OpDefinition.h b/mlir/include/mlir/IR/OpDefinition.h
-index 10bb720eb09f..b46093de3ffd 100644
+index f7d8436dcc1c..326777030b3f 100644
 --- a/mlir/include/mlir/IR/OpDefinition.h
 +++ b/mlir/include/mlir/IR/OpDefinition.h
-@@ -1883,6 +1883,16 @@ private:
+@@ -1864,6 +1864,15 @@ private:
    static OperationName::VerifyInvariantsFn getVerifyInvariantsFn() {
      return static_cast<LogicalResult (*)(Operation *)>(&verifyInvariants);
    }
@@ -40,12 +87,11 @@ index 10bb720eb09f..b46093de3ffd 100644
 +  static OperationName::VerifyTraitsFn getVerifyTraitsFn() {
 +    return static_cast<LogicalResult (*)(Operation *)>(&verifyTraits);
 +  }
-+
    /// Implementation of `VerifyRegionInvariantsFn` OperationName hook.
    static LogicalResult verifyRegionInvariants(Operation *op) {
      static_assert(hasNoDataMembers(),
 diff --git a/mlir/include/mlir/IR/OperationSupport.h b/mlir/include/mlir/IR/OperationSupport.h
-index 24732decc856..c59149b6706e 100644
+index da95260508cb..b1c94ab5f7de 100644
 --- a/mlir/include/mlir/IR/OperationSupport.h
 +++ b/mlir/include/mlir/IR/OperationSupport.h
 @@ -78,6 +78,8 @@ public:
@@ -57,82 +103,129 @@ index 24732decc856..c59149b6706e 100644
    using VerifyRegionInvariantsFn =
        llvm::unique_function<LogicalResult(Operation *) const>;
  
-@@ -120,6 +122,7 @@ protected:
-     PopulateDefaultAttrsFn populateDefaultAttrsFn;
-     PrintAssemblyFn printAssemblyFn;
-     VerifyInvariantsFn verifyInvariantsFn;
-+    VerifyTraitsFn verifyTraitsFn;
-     VerifyRegionInvariantsFn verifyRegionInvariantsFn;
+@@ -97,6 +99,7 @@ public:
+                                       NamedAttrList &) = 0;
+     virtual void printAssembly(Operation *, OpAsmPrinter &, StringRef) = 0;
+     virtual LogicalResult verifyInvariants(Operation *) = 0;
++    virtual LogicalResult verifyTraits(Operation *) = 0;
+     virtual LogicalResult verifyRegionInvariants(Operation *) = 0;
+   };
  
-     /// A list of attribute names registered to this operation in StringAttr
-@@ -262,9 +265,10 @@ public:
-   static void insert(Dialect &dialect) {
-     insert(T::getOperationName(), dialect, TypeID::get<T>(),
-            T::getParseAssemblyFn(), T::getPrintAssemblyFn(),
--           T::getVerifyInvariantsFn(), T::getVerifyRegionInvariantsFn(),
--           T::getFoldHookFn(), T::getGetCanonicalizationPatternsFn(),
--           T::getInterfaceMap(), T::getHasTraitFn(), T::getAttributeNames(),
-+           T::getVerifyInvariantsFn(), T::getVerifyTraitsFn(),
-+           T::getVerifyRegionInvariantsFn(), T::getFoldHookFn(),
-+           T::getGetCanonicalizationPatternsFn(), T::getInterfaceMap(),
-+           T::getHasTraitFn(), T::getAttributeNames(),
-            T::getPopulateDefaultAttrsFn());
-   }
-   /// The use of this method is in general discouraged in favor of
-@@ -273,6 +277,7 @@ public:
-   insert(StringRef name, Dialect &dialect, TypeID typeID,
-          ParseAssemblyFn &&parseAssembly, PrintAssemblyFn &&printAssembly,
-          VerifyInvariantsFn &&verifyInvariants,
-+         VerifyTraitsFn &&verifyTraits,
-          VerifyRegionInvariantsFn &&verifyRegionInvariants,
-          FoldHookFn &&foldHook,
-          GetCanonicalizationPatternsFn &&getCanonicalizationPatterns,
-@@ -306,6 +311,9 @@ public:
+@@ -157,6 +160,7 @@ protected:
+     void populateDefaultAttrs(const OperationName &, NamedAttrList &) final;
+     void printAssembly(Operation *, OpAsmPrinter &, StringRef) final;
+     LogicalResult verifyInvariants(Operation *) final;
++    LogicalResult verifyTraits(Operation *) final;
+     LogicalResult verifyRegionInvariants(Operation *) final;
+   };
+ 
+@@ -250,6 +254,9 @@ public:
    LogicalResult verifyInvariants(Operation *op) const {
-     return impl->verifyInvariantsFn(op);
+     return getImpl()->verifyInvariants(op);
    }
 +  LogicalResult verifyTraits(Operation *op) const {
-+    return impl->verifyTraitsFn(op);
++    return getImpl()->verifyTraits(op);
 +  }
    LogicalResult verifyRegionInvariants(Operation *op) const {
-     return impl->verifyRegionInvariantsFn(op);
+     return getImpl()->verifyRegionInvariants(op);
    }
+@@ -410,6 +417,9 @@ public:
+     LogicalResult verifyInvariants(Operation *op) final {
+       return ConcreteOp::getVerifyInvariantsFn()(op);
+     }
++    LogicalResult verifyTraits(Operation *op) final {
++      return ConcreteOp::getVerifyTraitsFn()(op);
++    }
+     LogicalResult verifyRegionInvariants(Operation *op) final {
+       return ConcreteOp::getVerifyRegionInvariantsFn()(op);
+     }
 diff --git a/mlir/lib/IR/ExtensibleDialect.cpp b/mlir/lib/IR/ExtensibleDialect.cpp
-index 41f44f57bfae..b3a2baa237f7 100644
+index 00849857b51d..575b83d19c71 100644
 --- a/mlir/lib/IR/ExtensibleDialect.cpp
 +++ b/mlir/lib/IR/ExtensibleDialect.cpp
-@@ -453,8 +453,8 @@ void ExtensibleDialect::registerDynamicOp(
-   RegisteredOperationName::insert(
-       op->name, *op->dialect, op->typeID, std::move(op->parseFn),
-       std::move(op->printFn), std::move(op->verifyFn),
--      std::move(op->verifyRegionFn), std::move(op->foldHookFn),
--      std::move(op->getCanonicalizationPatternsFn),
-+      std::move(op->verifyTraitsFn), std::move(op->verifyRegionFn),
-+      std::move(op->foldHookFn), std::move(op->getCanonicalizationPatternsFn),
-       detail::InterfaceMap::get<>(), std::move(hasTraitFn), {},
-       std::move(op->populateDefaultAttrsFn));
+@@ -290,6 +290,7 @@ void DynamicAttr::print(AsmPrinter &printer) {
+ DynamicOpDefinition::DynamicOpDefinition(
+     StringRef name, ExtensibleDialect *dialect,
+     OperationName::VerifyInvariantsFn &&verifyFn,
++    OperationName::VerifyTraitsFn &&verifyTraitsFn,
+     OperationName::VerifyRegionInvariantsFn &&verifyRegionFn,
+     OperationName::ParseAssemblyFn &&parseFn,
+     OperationName::PrintAssemblyFn &&printFn,
+@@ -300,7 +301,7 @@ DynamicOpDefinition::DynamicOpDefinition(
+                            (dialect->getNamespace() + "." + name).str()),
+            dialect, dialect->allocateTypeID(),
+            /*interfaceMap=*/detail::InterfaceMap()),
+-      verifyFn(std::move(verifyFn)), verifyRegionFn(std::move(verifyRegionFn)),
++      verifyFn(std::move(verifyFn)), verifyTraitsFn(std::move(verifyTraitsFn)), verifyRegionFn(std::move(verifyRegionFn)),
+       parseFn(std::move(parseFn)), printFn(std::move(printFn)),
+       foldHookFn(std::move(foldHookFn)),
+       getCanonicalizationPatternsFn(std::move(getCanonicalizationPatternsFn)),
+@@ -311,6 +312,7 @@ DynamicOpDefinition::DynamicOpDefinition(
+ std::unique_ptr<DynamicOpDefinition> DynamicOpDefinition::get(
+     StringRef name, ExtensibleDialect *dialect,
+     OperationName::VerifyInvariantsFn &&verifyFn,
++    OperationName::VerifyTraitsFn &&verifyTraitsFn,
+     OperationName::VerifyRegionInvariantsFn &&verifyRegionFn) {
+   auto parseFn = [](OpAsmParser &parser, OperationState &result) {
+     return parser.emitError(
+@@ -322,7 +324,7 @@ std::unique_ptr<DynamicOpDefinition> DynamicOpDefinition::get(
+     printer.printGenericOp(op);
+   };
+ 
+-  return DynamicOpDefinition::get(name, dialect, std::move(verifyFn),
++  return DynamicOpDefinition::get(name, dialect, std::move(verifyFn), std::move(verifyTraitsFn),
+                                   std::move(verifyRegionFn), std::move(parseFn),
+                                   std::move(printFn));
  }
+@@ -330,6 +332,7 @@ std::unique_ptr<DynamicOpDefinition> DynamicOpDefinition::get(
+ std::unique_ptr<DynamicOpDefinition> DynamicOpDefinition::get(
+     StringRef name, ExtensibleDialect *dialect,
+     OperationName::VerifyInvariantsFn &&verifyFn,
++    OperationName::VerifyTraitsFn &&verifyTraitsFn,
+     OperationName::VerifyRegionInvariantsFn &&verifyRegionFn,
+     OperationName::ParseAssemblyFn &&parseFn,
+     OperationName::PrintAssemblyFn &&printFn) {
+@@ -343,7 +346,7 @@ std::unique_ptr<DynamicOpDefinition> DynamicOpDefinition::get(
+ 
+   auto populateDefaultAttrsFn = [](const OperationName &, NamedAttrList &) {};
+ 
+-  return DynamicOpDefinition::get(name, dialect, std::move(verifyFn),
++  return DynamicOpDefinition::get(name, dialect, std::move(verifyFn), std::move(verifyTraitsFn),
+                                   std::move(verifyRegionFn), std::move(parseFn),
+                                   std::move(printFn), std::move(foldHookFn),
+                                   std::move(getCanonicalizationPatternsFn),
+@@ -353,6 +356,7 @@ std::unique_ptr<DynamicOpDefinition> DynamicOpDefinition::get(
+ std::unique_ptr<DynamicOpDefinition> DynamicOpDefinition::get(
+     StringRef name, ExtensibleDialect *dialect,
+     OperationName::VerifyInvariantsFn &&verifyFn,
++    OperationName::VerifyTraitsFn &&verifyTraitsFn,
+     OperationName::VerifyInvariantsFn &&verifyRegionFn,
+     OperationName::ParseAssemblyFn &&parseFn,
+     OperationName::PrintAssemblyFn &&printFn,
+@@ -360,7 +364,7 @@ std::unique_ptr<DynamicOpDefinition> DynamicOpDefinition::get(
+     GetCanonicalizationPatternsFn &&getCanonicalizationPatternsFn,
+     OperationName::PopulateDefaultAttrsFn &&populateDefaultAttrsFn) {
+   return std::unique_ptr<DynamicOpDefinition>(new DynamicOpDefinition(
+-      name, dialect, std::move(verifyFn), std::move(verifyRegionFn),
++      name, dialect, std::move(verifyFn), std::move(verifyTraitsFn), std::move(verifyRegionFn),
+       std::move(parseFn), std::move(printFn), std::move(foldHookFn),
+       std::move(getCanonicalizationPatternsFn),
+       std::move(populateDefaultAttrsFn)));
 diff --git a/mlir/lib/IR/MLIRContext.cpp b/mlir/lib/IR/MLIRContext.cpp
-index 58097940a039..75e576839fd2 100644
+index 5bbedda19641..14c3cf7a7cc6 100644
 --- a/mlir/lib/IR/MLIRContext.cpp
 +++ b/mlir/lib/IR/MLIRContext.cpp
-@@ -767,7 +767,7 @@ void RegisteredOperationName::populateDefaultAttrs(NamedAttrList &attrs) const {
- void RegisteredOperationName::insert(
-     StringRef name, Dialect &dialect, TypeID typeID,
-     ParseAssemblyFn &&parseAssembly, PrintAssemblyFn &&printAssembly,
--    VerifyInvariantsFn &&verifyInvariants,
-+    VerifyInvariantsFn &&verifyInvariants, VerifyTraitsFn &&verifyTraits,
-     VerifyRegionInvariantsFn &&verifyRegionInvariants, FoldHookFn &&foldHook,
-     GetCanonicalizationPatternsFn &&getCanonicalizationPatterns,
-     detail::InterfaceMap &&interfaceMap, HasTraitFn &&hasTrait,
-@@ -825,6 +825,7 @@ void RegisteredOperationName::insert(
-   impl.parseAssemblyFn = std::move(parseAssembly);
-   impl.printAssemblyFn = std::move(printAssembly);
-   impl.verifyInvariantsFn = std::move(verifyInvariants);
-+  impl.verifyTraitsFn = std::move(verifyTraits);
-   impl.verifyRegionInvariantsFn = std::move(verifyRegionInvariants);
-   impl.attributeNames = cachedAttrNames;
-   impl.populateDefaultAttrsFn = std::move(populateDefaultAttrs);
+@@ -777,6 +777,10 @@ OperationName::UnregisteredOpModel::verifyInvariants(Operation *) {
+   return success();
+ }
+ LogicalResult
++OperationName::UnregisteredOpModel::verifyTraits(Operation *) {
++  return success();
++}
++LogicalResult
+ OperationName::UnregisteredOpModel::verifyRegionInvariants(Operation *) {
+   return success();
+ }
 -- 
-2.25.1
+2.34.1
 
