@@ -1,8 +1,10 @@
-#include "llvm/TableGen/Main.h"
-#include "llvm/TableGen/Record.h"
+#include "mlir/TableGen/GenInfo.h"
 #include "mlir/TableGen/Operator.h"
+#include "mlir/Tools/mlir-tblgen/MlirTblgenMain.h"
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/InitLLVM.h"
+#include "llvm/TableGen/Main.h"
+#include "llvm/TableGen/Record.h"
 
 #include <map>
 #include <set>
@@ -30,7 +32,7 @@ std::vector<Record *> getAttrDefinitions(const RecordKeeper &recordKeeper) {
 
 void printDefinitions(RecordKeeper &records, raw_ostream &os) {
   os << "Classes:\n";
-  for (const auto & it : records.getClasses()) {
+  for (const auto &it : records.getClasses()) {
     os << it.second->getName() << "\n";
   }
 
@@ -54,7 +56,7 @@ void printDefinitions(RecordKeeper &records, raw_ostream &os) {
     // Operands
     os << "  Operands:\n";
     for (auto &operand : tblgenOp.getOperands()) {
-      //os << "    " << operand.name << ": ";
+      // os << "    " << operand.name << ": ";
       os << "    ";
       os << operand.constraint.getDefName() << "\n";
     }
@@ -62,7 +64,7 @@ void printDefinitions(RecordKeeper &records, raw_ostream &os) {
     // Results
     os << "  Results:\n";
     for (auto &result : tblgenOp.getResults()) {
-      //os << "    " << result.name << ": ";
+      // os << "    " << result.name << ": ";
       os << "    ";
       os << result.constraint.getDefName() << "\n";
     }
@@ -95,7 +97,7 @@ void printUsedTypesAsEnum(const RecordKeeper &records, raw_ostream &os) {
   os << "\n";
 }
 
-std::string makeClangCompatible(const std::string& name) {
+std::string makeClangCompatible(const std::string &name) {
   std::string res = name;
   std::replace(res.begin(), res.end(), '.', '_');
   std::replace(res.begin(), res.end(), '-', '_');
@@ -134,7 +136,8 @@ void printOpsAsStructs(const RecordKeeper &records, raw_ostream &os) {
     os << "    switch (index) {\n";
     for (unsigned i = 0; i < tblgenOp.getNumOperands(); ++i) {
       auto &operand = tblgenOp.getOperand(i);
-      os << "      case " << i << ": return " << operand.constraint.getDefName() << ";\n";
+      os << "      case " << i << ": return " << operand.constraint.getDefName()
+         << ";\n";
     }
     os << "    }\n";
     os << "    assert(false && \"Invalid operand index\");\n";
@@ -145,7 +148,8 @@ void printOpsAsStructs(const RecordKeeper &records, raw_ostream &os) {
     os << "    switch (index) {\n";
     for (unsigned i = 0; i < tblgenOp.getNumResults(); ++i) {
       auto &result = tblgenOp.getResult(i);
-      os << "      case " << i << ": return " << result.constraint.getDefName() << ";\n";
+      os << "      case " << i << ": return " << result.constraint.getDefName()
+         << ";\n";
     }
     os << "    }\n";
     os << "    assert(false && \"Invalid result index\");\n";
@@ -170,25 +174,52 @@ void printConstructorFn(const RecordKeeper &records, raw_ostream &os) {
   os << "}\n";
 }
 
-void printIncludes(raw_ostream &os) {
+void printConstructorFnDecl(raw_ostream &os) {
+  os << "OpInfoPtr createOpInfo(std::string name);\n";
+}
+
+void printHdrIncludes(raw_ostream &os) {
+  os << "#include <memory>\n";
+  os << "#include <string>\n";
+  os << "\n";
+}
+
+void printSrcIncludes(raw_ostream &os) {
+  os << "#include \"OpInfos.h\"\n";
+  os << "\n";
   os << "#include <cassert>\n";
   os << "#include <memory>\n";
   os << "#include <string>\n";
   os << "\n";
 }
 
-bool extractTypes(raw_ostream &os, RecordKeeper &records) {
-  printIncludes(llvm::outs());
-  printUsedTypesAsEnum(records, llvm::outs());
-  printOpsAsStructs(records, llvm::outs());
-  printConstructorFn(records, llvm::outs());
+static bool emitOpInfoDecls(const RecordKeeper &recordKeeper, raw_ostream &os) {
+  printHdrIncludes(os);
+  printUsedTypesAsEnum(recordKeeper, os);
+  printConstructorFnDecl(os);
 
-  return true;
+  return false;
 }
 
-int main(int argc, char **argv) {
-  InitLLVM X(argc, argv);
-  cl::ParseCommandLineOptions(argc, argv);
+static bool emitOpInfoDefs(const RecordKeeper &recordKeeper, raw_ostream &os) {
+  printSrcIncludes(os);
+  printUsedTypesAsEnum(recordKeeper, os);
+  printOpsAsStructs(recordKeeper, os);
+  printConstructorFn(recordKeeper, os);
 
-  return TableGenMain(argv[0], &extractTypes);
+  return false;
 }
+
+static mlir::GenRegistration
+    genOpInfoDecls("gen-op-info-decls", "Generate op info declarations",
+                   [](const RecordKeeper &records, raw_ostream &os) {
+                     return emitOpInfoDecls(records, os);
+                   });
+
+static mlir::GenRegistration
+    genOpInfoDefs("gen-op-info-defs", "Generate op info definitions",
+                  [](const RecordKeeper &records, raw_ostream &os) {
+                    return emitOpInfoDefs(records, os);
+                  });
+
+int main(int argc, char **argv) { return MlirTblgenMain(argc, argv); }

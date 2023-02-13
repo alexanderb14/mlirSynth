@@ -122,4 +122,5 @@ add_llvm_executable(
 target_link_libraries(tablegen-extractor
   PRIVATE MLIRIR
           MLIRTableGen
+          MLIRTblgenLib
           MLIRSupport)
