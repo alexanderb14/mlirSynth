@@ -41,6 +41,7 @@ add_library(enumeration
   enumeration/Candidate.cc
   enumeration/Enumerator.cc
   enumeration/Guide.cc
+  enumeration/OpInfos.cc
   enumeration/Stats.cc
   enumeration/Utils.cc)
 target_include_directories(enumeration
@@ -115,9 +116,9 @@ llvm_update_compile_flags(test-executor)
 
 # Exe: Tablegen Extractor
 set(LLVM_LINK_COMPONENTS TableGen)
-add_llvm_executable(tablegen-extractor
+add_llvm_executable(tablegen-opinfos
   tools/TablegenExtractor.cc)
-target_link_libraries(tablegen-extractor
+target_link_libraries(tablegen-opinfos
   PRIVATE MLIRIR
           MLIRTableGen
           MLIRTblgenLib

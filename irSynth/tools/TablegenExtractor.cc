@@ -5,6 +5,7 @@
 #include "llvm/Support/InitLLVM.h"
 #include "llvm/TableGen/Main.h"
 #include "llvm/TableGen/Record.h"
+#include "llvm/TableGen/TableGenBackend.h"
 
 #include <map>
 #include <set>
@@ -71,7 +72,22 @@ void printDefinitions(RecordKeeper &records, raw_ostream &os) {
   }
 }
 
-void printUsedTypesAsEnum(const RecordKeeper &records, raw_ostream &os) {
+void emitHdrIncludes(raw_ostream &os) {
+  os << "#include <memory>\n";
+  os << "#include <string>\n";
+  os << "\n";
+}
+
+void emitSrcIncludes(raw_ostream &os) {
+  os << "#include \"OpInfos.h\"\n";
+  os << "\n";
+  os << "#include <cassert>\n";
+  os << "#include <memory>\n";
+  os << "#include <string>\n";
+  os << "\n";
+}
+
+void emitUsedTypesAsEnum(const RecordKeeper &records, raw_ostream &os) {
   std::set<std::string> usedTypes;
   for (auto *record : getOpDefinitions(records)) {
     auto tblgenOp = tblgen::Operator(record);
@@ -97,14 +113,7 @@ void printUsedTypesAsEnum(const RecordKeeper &records, raw_ostream &os) {
   os << "\n";
 }
 
-std::string makeClangCompatible(const std::string &name) {
-  std::string res = name;
-  std::replace(res.begin(), res.end(), '.', '_');
-  std::replace(res.begin(), res.end(), '-', '_');
-  return res;
-}
-
-void printOpsAsStructs(const RecordKeeper &records, raw_ostream &os) {
+void emitAbstractOp(raw_ostream &os) {
   os << "class OpInfo {\n";
   os << "public:\n";
   os << "  virtual ~OpInfo() {}\n";
@@ -115,7 +124,20 @@ void printOpsAsStructs(const RecordKeeper &records, raw_ostream &os) {
   os << "};\n";
   os << "using OpInfoPtr = std::unique_ptr<OpInfo>;\n";
   os << "\n";
+}
 
+void emitConstructorFnDecl(raw_ostream &os) {
+  os << "OpInfoPtr createOpInfo(std::string name);\n";
+}
+
+std::string makeClangCompatible(const std::string &name) {
+  std::string res = name;
+  std::replace(res.begin(), res.end(), '.', '_');
+  std::replace(res.begin(), res.end(), '-', '_');
+  return res;
+}
+
+void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
   for (auto *record : getOpDefinitions(records)) {
     auto tblgenOp = tblgen::Operator(record);
 
@@ -134,7 +156,7 @@ void printOpsAsStructs(const RecordKeeper &records, raw_ostream &os) {
     // Operands
     os << "  IOType getOperandType(unsigned index) const override {\n";
     os << "    switch (index) {\n";
-    for (unsigned i = 0; i < tblgenOp.getNumOperands(); ++i) {
+    for (int i = 0; i < tblgenOp.getNumOperands(); ++i) {
       auto &operand = tblgenOp.getOperand(i);
       os << "      case " << i << ": return " << operand.constraint.getDefName()
          << ";\n";
@@ -146,7 +168,7 @@ void printOpsAsStructs(const RecordKeeper &records, raw_ostream &os) {
     // Results
     os << "  IOType getResultType(unsigned index) const override {\n";
     os << "    switch (index) {\n";
-    for (unsigned i = 0; i < tblgenOp.getNumResults(); ++i) {
+    for (int i = 0; i < tblgenOp.getNumResults(); ++i) {
       auto &result = tblgenOp.getResult(i);
       os << "      case " << i << ": return " << result.constraint.getDefName()
          << ";\n";
@@ -160,7 +182,7 @@ void printOpsAsStructs(const RecordKeeper &records, raw_ostream &os) {
   }
 }
 
-void printConstructorFn(const RecordKeeper &records, raw_ostream &os) {
+void emitConstructorFn(const RecordKeeper &records, raw_ostream &os) {
   os << "OpInfoPtr createOpInfo(std::string name) {\n";
   for (auto *record : getOpDefinitions(records)) {
     auto tblgenOp = tblgen::Operator(record);
@@ -174,38 +196,23 @@ void printConstructorFn(const RecordKeeper &records, raw_ostream &os) {
   os << "}\n";
 }
 
-void printConstructorFnDecl(raw_ostream &os) {
-  os << "OpInfoPtr createOpInfo(std::string name);\n";
-}
-
-void printHdrIncludes(raw_ostream &os) {
-  os << "#include <memory>\n";
-  os << "#include <string>\n";
-  os << "\n";
-}
-
-void printSrcIncludes(raw_ostream &os) {
-  os << "#include \"OpInfos.h\"\n";
-  os << "\n";
-  os << "#include <cassert>\n";
-  os << "#include <memory>\n";
-  os << "#include <string>\n";
-  os << "\n";
-}
-
 static bool emitOpInfoDecls(const RecordKeeper &recordKeeper, raw_ostream &os) {
-  printHdrIncludes(os);
-  printUsedTypesAsEnum(recordKeeper, os);
-  printConstructorFnDecl(os);
+  emitSourceFileHeader("Getters for Operation Infos", os);
+  emitHdrIncludes(os);
+
+  emitUsedTypesAsEnum(recordKeeper, os);
+  emitAbstractOp(os);
+  emitConstructorFnDecl(os);
 
   return false;
 }
 
 static bool emitOpInfoDefs(const RecordKeeper &recordKeeper, raw_ostream &os) {
-  printSrcIncludes(os);
-  printUsedTypesAsEnum(recordKeeper, os);
-  printOpsAsStructs(recordKeeper, os);
-  printConstructorFn(recordKeeper, os);
+  emitSourceFileHeader("Getters for Operation Infos", os);
+  emitSrcIncludes(os);
+
+  emitConcreteOps(recordKeeper, os);
+  emitConstructorFn(recordKeeper, os);
 
   return false;
 }

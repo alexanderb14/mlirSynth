@@ -15,7 +15,7 @@ python3 build_tools/gen_ArgTuples.py \
   --output irSynth/enumeration/ArgTuples.cc
 clang-format -i irSynth/enumeration/ArgTuples.cc --style=file
 
-# Build irSynth.
+# Configure irSynth build.
 mkdir build
 pushd build
 cmake .. -GNinja \
@@ -25,6 +25,26 @@ cmake .. -GNinja \
   -DCMAKE_C_COMPILER=clang \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+popd
+
+# Generate OpInfos from tablegen.
+pushd build
+cmake --build . --target tablegen-opinfos
+popd
+GEN_COMMON="-Imlir-hlo \
+-Imlir-hlo/include \
+-Imlir-hlo/include/mlir-hlo/Dialect/mhlo/IR \
+-Imlir-hlo/stablehlo \
+-Imlir-hlo/llvm-project/llvm/include \
+-Imlir-hlo/llvm-project/mlir/include \
+-Imlir-hlo/llvm-build/include \
+-Imlir-hlo/llvm-build/tools/mlir/include \
+/devel/git/irSynth/mlir-hlo/include/mlir-hlo/Dialect/mhlo/IR/hlo_ops.td"
+./build/bin/tablegen-opinfos $GEN_COMMON -gen-op-info-decls -o irSynth/enumeration/OpInfos.h
+./build/bin/tablegen-opinfos $GEN_COMMON -gen-op-info-defs -o irSynth/enumeration/OpInfos.cc
+
+# Build irSynth.
+pushd build
 cmake --build .
 popd
 
