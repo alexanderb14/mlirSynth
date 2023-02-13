@@ -2,30 +2,30 @@ set(LLVM_LINK_COMPONENTS Core Support nativecodegen native)
 
 get_property(dialect_libs GLOBAL PROPERTY MLIR_DIALECT_LIBS)
 get_property(conversion_libs GLOBAL PROPERTY MLIR_CONVERSION_LIBS)
+set(SYNTH_LIBS ${dialect_libs} ${conversion_libs} MLIROptLib)
 
 # Lib: Analysis
-set(POLY_LIBS
-    ${dialect_libs}
-    ${conversion_libs}
-    ${test_libs}
-    MLIRAffineAnalysis
-    MLIRAnalysis
-    MLIRDialect
-    MLIROptLib
-    MLIRParser
-    MLIRPass
-    MLIRTransforms
-    MLIRTransformUtils
-    MLIRSupport
-    MLIRIR)
 add_library(analysis
   analysis/PolyhedralAnalysis.cc
   analysis/isl/isl_helper.cc)
 target_include_directories(analysis
   PUBLIC ${CMAKE_SOURCE_DIR}/isl-0.25/include)
 target_link_libraries(analysis
-  PUBLIC ${POLY_LIBS}
-         ${CMAKE_SOURCE_DIR}/isl-0.25/.libs/libisl.a gmp)
+  PRIVATE ${dialect_libs}
+          ${conversion_libs}
+          ${test_libs}
+          MLIRAffineAnalysis
+          MLIRAnalysis
+          MLIRDialect
+          MLIROptLib
+          MLIRParser
+          MLIRPass
+          MLIRTransforms
+          MLIRTransformUtils
+          MLIRSupport
+          MLIRIR
+          ${CMAKE_SOURCE_DIR}/isl-0.25/.libs/libisl.a
+          gmp)
 llvm_update_compile_flags(analysis)
 target_compile_options(analysis
   PRIVATE -Wno-missing-field-initializers)
@@ -68,9 +68,9 @@ add_library(
   transforms/CleanupPass.cc
   transforms/Utils.cc)
 target_include_directories(transform
-  PUBLIC ${CMAKE_CURRENT_LIST_DIR})
+  PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(transform
-  PUBLIC analysis)
+  PRIVATE analysis)
 llvm_update_compile_flags(transform)
 
 # Exe: Transform Tool
@@ -85,7 +85,6 @@ target_link_libraries(opt
           transform)
 
 # Exe: Synthesizer
-set(SYNTH_LIBS ${dialect_libs} ${conversion_libs} MLIROptLib)
 add_llvm_executable(synthesizer
   tools/Synthesizer.cc
   ContextManager.cc)
