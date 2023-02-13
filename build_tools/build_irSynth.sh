@@ -46,13 +46,13 @@ cat $TD_FILES | ./build/bin/tablegen-opinfos $GEN_COMMON \
 cat $TD_FILES | ./build/bin/tablegen-opinfos $GEN_COMMON \
   -gen-op-info-defs -o irSynth/enumeration/OpInfos.cc
 
-# # Build irSynth.
-# pushd build
-# cmake --build .
-# popd
-# 
-# # Merge all compile_commands.json files, so that clangd can find them.
-# jq -s 'map(.[])' mlir-hlo/llvm-build/compile_commands.json \
-#   mlir-hlo/build/compile_commands.json \
-#   build/compile_commands.json \
-#   > compile_commands.json
+# Build irSynth.
+pushd build
+cmake --build .
+popd
+
+# Merge all compile_commands.json files, so that clangd can find them.
+jq -s 'map(.[])' mlir-hlo/llvm-build/compile_commands.json \
+  mlir-hlo/build/compile_commands.json \
+  build/compile_commands.json \
+  > compile_commands.json
