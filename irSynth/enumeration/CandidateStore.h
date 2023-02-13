@@ -2,6 +2,7 @@
 #define IRSYNTH_CANDIDATESTORE_H
 
 #include "enumeration/Candidate.h"
+#include "enumeration/OpInfos.h"
 
 #include "mlir/IR/Block.h"
 #include "mlir/IR/BlockAndValueMapping.h"

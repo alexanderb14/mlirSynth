@@ -88,20 +88,28 @@ void emitSrcIncludes(raw_ostream &os) {
 }
 
 void emitUsedTypesAsEnum(const RecordKeeper &records, raw_ostream &os) {
-  std::set<std::string> usedTypes;
+  std::set<std::string> types;
   for (auto *record : getOpDefinitions(records)) {
     auto tblgenOp = tblgen::Operator(record);
     for (auto &operand : tblgenOp.getOperands()) {
-      usedTypes.insert(operand.constraint.getDefName().str());
+      types.insert(operand.constraint.getDefName().str());
     }
     for (auto &result : tblgenOp.getResults()) {
-      usedTypes.insert(result.constraint.getDefName().str());
+      types.insert(result.constraint.getDefName().str());
     }
   }
 
+  // Add Unknown type as 1st element.
+  std::vector<std::string> typesVec;
+  typesVec.reserve(types.size());
+for (auto &type : types) {
+    typesVec.push_back(type);
+  }
+  typesVec.insert(typesVec.begin(), "DefaultUnknown");
+
   os << "enum IOType {\n";
-  unsigned size = usedTypes.size();
-  for (auto &type : usedTypes) {
+  unsigned size = typesVec.size();
+  for (auto &type : typesVec) {
     os << "  " << type;
     if (--size > 0) {
       os << ",\n";
