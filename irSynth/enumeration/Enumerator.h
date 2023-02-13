@@ -1,7 +1,7 @@
 #ifndef IRSYNTH_ENUMERATOR_H
 #define IRSYNTH_ENUMERATOR_H
 
-#include "enumeration/Candidate.h"
+#include "enumeration/CandidateStore.h"
 #include "enumeration/Stats.h"
 #include "execution/Executor.h"
 

@@ -39,6 +39,7 @@ target_include_directories(argtuples
 add_library(enumeration
   enumeration/Generators.cc
   enumeration/Candidate.cc
+  enumeration/CandidateStore.cc
   enumeration/Enumerator.cc
   enumeration/Guide.cc
   enumeration/OpInfos.cc
