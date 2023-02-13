@@ -18,9 +18,10 @@ using CandidateStorePtr = std::shared_ptr<CandidateStore>;
 
 class CandidateStore {
 public:
-  void addCandidate(const CandidatePtr &candidate, unsigned weight);
+  void addCandidate(const CandidatePtr &candidate);
   std::vector<CandidatePtr> getCandidates();
   std::vector<CandidatePtr> getCandidates(unsigned weight);
+  std::vector<CandidatePtr> getCandidates(unsigned weight, IOType ioType);
 
   void merge(CandidateStorePtr &other);
 
@@ -35,7 +36,9 @@ public:
 private:
   std::mutex addCandidatesMutex;
   std::unordered_map<Candidate *, int> candidateToId;
-  std::unordered_map<unsigned, std::vector<CandidatePtr>> weightToCandidates;
+  std::unordered_map<unsigned,
+                     std::unordered_map<IOType, std::vector<CandidatePtr>>>
+      weightToCandidates;
 
   std::mutex hashesMutex;
   std::unordered_map<double, unsigned> hashes;
