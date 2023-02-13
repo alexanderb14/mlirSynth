@@ -12,8 +12,8 @@
 #include <memory>
 #include <string>
 
-enum IOType {
-  DefaultUnknown,
+enum OpAndResType {
+  DefaultUnknownOpAndResType,
   HLO_AsyncBundle,
   HLO_ComplexTensor,
   HLO_DimensionTensor,
@@ -52,17 +52,55 @@ enum IOType {
   anonymous_754
 };
 
+enum AttrType {
+  DefaultUnknownAttrType,
+  ArrayAttr,
+  BoolAttr,
+  BoolElementsAttr,
+  CHLO_ComparisonDirectionAttr,
+  CHLO_ComparisonTypeAttr,
+  ChannelHandle,
+  ConvDimensionNumbers,
+  DotDimensionNumbers,
+  ElementsAttr,
+  F32Attr,
+  FlatSymbolRefAttr,
+  GatherDimensionNumbers,
+  HLO_ArrayOfLayoutAttr,
+  HLO_ComparisonDirectionAttr,
+  HLO_ComparisonTypeAttr,
+  HLO_CustomCallApiVersionAttr,
+  HLO_DomainKindAttr,
+  HLO_FftTypeAttr,
+  HLO_FlatSymbolRefArrayAttr,
+  HLO_FusionKindAttr,
+  HLO_PrecisionConfigAttr,
+  HLO_RngAlgorithmAttr,
+  HLO_RngDistributionAttr,
+  HLO_TransposeAttr,
+  I32Attr,
+  I64Attr,
+  I64ElementsAttr,
+  ScatterDimensionNumbers,
+  StrAttr,
+  TypedAttrInterface,
+  UnitAttr,
+  anonymous_707
+};
+
 class OpInfo {
 public:
   virtual ~OpInfo() {}
   virtual unsigned getNumOperands() const = 0;
+  virtual unsigned getNumAttributes() const = 0;
   virtual unsigned getNumResults() const = 0;
-  virtual IOType getOperandType(unsigned index) const = 0;
-  virtual IOType getResultType(unsigned index) const = 0;
+  virtual OpAndResType getOperandType(unsigned index) const = 0;
+  virtual AttrType getAttributeType(unsigned index) const = 0;
+  virtual OpAndResType getResultType(unsigned index) const = 0;
 };
 using OpInfoPtr = std::unique_ptr<OpInfo>;
 
-std::string ioTypeToString(IOType type);
+std::string ioTypeToString(OpAndResType type);
 OpInfoPtr createOpInfo(std::string name);
 
 #endif // IRSYNTH_OPINFOS_H
