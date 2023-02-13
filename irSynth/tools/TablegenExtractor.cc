@@ -140,10 +140,6 @@ void emitAbstractOp(raw_ostream &os) {
   os << "\n";
 }
 
-void emitConstructorDecl(raw_ostream &os) {
-  os << "OpInfoPtr createOpInfo(std::string name);\n";
-}
-
 std::string makeClangCompatible(const std::string &name) {
   std::string res = name;
   std::replace(res.begin(), res.end(), '.', '_');
@@ -196,21 +192,6 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
   }
 }
 
-void emitConstructorFn(const RecordKeeper &records, raw_ostream &os) {
-  os << "OpInfoPtr createOpInfo(std::string name) {\n";
-  for (auto *record : getOpDefinitions(records)) {
-    auto tblgenOp = tblgen::Operator(record);
-
-    std::string opName = makeClangCompatible(tblgenOp.getOperationName());
-
-    os << "  if (name == \"" << tblgenOp.getOperationName() << "\")\n";
-    os << "    return std::make_unique<" << opName << ">();\n";
-  }
-  os << "  assert(false && \"Invalid op name\");\n";
-  os << "}\n";
-  os << "\n";
-}
-
 void emitIOTypeToStringDecl(raw_ostream &os) {
   os << "std::string ioTypeToString(IOType type);\n";
 }
@@ -223,6 +204,25 @@ void emitIOTypeToStringFn(const RecordKeeper &records, raw_ostream &os) {
     os << "  if (type == " << type << ") return \"" << type << "\";\n";
   }
   os << "  assert(false && \"Invalid IOType\");\n";
+  os << "}\n";
+  os << "\n";
+}
+
+void emitConstructorDecl(raw_ostream &os) {
+  os << "OpInfoPtr createOpInfo(std::string name);\n";
+}
+
+void emitConstructorFn(const RecordKeeper &records, raw_ostream &os) {
+  os << "OpInfoPtr createOpInfo(std::string name) {\n";
+  for (auto *record : getOpDefinitions(records)) {
+    auto tblgenOp = tblgen::Operator(record);
+
+    std::string opName = makeClangCompatible(tblgenOp.getOperationName());
+
+    os << "  if (name == \"" << tblgenOp.getOperationName() << "\")\n";
+    os << "    return std::make_unique<" << opName << ">();\n";
+  }
+  os << "  assert(false && \"Invalid op name\");\n";
   os << "}\n";
   os << "\n";
 }
