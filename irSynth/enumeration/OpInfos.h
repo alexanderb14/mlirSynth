@@ -10,6 +10,7 @@
 #include <string>
 
 enum IOType {
+  DefaultUnknown,
   HLO_AsyncBundle,
   HLO_ComplexTensor,
   HLO_DimensionTensor,
