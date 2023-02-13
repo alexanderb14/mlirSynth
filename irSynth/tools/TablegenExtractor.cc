@@ -210,6 +210,7 @@ void emitIOTypeToStringFn(const RecordKeeper &records, raw_ostream &os) {
 
 void emitConstructorDecl(raw_ostream &os) {
   os << "OpInfoPtr createOpInfo(std::string name);\n";
+  os << "\n";
 }
 
 void emitConstructorFn(const RecordKeeper &records, raw_ostream &os) {
@@ -227,14 +228,26 @@ void emitConstructorFn(const RecordKeeper &records, raw_ostream &os) {
   os << "\n";
 }
 
+void emitIncludeGuardStart(raw_ostream &os, const std::string &guard) {
+  os << "#ifndef " << guard << "\n";
+  os << "#define " << guard << "\n";
+  os << "\n";
+}
+
+void emitIncludeGuardEnd(raw_ostream &os, const std::string &guard) {
+  os << "#endif // " << guard << "\n";
+}
+
 static bool emitOpInfoDecls(const RecordKeeper &recordKeeper, raw_ostream &os) {
   emitSourceFileHeader("Getters for Operation Infos", os);
+  emitIncludeGuardStart(os, "IRSYNTH_OPINFOS_H");
   emitHdrIncludes(os);
 
   emitUsedTypesAsEnum(recordKeeper, os);
   emitAbstractOp(os);
   emitIOTypeToStringDecl(os);
   emitConstructorDecl(os);
+  emitIncludeGuardEnd(os, "IRSYNTH_OPINFOS_H");
 
   return false;
 }
