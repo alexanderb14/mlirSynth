@@ -2329,6 +2329,46 @@ public:
   }
 };
 
+std::string IOTypeToString(IOType type) {
+  if (type == DefaultUnknown) return "DefaultUnknown";
+  if (type == HLO_AsyncBundle) return "HLO_AsyncBundle";
+  if (type == HLO_ComplexTensor) return "HLO_ComplexTensor";
+  if (type == HLO_DimensionTensor) return "HLO_DimensionTensor";
+  if (type == HLO_Fp32Or64Tensor) return "HLO_Fp32Or64Tensor";
+  if (type == HLO_FpOrComplexTensor) return "HLO_FpOrComplexTensor";
+  if (type == HLO_FpTensor) return "HLO_FpTensor";
+  if (type == HLO_IntFpOrComplexTensor) return "HLO_IntFpOrComplexTensor";
+  if (type == HLO_IntOrFpTensor) return "HLO_IntOrFpTensor";
+  if (type == HLO_IntTensor) return "HLO_IntTensor";
+  if (type == HLO_PredIntOrFpTensor) return "HLO_PredIntOrFpTensor";
+  if (type == HLO_PredOrIntTensor) return "HLO_PredOrIntTensor";
+  if (type == HLO_PredTensor) return "HLO_PredTensor";
+  if (type == HLO_QuantizedIntTensor) return "HLO_QuantizedIntTensor";
+  if (type == HLO_ScalarIntTensor) return "HLO_ScalarIntTensor";
+  if (type == HLO_StaticShapeTensor) return "HLO_StaticShapeTensor";
+  if (type == HLO_Tensor) return "HLO_Tensor";
+  if (type == HLO_TensorOrToken) return "HLO_TensorOrToken";
+  if (type == HLO_TensorOrTokenOrTuple) return "HLO_TensorOrTokenOrTuple";
+  if (type == HLO_Token) return "HLO_Token";
+  if (type == HLO_Tuple) return "HLO_Tuple";
+  if (type == I32Tensor) return "I32Tensor";
+  if (type == Index) return "Index";
+  if (type == Shape_WitnessType) return "Shape_WitnessType";
+  if (type == anonymous_594) return "anonymous_594";
+  if (type == anonymous_603) return "anonymous_603";
+  if (type == anonymous_614) return "anonymous_614";
+  if (type == anonymous_651) return "anonymous_651";
+  if (type == anonymous_653) return "anonymous_653";
+  if (type == anonymous_678) return "anonymous_678";
+  if (type == anonymous_691) return "anonymous_691";
+  if (type == anonymous_693) return "anonymous_693";
+  if (type == anonymous_699) return "anonymous_699";
+  if (type == anonymous_705) return "anonymous_705";
+  if (type == anonymous_712) return "anonymous_712";
+  if (type == anonymous_719) return "anonymous_719";
+  assert(false && "Invalid IOType");
+}
+
 OpInfoPtr createOpInfo(std::string name) {
   if (name == "mhlo.abs")
     return std::make_unique<mhlo_abs>();
@@ -2582,3 +2622,4 @@ OpInfoPtr createOpInfo(std::string name) {
     return std::make_unique<mhlo_xor>();
   assert(false && "Invalid op name");
 }
+

@@ -58,4 +58,5 @@ public:
 };
 using OpInfoPtr = std::unique_ptr<OpInfo>;
 
+std::string ioTypeToString(IOType type);
 OpInfoPtr createOpInfo(std::string name);

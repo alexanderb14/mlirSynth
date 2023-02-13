@@ -31,6 +31,29 @@ std::vector<Record *> getAttrDefinitions(const RecordKeeper &recordKeeper) {
   return recordKeeper.getAllDerivedDefinitions("AttrDef");
 }
 
+std::vector<std::string> getUsedTypes(const RecordKeeper &records) {
+  std::set<std::string> types;
+  for (auto *record : getOpDefinitions(records)) {
+    auto tblgenOp = tblgen::Operator(record);
+    for (auto &operand : tblgenOp.getOperands()) {
+      types.insert(operand.constraint.getDefName().str());
+    }
+    for (auto &result : tblgenOp.getResults()) {
+      types.insert(result.constraint.getDefName().str());
+    }
+  }
+
+  // Add Unknown type as 1st element.
+  std::vector<std::string> typesVec;
+  typesVec.reserve(types.size());
+for (auto &type : types) {
+    typesVec.push_back(type);
+  }
+  typesVec.insert(typesVec.begin(), "DefaultUnknown");
+
+  return typesVec;
+}
+
 void printDefinitions(RecordKeeper &records, raw_ostream &os) {
   os << "Classes:\n";
   for (const auto &it : records.getClasses()) {
@@ -88,28 +111,11 @@ void emitSrcIncludes(raw_ostream &os) {
 }
 
 void emitUsedTypesAsEnum(const RecordKeeper &records, raw_ostream &os) {
-  std::set<std::string> types;
-  for (auto *record : getOpDefinitions(records)) {
-    auto tblgenOp = tblgen::Operator(record);
-    for (auto &operand : tblgenOp.getOperands()) {
-      types.insert(operand.constraint.getDefName().str());
-    }
-    for (auto &result : tblgenOp.getResults()) {
-      types.insert(result.constraint.getDefName().str());
-    }
-  }
-
-  // Add Unknown type as 1st element.
-  std::vector<std::string> typesVec;
-  typesVec.reserve(types.size());
-for (auto &type : types) {
-    typesVec.push_back(type);
-  }
-  typesVec.insert(typesVec.begin(), "DefaultUnknown");
+  auto types = getUsedTypes(records);
 
   os << "enum IOType {\n";
-  unsigned size = typesVec.size();
-  for (auto &type : typesVec) {
+  unsigned size = types.size();
+  for (auto &type : types) {
     os << "  " << type;
     if (--size > 0) {
       os << ",\n";
@@ -134,7 +140,7 @@ void emitAbstractOp(raw_ostream &os) {
   os << "\n";
 }
 
-void emitConstructorFnDecl(raw_ostream &os) {
+void emitConstructorDecl(raw_ostream &os) {
   os << "OpInfoPtr createOpInfo(std::string name);\n";
 }
 
@@ -202,6 +208,23 @@ void emitConstructorFn(const RecordKeeper &records, raw_ostream &os) {
   }
   os << "  assert(false && \"Invalid op name\");\n";
   os << "}\n";
+  os << "\n";
+}
+
+void emitIOTypeToStringDecl(raw_ostream &os) {
+  os << "std::string ioTypeToString(IOType type);\n";
+}
+
+void emitIOTypeToStringFn(const RecordKeeper &records, raw_ostream &os) {
+  auto types = getUsedTypes(records);
+
+  os << "std::string IOTypeToString(IOType type) {\n";
+  for (auto &type : types) {
+    os << "  if (type == " << type << ") return \"" << type << "\";\n";
+  }
+  os << "  assert(false && \"Invalid IOType\");\n";
+  os << "}\n";
+  os << "\n";
 }
 
 static bool emitOpInfoDecls(const RecordKeeper &recordKeeper, raw_ostream &os) {
@@ -210,7 +233,8 @@ static bool emitOpInfoDecls(const RecordKeeper &recordKeeper, raw_ostream &os) {
 
   emitUsedTypesAsEnum(recordKeeper, os);
   emitAbstractOp(os);
-  emitConstructorFnDecl(os);
+  emitIOTypeToStringDecl(os);
+  emitConstructorDecl(os);
 
   return false;
 }
@@ -220,6 +244,7 @@ static bool emitOpInfoDefs(const RecordKeeper &recordKeeper, raw_ostream &os) {
   emitSrcIncludes(os);
 
   emitConcreteOps(recordKeeper, os);
+  emitIOTypeToStringFn(recordKeeper, os);
   emitConstructorFn(recordKeeper, os);
 
   return false;
