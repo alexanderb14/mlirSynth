@@ -31,6 +31,8 @@ popd
 pushd build
 cmake --build . --target tablegen-opinfos
 popd
+TD_FILES="mlir-hlo/stablehlo/stablehlo/dialect/ChloOps.td \
+mlir-hlo/include/mlir-hlo/Dialect/mhlo/IR/hlo_ops.td"
 GEN_COMMON="-Imlir-hlo \
 -Imlir-hlo/include \
 -Imlir-hlo/include/mlir-hlo/Dialect/mhlo/IR \
@@ -38,18 +40,19 @@ GEN_COMMON="-Imlir-hlo \
 -Imlir-hlo/llvm-project/llvm/include \
 -Imlir-hlo/llvm-project/mlir/include \
 -Imlir-hlo/llvm-build/include \
--Imlir-hlo/llvm-build/tools/mlir/include \
-/devel/git/irSynth/mlir-hlo/include/mlir-hlo/Dialect/mhlo/IR/hlo_ops.td"
-./build/bin/tablegen-opinfos $GEN_COMMON -gen-op-info-decls -o irSynth/enumeration/OpInfos.h
-./build/bin/tablegen-opinfos $GEN_COMMON -gen-op-info-defs -o irSynth/enumeration/OpInfos.cc
+-Imlir-hlo/llvm-build/tools/mlir/include"
+cat $TD_FILES | ./build/bin/tablegen-opinfos $GEN_COMMON \
+  -gen-op-info-decls -o irSynth/enumeration/OpInfos.h
+cat $TD_FILES | ./build/bin/tablegen-opinfos $GEN_COMMON \
+  -gen-op-info-defs -o irSynth/enumeration/OpInfos.cc
 
-# Build irSynth.
-pushd build
-cmake --build .
-popd
-
-# Merge all compile_commands.json files, so that clangd can find them.
-jq -s 'map(.[])' mlir-hlo/llvm-build/compile_commands.json \
-  mlir-hlo/build/compile_commands.json \
-  build/compile_commands.json \
-  > compile_commands.json
+# # Build irSynth.
+# pushd build
+# cmake --build .
+# popd
+# 
+# # Merge all compile_commands.json files, so that clangd can find them.
+# jq -s 'map(.[])' mlir-hlo/llvm-build/compile_commands.json \
+#   mlir-hlo/build/compile_commands.json \
+#   build/compile_commands.json \
+#   > compile_commands.json

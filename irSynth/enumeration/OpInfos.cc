@@ -12,19 +12,926 @@
 #include <memory>
 #include <string>
 
+class chlo_acos : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_acosh : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_asin : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_asinh : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_atan : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_atanh : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_bessel_i1e : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_add : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_and : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_PredOrIntTensor;
+      case 1: return HLO_PredOrIntTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_atan2 : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_compare : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_PredTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_complex : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+      case 1: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_ComplexTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_divide : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_maximum : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_minimum : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_multiply : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_next_after : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_or : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_PredOrIntTensor;
+      case 1: return HLO_PredOrIntTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_polygamma : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_power : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_remainder : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_select : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 3; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_PredTensor;
+      case 1: return HLO_Tensor;
+      case 2: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_shift_left : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_shift_right_arithmetic : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_shift_right_logical : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_subtract : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_xor : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_PredOrIntTensor;
+      case 1: return HLO_PredOrIntTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_broadcast_zeta : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+      case 1: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_conj : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_constant_like : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_constant : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 0; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_StaticShapeTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_cosh : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_digamma : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_dynamic_reshape : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_DimensionTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_erf : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_erfc : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_is_inf : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_PredTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_is_neg_inf : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_PredTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_is_pos_inf : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_PredTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_lgamma : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_minimum_broadcast_shapes : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return anonymous_526;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return anonymous_526;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_next_after : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+      case 1: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_polygamma : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+      case 1: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_rank_specialization_cluster : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_rank_specialization_cluster_yield : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 0; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_sinh : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_tan : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_top_k : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumResults() const override { return 2; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_zeta : public OpInfo {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumResults() const override { return 1; }
+  IOType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+      case 1: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  IOType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
 class mhlo_abs : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumResults() const override { return 1; }
   IOType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_594;
+      case 0: return anonymous_632;
     }
     assert(false && "Invalid operand index");
   }
   IOType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_594;
+      case 0: return anonymous_632;
     }
     assert(false && "Invalid result index");
   }
@@ -238,19 +1145,19 @@ public:
   unsigned getNumResults() const override { return 3; }
   IOType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_651;
-      case 1: return anonymous_653;
-      case 2: return anonymous_653;
-      case 3: return anonymous_653;
-      case 4: return anonymous_651;
+      case 0: return anonymous_686;
+      case 1: return anonymous_688;
+      case 2: return anonymous_688;
+      case 3: return anonymous_688;
+      case 4: return anonymous_686;
     }
     assert(false && "Invalid operand index");
   }
   IOType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_651;
-      case 1: return anonymous_653;
-      case 2: return anonymous_653;
+      case 0: return anonymous_686;
+      case 1: return anonymous_688;
+      case 2: return anonymous_688;
     }
     assert(false && "Invalid result index");
   }
@@ -262,17 +1169,17 @@ public:
   unsigned getNumResults() const override { return 1; }
   IOType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_651;
-      case 1: return anonymous_653;
-      case 2: return anonymous_653;
-      case 3: return anonymous_653;
-      case 4: return anonymous_653;
+      case 0: return anonymous_686;
+      case 1: return anonymous_688;
+      case 2: return anonymous_688;
+      case 3: return anonymous_688;
+      case 4: return anonymous_688;
     }
     assert(false && "Invalid operand index");
   }
   IOType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_651;
+      case 0: return anonymous_686;
     }
     assert(false && "Invalid result index");
   }
@@ -284,17 +1191,17 @@ public:
   unsigned getNumResults() const override { return 3; }
   IOType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_651;
-      case 1: return anonymous_653;
-      case 2: return anonymous_653;
+      case 0: return anonymous_686;
+      case 1: return anonymous_688;
+      case 2: return anonymous_688;
     }
     assert(false && "Invalid operand index");
   }
   IOType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_651;
-      case 1: return anonymous_653;
-      case 2: return anonymous_653;
+      case 0: return anonymous_686;
+      case 1: return anonymous_688;
+      case 2: return anonymous_688;
     }
     assert(false && "Invalid result index");
   }
@@ -545,13 +1452,13 @@ public:
   IOType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return Index;
-      case 1: return anonymous_719;
+      case 1: return anonymous_754;
     }
     assert(false && "Invalid operand index");
   }
   IOType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_719;
+      case 0: return anonymous_754;
     }
     assert(false && "Invalid result index");
   }
@@ -707,7 +1614,7 @@ public:
   IOType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return Index;
-      case 1: return anonymous_719;
+      case 1: return anonymous_754;
     }
     assert(false && "Invalid operand index");
   }
@@ -1072,7 +1979,7 @@ public:
   }
   IOType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_712;
+      case 0: return anonymous_747;
     }
     assert(false && "Invalid result index");
   }
@@ -1473,7 +2380,7 @@ public:
   }
   IOType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_614;
+      case 0: return anonymous_651;
     }
     assert(false && "Invalid result index");
   }
@@ -1677,7 +2584,7 @@ public:
   }
   IOType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_614;
+      case 0: return anonymous_651;
     }
     assert(false && "Invalid result index");
   }
@@ -1761,8 +2668,8 @@ public:
   unsigned getNumResults() const override { return 1; }
   IOType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_691;
-      case 1: return anonymous_691;
+      case 0: return anonymous_726;
+      case 1: return anonymous_726;
       case 2: return HLO_DimensionTensor;
     }
     assert(false && "Invalid operand index");
@@ -1836,7 +2743,7 @@ public:
   IOType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
-      case 1: return anonymous_678;
+      case 1: return anonymous_713;
       case 2: return HLO_Tensor;
     }
     assert(false && "Invalid operand index");
@@ -1990,13 +2897,13 @@ public:
   unsigned getNumResults() const override { return 1; }
   IOType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_594;
+      case 0: return anonymous_632;
     }
     assert(false && "Invalid operand index");
   }
   IOType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_594;
+      case 0: return anonymous_632;
     }
     assert(false && "Invalid result index");
   }
@@ -2081,7 +2988,7 @@ public:
   IOType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
-      case 1: return anonymous_603;
+      case 1: return anonymous_641;
     }
     assert(false && "Invalid operand index");
   }
@@ -2251,7 +3158,7 @@ public:
   }
   IOType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_705;
+      case 0: return anonymous_740;
     }
     assert(false && "Invalid result index");
   }
@@ -2263,7 +3170,7 @@ public:
   unsigned getNumResults() const override { return 1; }
   IOType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_699;
+      case 0: return anonymous_734;
     }
     assert(false && "Invalid operand index");
   }
@@ -2304,7 +3211,7 @@ public:
   }
   IOType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_693;
+      case 0: return anonymous_728;
     }
     assert(false && "Invalid result index");
   }
@@ -2354,22 +3261,121 @@ std::string IOTypeToString(IOType type) {
   if (type == I32Tensor) return "I32Tensor";
   if (type == Index) return "Index";
   if (type == Shape_WitnessType) return "Shape_WitnessType";
-  if (type == anonymous_594) return "anonymous_594";
-  if (type == anonymous_603) return "anonymous_603";
-  if (type == anonymous_614) return "anonymous_614";
+  if (type == anonymous_526) return "anonymous_526";
+  if (type == anonymous_632) return "anonymous_632";
+  if (type == anonymous_641) return "anonymous_641";
   if (type == anonymous_651) return "anonymous_651";
-  if (type == anonymous_653) return "anonymous_653";
-  if (type == anonymous_678) return "anonymous_678";
-  if (type == anonymous_691) return "anonymous_691";
-  if (type == anonymous_693) return "anonymous_693";
-  if (type == anonymous_699) return "anonymous_699";
-  if (type == anonymous_705) return "anonymous_705";
-  if (type == anonymous_712) return "anonymous_712";
-  if (type == anonymous_719) return "anonymous_719";
+  if (type == anonymous_686) return "anonymous_686";
+  if (type == anonymous_688) return "anonymous_688";
+  if (type == anonymous_713) return "anonymous_713";
+  if (type == anonymous_726) return "anonymous_726";
+  if (type == anonymous_728) return "anonymous_728";
+  if (type == anonymous_734) return "anonymous_734";
+  if (type == anonymous_740) return "anonymous_740";
+  if (type == anonymous_747) return "anonymous_747";
+  if (type == anonymous_754) return "anonymous_754";
   assert(false && "Invalid IOType");
 }
 
 OpInfoPtr createOpInfo(std::string name) {
+  if (name == "chlo.acos")
+    return std::make_unique<chlo_acos>();
+  if (name == "chlo.acosh")
+    return std::make_unique<chlo_acosh>();
+  if (name == "chlo.asin")
+    return std::make_unique<chlo_asin>();
+  if (name == "chlo.asinh")
+    return std::make_unique<chlo_asinh>();
+  if (name == "chlo.atan")
+    return std::make_unique<chlo_atan>();
+  if (name == "chlo.atanh")
+    return std::make_unique<chlo_atanh>();
+  if (name == "chlo.bessel_i1e")
+    return std::make_unique<chlo_bessel_i1e>();
+  if (name == "chlo.broadcast_add")
+    return std::make_unique<chlo_broadcast_add>();
+  if (name == "chlo.broadcast_and")
+    return std::make_unique<chlo_broadcast_and>();
+  if (name == "chlo.broadcast_atan2")
+    return std::make_unique<chlo_broadcast_atan2>();
+  if (name == "chlo.broadcast_compare")
+    return std::make_unique<chlo_broadcast_compare>();
+  if (name == "chlo.broadcast_complex")
+    return std::make_unique<chlo_broadcast_complex>();
+  if (name == "chlo.broadcast_divide")
+    return std::make_unique<chlo_broadcast_divide>();
+  if (name == "chlo.broadcast_maximum")
+    return std::make_unique<chlo_broadcast_maximum>();
+  if (name == "chlo.broadcast_minimum")
+    return std::make_unique<chlo_broadcast_minimum>();
+  if (name == "chlo.broadcast_multiply")
+    return std::make_unique<chlo_broadcast_multiply>();
+  if (name == "chlo.broadcast_next_after")
+    return std::make_unique<chlo_broadcast_next_after>();
+  if (name == "chlo.broadcast_or")
+    return std::make_unique<chlo_broadcast_or>();
+  if (name == "chlo.broadcast_polygamma")
+    return std::make_unique<chlo_broadcast_polygamma>();
+  if (name == "chlo.broadcast_power")
+    return std::make_unique<chlo_broadcast_power>();
+  if (name == "chlo.broadcast_remainder")
+    return std::make_unique<chlo_broadcast_remainder>();
+  if (name == "chlo.broadcast_select")
+    return std::make_unique<chlo_broadcast_select>();
+  if (name == "chlo.broadcast_shift_left")
+    return std::make_unique<chlo_broadcast_shift_left>();
+  if (name == "chlo.broadcast_shift_right_arithmetic")
+    return std::make_unique<chlo_broadcast_shift_right_arithmetic>();
+  if (name == "chlo.broadcast_shift_right_logical")
+    return std::make_unique<chlo_broadcast_shift_right_logical>();
+  if (name == "chlo.broadcast_subtract")
+    return std::make_unique<chlo_broadcast_subtract>();
+  if (name == "chlo.broadcast_xor")
+    return std::make_unique<chlo_broadcast_xor>();
+  if (name == "chlo.broadcast_zeta")
+    return std::make_unique<chlo_broadcast_zeta>();
+  if (name == "chlo.conj")
+    return std::make_unique<chlo_conj>();
+  if (name == "chlo.constant_like")
+    return std::make_unique<chlo_constant_like>();
+  if (name == "chlo.constant")
+    return std::make_unique<chlo_constant>();
+  if (name == "chlo.cosh")
+    return std::make_unique<chlo_cosh>();
+  if (name == "chlo.digamma")
+    return std::make_unique<chlo_digamma>();
+  if (name == "chlo.dynamic_reshape")
+    return std::make_unique<chlo_dynamic_reshape>();
+  if (name == "chlo.erf")
+    return std::make_unique<chlo_erf>();
+  if (name == "chlo.erfc")
+    return std::make_unique<chlo_erfc>();
+  if (name == "chlo.is_inf")
+    return std::make_unique<chlo_is_inf>();
+  if (name == "chlo.is_neg_inf")
+    return std::make_unique<chlo_is_neg_inf>();
+  if (name == "chlo.is_pos_inf")
+    return std::make_unique<chlo_is_pos_inf>();
+  if (name == "chlo.lgamma")
+    return std::make_unique<chlo_lgamma>();
+  if (name == "chlo.minimum_broadcast_shapes")
+    return std::make_unique<chlo_minimum_broadcast_shapes>();
+  if (name == "chlo.next_after")
+    return std::make_unique<chlo_next_after>();
+  if (name == "chlo.polygamma")
+    return std::make_unique<chlo_polygamma>();
+  if (name == "chlo.rank_specialization_cluster")
+    return std::make_unique<chlo_rank_specialization_cluster>();
+  if (name == "chlo.rank_specialization_cluster_yield")
+    return std::make_unique<chlo_rank_specialization_cluster_yield>();
+  if (name == "chlo.sinh")
+    return std::make_unique<chlo_sinh>();
+  if (name == "chlo.tan")
+    return std::make_unique<chlo_tan>();
+  if (name == "chlo.top_k")
+    return std::make_unique<chlo_top_k>();
+  if (name == "chlo.zeta")
+    return std::make_unique<chlo_zeta>();
   if (name == "mhlo.abs")
     return std::make_unique<mhlo_abs>();
   if (name == "mhlo.add_dependency")

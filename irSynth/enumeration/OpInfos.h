@@ -37,18 +37,19 @@ enum IOType {
   I32Tensor,
   Index,
   Shape_WitnessType,
-  anonymous_594,
-  anonymous_603,
-  anonymous_614,
+  anonymous_526,
+  anonymous_632,
+  anonymous_641,
   anonymous_651,
-  anonymous_653,
-  anonymous_678,
-  anonymous_691,
-  anonymous_693,
-  anonymous_699,
-  anonymous_705,
-  anonymous_712,
-  anonymous_719
+  anonymous_686,
+  anonymous_688,
+  anonymous_713,
+  anonymous_726,
+  anonymous_728,
+  anonymous_734,
+  anonymous_740,
+  anonymous_747,
+  anonymous_754
 };
 
 class OpInfo {
