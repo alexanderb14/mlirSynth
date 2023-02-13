@@ -93,6 +93,7 @@ public:
   virtual ~OpInfo() {}
   virtual unsigned getNumOperands() const = 0;
   virtual unsigned getNumAttributes() const = 0;
+  virtual unsigned getNumRegions() const = 0;
   virtual unsigned getNumResults() const = 0;
   virtual OpAndResType getOperandType(unsigned index) const = 0;
   virtual AttrType getAttributeType(unsigned index) const = 0;

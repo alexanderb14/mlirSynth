@@ -16,6 +16,7 @@ class chlo_acos : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -40,6 +41,7 @@ class chlo_acosh : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -64,6 +66,7 @@ class chlo_asin : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -88,6 +91,7 @@ class chlo_asinh : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -112,6 +116,7 @@ class chlo_atan : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -136,6 +141,7 @@ class chlo_atanh : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -160,6 +166,7 @@ class chlo_bessel_i1e : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -184,6 +191,7 @@ class chlo_broadcast_add : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -210,6 +218,7 @@ class chlo_broadcast_and : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -236,6 +245,7 @@ class chlo_broadcast_atan2 : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -262,6 +272,7 @@ class chlo_broadcast_compare : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 3; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -290,6 +301,7 @@ class chlo_broadcast_complex : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -316,6 +328,7 @@ class chlo_broadcast_divide : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -342,6 +355,7 @@ class chlo_broadcast_maximum : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -368,6 +382,7 @@ class chlo_broadcast_minimum : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -394,6 +409,7 @@ class chlo_broadcast_multiply : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -420,6 +436,7 @@ class chlo_broadcast_next_after : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -446,6 +463,7 @@ class chlo_broadcast_or : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -472,6 +490,7 @@ class chlo_broadcast_polygamma : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -498,6 +517,7 @@ class chlo_broadcast_power : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -524,6 +544,7 @@ class chlo_broadcast_remainder : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -550,6 +571,7 @@ class chlo_broadcast_select : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -576,6 +598,7 @@ class chlo_broadcast_shift_left : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -602,6 +625,7 @@ class chlo_broadcast_shift_right_arithmetic : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -628,6 +652,7 @@ class chlo_broadcast_shift_right_logical : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -654,6 +679,7 @@ class chlo_broadcast_subtract : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -680,6 +706,7 @@ class chlo_broadcast_xor : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -706,6 +733,7 @@ class chlo_broadcast_zeta : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -732,6 +760,7 @@ class chlo_conj : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -756,6 +785,7 @@ class chlo_constant_like : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -781,6 +811,7 @@ class chlo_constant : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -805,6 +836,7 @@ class chlo_cosh : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -829,6 +861,7 @@ class chlo_digamma : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -853,6 +886,7 @@ class chlo_dynamic_reshape : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -878,6 +912,7 @@ class chlo_erf : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -902,6 +937,7 @@ class chlo_erfc : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -926,6 +962,7 @@ class chlo_is_inf : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -950,6 +987,7 @@ class chlo_is_neg_inf : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -974,6 +1012,7 @@ class chlo_is_pos_inf : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -998,6 +1037,7 @@ class chlo_lgamma : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1022,6 +1062,7 @@ class chlo_minimum_broadcast_shapes : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1046,6 +1087,7 @@ class chlo_next_after : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1071,6 +1113,7 @@ class chlo_polygamma : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1096,6 +1139,7 @@ class chlo_rank_specialization_cluster : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1120,6 +1164,7 @@ class chlo_rank_specialization_cluster_yield : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 0; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1143,6 +1188,7 @@ class chlo_sinh : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1167,6 +1213,7 @@ class chlo_tan : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1191,6 +1238,7 @@ class chlo_top_k : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 2; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1217,6 +1265,7 @@ class chlo_zeta : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1242,6 +1291,7 @@ class mhlo_abs : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1266,6 +1316,7 @@ class mhlo_add_dependency : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1291,6 +1342,7 @@ class mhlo_add : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1316,6 +1368,7 @@ class mhlo_after_all : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1340,6 +1393,7 @@ class mhlo_all_gather : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 4; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1368,6 +1422,7 @@ class mhlo_all_reduce : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 3; }
+  unsigned getNumRegions() const override { return 1; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1395,6 +1450,7 @@ class mhlo_all_to_all : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 4; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1423,6 +1479,7 @@ class mhlo_and : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1448,6 +1505,7 @@ class mhlo_async_done : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 3; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1475,6 +1533,7 @@ class mhlo_async_start : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 3; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1502,6 +1561,7 @@ class mhlo_async_update : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 3; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1529,6 +1589,7 @@ class mhlo_atan2 : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1554,6 +1615,7 @@ class mhlo_batch_norm_grad : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 5; }
   unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 3; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1586,6 +1648,7 @@ class mhlo_batch_norm_inference : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 5; }
   unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1616,6 +1679,7 @@ class mhlo_batch_norm_training : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 3; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1646,6 +1710,7 @@ class mhlo_bitcast_convert : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1670,6 +1735,7 @@ class mhlo_bitcast : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1694,6 +1760,7 @@ class mhlo_broadcast_in_dim : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1719,6 +1786,7 @@ class mhlo_broadcast : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1744,6 +1812,7 @@ class mhlo_case : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1768,6 +1837,7 @@ class mhlo_cbrt : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1792,6 +1862,7 @@ class mhlo_ceil : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1816,6 +1887,7 @@ class mhlo_cholesky : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1841,6 +1913,7 @@ class mhlo_clamp : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1867,6 +1940,7 @@ class mhlo_count_leading_zeros : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1891,6 +1965,7 @@ class mhlo_collective_permute : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1917,6 +1992,7 @@ class mhlo_compare : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1944,6 +2020,7 @@ class mhlo_complex : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1969,6 +2046,7 @@ class mhlo_compute_reshape_shape : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -1994,6 +2072,7 @@ class mhlo_concatenate : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2019,6 +2098,7 @@ class mhlo_constant : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2043,6 +2123,7 @@ class mhlo_convert : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2067,6 +2148,7 @@ class mhlo_convolution : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 9; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2101,6 +2183,7 @@ class mhlo_copy : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2126,6 +2209,7 @@ class mhlo_cosine : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2150,6 +2234,7 @@ class mhlo_create_token : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2173,6 +2258,7 @@ class mhlo_cross_replica_sum : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2198,6 +2284,7 @@ class mhlo_cstr_reshapable : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2223,6 +2310,7 @@ class mhlo_custom_call : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 8; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2255,6 +2343,7 @@ class mhlo_divide : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2280,6 +2369,7 @@ class mhlo_domain : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 3; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2307,6 +2397,7 @@ class mhlo_dot_general : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2334,6 +2425,7 @@ class mhlo_dot : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2360,6 +2452,7 @@ class mhlo_dynamic_broadcast_in_dim : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 3; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2388,6 +2481,7 @@ class mhlo_dynamic_conv : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 9; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2423,6 +2517,7 @@ class mhlo_dynamic_gather : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2451,6 +2546,7 @@ class mhlo_dynamic_iota : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2476,6 +2572,7 @@ class mhlo_dynamic_pad : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 5; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2504,6 +2601,7 @@ class mhlo_dynamic_reshape : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2529,6 +2627,7 @@ class mhlo_dynamic_slice : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2555,6 +2654,7 @@ class mhlo_dynamic_update_slice : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2581,6 +2681,7 @@ class mhlo_einsum : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2607,6 +2708,7 @@ class mhlo_exponential : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2631,6 +2733,7 @@ class mhlo_exponential_minus_one : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2655,6 +2758,7 @@ class mhlo_fft : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2681,6 +2785,7 @@ class mhlo_floor : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2705,6 +2810,7 @@ class mhlo_fusion : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 1; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2730,6 +2836,7 @@ class mhlo_gather : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 3; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2758,6 +2865,7 @@ class mhlo_get_dimension_size : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2783,6 +2891,7 @@ class mhlo_get_tuple_element : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2808,6 +2917,7 @@ class mhlo_if : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 2; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2832,6 +2942,7 @@ class mhlo_imag : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2856,6 +2967,7 @@ class mhlo_infeed : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2882,6 +2994,7 @@ class mhlo_iota : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2906,6 +3019,7 @@ class mhlo_is_finite : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2930,6 +3044,7 @@ class mhlo_log_plus_one : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2954,6 +3069,7 @@ class mhlo_log : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -2978,6 +3094,7 @@ class mhlo_logistic : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3002,6 +3119,7 @@ class mhlo_map : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 1; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3027,6 +3145,7 @@ class mhlo_maximum : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3052,6 +3171,7 @@ class mhlo_minimum : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3077,6 +3197,7 @@ class mhlo_multiply : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3102,6 +3223,7 @@ class mhlo_negate : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3126,6 +3248,7 @@ class mhlo_not : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3150,6 +3273,7 @@ class mhlo_optimization_barrier : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3174,6 +3298,7 @@ class mhlo_or : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3199,6 +3324,7 @@ class mhlo_outfeed : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3225,6 +3351,7 @@ class mhlo_pad : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 3; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3253,6 +3380,7 @@ class mhlo_partition_id : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3276,6 +3404,7 @@ class mhlo_popcnt : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3300,6 +3429,7 @@ class mhlo_power : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3325,6 +3455,7 @@ class mhlo_real_dynamic_slice : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 4; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3352,6 +3483,7 @@ class mhlo_real : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3376,6 +3508,7 @@ class mhlo_recv : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3402,6 +3535,7 @@ class mhlo_reduce : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 1; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3428,6 +3562,7 @@ class mhlo_reduce_precision : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3454,6 +3589,7 @@ class mhlo_reduce_scatter : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 4; }
+  unsigned getNumRegions() const override { return 1; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3482,6 +3618,7 @@ class mhlo_reduce_window : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 5; }
+  unsigned getNumRegions() const override { return 1; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3512,6 +3649,7 @@ class mhlo_remainder : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3537,6 +3675,7 @@ class mhlo_replica_id : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3560,6 +3699,7 @@ class mhlo_reshape : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3584,6 +3724,7 @@ class mhlo_return : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 0; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3607,6 +3748,7 @@ class mhlo_reverse : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3632,6 +3774,7 @@ class mhlo_rng_bit_generator : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 2; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3658,6 +3801,7 @@ class mhlo_rng : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3685,6 +3829,7 @@ class mhlo_round_nearest_even : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3709,6 +3854,7 @@ class mhlo_round_nearest_afz : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3733,6 +3879,7 @@ class mhlo_rsqrt : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3757,6 +3904,7 @@ class mhlo_scatter : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 3; }
+  unsigned getNumRegions() const override { return 1; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3786,6 +3934,7 @@ class mhlo_select_and_scatter : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 3; }
+  unsigned getNumRegions() const override { return 2; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3815,6 +3964,7 @@ class mhlo_select : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3841,6 +3991,7 @@ class mhlo_send : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3868,6 +4019,7 @@ class mhlo_set_dimension_size : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3894,6 +4046,7 @@ class mhlo_shift_left : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3919,6 +4072,7 @@ class mhlo_shift_right_arithmetic : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3944,6 +4098,7 @@ class mhlo_shift_right_logical : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3969,6 +4124,7 @@ class mhlo_sign : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -3993,6 +4149,7 @@ class mhlo_sine : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4017,6 +4174,7 @@ class mhlo_slice : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 3; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4044,6 +4202,7 @@ class mhlo_sort : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4070,6 +4229,7 @@ class mhlo_sqrt : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4094,6 +4254,7 @@ class mhlo_stochastic_convert : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4119,6 +4280,7 @@ class mhlo_subtract : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4144,6 +4306,7 @@ class mhlo_tanh : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4168,6 +4331,7 @@ class mhlo_torch_index_select : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4195,6 +4359,7 @@ class mhlo_trace : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 0; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4219,6 +4384,7 @@ class mhlo_transpose : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4244,6 +4410,7 @@ class mhlo_triangular_solve : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 4; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4273,6 +4440,7 @@ class mhlo_tuple : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4297,6 +4465,7 @@ class mhlo_unary_einsum : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4322,6 +4491,7 @@ class mhlo_uniform_dequantize : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4346,6 +4516,7 @@ class mhlo_uniform_quantize : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4370,6 +4541,7 @@ class mhlo_while : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 2; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4394,6 +4566,7 @@ class mhlo_xla_rng_get_and_update_state : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
@@ -4418,6 +4591,7 @@ class mhlo_xor : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {

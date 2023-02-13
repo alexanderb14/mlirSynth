@@ -170,6 +170,7 @@ void emitAbstractOp(raw_ostream &os) {
   os << "  virtual ~OpInfo() {}\n";
   os << "  virtual unsigned getNumOperands() const = 0;\n";
   os << "  virtual unsigned getNumAttributes() const = 0;\n";
+  os << "  virtual unsigned getNumRegions() const = 0;\n";
   os << "  virtual unsigned getNumResults() const = 0;\n";
   os << "  virtual OpAndResType getOperandType(unsigned index) const = 0;\n";
   os << "  virtual AttrType getAttributeType(unsigned index) const = 0;\n";
@@ -200,6 +201,10 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
 
     os << "  unsigned getNumAttributes() const override {";
     os << " return " << tblgenOp.getNumAttributes() << ";";
+    os << " }\n";
+
+    os << "  unsigned getNumRegions() const override {";
+    os << " return " << tblgenOp.getNumRegions() << ";";
     os << " }\n";
 
     os << "  unsigned getNumResults() const override {";
