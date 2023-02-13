@@ -3,11 +3,7 @@ set(LLVM_LINK_COMPONENTS Core Support nativecodegen native)
 get_property(dialect_libs GLOBAL PROPERTY MLIR_DIALECT_LIBS)
 get_property(conversion_libs GLOBAL PROPERTY MLIR_CONVERSION_LIBS)
 
-# Lib: ArgTuples
-add_library(CE enumeration/ArgTuples.cc)
-target_include_directories(CE PRIVATE ${CMAKE_CURRENT_LIST_DIR})
-
-# Lib: Polyhedral Analysis
+# Lib: Analysis
 set(POLY_LIBS
     ${dialect_libs}
     ${conversion_libs}
@@ -22,102 +18,106 @@ set(POLY_LIBS
     MLIRTransformUtils
     MLIRSupport
     MLIRIR)
-add_library(polyhedral-analysis analysis/PolyhedralAnalysis.cc
-                                analysis/isl/isl_helper.cc)
-target_include_directories(polyhedral-analysis
-                           PUBLIC ${CMAKE_SOURCE_DIR}/isl-0.25/include)
-target_link_libraries(
-  polyhedral-analysis PUBLIC ${POLY_LIBS}
-                             ${CMAKE_SOURCE_DIR}/isl-0.25/.libs/libisl.a gmp)
-llvm_update_compile_flags(polyhedral-analysis)
-target_compile_options(polyhedral-analysis
-                       PRIVATE -Wno-missing-field-initializers)
+add_library(analysis
+  analysis/PolyhedralAnalysis.cc
+  analysis/isl/isl_helper.cc)
+target_include_directories(analysis
+  PUBLIC ${CMAKE_SOURCE_DIR}/isl-0.25/include)
+target_link_libraries(analysis
+  PUBLIC ${POLY_LIBS}
+         ${CMAKE_SOURCE_DIR}/isl-0.25/.libs/libisl.a gmp)
+llvm_update_compile_flags(analysis)
+target_compile_options(analysis
+  PRIVATE -Wno-missing-field-initializers)
+
+# Lib: Enumeration
+add_library(argtuples
+  enumeration/ArgTuples.cc)
+target_include_directories(argtuples
+  PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+
+add_library(enumeration
+  enumeration/Generators.cc
+  enumeration/Candidate.cc
+  enumeration/Enumerator.cc
+  enumeration/Guide.cc
+  enumeration/Stats.cc
+  enumeration/Utils.cc)
+target_include_directories(enumeration
+  PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(enumeration
+  PRIVATE argtuples
+          analysis)
+
+# Lib: Execution
+add_library(execution
+  execution/ArgUtils.cc
+  execution/ArrayUtils.cc
+  execution/Executor.cc
+  execution/Lowering.cc)
+target_include_directories(execution
+  PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 
 # Lib: Transform
 add_library(
   transform
-  transforms/CopyModifiedMemrefsPass.cc transforms/MemrefMinifyPass.cc
-  transforms/LoopDistributionPass.cc transforms/LoopOutlinePass.cc
-  transforms/CleanupPass.cc transforms/Utils.cc)
-target_include_directories(transform PUBLIC ${CMAKE_CURRENT_LIST_DIR})
-target_link_libraries(transform PUBLIC polyhedral-analysis)
+  transforms/CopyModifiedMemrefsPass.cc
+  transforms/MemrefMinifyPass.cc
+  transforms/LoopDistributionPass.cc
+  transforms/LoopOutlinePass.cc
+  transforms/CleanupPass.cc
+  transforms/Utils.cc)
+target_include_directories(transform
+  PUBLIC ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(transform
+  PUBLIC analysis)
 llvm_update_compile_flags(transform)
 
 # Exe: Transform Tool
-add_llvm_executable(opt tools/Opt.cc)
-target_include_directories(opt PRIVATE ${CMAKE_CURRENT_LIST_DIR}
-                                       ${Boost_INCLUDE_DIR})
-target_link_libraries(
-  opt
+add_llvm_executable(opt
+  tools/Opt.cc)
+target_include_directories(opt
+  PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(opt
   PRIVATE ${SYNTH_LIBS}
-          CE
           ${MHLO_EXPORTED_TARGETS}
-          ${POLY_LIBS}
-          polyhedral-analysis
-          transform
-          ${Boost_LIBRARIES})
+          analysis
+          transform)
 
 # Exe: Synthesizer
 set(SYNTH_LIBS ${dialect_libs} ${conversion_libs} MLIROptLib)
-add_llvm_executable(
-  synthesizer
+add_llvm_executable(synthesizer
   tools/Synthesizer.cc
-  ContextManager.cc
-  enumeration/Generators.cc
-  enumeration/Candidate.cc
-  enumeration/Enumerator.cc
-  enumeration/Guide.cc
-  enumeration/Stats.cc
-  enumeration/Utils.cc
-  execution/ArgUtils.cc
-  execution/ArrayUtils.cc
-  execution/Executor.cc
-  execution/Lowering.cc)
-target_include_directories(synthesizer PRIVATE ${CMAKE_CURRENT_LIST_DIR}
-                                               ${Boost_INCLUDE_DIR})
-target_link_libraries(
-  synthesizer
+  ContextManager.cc)
+target_include_directories(synthesizer
+  PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(synthesizer
   PRIVATE ${SYNTH_LIBS}
-          CE
           ${MHLO_EXPORTED_TARGETS}
-          ${POLY_LIBS}
-          polyhedral-analysis
-          transform
-          ${Boost_LIBRARIES})
+          analysis
+          enumeration
+          execution
+          transform)
 llvm_update_compile_flags(synthesizer)
 
 # Exe: Test Executor
-add_llvm_executable(
-  test-executor
+add_llvm_executable(test-executor
   tools/TestExecutor.cc
-  ContextManager.cc
-  enumeration/Generators.cc
-  enumeration/Candidate.cc
-  enumeration/Enumerator.cc
-  enumeration/Guide.cc
-  enumeration/Stats.cc
-  enumeration/Utils.cc
-  execution/ArgUtils.cc
-  execution/ArrayUtils.cc
-  execution/Executor.cc
-  execution/Lowering.cc)
-target_include_directories(test-executor PRIVATE ${CMAKE_CURRENT_LIST_DIR}
-                                               ${Boost_INCLUDE_DIR})
-target_link_libraries(
-  test-executor
+  ContextManager.cc)
+target_include_directories(test-executor
+  PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(test-executor
   PRIVATE ${SYNTH_LIBS}
-          CE
           ${MHLO_EXPORTED_TARGETS}
-          ${POLY_LIBS}
-          polyhedral-analysis
-          transform
-          ${Boost_LIBRARIES})
+          analysis
+          enumeration
+          execution
+          transform)
 llvm_update_compile_flags(test-executor)
 
 # Exe: Tablegen Extractor
 set(LLVM_LINK_COMPONENTS TableGen)
-add_llvm_executable(
-  tablegen-extractor
+add_llvm_executable(tablegen-extractor
   tools/TablegenExtractor.cc)
 target_link_libraries(tablegen-extractor
   PRIVATE MLIRIR
