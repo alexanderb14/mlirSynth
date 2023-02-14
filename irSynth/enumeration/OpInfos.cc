@@ -4654,6 +4654,43 @@ std::string OpAndResTypeToString(OpAndResType type) {
   assert(false && "Invalid OpAndResType");
 }
 
+std::string AttrTypeToString(AttrType type) {
+  if (type == DefaultUnknownAttrType) return "DefaultUnknownAttrType";
+  if (type == ArrayAttr) return "ArrayAttr";
+  if (type == BoolAttr) return "BoolAttr";
+  if (type == BoolElementsAttr) return "BoolElementsAttr";
+  if (type == CHLO_ComparisonDirectionAttr) return "CHLO_ComparisonDirectionAttr";
+  if (type == CHLO_ComparisonTypeAttr) return "CHLO_ComparisonTypeAttr";
+  if (type == ChannelHandle) return "ChannelHandle";
+  if (type == ConvDimensionNumbers) return "ConvDimensionNumbers";
+  if (type == DotDimensionNumbers) return "DotDimensionNumbers";
+  if (type == ElementsAttr) return "ElementsAttr";
+  if (type == F32Attr) return "F32Attr";
+  if (type == FlatSymbolRefAttr) return "FlatSymbolRefAttr";
+  if (type == GatherDimensionNumbers) return "GatherDimensionNumbers";
+  if (type == HLO_ArrayOfLayoutAttr) return "HLO_ArrayOfLayoutAttr";
+  if (type == HLO_ComparisonDirectionAttr) return "HLO_ComparisonDirectionAttr";
+  if (type == HLO_ComparisonTypeAttr) return "HLO_ComparisonTypeAttr";
+  if (type == HLO_CustomCallApiVersionAttr) return "HLO_CustomCallApiVersionAttr";
+  if (type == HLO_DomainKindAttr) return "HLO_DomainKindAttr";
+  if (type == HLO_FftTypeAttr) return "HLO_FftTypeAttr";
+  if (type == HLO_FlatSymbolRefArrayAttr) return "HLO_FlatSymbolRefArrayAttr";
+  if (type == HLO_FusionKindAttr) return "HLO_FusionKindAttr";
+  if (type == HLO_PrecisionConfigAttr) return "HLO_PrecisionConfigAttr";
+  if (type == HLO_RngAlgorithmAttr) return "HLO_RngAlgorithmAttr";
+  if (type == HLO_RngDistributionAttr) return "HLO_RngDistributionAttr";
+  if (type == HLO_TransposeAttr) return "HLO_TransposeAttr";
+  if (type == I32Attr) return "I32Attr";
+  if (type == I64Attr) return "I64Attr";
+  if (type == I64ElementsAttr) return "I64ElementsAttr";
+  if (type == ScatterDimensionNumbers) return "ScatterDimensionNumbers";
+  if (type == StrAttr) return "StrAttr";
+  if (type == TypedAttrInterface) return "TypedAttrInterface";
+  if (type == UnitAttr) return "UnitAttr";
+  if (type == anonymous_707) return "anonymous_707";
+  assert(false && "Invalid AttrType");
+}
+
 OpInfoPtr createOpInfo(std::string name) {
   if (name == "chlo.acos")
     return std::make_unique<chlo_acos>();

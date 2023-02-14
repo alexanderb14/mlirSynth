@@ -101,7 +101,8 @@ public:
 };
 using OpInfoPtr = std::unique_ptr<OpInfo>;
 
-std::string ioTypeToString(OpAndResType type);
+std::string OpAndResultTypeToString(OpAndResType type);
+std::string AttrTypeToString(AttrType type);
 OpInfoPtr createOpInfo(std::string name);
 
 #endif // IRSYNTH_OPINFOS_H

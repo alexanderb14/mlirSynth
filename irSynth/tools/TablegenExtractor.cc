@@ -253,7 +253,7 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
 }
 
 void emitOpAndResTypeToStringDecl(raw_ostream &os) {
-  os << "std::string ioTypeToString(OpAndResType type);\n";
+  os << "std::string OpAndResultTypeToString(OpAndResType type);\n";
 }
 
 void emitOpAndResTypeToStringFn(const RecordKeeper &records, raw_ostream &os) {
@@ -264,6 +264,22 @@ void emitOpAndResTypeToStringFn(const RecordKeeper &records, raw_ostream &os) {
     os << "  if (type == " << type << ") return \"" << type << "\";\n";
   }
   os << "  assert(false && \"Invalid OpAndResType\");\n";
+  os << "}\n";
+  os << "\n";
+}
+
+void emitAttrTypeToStringDecl(raw_ostream &os) {
+  os << "std::string AttrTypeToString(AttrType type);\n";
+}
+
+void emitAttrTypeToStringFn(const RecordKeeper &records, raw_ostream &os) {
+  auto types = getUsedAttrTypes(records);
+
+  os << "std::string AttrTypeToString(AttrType type) {\n";
+  for (auto &type : types) {
+    os << "  if (type == " << type << ") return \"" << type << "\";\n";
+  }
+  os << "  assert(false && \"Invalid AttrType\");\n";
   os << "}\n";
   os << "\n";
 }
@@ -307,6 +323,7 @@ static bool emitOpInfoDecls(const RecordKeeper &recordKeeper, raw_ostream &os) {
   emitUsedAttrTypesAsEnum(recordKeeper, os);
   emitAbstractOp(os);
   emitOpAndResTypeToStringDecl(os);
+  emitAttrTypeToStringDecl(os);
   emitConstructorDecl(os);
   emitIncludeGuardEnd(os, "IRSYNTH_OPINFOS_H");
 
@@ -319,6 +336,7 @@ static bool emitOpInfoDefs(const RecordKeeper &recordKeeper, raw_ostream &os) {
 
   emitConcreteOps(recordKeeper, os);
   emitOpAndResTypeToStringFn(recordKeeper, os);
+  emitAttrTypeToStringFn(recordKeeper, os);
   emitConstructorFn(recordKeeper, os);
 
   return false;
