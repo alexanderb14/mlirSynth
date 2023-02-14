@@ -5,6 +5,7 @@
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/IR/BuiltinAttributes.h"
 #include "mlir/IR/BuiltinTypeInterfaces.h"
+#include "mlir/IR/Location.h"
 
 #include <random>
 
@@ -152,9 +153,10 @@ void printAttributes(std::vector<std::pair<Attribute, OpAndResType>>& attributes
 }
 
 std::vector<std::pair<Attribute, OpAndResType>>
-genAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
+genAttributes(MLIRContext &ctx, Region::BlockArgListType &functionArgs,
               llvm::ArrayRef<int64_t> &targetShape, int maxRank) {
   std::vector<std::pair<Attribute, OpAndResType>> attributes;
+  OpBuilder builder(&ctx);
 
   auto shapeValues = genShapeAttributes(builder, functionArgs);
   attributes.insert(attributes.end(), shapeValues.begin(), shapeValues.end());
@@ -167,8 +169,9 @@ genAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
   return attributes;
 }
 
-std::vector<std::shared_ptr<Region>> genRegions(OpBuilder &builder) {
-  auto unknownLoc = builder.getUnknownLoc();
+std::vector<std::shared_ptr<Region>> genRegions(MLIRContext &ctx) {
+  OpBuilder builder(&ctx);
+  auto unknownLoc = UnknownLoc::get(&ctx);
 
   // Create region with a single block.
   std::shared_ptr<Region> region = std::make_shared<Region>();

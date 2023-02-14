@@ -4,6 +4,7 @@
 #include "enumeration/CartesianProduct.h"
 #include "enumeration/Candidate.h"
 #include "enumeration/Generators.h"
+#include "enumeration/OpInfos.h"
 #include "enumeration/Stats.h"
 #include "execution/ArgUtils.h"
 #include "execution/ArrayUtils.h"
@@ -332,10 +333,11 @@ void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
   OpBuilder builder(&ctx);
 
   // Constant candidates.
-  for (auto &pair : genAttributes(builder, functionArgs, targetShape, 0)) {
-    auto &attr = pair.first;
+  for (auto &attributePair : genAttributes(ctx, functionArgs, targetShape, 0)) {
+    auto &attr = attributePair.first;
+    auto &type = attributePair.second;
 
-    CandidatePtr candidate(new Candidate({}, OpAndResType::DefaultUnknownOpAndResType));
+    CandidatePtr candidate(new Candidate({}, type));
     candidate->addOperation(
         ctx, builder.create<mhlo::ConstantOp>(UnknownLoc::get(&ctx), attr),
         false);
@@ -400,14 +402,17 @@ bool hasRankedAndKnownShape(Operation *op) {
   return shapedType.hasStaticShape();
 }
 
+bool isAttributeNameRelevant(std::string attrName) {
+  return !(attrName == "precision_config" || attrName == "broadcast_dimensions" ||
+      attrName == "dot_dimension_numbers");
+}
+
 std::vector<std::string> getRelevantAttributeNames(OpInfoPtr &opInfo) {
   std::vector<std::string> attrNames;
   for (unsigned i = 0; i < opInfo->getNumAttributes(); i++) {
     std::string attrName = opInfo->getAttributeName(i);
-    if (attrName == "precision_config" || attrName == "broadcast_dimensions" ||
-        attrName == "dot_dimension_numbers")
-      continue;
-    attrNames.push_back(attrName);
+    if (isAttributeNameRelevant(attrName))
+      attrNames.push_back(attrName);
   }
   return attrNames;
 }
@@ -646,30 +651,41 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
     CandidateStorePtr localCandidateStore = std::make_shared<CandidateStore>();
 
     for (auto opName : avaliableOps) {
+      // Build cartesian product of candidates.
       std::vector<std::vector<CandidatePtr>> operands;
       std::vector<std::vector<mlir::Attribute>> attributes;
       std::vector<std::vector<RegionPtr>> regions;
 
+      // - Operands.
       auto opInfo = createOpInfo(opName.getStringRef().str());
-
-      auto operandCandidates = candidateStore->getCandidates(numOps);
-      for (unsigned i = 0; i < opInfo->getNumOperands(); i++)
+      for (unsigned i = 0; i < opInfo->getNumOperands(); i++) {
+        auto operandCandidates = candidateStore->getCandidates(numOps, OpAndResType::DefaultUnknownOpAndResType);
         operands.push_back(operandCandidates);
-
-      OpBuilder builder(&ctx);
-      auto attributePairs =
-          genAttributes(builder, inputFunctionArgs, targetShape, 2);
-      std::vector<mlir::Attribute> attributeCandidates;
-      for (auto &attributePair : attributePairs)
-        attributeCandidates.push_back(attributePair.first);
-      for (auto &attrName : getRelevantAttributeNames(opInfo)) {
-        (void)attrName; // Silence unused variable warning.
-        attributes.push_back(attributeCandidates);
       }
+
+      // - Attributes.
+      auto attributePairs =
+          genAttributes(ctx, inputFunctionArgs, targetShape, 2);
+
+      for (unsigned i = 0; i < opInfo->getNumAttributes(); i++) {
+        std::vector<mlir::Attribute> attributeCandidates;
+        for (auto &attributePair : attributePairs) {
+          auto &attr = attributePair.first;
+          attributeCandidates.push_back(attr);
+        }
+
+        if (isAttributeNameRelevant(opInfo->getAttributeName(i))) {
+          attributes.push_back(attributeCandidates);
+        }
+      }
+
+      // - Regions.
+      // TODO: Add regions.
 
       auto operandArgTuples =
           getCartesianProduct(operands, attributes, regions);
 
+      // Enumerate cartesian product.
       auto status = failableParallelForEach(
           &ctx, operandArgTuples, [&](auto &operandArgTuple) {
             if (options.timeoutPerFunction &&
