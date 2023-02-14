@@ -658,6 +658,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
       std::vector<mlir::Attribute> attributeCandidates =
           genAttributes(builder, inputFunctionArgs, targetShape, 2);
       for (auto &attrName : getRelevantAttributeNames(opInfo)) {
+        (void)attrName; // Silence unused variable warning.
         attributes.push_back(attributeCandidates);
       }
 

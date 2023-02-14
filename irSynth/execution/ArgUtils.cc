@@ -144,6 +144,7 @@ void randomlyInitializeArgs(func::FuncOp function,
     }
   } else {
     for (auto &arg : function.getArguments()) {
+      (void)arg; // Silence unused variable warning.
       attrs.emplace_back(nullptr);
     }
   }
@@ -154,7 +155,6 @@ void randomlyInitializeArgs(func::FuncOp function,
 
     bool symmetric = hasAttribute(attr, "irsynth.symmetric");
     bool lowerTriangular = hasAttribute(attr, "irsynth.lower_triangular");
-    bool regular = !symmetric && !lowerTriangular;
     assert(!(symmetric && lowerTriangular) &&
            "Cannot be both symmetric and lower triangular");
 
