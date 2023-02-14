@@ -333,7 +333,7 @@ void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
 
   // Constant candidates.
   for (auto &attr : genAttributes(builder, functionArgs, targetShape, 0)) {
-    CandidatePtr candidate(new Candidate({}, IOType::DefaultUnknown));
+    CandidatePtr candidate(new Candidate({}, OpAndResType::DefaultUnknownOpAndResType));
     candidate->addOperation(
         ctx, builder.create<mhlo::ConstantOp>(UnknownLoc::get(&ctx), attr),
         false);
@@ -357,7 +357,7 @@ void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
 
   unsigned argId = 0;
   for (auto &input : inputs) {
-    CandidatePtr candidate(new Candidate({}, IOType::DefaultUnknown));
+    CandidatePtr candidate(new Candidate({}, OpAndResType::DefaultUnknownOpAndResType));
     candidate->addArgument(ctx, input, argId++);
     candidateStore->addCandidate(candidate);
   }
@@ -423,7 +423,7 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
 
   // Create candidate.
   CandidatePtr newCandidate =
-      std::make_shared<Candidate>(operandArgTuple.operands, IOType::DefaultUnknown);
+      std::make_shared<Candidate>(operandArgTuple.operands, OpAndResType::DefaultUnknownOpAndResType);
   auto builder = OpBuilder(&ctx);
 
   // Set up operands.

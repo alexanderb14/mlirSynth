@@ -7,26 +7,26 @@ void CandidateStore::addCandidate(const CandidatePtr &candidate) {
   std::lock_guard<std::mutex> lock(addCandidatesMutex);
 
   unsigned weight = candidate->getNumOps();
-  IOType ioType = candidate->getIOType();
+  OpAndResType opAndResType = candidate->getOpAndResType();
 
   candidateToId[candidate.get()] = candidateToId.size();
 
   if (weightToCandidates.find(weight) == weightToCandidates.end())
     weightToCandidates[weight] =
-        std::unordered_map<IOType, std::vector<CandidatePtr>>();
+        std::unordered_map<OpAndResType, std::vector<CandidatePtr>>();
 
-  if (weightToCandidates[weight].find(ioType) ==
+  if (weightToCandidates[weight].find(opAndResType) ==
       weightToCandidates[weight].end())
-    weightToCandidates[weight][ioType] = std::vector<CandidatePtr>();
+    weightToCandidates[weight][opAndResType] = std::vector<CandidatePtr>();
 
-  weightToCandidates[weight][ioType].push_back(candidate);
+  weightToCandidates[weight][opAndResType].push_back(candidate);
 }
 
 std::vector<CandidatePtr> CandidateStore::getCandidates() {
   std::vector<CandidatePtr> candidates;
   for (auto &weightToCandidate : weightToCandidates) {
-    for (auto &ioTypeToCandidate : weightToCandidate.second) {
-      for (auto &candidate : ioTypeToCandidate.second) {
+    for (auto &opAndResTypeToCandidate : weightToCandidate.second) {
+      for (auto &candidate : opAndResTypeToCandidate.second) {
         candidates.push_back(candidate);
       }
     }
@@ -38,8 +38,8 @@ std::vector<CandidatePtr> CandidateStore::getCandidates(unsigned weight) {
   std::vector<CandidatePtr> candidates;
   for (unsigned i = 0; i < weight; i++) {
     if (weightToCandidates.find(i) != weightToCandidates.end()) {
-      for (auto &ioTypeToCandidate : weightToCandidates[i]) {
-        for (auto &candidate : ioTypeToCandidate.second) {
+      for (auto &opAndResTypeToCandidate : weightToCandidates[i]) {
+        for (auto &candidate : opAndResTypeToCandidate.second) {
           candidates.push_back(candidate);
         }
       }
@@ -48,13 +48,15 @@ std::vector<CandidatePtr> CandidateStore::getCandidates(unsigned weight) {
   return candidates;
 }
 
-std::vector<CandidatePtr> CandidateStore::getCandidates(unsigned weight, IOType ioType) {
+std::vector<CandidatePtr>
+CandidateStore::getCandidates(unsigned weight, OpAndResType opAndResType) {
   std::vector<CandidatePtr> candidates;
 
   for (unsigned i = 0; i < weight; i++) {
     if (weightToCandidates.find(i) != weightToCandidates.end()) {
-      if (weightToCandidates[i].find(ioType) != weightToCandidates[i].end()) {
-        for (auto &candidate : weightToCandidates[i][ioType]) {
+      if (weightToCandidates[i].find(opAndResType) !=
+          weightToCandidates[i].end()) {
+        for (auto &candidate : weightToCandidates[i][opAndResType]) {
           candidates.push_back(candidate);
         }
       }
@@ -65,8 +67,8 @@ std::vector<CandidatePtr> CandidateStore::getCandidates(unsigned weight, IOType 
 
 void CandidateStore::merge(CandidateStorePtr &other) {
   for (auto &pair : other->weightToCandidates) {
-    for (auto &ioTypeToCandidate : pair.second) {
-      for (auto &candidate : ioTypeToCandidate.second) {
+    for (auto &opAndResTypeToCandidate : pair.second) {
+      for (auto &candidate : opAndResTypeToCandidate.second) {
         addCandidate(candidate);
       }
     }
@@ -76,10 +78,11 @@ void CandidateStore::merge(CandidateStorePtr &other) {
 void CandidateStore::dumpCandidates() {
   for (auto &pair : weightToCandidates) {
     llvm::outs() << "Weight: " << pair.first << "\n";
-    for (auto &ioTypeToCandidate : pair.second) {
-      llvm::outs() << "IOType: " << ioTypeToString(ioTypeToCandidate.first)
+    for (auto &opAndResTypeToCandidate : pair.second) {
+      llvm::outs() << "OpAndResType: "
+                   << opAndResTypeToString(opAndResTypeToCandidate.first)
                    << "\n";
-      for (auto &candidate : ioTypeToCandidate.second) {
+      for (auto &candidate : opAndResTypeToCandidate.second) {
         candidate->dump();
       }
     }

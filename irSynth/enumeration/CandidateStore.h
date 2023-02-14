@@ -21,7 +21,7 @@ public:
   void addCandidate(const CandidatePtr &candidate);
   std::vector<CandidatePtr> getCandidates();
   std::vector<CandidatePtr> getCandidates(unsigned weight);
-  std::vector<CandidatePtr> getCandidates(unsigned weight, IOType ioType);
+  std::vector<CandidatePtr> getCandidates(unsigned weight, OpAndResType ioType);
 
   void merge(CandidateStorePtr &other);
 
@@ -37,7 +37,7 @@ private:
   std::mutex addCandidatesMutex;
   std::unordered_map<Candidate *, int> candidateToId;
   std::unordered_map<unsigned,
-                     std::unordered_map<IOType, std::vector<CandidatePtr>>>
+                     std::unordered_map<OpAndResType, std::vector<CandidatePtr>>>
       weightToCandidates;
 
   std::mutex hashesMutex;
