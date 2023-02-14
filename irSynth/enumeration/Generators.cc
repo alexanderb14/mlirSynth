@@ -40,7 +40,7 @@ genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
       attrVect.push_back(builder.getI64IntegerAttr(dim));
     }
     attributes.emplace_back(getDenseElementsAttr(attrVect),
-                            OpAndResType::DefaultUnknownOpAndResType);
+                            OpAndResType::HLO_DimensionTensor);
 
     // Dimension at previous last inserted: E.g. [3, 5, 7] -> [3, 5, 1, 7]
     attrVect = std::vector<Attribute>();
@@ -53,7 +53,7 @@ genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
       dimIdx++;
     }
     attributes.emplace_back(getDenseElementsAttr(attrVect),
-                            OpAndResType::DefaultUnknownOpAndResType);
+                            OpAndResType::HLO_DimensionTensor);
 
     // Leading dimension inserted: E.g. [5] -> [1, 5] or [3, 5] -> [1, 3, 5]
     attrVect = std::vector<Attribute>();
@@ -62,7 +62,7 @@ genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
       attrVect.push_back(builder.getI64IntegerAttr(dim));
     }
     attributes.emplace_back(getDenseElementsAttr(attrVect),
-                            OpAndResType::DefaultUnknownOpAndResType);
+                            OpAndResType::HLO_DimensionTensor);
 
     // Trailing dimension inserted: E.g. [5] -> [5, 1] or [3, 5] -> [3, 5, 1]
     attrVect = std::vector<Attribute>();
@@ -71,7 +71,7 @@ genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
     }
     attrVect.push_back(builder.getI64IntegerAttr(1));
     attributes.emplace_back(getDenseElementsAttr(attrVect),
-                            OpAndResType::DefaultUnknownOpAndResType);
+                            OpAndResType::HLO_DimensionTensor);
 
     // Transpose: E.g. [3, 5] -> [5, 3]
     attrVect = std::vector<Attribute>();
@@ -80,7 +80,7 @@ genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
     }
     std::reverse(attrVect.begin(), attrVect.end());
     attributes.emplace_back(getDenseElementsAttr(attrVect),
-                            OpAndResType::DefaultUnknownOpAndResType);
+                            OpAndResType::HLO_DimensionTensor);
   }
 
   return attributes;
@@ -105,7 +105,7 @@ genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
       Type type = RankedTensorType::get({}, attr.cast<TypedAttr>().getType());
       auto attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attr);
       tensorValues.emplace_back(attrDense,
-                                OpAndResType::DefaultUnknownOpAndResType);
+                                OpAndResType::HLO_Tensor);
     }
   }
 
@@ -125,7 +125,7 @@ genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
                                       builder.getI1Type());
     auto attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attrVect);
     tensorValues.emplace_back(attrDense,
-                              OpAndResType::DefaultUnknownOpAndResType);
+                              OpAndResType::HLO_PredTensor);
 
     // Create a matrix with 0 values.
     attrVect = std::vector<Attribute>();
@@ -136,7 +136,7 @@ genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
                                  builder.getF64Type());
     attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attrVect);
     tensorValues.emplace_back(attrDense,
-                              OpAndResType::DefaultUnknownOpAndResType);
+                              OpAndResType::HLO_Tensor);
   }
 
   return tensorValues;

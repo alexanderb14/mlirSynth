@@ -361,7 +361,7 @@ void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
 
   unsigned argId = 0;
   for (auto &input : inputs) {
-    CandidatePtr candidate(new Candidate({}, OpAndResType::DefaultUnknownOpAndResType));
+    CandidatePtr candidate(new Candidate({}, OpAndResType::HLO_Tensor));
     candidate->addArgument(ctx, input, argId++);
     candidateStore->addCandidate(candidate);
   }
@@ -430,7 +430,7 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
 
   // Create candidate.
   CandidatePtr newCandidate =
-      std::make_shared<Candidate>(operandArgTuple.operands, OpAndResType::DefaultUnknownOpAndResType);
+      std::make_shared<Candidate>(operandArgTuple.operands, OpAndResType::HLO_Tensor);
   auto builder = OpBuilder(&ctx);
 
   // Set up operands.
@@ -659,7 +659,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
       // - Operands.
       auto opInfo = createOpInfo(opName.getStringRef().str());
       for (unsigned i = 0; i < opInfo->getNumOperands(); i++) {
-        auto operandCandidates = candidateStore->getCandidates(numOps, OpAndResType::DefaultUnknownOpAndResType);
+        auto operandCandidates = candidateStore->getCandidates(numOps, opInfo->getOperandType(i));
         operands.push_back(operandCandidates);
       }
 
