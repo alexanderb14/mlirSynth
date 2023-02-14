@@ -9,11 +9,11 @@ struct ArgTuple {
   std::vector<std::shared_ptr<mlir::Region>> regions;
 };
 
+using RegionPtr = std::shared_ptr<mlir::Region>;
+
 std::vector<ArgTuple>
-getOperandArgTuples(mlir::MLIRContext &ctx,
-                    mlir::RegisteredOperationName opName,
-                    std::vector<CandidatePtr> &operandCandidates,
-                    mlir::Block::BlockArgListType &functionArgs,
-                    llvm::ArrayRef<int64_t> &targetShape);
+getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
+                     std::vector<std::vector<mlir::Attribute>> &attributes,
+                     std::vector<std::vector<RegionPtr>> &regions);
 
 #endif // IRSYNTH_CANDIDATETUPLES_H

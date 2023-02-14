@@ -4,7 +4,6 @@ header = """
 #include "ArgTuples.h"
 
 #include "enumeration/Generators.h"
-#include "enumeration/Utils.h"
 
 #include <range/v3/all.hpp>
 #include <range/v3/view/cartesian_product.hpp>
@@ -19,88 +18,68 @@ using namespace mlir;
 
 body_header = """
 std::vector<ArgTuple>
-getOperandArgTuples(MLIRContext &ctx, RegisteredOperationName opName,
-                          std::vector<CandidatePtr> &operandCandidates,
-                          Block::BlockArgListType &functionArgs,
-                          llvm::ArrayRef<int64_t> &targetShape) {
-  OpBuilder builder(&ctx);
-  Operation *op =
-      builder.create(UnknownLoc::get(&ctx), opName.getIdentifier(), {});
+getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
+                    std::vector<std::vector<Attribute>> &attributes,
+                    std::vector<std::vector<RegionPtr>> &regions) {
+  unsigned numOperands = operands.size();
+  unsigned numAttributes = attributes.size();
+  unsigned numRegions = regions.size();
 
-  int numOperands = getRequiredNumOperands(op);
-  int numAttributes = getRequiredNumAttributes(op);
-
-  std::vector<Attribute> attributeCandidates =
-      genAttributes(builder, functionArgs, targetShape, 2);
-  int numRegions = getRequiredNumRegions(op);
-
-  std::vector<std::shared_ptr<Region>> regionCandidates = genRegions(builder);
+  std::vector<ArgTuple> ret;
 """
 
 body_footer = """
   llvm::outs() << "Unsupported number of operands (" << numOperands
                << "), attributes (" << numAttributes << "), regions ("
-               << numRegions << ") in op: " << opName.getIdentifier() << "\\n";
+               << numRegions << ")\\n";
   assert(false);
 }
 """
- 
 
-def get_function(numOperands, numAttributes, numRegions):
-    src = ""
-    src += "std::vector<ArgTuple>\n"
-    src += "get{}operands{}attributes{}regions(std::vector<CandidatePtr> &operandCandidates,\n".format(numOperands, numAttributes, numRegions)
-    src += "                       std::vector<Attribute> &attributeCandidates,\n"
-    src += "                       std::vector<std::shared_ptr<Region>> &regionCandidates) {\n"
-    src += "  auto cands =\n"
-    src += "      ranges::views::cartesian_product("
+
+def get_condition(numOperands, numAttributes, numRegions):
+    return "numOperands == {} && numAttributes == {} && numRegions == {}".format(numOperands, numAttributes, numRegions)
+
+
+def get_action(numOperands, numAttributes, numRegions):
+    args = []
     for i in range(numOperands):
-        src += "operandCandidates, "
+        args += ["operands[{}]".format(i)]
     for i in range(numAttributes):
-        src += "attributeCandidates, "
+        args += ["attributes[{}]".format(i)]
     for i in range(numRegions):
-        src += "regionCandidates, "
-    src = src[:-2]
-    src += ");\n"
-    src += "  std::vector<ArgTuple> ret;\n"
-    src += "  for (auto cand : cands) {\n"
-    src += "    ArgTuple tuple;\n"
+        args += ["regions[{}]".format(i)]
+
+    src = "    auto cands = ranges::views::cartesian_product(" + ", ".join(
+        args) + ");\n"
+
+    src += "    for (auto cand : cands) {\n"
+    src += "      ArgTuple tuple;\n"
 
     counter = 0
-    if numOperands > 0:
-        src += "    tuple.operands = {"
-        for i in range(numOperands):
-            src += "std::get<{}>(cand), ".format(counter)
-            counter += 1
-        src = src[:-2]
-        src += "};\n"
-    if numAttributes > 0:
-        src += "    tuple.attributes = {"
-        for i in range(numAttributes):
-            src += "std::get<{}>(cand), ".format(counter)
-            counter += 1
-        src = src[:-2]
-        src += "};\n"
-    if numRegions > 0:
-        src += "    tuple.regions = {"
-        for i in range(numRegions):
-            src += "std::get<{}>(cand), ".format(counter)
-            counter += 1
-        src = src[:-2]
-        src += "};\n"
 
-    src += "    ret.push_back(tuple);\n"
-    src += "  }\n"
-    src += "  return ret;\n"
-    src += "}\n\n"
-    return src
+    operands = []
+    for i in range(numOperands):
+        operands += ["std::get<{}>(cand)".format(counter)]
+        counter += 1
+    src += "      tuple.operands = {" + ", ".join(operands) + "};\n"
 
+    attributes = []
+    for i in range(numAttributes):
+        attributes += ["std::get<{}>(cand)".format(counter)]
+        counter += 1
+    src += "      tuple.attributes = {" + ", ".join(attributes) + "};\n"
 
-def get_call(numOperands, numAttributes, numRegions):
-    src = ""
-    src += "  if (numOperands == {} && numAttributes == {} && numRegions == {}) {{\n".format(numOperands, numAttributes, numRegions)
-    src += "    return get{}operands{}attributes{}regions(operandCandidates, attributeCandidates, regionCandidates);\n".format(numOperands, numAttributes, numRegions)
-    src += "  }\n"
+    regions = []
+    for i in range(numRegions):
+        regions += ["std::get<{}>(cand)".format(counter)]
+        counter += 1
+    src += "      tuple.regions = {" + ", ".join(regions) + "};\n"
+
+    src += "      ret.push_back(tuple);\n"
+    src += "    }\n"
+    src += "    return ret;\n"
+
     return src
 
 
@@ -112,28 +91,30 @@ def main():
     parser.add_argument("--output", type=str)
     args = parser.parse_args()
 
-    src = "// WARNING: DO NOT EDIT THIS FILE. IT IS AUTOGENERATED BY\n"
-    src += "// scripts/gen_ArgTuples.py\n"
+    src = "/*===- Cartesian Product Generators -----------------------------*- C++ -*-===*\\\n"
+    src += "|*                                                                            *|\n"
+    src += "|* The arguments to ranges::views::cartesian_product need to be known         *|\n"
+    src += "|* at compile time. Therefore, this generator-approach. TODO: Replace.        *|\n"
+    src += "|* Automatically generated file, do not edit!                                 *|\n"
+    src += "|*                                                                            *|\n"
+    src += "\*===----------------------------------------------------------------------===*/\n"
+
     src += header
 
-    for i in range(0, args.max_operands + 1):
-        for j in range(0, args.max_attributes + 1):
-            for k in range(0, args.max_regions + 1):
-                if i == 0 and j == 0 and k == 0:
-                    continue
-                src += get_function(i, j, k)
-    
     src += body_header
     for i in range(0, args.max_operands + 1):
         for j in range(0, args.max_attributes + 1):
             for k in range(0, args.max_regions + 1):
                 if i == 0 and j == 0 and k == 0:
                     continue
-                src += get_call(i, j, k)
+                src += "  if (" + get_condition(i, j, k) + ") {\n"
+                src += get_action(i, j, k)
+                src += "  }\n"
     src += body_footer
 
     with open(args.output, "w") as f:
         f.write(src)
+
 
 if __name__ == "__main__":
     main()

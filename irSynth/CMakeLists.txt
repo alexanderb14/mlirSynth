@@ -43,8 +43,7 @@ add_library(enumeration
   enumeration/Enumerator.cc
   enumeration/Guide.cc
   enumeration/OpInfos.cc
-  enumeration/Stats.cc
-  enumeration/Utils.cc)
+  enumeration/Stats.cc)
 target_include_directories(enumeration
   PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(enumeration

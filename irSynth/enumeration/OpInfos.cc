@@ -29,6 +29,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -50,6 +55,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -79,6 +89,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -100,6 +115,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -129,6 +149,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -154,6 +179,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -175,6 +205,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -206,6 +241,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -233,6 +274,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -257,6 +304,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return I64ElementsAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
     }
     assert(false && "Invalid attribute index");
   }
@@ -289,6 +342,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
+      case 1: return "comparison_direction";
+      case 2: return "compare_type";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_PredTensor;
@@ -313,6 +374,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return I64ElementsAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
     }
     assert(false && "Invalid attribute index");
   }
@@ -343,6 +410,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -367,6 +440,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return I64ElementsAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
     }
     assert(false && "Invalid attribute index");
   }
@@ -397,6 +476,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -421,6 +506,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return I64ElementsAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
     }
     assert(false && "Invalid attribute index");
   }
@@ -451,6 +542,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -475,6 +572,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return I64ElementsAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
     }
     assert(false && "Invalid attribute index");
   }
@@ -505,6 +608,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -529,6 +638,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return I64ElementsAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
     }
     assert(false && "Invalid attribute index");
   }
@@ -559,6 +674,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -582,6 +703,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -613,6 +739,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -637,6 +769,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return I64ElementsAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
     }
     assert(false && "Invalid attribute index");
   }
@@ -667,6 +805,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -691,6 +835,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return I64ElementsAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
     }
     assert(false && "Invalid attribute index");
   }
@@ -721,6 +871,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -748,6 +904,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
@@ -769,6 +931,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -799,6 +966,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "value";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -821,6 +994,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ElementsAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "value";
     }
     assert(false && "Invalid attribute index");
   }
@@ -849,6 +1028,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -870,6 +1054,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -900,6 +1089,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -921,6 +1115,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -950,6 +1149,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
@@ -971,6 +1175,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1000,6 +1209,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_PredTensor;
@@ -1021,6 +1235,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1050,6 +1269,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
@@ -1071,6 +1295,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1101,6 +1330,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
@@ -1123,6 +1357,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1152,6 +1391,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -1173,6 +1417,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1201,6 +1450,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -1222,6 +1476,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1252,6 +1511,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "k";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -1279,6 +1544,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
@@ -1300,6 +1570,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1330,6 +1605,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrToken;
@@ -1356,6 +1636,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -1377,6 +1662,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1410,6 +1700,15 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "all_gather_dim";
+      case 1: return "replica_groups";
+      case 2: return "channel_handle";
+      case 3: return "use_global_device_ids";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -1435,6 +1734,14 @@ public:
       case 0: return I64ElementsAttr;
       case 1: return ChannelHandle;
       case 2: return UnitAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "replica_groups";
+      case 1: return "channel_handle";
+      case 2: return "use_global_device_ids";
     }
     assert(false && "Invalid attribute index");
   }
@@ -1467,6 +1774,15 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "split_dimension";
+      case 1: return "concat_dimension";
+      case 2: return "split_count";
+      case 3: return "replica_groups";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -1489,6 +1805,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1521,6 +1842,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "called_computation";
+      case 1: return "execution_thread";
+      case 2: return "group_id";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrTokenOrTuple;
@@ -1546,6 +1875,14 @@ public:
       case 0: return FlatSymbolRefAttr;
       case 1: return StrAttr;
       case 2: return I64Attr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "called_computation";
+      case 1: return "execution_thread";
+      case 2: return "group_id";
     }
     assert(false && "Invalid attribute index");
   }
@@ -1577,6 +1914,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "called_computation";
+      case 1: return "execution_thread";
+      case 2: return "group_id";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_AsyncBundle;
@@ -1599,6 +1944,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1631,6 +1981,13 @@ public:
     switch (index) {
       case 0: return F32Attr;
       case 1: return I64Attr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "epsilon";
+      case 1: return "feature_index";
     }
     assert(false && "Invalid attribute index");
   }
@@ -1667,6 +2024,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "epsilon";
+      case 1: return "feature_index";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return anonymous_686;
@@ -1693,6 +2057,13 @@ public:
     switch (index) {
       case 0: return F32Attr;
       case 1: return I64Attr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "epsilon";
+      case 1: return "feature_index";
     }
     assert(false && "Invalid attribute index");
   }
@@ -1723,6 +2094,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -1744,6 +2120,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1774,6 +2155,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_StaticShapeTensor;
@@ -1800,6 +2187,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_sizes";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -1821,6 +2214,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1850,6 +2248,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
@@ -1871,6 +2274,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1901,6 +2309,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lower";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -1928,6 +2342,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -1949,6 +2368,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1980,6 +2404,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "source_target_pairs";
+      case 1: return "channel_handle";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2008,6 +2439,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "comparison_direction";
+      case 1: return "compare_type";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_PredTensor;
@@ -2030,6 +2468,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2060,6 +2503,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return anonymous_754;
@@ -2083,6 +2531,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return I64Attr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "dimension";
     }
     assert(false && "Invalid attribute index");
   }
@@ -2111,6 +2565,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "value";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_StaticShapeTensor;
@@ -2132,6 +2592,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2171,6 +2636,20 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "window_strides";
+      case 1: return "padding";
+      case 2: return "lhs_dilation";
+      case 3: return "rhs_dilation";
+      case 4: return "window_reversal";
+      case 5: return "dimension_numbers";
+      case 6: return "feature_group_count";
+      case 7: return "batch_group_count";
+      case 8: return "precision_config";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2194,6 +2673,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return UnitAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "is_cross_program_prefetch";
     }
     assert(false && "Invalid attribute index");
   }
@@ -2222,6 +2707,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -2242,6 +2732,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2272,6 +2767,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "replica_groups";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2294,6 +2795,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2331,6 +2837,19 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "call_target_name";
+      case 1: return "has_side_effect";
+      case 2: return "backend_config";
+      case 3: return "api_version";
+      case 4: return "called_computations";
+      case 5: return "operand_layouts";
+      case 6: return "result_layouts";
+      case 7: return "output_operand_aliases";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrTokenOrTuple;
@@ -2353,6 +2872,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2385,6 +2909,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "kind";
+      case 1: return "entry_metadata";
+      case 2: return "exit_metadata";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrToken;
@@ -2410,6 +2942,13 @@ public:
     switch (index) {
       case 0: return DotDimensionNumbers;
       case 1: return HLO_PrecisionConfigAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "dot_dimension_numbers";
+      case 1: return "precision_config";
     }
     assert(false && "Invalid attribute index");
   }
@@ -2440,6 +2979,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "precision_config";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2466,6 +3011,14 @@ public:
       case 0: return I64ElementsAttr;
       case 1: return I64ElementsAttr;
       case 2: return I64ElementsAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "broadcast_dimensions";
+      case 1: return "known_expanding_dimensions";
+      case 2: return "known_nonexpanding_dimensions";
     }
     assert(false && "Invalid attribute index");
   }
@@ -2505,6 +3058,20 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "window_strides";
+      case 1: return "padding";
+      case 2: return "lhs_dilation";
+      case 3: return "rhs_dilation";
+      case 4: return "window_reversal";
+      case 5: return "dimension_numbers";
+      case 6: return "feature_group_count";
+      case 7: return "batch_group_count";
+      case 8: return "precision_config";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2534,6 +3101,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "dimension_numbers";
+      case 1: return "indices_are_sorted";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2557,6 +3131,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return I64Attr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "iota_dimension";
     }
     assert(false && "Invalid attribute index");
   }
@@ -2589,6 +3169,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2611,6 +3196,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2642,6 +3232,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "slice_sizes";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2665,6 +3261,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2696,6 +3297,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "einsum_config";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2721,6 +3328,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -2742,6 +3354,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2773,6 +3390,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "fft_type";
+      case 1: return "fft_length";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2794,6 +3418,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2821,6 +3450,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FusionKindAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "fusion_kind";
     }
     assert(false && "Invalid attribute index");
   }
@@ -2853,6 +3488,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "dimension_numbers";
+      case 1: return "slice_sizes";
+      case 2: return "indices_are_sorted";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2876,6 +3519,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return I64Attr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "dimension";
     }
     assert(false && "Invalid attribute index");
   }
@@ -2905,6 +3554,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "index";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrTokenOrTuple;
@@ -2930,6 +3585,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrToken;
@@ -2951,6 +3611,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2982,6 +3647,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "infeed_config";
+      case 1: return "layout";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrToken;
@@ -3007,6 +3679,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "iota_dimension";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_IntFpOrComplexTensor;
@@ -3028,6 +3706,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3057,6 +3740,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -3082,6 +3770,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -3103,6 +3796,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3133,6 +3831,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3155,6 +3859,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3185,6 +3894,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3207,6 +3921,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3236,6 +3955,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_IntFpOrComplexTensor;
@@ -3261,6 +3985,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_PredOrIntTensor;
@@ -3282,6 +4011,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3312,6 +4046,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3336,6 +4075,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return StrAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "outfeed_config";
     }
     assert(false && "Invalid attribute index");
   }
@@ -3368,6 +4113,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "edge_padding_low";
+      case 1: return "edge_padding_high";
+      case 2: return "interior_padding";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3388,6 +4141,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3417,6 +4175,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_IntTensor;
@@ -3439,6 +4202,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3471,6 +4239,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3492,6 +4265,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3523,6 +4301,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "channel_handle";
+      case 1: return "is_host_transfer";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrToken;
@@ -3547,6 +4332,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return I64ElementsAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "dimensions";
     }
     assert(false && "Invalid attribute index");
   }
@@ -3577,6 +4368,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "exponent_bits";
+      case 1: return "mantissa_bits";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
@@ -3603,6 +4401,15 @@ public:
       case 1: return I64ElementsAttr;
       case 2: return ChannelHandle;
       case 3: return UnitAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "scatter_dimension";
+      case 1: return "replica_groups";
+      case 2: return "channel_handle";
+      case 3: return "use_global_device_ids";
     }
     assert(false && "Invalid attribute index");
   }
@@ -3637,6 +4444,16 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "window_dimensions";
+      case 1: return "window_strides";
+      case 2: return "base_dilations";
+      case 3: return "window_dilations";
+      case 4: return "padding";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3663,6 +4480,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3683,6 +4505,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3712,6 +4539,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_StaticShapeTensor;
@@ -3733,6 +4565,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3762,6 +4599,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3785,6 +4628,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_RngAlgorithmAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "rng_algorithm";
     }
     assert(false && "Invalid attribute index");
   }
@@ -3817,6 +4666,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "rng_distribution";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_PredIntOrFpTensor;
@@ -3838,6 +4693,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3867,6 +4727,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
@@ -3888,6 +4753,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3922,6 +4792,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "scatter_dimension_numbers";
+      case 1: return "indices_are_sorted";
+      case 2: return "unique_indices";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3952,6 +4830,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "window_dimensions";
+      case 1: return "window_strides";
+      case 2: return "padding";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3975,6 +4861,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4007,6 +4898,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "channel_handle";
+      case 1: return "is_host_transfer";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Token;
@@ -4034,6 +4932,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "dimension";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -4056,6 +4960,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4086,6 +4995,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -4108,6 +5022,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4137,6 +5056,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return anonymous_632;
@@ -4158,6 +5082,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4190,6 +5119,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "start_indices";
+      case 1: return "limit_indices";
+      case 2: return "strides";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -4217,6 +5154,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "dimension";
+      case 1: return "is_stable";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -4238,6 +5182,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4268,6 +5217,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -4294,6 +5248,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -4315,6 +5274,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4347,6 +5311,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "dim";
+      case 1: return "batch_dims";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -4373,6 +5344,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "tag";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
     }
@@ -4395,6 +5372,12 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return I64ElementsAttr;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "permutation";
     }
     assert(false && "Invalid attribute index");
   }
@@ -4428,6 +5411,15 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "left_side";
+      case 1: return "lower";
+      case 2: return "unit_diagonal";
+      case 3: return "transpose_a";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -4449,6 +5441,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4479,6 +5476,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "einsum_config";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -4500,6 +5503,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4529,6 +5537,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_QuantizedIntTensor;
@@ -4550,6 +5563,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4579,6 +5597,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "delta";
+    }
+    assert(false && "Invalid attribute index");
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return anonymous_728;
@@ -4601,6 +5625,11 @@ public:
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");

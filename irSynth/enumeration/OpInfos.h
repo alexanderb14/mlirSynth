@@ -97,6 +97,7 @@ public:
   virtual unsigned getNumResults() const = 0;
   virtual OpAndResType getOperandType(unsigned index) const = 0;
   virtual AttrType getAttributeType(unsigned index) const = 0;
+  virtual std::string getAttributeName(unsigned index) const = 0;
   virtual OpAndResType getResultType(unsigned index) const = 0;
 };
 using OpInfoPtr = std::unique_ptr<OpInfo>;

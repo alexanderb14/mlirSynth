@@ -174,6 +174,7 @@ void emitAbstractOp(raw_ostream &os) {
   os << "  virtual unsigned getNumResults() const = 0;\n";
   os << "  virtual OpAndResType getOperandType(unsigned index) const = 0;\n";
   os << "  virtual AttrType getAttributeType(unsigned index) const = 0;\n";
+  os << "  virtual std::string getAttributeName(unsigned index) const = 0;\n";
   os << "  virtual OpAndResType getResultType(unsigned index) const = 0;\n";
   os << "};\n";
   os << "using OpInfoPtr = std::unique_ptr<OpInfo>;\n";
@@ -230,6 +231,17 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
       auto &attr = tblgenOp.getAttribute(i);
       os << "      case " << i << ": return " << attr.attr.getDefName()
          << ";\n";
+    }
+    os << "    }\n";
+    os << "    assert(false && \"Invalid attribute index\");\n";
+    os << "  }\n";
+
+    os << "  std::string getAttributeName(unsigned index) const override {\n";
+    os << "    switch (index) {\n";
+    for (int i = 0; i < tblgenOp.getNumAttributes(); ++i) {
+      auto &attr = tblgenOp.getAttribute(i);
+      os << "      case " << i << ": return \"" << attr.name.str()
+         << "\";\n";
     }
     os << "    }\n";
     os << "    assert(false && \"Invalid attribute index\");\n";

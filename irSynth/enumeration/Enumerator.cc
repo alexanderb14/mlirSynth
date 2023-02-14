@@ -5,10 +5,10 @@
 #include "enumeration/Candidate.h"
 #include "enumeration/Generators.h"
 #include "enumeration/Stats.h"
-#include "enumeration/Utils.h"
 #include "execution/ArgUtils.h"
 #include "execution/ArrayUtils.h"
 
+#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/ExecutionEngine/ExecutionEngine.h"
 #include "mlir/IR/BuiltinOps.h"
@@ -82,8 +82,7 @@ unsigned maxShapeRank = 4;
 void printCandidate(ProcessingStatus status,
                     CandidateStorePtr &localCandidateStore,
                     CandidateStorePtr &candidateStore,
-                    EnumerationOptions &options,
-                    EnumerationResultPtr &result) {
+                    EnumerationOptions &options, EnumerationResultPtr &result) {
   // If there is nothing to print, return early.
   if (!(options.printStatusNames || options.printStatusTiles ||
         options.printValidCandidates || options.printInvalidCandidates)) {
@@ -399,14 +398,27 @@ bool hasRankedAndKnownShape(Operation *op) {
   return shapedType.hasStaticShape();
 }
 
-ProcessingStatus
-process(MLIRContext &ctx, EnumerationStats &stats,
-        RegisteredOperationName &opName, IExecutorPtr &executor,
-        std::vector<ReturnAndArgType> &args, CandidateStorePtr &candidateStore,
-        CandidateStorePtr &localCandidateStore, double *refOut,
-        EnumerationOptions &options, ArgTuple operandArgTuple,
-        EnumerationResultPtr &processingResult,
-        ArrayRef<int64_t> &targetShape) {
+std::vector<std::string> getRelevantAttributeNames(OpInfoPtr &opInfo) {
+  std::vector<std::string> attrNames;
+  for (unsigned i = 0; i < opInfo->getNumAttributes(); i++) {
+    std::string attrName = opInfo->getAttributeName(i);
+    if (attrName == "precision_config" || attrName == "broadcast_dimensions" ||
+        attrName == "dot_dimension_numbers")
+      continue;
+    attrNames.push_back(attrName);
+  }
+  return attrNames;
+}
+
+ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
+                         RegisteredOperationName &opName, OpInfoPtr &opInfo,
+                         IExecutorPtr &executor,
+                         std::vector<ReturnAndArgType> &args,
+                         CandidateStorePtr &candidateStore,
+                         CandidateStorePtr &localCandidateStore, double *refOut,
+                         EnumerationOptions &options, ArgTuple operandArgTuple,
+                         EnumerationResultPtr &processingResult,
+                         ArrayRef<int64_t> &targetShape) {
   stats.numEnumerated++;
 
   // Create candidate.
@@ -419,14 +431,17 @@ process(MLIRContext &ctx, EnumerationStats &stats,
       newCandidate->merge(ctx, operandArgTuple.operands);
 
   // Set up attributes.
-  auto attrNames = getFilteredAttributeNames(opName);
+  auto attrNames = getRelevantAttributeNames(opInfo);
   auto attrValues = operandArgTuple.attributes;
-  assert(attrNames.size() == attrValues.size() &&
-         "Attribute names and values must have the same size.");
+  if (attrNames.size() != attrValues.size()) {
+    llvm::outs() << "attrNames.size() = " << attrNames.size()
+                 << ", attrValues.size() = " << attrValues.size() << "\n";
+    assert(false);
+  }
 
   SmallVector<NamedAttribute> attributes = {};
   for (unsigned i = 0; i < attrNames.size(); i++) {
-    StringAttr attrName = attrNames[i];
+    std::string attrName = attrNames[i];
     mlir::Attribute value = attrValues[i];
     attributes.push_back(builder.getNamedAttr(attrName, value));
   }
@@ -611,7 +626,8 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   for (auto &candidate : candidateStore->getCandidates()) {
     auto module = createModule(ctx, candidate->getRegion());
 
-    EnumerationResultPtr processingResult = std::make_shared<EnumerationResult>();
+    EnumerationResultPtr processingResult =
+        std::make_shared<EnumerationResult>();
     processingResult->candidate = candidate;
     processingResult->module = module.release();
     printCandidate(ProcessingStatus::accept_as_candidate, candidateStore,
@@ -628,9 +644,29 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
     CandidateStorePtr localCandidateStore = std::make_shared<CandidateStore>();
 
     for (auto opName : avaliableOps) {
+      std::vector<std::vector<CandidatePtr>> operands;
+      std::vector<std::vector<mlir::Attribute>> attributes;
+      std::vector<std::vector<RegionPtr>> regions;
+
+      auto opInfo = createOpInfo(opName.getStringRef().str());
+
       auto operandCandidates = candidateStore->getCandidates(numOps);
-      auto operandArgTuples = getOperandArgTuples(
-          ctx, opName, operandCandidates, inputFunctionArgs, targetShape);
+      for (unsigned i = 0; i < opInfo->getNumOperands(); i++)
+        operands.push_back(operandCandidates);
+
+      OpBuilder builder(&ctx);
+      std::vector<mlir::Attribute> attributeCandidates =
+          genAttributes(builder, inputFunctionArgs, targetShape, 2);
+      for (auto &attrName : getRelevantAttributeNames(opInfo)) {
+        attributes.push_back(attributeCandidates);
+      }
+
+      llvm::outs() << "Generating candidates for " << opName.getStringRef()
+                   << " with " << operands.size() << " operands and "
+                   << attributes.size() << " attributes\n";
+
+      auto operandArgTuples =
+          getCartesianProduct(operands, attributes, regions);
 
       auto status = failableParallelForEach(
           &ctx, operandArgTuples, [&](auto &operandArgTuple) {
@@ -641,7 +677,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
             EnumerationResultPtr processingResult;
             EnumerationStats processingStats;
             ProcessingStatus status =
-                process(ctx, processingStats, opName, executor, args,
+                process(ctx, processingStats, opName, opInfo, executor, args,
                         candidateStore, localCandidateStore, refOut, options,
                         operandArgTuple, processingResult, targetShape);
             stats.merge(processingStats);
