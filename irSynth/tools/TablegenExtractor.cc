@@ -253,13 +253,13 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
 }
 
 void emitOpAndResTypeToStringDecl(raw_ostream &os) {
-  os << "std::string OpAndResultTypeToString(OpAndResType type);\n";
+  os << "std::string opAndResTypeToString(OpAndResType type);\n";
 }
 
 void emitOpAndResTypeToStringFn(const RecordKeeper &records, raw_ostream &os) {
   auto types = getUsedOpAndResTypes(records);
 
-  os << "std::string OpAndResTypeToString(OpAndResType type) {\n";
+  os << "std::string opAndResTypeToString(OpAndResType type) {\n";
   for (auto &type : types) {
     os << "  if (type == " << type << ") return \"" << type << "\";\n";
   }
@@ -269,13 +269,13 @@ void emitOpAndResTypeToStringFn(const RecordKeeper &records, raw_ostream &os) {
 }
 
 void emitAttrTypeToStringDecl(raw_ostream &os) {
-  os << "std::string AttrTypeToString(AttrType type);\n";
+  os << "std::string attrTypeToString(AttrType type);\n";
 }
 
 void emitAttrTypeToStringFn(const RecordKeeper &records, raw_ostream &os) {
   auto types = getUsedAttrTypes(records);
 
-  os << "std::string AttrTypeToString(AttrType type) {\n";
+  os << "std::string attrTypeToString(AttrType type) {\n";
   for (auto &type : types) {
     os << "  if (type == " << type << ") return \"" << type << "\";\n";
   }

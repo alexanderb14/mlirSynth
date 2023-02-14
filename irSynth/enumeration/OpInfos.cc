@@ -4613,7 +4613,7 @@ public:
   }
 };
 
-std::string OpAndResTypeToString(OpAndResType type) {
+std::string opAndResTypeToString(OpAndResType type) {
   if (type == DefaultUnknownOpAndResType) return "DefaultUnknownOpAndResType";
   if (type == HLO_AsyncBundle) return "HLO_AsyncBundle";
   if (type == HLO_ComplexTensor) return "HLO_ComplexTensor";
@@ -4654,7 +4654,7 @@ std::string OpAndResTypeToString(OpAndResType type) {
   assert(false && "Invalid OpAndResType");
 }
 
-std::string AttrTypeToString(AttrType type) {
+std::string attrTypeToString(AttrType type) {
   if (type == DefaultUnknownAttrType) return "DefaultUnknownAttrType";
   if (type == ArrayAttr) return "ArrayAttr";
   if (type == BoolAttr) return "BoolAttr";
