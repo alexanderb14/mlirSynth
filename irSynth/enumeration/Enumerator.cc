@@ -333,11 +333,11 @@ void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
 
   // Constant candidates.
   for (auto &attr : genAttributes(builder, functionArgs, targetShape, 0)) {
-    CandidatePtr candidate(new Candidate({}));
+    CandidatePtr candidate(new Candidate({}, IOType::DefaultUnknown));
     candidate->addOperation(
         ctx, builder.create<mhlo::ConstantOp>(UnknownLoc::get(&ctx), attr),
         false);
-    candidateStore->addCandidate(candidate, 0);
+    candidateStore->addCandidate(candidate);
   }
 
   // Argument candidates.
@@ -357,9 +357,9 @@ void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
 
   unsigned argId = 0;
   for (auto &input : inputs) {
-    CandidatePtr candidate(new Candidate({}));
+    CandidatePtr candidate(new Candidate({}, IOType::DefaultUnknown));
     candidate->addArgument(ctx, input, argId++);
-    candidateStore->addCandidate(candidate, 0);
+    candidateStore->addCandidate(candidate);
   }
 }
 
@@ -423,7 +423,7 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
 
   // Create candidate.
   CandidatePtr newCandidate =
-      std::make_shared<Candidate>(operandArgTuple.operands);
+      std::make_shared<Candidate>(operandArgTuple.operands, IOType::DefaultUnknown);
   auto builder = OpBuilder(&ctx);
 
   // Set up operands.
@@ -560,7 +560,7 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
     return reject_hashNotUnique;
   }
 
-  localCandidateStore->addCandidate(newCandidate, newCandidate->getNumOps());
+  localCandidateStore->addCandidate(newCandidate);
 
   if (returnShape == targetShape) {
     if (areArraysEqual(refOut, out, returnShape)) {

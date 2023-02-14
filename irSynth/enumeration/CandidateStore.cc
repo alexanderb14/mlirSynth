@@ -3,23 +3,32 @@
 using namespace llvm;
 using namespace mlir;
 
-void CandidateStore::addCandidate(const CandidatePtr &candidate,
-                                  unsigned weight) {
+void CandidateStore::addCandidate(const CandidatePtr &candidate) {
   std::lock_guard<std::mutex> lock(addCandidatesMutex);
+
+  unsigned weight = candidate->getNumOps();
+  IOType ioType = candidate->getIOType();
 
   candidateToId[candidate.get()] = candidateToId.size();
 
   if (weightToCandidates.find(weight) == weightToCandidates.end())
-    weightToCandidates[weight] = std::vector<CandidatePtr>();
+    weightToCandidates[weight] =
+        std::unordered_map<IOType, std::vector<CandidatePtr>>();
 
-  weightToCandidates[weight].push_back(candidate);
+  if (weightToCandidates[weight].find(ioType) ==
+      weightToCandidates[weight].end())
+    weightToCandidates[weight][ioType] = std::vector<CandidatePtr>();
+
+  weightToCandidates[weight][ioType].push_back(candidate);
 }
 
 std::vector<CandidatePtr> CandidateStore::getCandidates() {
   std::vector<CandidatePtr> candidates;
   for (auto &weightToCandidate : weightToCandidates) {
-    for (auto &candidate : weightToCandidate.second) {
-      candidates.push_back(candidate);
+    for (auto &ioTypeToCandidate : weightToCandidate.second) {
+      for (auto &candidate : ioTypeToCandidate.second) {
+        candidates.push_back(candidate);
+      }
     }
   }
   return candidates;
@@ -29,8 +38,25 @@ std::vector<CandidatePtr> CandidateStore::getCandidates(unsigned weight) {
   std::vector<CandidatePtr> candidates;
   for (unsigned i = 0; i < weight; i++) {
     if (weightToCandidates.find(i) != weightToCandidates.end()) {
-      for (auto &candidate : weightToCandidates[i]) {
-        candidates.push_back(candidate);
+      for (auto &ioTypeToCandidate : weightToCandidates[i]) {
+        for (auto &candidate : ioTypeToCandidate.second) {
+          candidates.push_back(candidate);
+        }
+      }
+    }
+  }
+  return candidates;
+}
+
+std::vector<CandidatePtr> CandidateStore::getCandidates(unsigned weight, IOType ioType) {
+  std::vector<CandidatePtr> candidates;
+
+  for (unsigned i = 0; i < weight; i++) {
+    if (weightToCandidates.find(i) != weightToCandidates.end()) {
+      if (weightToCandidates[i].find(ioType) != weightToCandidates[i].end()) {
+        for (auto &candidate : weightToCandidates[i][ioType]) {
+          candidates.push_back(candidate);
+        }
       }
     }
   }
@@ -39,8 +65,10 @@ std::vector<CandidatePtr> CandidateStore::getCandidates(unsigned weight) {
 
 void CandidateStore::merge(CandidateStorePtr &other) {
   for (auto &pair : other->weightToCandidates) {
-    for (auto &candidate : pair.second) {
-      addCandidate(candidate, pair.first);
+    for (auto &ioTypeToCandidate : pair.second) {
+      for (auto &candidate : ioTypeToCandidate.second) {
+        addCandidate(candidate);
+      }
     }
   }
 }
@@ -48,8 +76,12 @@ void CandidateStore::merge(CandidateStorePtr &other) {
 void CandidateStore::dumpCandidates() {
   for (auto &pair : weightToCandidates) {
     llvm::outs() << "Weight: " << pair.first << "\n";
-    for (auto &candidate : pair.second) {
-      candidate->dump();
+    for (auto &ioTypeToCandidate : pair.second) {
+      llvm::outs() << "IOType: " << ioTypeToString(ioTypeToCandidate.first)
+                   << "\n";
+      for (auto &candidate : ioTypeToCandidate.second) {
+        candidate->dump();
+      }
     }
   }
 }

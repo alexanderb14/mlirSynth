@@ -1,6 +1,8 @@
 #ifndef IRSYNTH_CANDIDATE_H
 #define IRSYNTH_CANDIDATE_H
 
+#include "enumeration/OpInfos.h"
+
 #include "mlir/IR/Block.h"
 #include "mlir/IR/BlockAndValueMapping.h"
 #include "mlir/IR/Builders.h"
@@ -15,8 +17,9 @@ using CandidatePtr = std::shared_ptr<Candidate>;
 
 class Candidate {
 public:
-  Candidate(std::vector<CandidatePtr> predecessors) {
+  Candidate(std::vector<CandidatePtr> predecessors, IOType returnType) {
     this->predecessors = predecessors;
+    this->returnType = returnType;
     region = std::make_shared<mlir::Region>();
     region->push_back(new mlir::Block);
   }
@@ -51,6 +54,9 @@ public:
   }
   double getHash() { return hash; }
 
+  void setIOType(IOType ioType) { this->returnType = ioType; }
+  IOType getIOType() { return returnType; }
+
 private:
   std::vector<unsigned> argIds;
   std::shared_ptr<mlir::Region> region;
@@ -60,6 +66,8 @@ private:
 
   double hash;
   bool hashExists = false;
+
+  IOType returnType;
 };
 
 #endif // IRSYNTH_CANDIDATE_H
