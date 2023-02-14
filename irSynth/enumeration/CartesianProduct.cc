@@ -6,7 +6,7 @@
 |*                                                                            *|
 \*===----------------------------------------------------------------------===*/
 
-#include "ArgTuples.h"
+#include "CartesianProduct.h"
 
 #include "enumeration/Generators.h"
 

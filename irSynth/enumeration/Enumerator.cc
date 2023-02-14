@@ -1,7 +1,7 @@
 #include "Enumerator.h"
 
 #include "Common.h"
-#include "enumeration/ArgTuples.h"
+#include "enumeration/CartesianProduct.h"
 #include "enumeration/Candidate.h"
 #include "enumeration/Generators.h"
 #include "enumeration/Stats.h"

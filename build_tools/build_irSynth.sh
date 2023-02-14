@@ -8,12 +8,12 @@ if ! [ -f "$PWD/../irSynth/README.md" ]; then
 fi
 
 # Autogenerate arg tuple construction source file.
-python3 build_tools/gen_ArgTuples.py \
+python3 build_tools/gen_CartesianProduct.py \
   --max_operands 3 \
   --max_attributes 2 \
   --max_regions 2 \
-  --output irSynth/enumeration/ArgTuples.cc
-clang-format -i irSynth/enumeration/ArgTuples.cc --style=file
+  --output irSynth/enumeration/CartesianProduct.cc
+clang-format -i irSynth/enumeration/CartesianProduct.cc --style=file
 
 # Configure irSynth build.
 mkdir build

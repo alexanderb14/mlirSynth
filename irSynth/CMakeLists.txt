@@ -31,9 +31,9 @@ target_compile_options(analysis
   PRIVATE -Wno-missing-field-initializers)
 
 # Lib: Enumeration
-add_library(argtuples
-  enumeration/ArgTuples.cc)
-target_include_directories(argtuples
+add_library(cartesian_product
+  enumeration/CartesianProduct.cc)
+target_include_directories(cartesian_product
   PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 
 add_library(enumeration
@@ -47,7 +47,7 @@ add_library(enumeration
 target_include_directories(enumeration
   PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(enumeration
-  PRIVATE argtuples
+  PRIVATE cartesian_product
           analysis)
 
 # Lib: Execution

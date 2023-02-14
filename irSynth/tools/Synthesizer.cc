@@ -1,7 +1,7 @@
 #include "ContextManager.h"
 
 #include "Common.h"
-#include "enumeration/ArgTuples.h"
+#include "enumeration/CartesianProduct.h"
 #include "enumeration/Candidate.h"
 #include "enumeration/Enumerator.h"
 #include "enumeration/Guide.h"
