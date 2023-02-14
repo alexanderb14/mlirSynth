@@ -662,10 +662,6 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
         attributes.push_back(attributeCandidates);
       }
 
-      llvm::outs() << "Generating candidates for " << opName.getStringRef()
-                   << " with " << operands.size() << " operands and "
-                   << attributes.size() << " attributes\n";
-
       auto operandArgTuples =
           getCartesianProduct(operands, attributes, regions);
 
