@@ -332,7 +332,9 @@ void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
   OpBuilder builder(&ctx);
 
   // Constant candidates.
-  for (auto &attr : genAttributes(builder, functionArgs, targetShape, 0)) {
+  for (auto &pair : genAttributes(builder, functionArgs, targetShape, 0)) {
+    auto &attr = pair.first;
+
     CandidatePtr candidate(new Candidate({}, OpAndResType::DefaultUnknownOpAndResType));
     candidate->addOperation(
         ctx, builder.create<mhlo::ConstantOp>(UnknownLoc::get(&ctx), attr),
@@ -655,8 +657,11 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
         operands.push_back(operandCandidates);
 
       OpBuilder builder(&ctx);
-      std::vector<mlir::Attribute> attributeCandidates =
+      auto attributePairs =
           genAttributes(builder, inputFunctionArgs, targetShape, 2);
+      std::vector<mlir::Attribute> attributeCandidates;
+      for (auto &attributePair : attributePairs)
+        attributeCandidates.push_back(attributePair.first);
       for (auto &attrName : getRelevantAttributeNames(opInfo)) {
         (void)attrName; // Silence unused variable warning.
         attributes.push_back(attributeCandidates);
