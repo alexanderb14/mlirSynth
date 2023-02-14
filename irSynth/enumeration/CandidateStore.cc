@@ -92,8 +92,13 @@ void CandidateStore::dumpCandidates() {
 void CandidateStore::dumpSizes() {
   llvm::outs() << "\nCandidateStore contents (length: number of candidates)"
                << "\n--------\n";
+
   for (auto &pair : weightToCandidates) {
-    llvm::errs() << pair.first << ": " << pair.second.size() << "\n";
+    for (auto &opAndResTypeToCandidate : pair.second) {
+      llvm::outs() << pair.first << ": "
+                   << opAndResTypeToString(opAndResTypeToCandidate.first)
+                   << ": " << opAndResTypeToCandidate.second.size() << "\n";
+    }
   }
 }
 
