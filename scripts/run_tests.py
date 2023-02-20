@@ -33,6 +33,8 @@ benchmarks = [
               ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply'], True, 3),
     Benchmark('benchmarks/syrk.mlir', 'syrk',
               ['mhlo.transpose', 'mhlo.dot', 'chlo.broadcast_multiply', 'mhlo.add', 'mhlo.select'], True, 5),
+    Benchmark('benchmarks/syr2k.mlir', 'syr2k',
+              ['mhlo.transpose', 'mhlo.dot', 'chlo.broadcast_multiply', 'mhlo.add', 'mhlo.select'], True, 5),
 ]
 
 timeout = 300
