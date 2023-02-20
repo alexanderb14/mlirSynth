@@ -75,7 +75,7 @@ void outlineLoops(func::FuncOp &origFunc) {
     origFunc.dump();
 
   auto module = origFunc->getParentOfType<ModuleOp>();
-  auto loops = getTopLevelLoops(origFunc);
+  auto topLoops = getTopLevelLoops(origFunc);
   auto builder = OpBuilder::atBlockBegin(module.getBody());
 
   BlockAndValueMapping fnResultMapper;
@@ -83,14 +83,14 @@ void outlineLoops(func::FuncOp &origFunc) {
   Operation *lastCall = nullptr;
 
   unsigned loopCounter = 0;
-  for (auto *loop : loops) {
-    auto undefinedValues = getOutOfBlockDefValues(loop);
-    auto loadedValues = getLoadedMemRefValues(loop);
-    auto storedValues = getStoredMemRefValues(loop);
+  for (auto *topLoop : topLoops) {
+    auto undefinedValues = getOutOfBlockDefValues(topLoop);
+    auto loadedValues = getLoadedMemRefValues(topLoop);
+    auto storedValues = getStoredMemRefValues(topLoop);
 
     if (debug) {
       llvm::outs() << "-----------------\n";
-      loop->dump();
+      topLoop->dump();
       llvm::outs() << "Undefined values:\n";
       for (auto value : undefinedValues)
         value.dump();
@@ -141,7 +141,7 @@ void outlineLoops(func::FuncOp &origFunc) {
     auto reverseMapper = reverseMap(argMapper);
 
     // Add body.
-    bodyBlock.push_back(loop->clone(argMapper));
+    bodyBlock.push_back(topLoop->clone(argMapper));
 
     // Add the stored values as results.
     // As a heuristic, we use only the last-stored value as the result.
@@ -167,9 +167,14 @@ void outlineLoops(func::FuncOp &origFunc) {
     llvm::SmallVector<Attribute> argAttrs;
     if (auto origFuncArgAttrs = origFunc.getAllArgAttrs()) {
       for (auto arg : bodyBlock.getArguments()) {
-        auto value = reverseMapper.lookup(arg).cast<BlockArgument>();
-        auto attribute = origFuncArgAttrs[value.getArgNumber()];
-        argAttrs.push_back(attribute);
+        auto newArg = reverseMapper.lookup(arg);
+        if (auto value = newArg.dyn_cast<BlockArgument>()) {
+          auto attribute = origFuncArgAttrs[value.getArgNumber()];
+          argAttrs.push_back(attribute);
+        } else {
+          newArg.dump();
+          assert(false && "Unexpected value type");
+        }
       }
       func.setAllArgAttrs(argAttrs);
     }
@@ -198,7 +203,7 @@ void outlineLoops(func::FuncOp &origFunc) {
     }
 
     // Create function call.
-    builder.setInsertionPoint(loop);
+    builder.setInsertionPoint(topLoop);
     auto callOp = builder.create<func::CallOp>(unknownLoc, func.getSymName(),
                                                func.getResultTypes(), args);
     lastCall = callOp;
@@ -208,7 +213,7 @@ void outlineLoops(func::FuncOp &origFunc) {
       fnResultMapper.map(storedValue[i], callOp.getResult(i));
 
     // Remove the loop.
-    loop->erase();
+    topLoop->erase();
   }
 
   // Change the original function result to the result of the last outlined
