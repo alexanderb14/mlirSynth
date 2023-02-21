@@ -1,6 +1,7 @@
 #include "LoopOutlinePass.h"
 
 #include "analysis/PolyhedralAnalysis.h"
+#include "mlir/Dialect/MemRef/IR/MemRef.h"
 #include "mlir/IR/BuiltinAttributes.h"
 #include "transforms/Utils.h"
 
@@ -116,23 +117,36 @@ void outlineLoops(func::FuncOp &origFunc) {
 
     // - Add loaded values as arguments.
     for (auto value : loadedValues) {
+      if (undefinedValues.contains(value))
+        continue;
       auto newArg = bodyBlock.addArgument(value.getType(), unknownLoc);
       argMapper.map(value, newArg);
     }
     // - Add undefined values as arguments or as local variables if they are
     // constants.
     for (auto value : undefinedValues) {
-      if (argMapper.contains(value))
+      if (argMapper.contains(value)) {
         continue;
+      }
 
-      // If the defining operation is a constant, copy and add it to the new
-      // function. Else, add it as an argument.
+      // If the defining operation is a constant or a memref alloca, copy and
+      // add it to the new function. Else, add it as an argument.
       auto *definingOp = value.getDefiningOp();
+      // - Constant.
       if (definingOp && dyn_cast<arith::ConstantOp>(definingOp)) {
         auto constantOp = dyn_cast<arith::ConstantOp>(definingOp);
         auto newConstantOp = constantOp.clone();
         bodyBlock.push_back(newConstantOp);
         argMapper.map(value, newConstantOp.getResult());
+
+      // - Memref alloca.
+      } else if (definingOp && dyn_cast<memref::AllocaOp>(definingOp)) {
+        auto allocaOp = dyn_cast<memref::AllocaOp>(definingOp);
+        auto newAllocaOp = allocaOp.clone();
+        bodyBlock.push_back(newAllocaOp);
+        argMapper.map(value, newAllocaOp.getResult());
+
+      // Else, add as argument.
       } else {
         auto newArg = bodyBlock.addArgument(value.getType(), unknownLoc);
         argMapper.map(value, newArg);

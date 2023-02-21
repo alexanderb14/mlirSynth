@@ -1,5 +1,7 @@
 #include "CopyModifiedMemrefsPass.h"
 
+#include "transforms/Utils.h"
+
 #include "mlir/Dialect/Affine/IR/AffineOps.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/Dialect/MemRef/IR/MemRef.h"
@@ -13,17 +15,21 @@
 using namespace mlir;
 
 void copyModifiedMemrefs(func::FuncOp &op) {
-  // Onlyt do it on functions with the "irsynth.original" attribute.
+  // Only do it on functions with the "irsynth.original" attribute.
   if (!op->hasAttr("irsynth.original"))
     return;
+
+  // Set insertion point to the start of the loop.
+  auto funcs = getTopLevelLoops(op);
+  assert(funcs.size() == 1 && "Expected only one top level loop");
+  OpBuilder builder(op->getContext());
+  builder.setInsertionPoint(funcs[0]);
 
   // Get all stored memref values.
   llvm::SetVector<Value> storedMemrefs;
   op->walk([&](AffineStoreOp op) { storedMemrefs.insert(op.getMemRef()); });
 
   // Copy all stored memref values and put them into the top of the function.
-  OpBuilder builder(op->getContext());
-  builder.setInsertionPointToStart(&op.getBody().getBlocks().front());
   for (auto value : storedMemrefs) {
     // Create a new memref with the name of the old one.
     auto memreftype = value.getType().cast<MemRefType>();
