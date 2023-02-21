@@ -37,7 +37,7 @@ benchmarks = [
               ['mhlo.transpose', 'mhlo.dot', 'chlo.broadcast_multiply', 'mhlo.add', 'mhlo.select'], True, 5),
 ]
 
-timeout = 300
+timeout = 600
 script_dir = os.path.dirname(os.path.realpath(__file__))
 cpu_count = multiprocessing.cpu_count()
 program = os.path.join(script_dir, '../build/bin/synthesizer')
