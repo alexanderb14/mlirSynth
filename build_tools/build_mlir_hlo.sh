@@ -49,6 +49,7 @@ cmake .. -GNinja \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
   -DMLIR_DIR=${PWD}/../llvm-build/lib/cmake/mlir
+mkdir include
 cmake --build .
 popd
 

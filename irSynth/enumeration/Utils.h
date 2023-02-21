@@ -1,7 +1,7 @@
 #ifndef IRSYNTH_ENUMERATION_UTILS_H
 #define IRSYNTH_ENUMERATION_UTILS_H
 
-#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops.h"
+#include "mhlo/IR/hlo_ops.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/IR/MLIRContext.h"
 #include "mlir/IR/OpDefinition.h"

@@ -2,7 +2,6 @@
 #define IRSYNTH_CANDIDATE_H
 
 #include "mlir/IR/Block.h"
-#include "mlir/IR/BlockAndValueMapping.h"
 #include "mlir/IR/Builders.h"
 #include "mlir/IR/MLIRContext.h"
 #include "mlir/IR/Operation.h"

@@ -1,8 +1,8 @@
 #include "Lowering.h"
 
 #include "gml_st/transforms/passes.h"
-#include "mlir-hlo/Dialect/mhlo/transforms/passes.h"
-#include "mlir-hlo/Transforms/passes.h"
+#include "mhlo/transforms/passes.h"
+#include "transforms/passes.h"
 #include "mlir/Bytecode/BytecodeReader.h"
 #include "mlir/Bytecode/BytecodeWriter.h"
 #include "mlir/Conversion/AffineToStandard/AffineToStandard.h"
@@ -57,131 +57,131 @@ using namespace mlir;
 void addCHLOToLLVMPasses(std::shared_ptr<mlir::PassManager> pm) {
   pm->addNestedPass<func::FuncOp>(mhlo::createChloLegalizeToHloPass());
 
-  // Note: The below MHLO -> LLVM lowering pipeline has been copied from:
-  // TensorFlow@d8ae1c040f73ffdbf77e005b7d2909976fa4b31f
-  // compiler/xla/service/cpu/cpu_compiler.cc
-  // All commented calls are part of XLA and not available in MLIR-HLO.
-
-  // proved statically and changed to const witness) early to allow more
-  // efficient broadcast operations moving.
-  // Move up broadcasting operations to allow for more fusion opportunities.
-  pm->addPass(mlir::createInlinerPass());
-  pm->addPass(mlir::mhlo::createExpandHloTuplesPass("main"));
-  // TODO(b/233771980): Remove once custom_call doesn't use tuples.
-  pm->addNestedPass<mlir::func::FuncOp>(mlir::mhlo::createFlattenTuplePass());
-  //  pm->addPass(createXlaAbiLegalizationPass());
-  pm->addNestedPass<mlir::func::FuncOp>(
-      mlir::mhlo::createLegalizeGeneralDotPass());
-  pm->addNestedPass<mlir::func::FuncOp>(
-      mlir::mhlo::createBroadcastPropagationPass());
-  pm->addPass(mlir::createCSEPass());
-  pm->addPass(mlir::createCanonicalizerPass());
-
-  // Transform HLO operations to Linalg.
-  pm->addNestedPass<mlir::func::FuncOp>(mlir::mhlo::createLegalizeSortPass());
-  pm->addNestedPass<mlir::func::FuncOp>(
-      mlir::mhlo::createLegalizeControlFlowPass());
-  pm->addPass(::mlir::mhlo::createLegalizeToArithmeticPass());
-  pm->addNestedPass<mlir::func::FuncOp>(
-      mlir::mhlo::createLegalizeHloToLinalgPass());
-  pm->addNestedPass<mlir::func::FuncOp>(
-      mlir::mhlo::createLegalizeMHLOToTHLOPass());
-
-  // Lower index cast on tensors to tensor.generate.
-  pm->addNestedPass<mlir::func::FuncOp>(mlir::createLowerIndexCastPass());
-
-  pm->addPass(mlir::mhlo::createConvertToSignlessPass());
-
-  // Transform scatter ops.
-  pm->addNestedPass<mlir::func::FuncOp>(
-      mlir::gml_st::createTransformScatterForCpuPass());
-
-  // Lower shape dialect to standard to enable linalg canonicalizations (e.g.
-  // use linalg inputs instead of outputs for memref.dim operations).
-  pm->addNestedPass<mlir::func::FuncOp>(mlir::createShapeSimplification());
-  pm->addNestedPass<mlir::func::FuncOp>(mlir::createShapeToShapeLowering());
-  pm->addPass(mlir::createConvertShapeToStandardPass());
-  pm->addNestedPass<mlir::func::FuncOp>(
-      mlir::createConvertShapeConstraintsPass());
-
-  // Fuse Linalg on tensors operations.
-  pm->addPass(mlir::createCSEPass());
-  pm->addPass(mlir::memref::createResolveShapedTypeResultDimsPass());
-  pm->addPass(mlir::createCanonicalizerPass());
-  pm->addNestedPass<mlir::func::FuncOp>(
-      mlir::createLinalgElementwiseOpFusionPass());
-  pm->addPass(mlir::createReconcileUnrealizedCastsPass());
-  pm->addPass(mlir::createConvertTensorToLinalgPass());
-
-  // Detensorize SCF iter args.
-  pm->addNestedPass<mlir::func::FuncOp>(mlir::createDetensorizeScfOpsPass());
-  // mhlo ops on unit tensors generate trivial linalg.generics, which
-  // one-shot-bufferize generates unnecessary allocs for. The detensorize pass
-  // replaces these linalg.generics with scalar ops.
-  auto detensorize = mlir::createLinalgDetensorizePass();
-  if (detensorize->initializeOptions("aggressive-mode=true").failed()) {
-    llvm::outs() << "Failed to set up detensorize pass.";
-  }
-  pm->addNestedPass<mlir::func::FuncOp>(std::move(detensorize));
-  pm->addNestedPass<mlir::func::FuncOp>(mlir::createScalarizationPass());
-  pm->addNestedPass<mlir::func::FuncOp>(
-      mlir::bufferization::createEmptyTensorToAllocTensorPass());
-
-  // Always run canonicalizer (which does dead code removal) before
-  // bufferizing anything.
-  pm->addPass(mlir::createCanonicalizerPass());
-
-  pm->addPass(mlir::hlo::createOneShotBufferizePass());
-
-  // Handle framework specific requirements for buffers and then insert
-  // deallocations for temporary buffers.
-  pm->addNestedPass<mlir::func::FuncOp>(mlir::createConvertLinalgToLoopsPass());
-  pm->addNestedPass<mlir::func::FuncOp>(mlir::gml_st::createGmlStToScfPass());
-  pm->addPass(mlir::createCSEPass());
-  pm->addPass(mlir::createCanonicalizerPass());
-  //  pm->addPass(mlir::bufferization::createBufferResultsToOutParamsPass());
-  //  if (options.outline_with_xla_framework) {
-  //    pm->addPass(mlir::mhlo::CreateOutlineWithXLAFrameworkPass());
-  //  }
-  pm->addPass(mlir::createInlinerPass());
-  pm->addNestedPass<mlir::func::FuncOp>(
-      mlir::bufferization::createBufferDeallocationPass());
-
-  pm->addPass(mlir::createBufferizationToMemRefPass());
-
-  // Specialize linalg.matmul to linalg.dot, linalg.matvec or linalg.vecmat,
-  // and immediately canonicalize to clean up not taken branches.
-  // pm->addNestedPass<mlir::func::FuncOp>(CreateLinalgMatmulSpecializationPass());
-  pm->addPass(mlir::createCanonicalizerPass());
-
-  // Tile and vectorize linalg operation using Linalg Codegen Strategy.
-  pm->addNestedPass<mlir::func::FuncOp>(
-      mlir::createConvertComplexToStandardPass());
-
-  pm->addPass(mlir::createCSEPass());
-  pm->addPass(mlir::createCanonicalizerPass());
-
-  mlir::VectorTransferToSCFOptions vec_to_scf_options;
-  vec_to_scf_options.unroll = true;
-  pm->addNestedPass<mlir::func::FuncOp>(
-      mlir::createConvertVectorToSCFPass(vec_to_scf_options));
-
-  pm->addNestedPass<mlir::func::FuncOp>(
-      mlir::arith::createArithExpandOpsPass());
-  pm->addNestedPass<mlir::func::FuncOp>(mlir::memref::createExpandOpsPass());
-  pm->addNestedPass<mlir::func::FuncOp>(mlir::createLowerAffinePass());
-  //  pm->addPass(mlir::mhlo::CreateLegalizeXLAFrameworkToLLVMPass());
-  pm->addPass(mlir::hlo::createGenericHostToLLVMPass());
-  pm->addPass(mlir::createReconcileUnrealizedCastsPass());
+//  // Note: The below MHLO -> LLVM lowering pipeline has been copied from:
+//  // TensorFlow@d8ae1c040f73ffdbf77e005b7d2909976fa4b31f
+//  // compiler/xla/service/cpu/cpu_compiler.cc
+//  // All commented calls are part of XLA and not available in MLIR-HLO.
+//
+//  // proved statically and changed to const witness) early to allow more
+//  // efficient broadcast operations moving.
+//  // Move up broadcasting operations to allow for more fusion opportunities.
+//  pm->addPass(mlir::createInlinerPass());
+//  pm->addPass(mlir::mhlo::createExpandHloTuplesPass("main"));
+//  // TODO(b/233771980): Remove once custom_call doesn't use tuples.
+//  pm->addNestedPass<mlir::func::FuncOp>(mlir::mhlo::createFlattenTuplePass());
+//  //  pm->addPass(createXlaAbiLegalizationPass());
+//  pm->addNestedPass<mlir::func::FuncOp>(
+//      mlir::mhlo::createLegalizeGeneralDotPass());
+//  pm->addNestedPass<mlir::func::FuncOp>(
+//      mlir::mhlo::createBroadcastPropagationPass());
+//  pm->addPass(mlir::createCSEPass());
+//  pm->addPass(mlir::createCanonicalizerPass());
+//
+//  // Transform HLO operations to Linalg.
+//  pm->addNestedPass<mlir::func::FuncOp>(mlir::mhlo::createLegalizeSortPass());
+//  pm->addNestedPass<mlir::func::FuncOp>(
+//      mlir::mhlo::createLegalizeControlFlowPass());
+//  pm->addPass(::mlir::mhlo::createLegalizeToArithmeticPass());
+//  pm->addNestedPass<mlir::func::FuncOp>(
+//      mlir::mhlo::createLegalizeHloToLinalgPass());
+//  pm->addNestedPass<mlir::func::FuncOp>(
+//      mlir::mhlo::createLegalizeMHLOToTHLOPass());
+//
+//  // Lower index cast on tensors to tensor.generate.
+//  pm->addNestedPass<mlir::func::FuncOp>(mlir::createLowerIndexCastPass());
+//
+//  pm->addPass(mlir::mhlo::createConvertToSignlessPass());
+//
+//  // Transform scatter ops.
+//  pm->addNestedPass<mlir::func::FuncOp>(
+//      mlir::gml_st::createTransformScatterForCpuPass());
+//
+//  // Lower shape dialect to standard to enable linalg canonicalizations (e.g.
+//  // use linalg inputs instead of outputs for memref.dim operations).
+//  pm->addNestedPass<mlir::func::FuncOp>(mlir::createShapeSimplification());
+//  pm->addNestedPass<mlir::func::FuncOp>(mlir::createShapeToShapeLowering());
+//  pm->addPass(mlir::createConvertShapeToStandardPass());
+//  pm->addNestedPass<mlir::func::FuncOp>(
+//      mlir::createConvertShapeConstraintsPass());
+//
+//  // Fuse Linalg on tensors operations.
+//  pm->addPass(mlir::createCSEPass());
+//  pm->addPass(mlir::memref::createResolveShapedTypeResultDimsPass());
+//  pm->addPass(mlir::createCanonicalizerPass());
+//  pm->addNestedPass<mlir::func::FuncOp>(
+//      mlir::createLinalgElementwiseOpFusionPass());
+//  pm->addPass(mlir::createReconcileUnrealizedCastsPass());
+//  pm->addPass(mlir::createConvertTensorToLinalgPass());
+//
+//  // Detensorize SCF iter args.
+//  pm->addNestedPass<mlir::func::FuncOp>(mlir::createDetensorizeScfOpsPass());
+//  // mhlo ops on unit tensors generate trivial linalg.generics, which
+//  // one-shot-bufferize generates unnecessary allocs for. The detensorize pass
+//  // replaces these linalg.generics with scalar ops.
+//  auto detensorize = mlir::createLinalgDetensorizePass();
+//  if (detensorize->initializeOptions("aggressive-mode=true").failed()) {
+//    llvm::outs() << "Failed to set up detensorize pass.";
+//  }
+//  pm->addNestedPass<mlir::func::FuncOp>(std::move(detensorize));
+//  pm->addNestedPass<mlir::func::FuncOp>(mlir::createScalarizationPass());
+//  pm->addNestedPass<mlir::func::FuncOp>(
+//      mlir::bufferization::createEmptyTensorToAllocTensorPass());
+//
+//  // Always run canonicalizer (which does dead code removal) before
+//  // bufferizing anything.
+//  pm->addPass(mlir::createCanonicalizerPass());
+//
+//  pm->addPass(mlir::hlo::createOneShotBufferizePass());
+//
+//  // Handle framework specific requirements for buffers and then insert
+//  // deallocations for temporary buffers.
+//  pm->addNestedPass<mlir::func::FuncOp>(mlir::createConvertLinalgToLoopsPass());
+//  pm->addNestedPass<mlir::func::FuncOp>(mlir::gml_st::createGmlStToScfPass());
+//  pm->addPass(mlir::createCSEPass());
+//  pm->addPass(mlir::createCanonicalizerPass());
+//  //  pm->addPass(mlir::bufferization::createBufferResultsToOutParamsPass());
+//  //  if (options.outline_with_xla_framework) {
+//  //    pm->addPass(mlir::mhlo::CreateOutlineWithXLAFrameworkPass());
+//  //  }
+//  pm->addPass(mlir::createInlinerPass());
+//  pm->addNestedPass<mlir::func::FuncOp>(
+//      mlir::bufferization::createBufferDeallocationPass());
+//
+//  pm->addPass(mlir::createBufferizationToMemRefPass());
+//
+//  // Specialize linalg.matmul to linalg.dot, linalg.matvec or linalg.vecmat,
+//  // and immediately canonicalize to clean up not taken branches.
+//  // pm->addNestedPass<mlir::func::FuncOp>(CreateLinalgMatmulSpecializationPass());
+//  pm->addPass(mlir::createCanonicalizerPass());
+//
+//  // Tile and vectorize linalg operation using Linalg Codegen Strategy.
+//  pm->addNestedPass<mlir::func::FuncOp>(
+//      mlir::createConvertComplexToStandardPass());
+//
+//  pm->addPass(mlir::createCSEPass());
+//  pm->addPass(mlir::createCanonicalizerPass());
+//
+//  mlir::VectorTransferToSCFOptions vec_to_scf_options;
+//  vec_to_scf_options.unroll = true;
+//  pm->addNestedPass<mlir::func::FuncOp>(
+//      mlir::createConvertVectorToSCFPass(vec_to_scf_options));
+//
+//  pm->addNestedPass<mlir::func::FuncOp>(
+//      mlir::arith::createArithExpandOpsPass());
+//  pm->addNestedPass<mlir::func::FuncOp>(mlir::memref::createExpandOpsPass());
+//  pm->addNestedPass<mlir::func::FuncOp>(mlir::createLowerAffinePass());
+//  //  pm->addPass(mlir::mhlo::CreateLegalizeXLAFrameworkToLLVMPass());
+//  pm->addPass(mlir::hlo::createGenericHostToLLVMPass());
+//  pm->addPass(mlir::createReconcileUnrealizedCastsPass());
 }
 
 void addAffineToLLVMPasses(std::shared_ptr<mlir::PassManager> pm) {
-  pm->addPass(createLowerAffinePass());
-  pm->addPass(createConvertSCFToCFPass());
-  pm->addPass(cf::createConvertControlFlowToLLVMPass());
-  pm->addPass(mlir::createMemRefToLLVMConversionPass());
-  pm->addNestedPass<func::FuncOp>(mlir::createArithToLLVMConversionPass());
-  pm->addPass(createConvertMathToLLVMPass());
-  pm->addPass(createConvertFuncToLLVMPass());
-  pm->addPass(mlir::createReconcileUnrealizedCastsPass());
+//  pm->addPass(createLowerAffinePass());
+//  pm->addPass(createConvertSCFToCFPass());
+//  pm->addPass(cf::createConvertControlFlowToLLVMPass());
+//  pm->addPass(mlir::createMemRefToLLVMConversionPass());
+//  pm->addNestedPass<func::FuncOp>(mlir::createArithToLLVMConversionPass());
+//  pm->addPass(createConvertMathToLLVMPass());
+//  pm->addPass(createConvertFuncToLLVMPass());
+//  pm->addPass(mlir::createReconcileUnrealizedCastsPass());
 }

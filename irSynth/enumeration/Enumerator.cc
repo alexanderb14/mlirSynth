@@ -13,6 +13,7 @@
 #include "mlir/ExecutionEngine/ExecutionEngine.h"
 #include "mlir/IR/BuiltinOps.h"
 #include "mlir/IR/BuiltinTypes.h"
+#include "mlir/IR/IRMapping.h"
 #include "mlir/IR/OperationSupport.h"
 #include "mlir/IR/OwningOpRef.h"
 #include "mlir/IR/Threading.h"
@@ -175,7 +176,7 @@ OwningOpRef<ModuleOp> createModule(MLIRContext &ctx, Region *region) {
       unknownLoc, "foo", mlir::FunctionType::get(&ctx, {}, {}));
 
   // Add the given region to the function.
-  BlockAndValueMapping mapper;
+  IRMapping mapper;
   region->cloneInto(&func.getFunctionBody(), mapper);
 
   auto *bodyBlock = &func.getFunctionBody().getBlocks().front();
@@ -450,7 +451,7 @@ process(MLIRContext &ctx, EnumerationStats &stats,
   SmallVector<std::unique_ptr<Region>> regions = {};
   for (auto &regionCandidate : operandArgTuple.regions) {
     std::unique_ptr<Region> region = std::make_unique<Region>();
-    BlockAndValueMapping mapping;
+    IRMapping mapping;
     regionCandidate->cloneInto(region.get(), mapping);
     regions.push_back(std::move(region));
   }
