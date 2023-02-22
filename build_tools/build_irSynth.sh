@@ -32,7 +32,7 @@ pushd build
 cmake --build . --target tablegen-opinfos
 popd
 TD_FILES="mlir-hlo/stablehlo/stablehlo/dialect/ChloOps.td \
-mlir-hlo/include/mlir-hlo/Dialect/mhlo/IR/hlo_ops.td"
+mlir-hlo/mhlo/IR/hlo_ops.td"
 GEN_COMMON="-Imlir-hlo \
 -Imlir-hlo/include \
 -Imlir-hlo/include/mlir-hlo/Dialect/mhlo/IR \

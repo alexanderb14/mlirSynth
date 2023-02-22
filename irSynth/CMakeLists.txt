@@ -58,6 +58,8 @@ add_library(execution
   execution/Lowering.cc)
 target_include_directories(execution
   PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(execution
+  PRIVATE MLIRExecutionEngine)
 
 # Lib: Transform
 add_library(transform

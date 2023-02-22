@@ -6,7 +6,7 @@ using namespace mlir;
 SmallVector<Value> Candidate::merge(MLIRContext &ctx,
                                     std::vector<CandidatePtr> &others) {
   // Merge other candidates into this one.
-  BlockAndValueMapping mapping;
+  IRMapping mapping;
   mlir::DenseMap<unsigned, BlockArgument> seenArgs;
   for (auto &other : others) {
     auto &block = region->getBlocks().front();
