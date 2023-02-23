@@ -3,6 +3,7 @@ import collections
 import json
 import multiprocessing
 import os
+import shutil
 import subprocess
 import time
 
@@ -41,6 +42,7 @@ benchmarks = [
 
 timeout = 600
 script_dir = os.path.dirname(os.path.realpath(__file__))
+res_dir = '/tmp/exp_results'
 cpu_count = multiprocessing.cpu_count()
 program = os.path.join(script_dir, '../build/bin/synthesizer')
 
@@ -74,6 +76,9 @@ def run_benchmark(benchmark, prune_equivalent_candidates, ops, distribute, max_n
     # Run
     out, synth_time, returncode = run_program(
         ['timeout', str(timeout)] + [program, filename] + args)
+
+    with open(os.path.join(res_dir, benchmark.name + '.stdout'), 'w') as f:
+        f.write(out)
 
     # Record stats
     stats = {}
@@ -159,6 +164,10 @@ def main():
     parser.add_argument('--exp_best', action='store_true',
                         default=False, help='Run experiments in their best configuration')
     args = parser.parse_args()
+
+    if os.path.exists(res_dir):
+        shutil.rmtree(res_dir)
+    os.mkdir(res_dir)
 
     if args.exp_all:
         run_benchmarks_all(benchmarks)
