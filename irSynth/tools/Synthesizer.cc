@@ -15,9 +15,9 @@
 
 #include "lhlo/IR/lhlo_ops.h"
 #include "lhlo/transforms/passes.h"
-#include "mlir-hlo/Dialect/mhlo/IR/register.h"
-#include "mlir-hlo/Dialect/mhlo/transforms/passes.h"
-#include "mlir-hlo/Transforms/passes.h"
+#include "mhlo/IR/register.h"
+#include "mhlo/transforms/passes.h"
+#include "transforms/passes.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/InitAllDialects.h"
 #include "mlir/InitAllPasses.h"
@@ -188,8 +188,8 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  SourceMgr sourceMgr;
-  sourceMgr.AddNewSourceBuffer(std::move(file), SMLoc());
+  auto sourceMgr = std::make_shared<SourceMgr>();
+  sourceMgr->AddNewSourceBuffer(std::move(file), SMLoc());
 
   FallbackAsmResourceMap fallbackResourceMap;
   ParserConfig config(ctx, /*verifyAfterParse=*/true, &fallbackResourceMap);

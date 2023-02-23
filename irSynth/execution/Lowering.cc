@@ -1,8 +1,8 @@
 #include "Lowering.h"
 
 #include "gml_st/transforms/passes.h"
-#include "mlir-hlo/Dialect/mhlo/transforms/passes.h"
-#include "mlir-hlo/Transforms/passes.h"
+#include "mhlo/transforms/passes.h"
+#include "transforms/passes.h"
 #include "mlir/Bytecode/BytecodeReader.h"
 #include "mlir/Bytecode/BytecodeWriter.h"
 #include "mlir/Conversion/AffineToStandard/AffineToStandard.h"
@@ -98,7 +98,7 @@ void addCHLOToLLVMPasses(std::shared_ptr<mlir::PassManager> pm) {
 
   // Lower shape dialect to standard to enable linalg canonicalizations (e.g.
   // use linalg inputs instead of outputs for memref.dim operations).
-  pm->addNestedPass<mlir::func::FuncOp>(mlir::createShapeSimplification());
+  pm->addNestedPass<mlir::func::FuncOp>(mlir::mhlo::createShapeSimplification());
   pm->addNestedPass<mlir::func::FuncOp>(mlir::createShapeToShapeLowering());
   pm->addPass(mlir::createConvertShapeToStandardPass());
   pm->addNestedPass<mlir::func::FuncOp>(
@@ -123,7 +123,7 @@ void addCHLOToLLVMPasses(std::shared_ptr<mlir::PassManager> pm) {
     llvm::outs() << "Failed to set up detensorize pass.";
   }
   pm->addNestedPass<mlir::func::FuncOp>(std::move(detensorize));
-  pm->addNestedPass<mlir::func::FuncOp>(mlir::createScalarizationPass());
+  pm->addNestedPass<mlir::func::FuncOp>(mlir::gml_st::createScalarizationPass());
   pm->addNestedPass<mlir::func::FuncOp>(
       mlir::bufferization::createEmptyTensorToAllocTensorPass());
 
@@ -171,15 +171,47 @@ void addCHLOToLLVMPasses(std::shared_ptr<mlir::PassManager> pm) {
   pm->addNestedPass<mlir::func::FuncOp>(mlir::memref::createExpandOpsPass());
   pm->addNestedPass<mlir::func::FuncOp>(mlir::createLowerAffinePass());
   //  pm->addPass(mlir::mhlo::CreateLegalizeXLAFrameworkToLLVMPass());
-  pm->addPass(mlir::hlo::createGenericHostToLLVMPass());
+  
+  //
+  //
+  //pm->addPass(mlir::hlo::createGenericHostToLLVMPass());
+  // Convert all linalg operations to parallel loops.
+  pm->addNestedPass<mlir::func::FuncOp>(createConvertLinalgToParallelLoopsPass());
+  // Canonicalize generated scf.parallel operations to remove single iterations.
+  pm->addPass(createCanonicalizerPass());
+
+  // Expand math operations into std/arith dialect operations.
+  pm->addNestedPass<mlir::func::FuncOp>(arith::createArithExpandOpsPass());
+  pm->addNestedPass<mlir::func::FuncOp>(memref::createExpandOpsPass());
+  pm->addNestedPass<mlir::func::FuncOp>(memref::createExpandStridedMetadataPass());
+  pm->addPass(createLowerAffinePass());
+
+  pm->addPass(createConvertLinalgToLLVMPass());
+  pm->addPass(createConvertSCFToCFPass());
+  pm->addPass(hlo::createMathLegalizationPass());
+
+  // Convert everything else to LLVM dialect.
+  ConvertVectorToLLVMPassOptions vectorOpts;
+  pm->addPass(createConvertVectorToLLVMPass(vectorOpts));
+  pm->addPass(createFinalizeMemRefToLLVMConversionPass());
+  pm->addPass(createConvertFuncToLLVMPass());
+  pm->addPass(createConvertComplexToLLVMPass());
+  pm->addPass(createReconcileUnrealizedCastsPass());
+
+  // Prepare module for translation to LLVM.
+  pm->addPass(createCanonicalizerPass());
+  pm->addPass(createCSEPass());
+  //
+  //
+
   pm->addPass(mlir::createReconcileUnrealizedCastsPass());
 }
 
 void addAffineToLLVMPasses(std::shared_ptr<mlir::PassManager> pm) {
   pm->addPass(createLowerAffinePass());
   pm->addPass(createConvertSCFToCFPass());
-  pm->addPass(cf::createConvertControlFlowToLLVMPass());
-  pm->addPass(mlir::createMemRefToLLVMConversionPass());
+  pm->addPass(createConvertControlFlowToLLVMPass());
+  pm->addPass(createFinalizeMemRefToLLVMConversionPass());
   pm->addNestedPass<func::FuncOp>(mlir::createArithToLLVMConversionPass());
   pm->addPass(createConvertMathToLLVMPass());
   pm->addPass(createConvertFuncToLLVMPass());

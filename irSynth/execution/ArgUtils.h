@@ -1,6 +1,7 @@
 #ifndef IRSYNTH_ARGUTILS_H
 #define IRSYNTH_ARGUTILS_H
 
+#include "llvm/Support/raw_ostream.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/ExecutionEngine/ExecutionEngine.h"
 #include "mlir/ExecutionEngine/MemRefUtils.h"
