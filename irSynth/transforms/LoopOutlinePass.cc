@@ -7,9 +7,9 @@
 
 #include "mlir/Dialect/Affine/IR/AffineOps.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
+#include "mlir/IR/BlockAndValueMapping.h"
 #include "mlir/IR/Builders.h"
 #include "mlir/IR/BuiltinOps.h"
-#include "mlir/IR/IRMapping.h"
 #include "mlir/IR/Location.h"
 #include "mlir/Pass/AnalysisManager.h"
 #include "mlir/Pass/Pass.h"
@@ -61,8 +61,8 @@ llvm::SetVector<Value> getStoredMemRefValues(mlir::Operation *op) {
   return values;
 }
 
-IRMapping reverseMap(IRMapping &mapper) {
-  IRMapping reverseMapper;
+BlockAndValueMapping reverseMap(BlockAndValueMapping &mapper) {
+  BlockAndValueMapping reverseMapper;
   for (auto &pair : mapper.getValueMap())
     reverseMapper.map(pair.second, pair.first);
   return reverseMapper;
@@ -79,7 +79,7 @@ void outlineLoops(func::FuncOp &origFunc) {
   auto topLoops = getTopLevelLoops(origFunc);
   auto builder = OpBuilder::atBlockBegin(module.getBody());
 
-  IRMapping fnResultMapper;
+  BlockAndValueMapping fnResultMapper;
   Operation *lastFunc = nullptr;
   Operation *lastCall = nullptr;
 
@@ -113,7 +113,7 @@ void outlineLoops(func::FuncOp &origFunc) {
     auto &bodyBlock = *func.addEntryBlock();
 
     // Add arguments to function.
-    IRMapping argMapper;
+    BlockAndValueMapping argMapper;
 
     // - Add loaded values as arguments.
     for (auto value : loadedValues) {

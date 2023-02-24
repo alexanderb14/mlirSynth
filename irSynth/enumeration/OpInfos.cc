@@ -1290,7 +1290,7 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_516;
+      case 0: return anonymous_526;
     }
     assert(false && "Invalid operand index");
   }
@@ -1306,7 +1306,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_516;
+      case 0: return anonymous_526;
     }
     assert(false && "Invalid result index");
   }
@@ -1565,7 +1565,7 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_629;
+      case 0: return anonymous_632;
     }
     assert(false && "Invalid operand index");
   }
@@ -1581,7 +1581,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_629;
+      case 0: return anonymous_632;
     }
     assert(false && "Invalid result index");
   }
@@ -1695,7 +1695,7 @@ public:
     switch (index) {
       case 0: return I64Attr;
       case 1: return I64ElementsAttr;
-      case 2: return MHLO_ChannelHandle;
+      case 2: return ChannelHandle;
       case 3: return UnitAttr;
     }
     assert(false && "Invalid attribute index");
@@ -1732,7 +1732,7 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return I64ElementsAttr;
-      case 1: return MHLO_ChannelHandle;
+      case 1: return ChannelHandle;
       case 2: return UnitAttr;
     }
     assert(false && "Invalid attribute index");
@@ -1756,7 +1756,7 @@ public:
 class mhlo_all_to_all : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
-  unsigned getNumAttributes() const override { return 5; }
+  unsigned getNumAttributes() const override { return 4; }
   unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
@@ -1771,7 +1771,6 @@ public:
       case 1: return I64Attr;
       case 2: return I64Attr;
       case 3: return I64ElementsAttr;
-      case 4: return MHLO_ChannelHandle;
     }
     assert(false && "Invalid attribute index");
   }
@@ -1781,7 +1780,6 @@ public:
       case 1: return "concat_dimension";
       case 2: return "split_count";
       case 3: return "replica_groups";
-      case 4: return "channel_handle";
     }
     assert(false && "Invalid attribute index");
   }
@@ -1832,7 +1830,7 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_AsyncBundle;
+      case 0: return HLO_AsyncBundle;
     }
     assert(false && "Invalid operand index");
   }
@@ -1854,7 +1852,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_541;
+      case 0: return HLO_TensorOrTokenOrTuple;
     }
     assert(false && "Invalid result index");
   }
@@ -1868,7 +1866,7 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_541;
+      case 0: return HLO_TensorOrTokenOrTuple;
     }
     assert(false && "Invalid operand index");
   }
@@ -1890,7 +1888,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_AsyncBundle;
+      case 0: return HLO_AsyncBundle;
     }
     assert(false && "Invalid result index");
   }
@@ -1904,7 +1902,7 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_AsyncBundle;
+      case 0: return HLO_AsyncBundle;
     }
     assert(false && "Invalid operand index");
   }
@@ -1926,7 +1924,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_AsyncBundle;
+      case 0: return HLO_AsyncBundle;
     }
     assert(false && "Invalid result index");
   }
@@ -1940,8 +1938,8 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_FpOrComplexTensor;
-      case 1: return HLO_FpOrComplexTensor;
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
     }
     assert(false && "Invalid operand index");
   }
@@ -1957,7 +1955,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_FpOrComplexTensor;
+      case 0: return HLO_Tensor;
     }
     assert(false && "Invalid result index");
   }
@@ -1971,11 +1969,11 @@ public:
   unsigned getNumResults() const override { return 3; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_677;
-      case 1: return anonymous_679;
-      case 2: return anonymous_679;
-      case 3: return anonymous_679;
-      case 4: return anonymous_677;
+      case 0: return anonymous_686;
+      case 1: return anonymous_688;
+      case 2: return anonymous_688;
+      case 3: return anonymous_688;
+      case 4: return anonymous_686;
     }
     assert(false && "Invalid operand index");
   }
@@ -1995,9 +1993,9 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_677;
-      case 1: return anonymous_679;
-      case 2: return anonymous_679;
+      case 0: return anonymous_686;
+      case 1: return anonymous_688;
+      case 2: return anonymous_688;
     }
     assert(false && "Invalid result index");
   }
@@ -2011,11 +2009,11 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_677;
-      case 1: return anonymous_679;
-      case 2: return anonymous_679;
-      case 3: return anonymous_679;
-      case 4: return anonymous_679;
+      case 0: return anonymous_686;
+      case 1: return anonymous_688;
+      case 2: return anonymous_688;
+      case 3: return anonymous_688;
+      case 4: return anonymous_688;
     }
     assert(false && "Invalid operand index");
   }
@@ -2035,7 +2033,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_677;
+      case 0: return anonymous_686;
     }
     assert(false && "Invalid result index");
   }
@@ -2049,9 +2047,9 @@ public:
   unsigned getNumResults() const override { return 3; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_677;
-      case 1: return anonymous_679;
-      case 2: return anonymous_679;
+      case 0: return anonymous_686;
+      case 1: return anonymous_688;
+      case 2: return anonymous_688;
     }
     assert(false && "Invalid operand index");
   }
@@ -2071,9 +2069,9 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_677;
-      case 1: return anonymous_679;
-      case 2: return anonymous_679;
+      case 0: return anonymous_686;
+      case 1: return anonymous_688;
+      case 2: return anonymous_688;
     }
     assert(false && "Invalid result index");
   }
@@ -2241,7 +2239,7 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_FpOrComplexTensor;
+      case 0: return HLO_FpTensor;
     }
     assert(false && "Invalid operand index");
   }
@@ -2257,7 +2255,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_FpOrComplexTensor;
+      case 0: return HLO_FpTensor;
     }
     assert(false && "Invalid result index");
   }
@@ -2402,7 +2400,7 @@ public:
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return I64ElementsAttr;
-      case 1: return MHLO_ChannelHandle;
+      case 1: return ChannelHandle;
     }
     assert(false && "Invalid attribute index");
   }
@@ -2436,8 +2434,8 @@ public:
   }
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_ComparisonDirectionAttr;
-      case 1: return MHLO_ComparisonTypeAttr;
+      case 0: return HLO_ComparisonDirectionAttr;
+      case 1: return HLO_ComparisonTypeAttr;
     }
     assert(false && "Invalid attribute index");
   }
@@ -2496,7 +2494,7 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return Index;
-      case 1: return anonymous_744;
+      case 1: return anonymous_754;
     }
     assert(false && "Invalid operand index");
   }
@@ -2512,7 +2510,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_744;
+      case 0: return anonymous_754;
     }
     assert(false && "Invalid result index");
   }
@@ -2630,11 +2628,11 @@ public:
       case 1: return I64ElementsAttr;
       case 2: return I64ElementsAttr;
       case 3: return I64ElementsAttr;
-      case 4: return MHLO_BoolElementsAttr;
-      case 5: return MHLO_ConvDimensionNumbers;
+      case 4: return BoolElementsAttr;
+      case 5: return ConvDimensionNumbers;
       case 6: return I64Attr;
       case 7: return I64Attr;
-      case 8: return MHLO_PrecisionConfigAttr;
+      case 8: return HLO_PrecisionConfigAttr;
     }
     assert(false && "Invalid attribute index");
   }
@@ -2668,25 +2666,25 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_541;
+      case 0: return HLO_Tensor;
     }
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I32Attr;
+      case 0: return UnitAttr;
     }
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
-      case 0: return "cross_program_prefetch_index";
+      case 0: return "is_cross_program_prefetch";
     }
     assert(false && "Invalid attribute index");
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_541;
+      case 0: return HLO_Tensor;
     }
     assert(false && "Invalid result index");
   }
@@ -2792,7 +2790,7 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return Index;
-      case 1: return anonymous_744;
+      case 1: return anonymous_754;
     }
     assert(false && "Invalid operand index");
   }
@@ -2817,12 +2815,12 @@ public:
 class mhlo_custom_call : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
-  unsigned getNumAttributes() const override { return 9; }
+  unsigned getNumAttributes() const override { return 8; }
   unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_541;
+      case 0: return HLO_TensorOrTokenOrTuple;
     }
     assert(false && "Invalid operand index");
   }
@@ -2830,13 +2828,12 @@ public:
     switch (index) {
       case 0: return StrAttr;
       case 1: return BoolAttr;
-      case 2: return anonymous_687;
-      case 3: return MHLO_CustomCallApiVersionAttr;
-      case 4: return MHLO_FlatSymbolRefArrayAttr;
-      case 5: return MHLO_CustomCallScheduleAttr;
-      case 6: return MHLO_ArrayOfLayoutAttr;
-      case 7: return MHLO_ArrayOfLayoutAttr;
-      case 8: return anonymous_694;
+      case 2: return StrAttr;
+      case 3: return HLO_CustomCallApiVersionAttr;
+      case 4: return HLO_FlatSymbolRefArrayAttr;
+      case 5: return HLO_ArrayOfLayoutAttr;
+      case 6: return HLO_ArrayOfLayoutAttr;
+      case 7: return anonymous_707;
     }
     assert(false && "Invalid attribute index");
   }
@@ -2847,16 +2844,15 @@ public:
       case 2: return "backend_config";
       case 3: return "api_version";
       case 4: return "called_computations";
-      case 5: return "custom_call_schedule";
-      case 6: return "operand_layouts";
-      case 7: return "result_layouts";
-      case 8: return "output_operand_aliases";
+      case 5: return "operand_layouts";
+      case 6: return "result_layouts";
+      case 7: return "output_operand_aliases";
     }
     assert(false && "Invalid attribute index");
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_541;
+      case 0: return HLO_TensorOrTokenOrTuple;
     }
     assert(false && "Invalid result index");
   }
@@ -2870,8 +2866,8 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_IntFpOrComplexTensor;
-      case 1: return HLO_IntFpOrComplexTensor;
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
     }
     assert(false && "Invalid operand index");
   }
@@ -2887,7 +2883,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_IntFpOrComplexTensor;
+      case 0: return HLO_Tensor;
     }
     assert(false && "Invalid result index");
   }
@@ -2907,7 +2903,7 @@ public:
   }
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_DomainKindAttr;
+      case 0: return HLO_DomainKindAttr;
       case 1: return StrAttr;
       case 2: return StrAttr;
     }
@@ -2944,8 +2940,8 @@ public:
   }
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_DotDimensionNumbers;
-      case 1: return MHLO_PrecisionConfigAttr;
+      case 0: return DotDimensionNumbers;
+      case 1: return HLO_PrecisionConfigAttr;
     }
     assert(false && "Invalid attribute index");
   }
@@ -2979,7 +2975,7 @@ public:
   }
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_PrecisionConfigAttr;
+      case 0: return HLO_PrecisionConfigAttr;
     }
     assert(false && "Invalid attribute index");
   }
@@ -3054,11 +3050,11 @@ public:
       case 1: return I64ElementsAttr;
       case 2: return I64ElementsAttr;
       case 3: return I64ElementsAttr;
-      case 4: return MHLO_BoolElementsAttr;
-      case 5: return MHLO_ConvDimensionNumbers;
+      case 4: return BoolElementsAttr;
+      case 5: return ConvDimensionNumbers;
       case 6: return I64Attr;
       case 7: return I64Attr;
-      case 8: return MHLO_PrecisionConfigAttr;
+      case 8: return HLO_PrecisionConfigAttr;
     }
     assert(false && "Invalid attribute index");
   }
@@ -3100,7 +3096,7 @@ public:
   }
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_GatherDimensionNumbers;
+      case 0: return GatherDimensionNumbers;
       case 1: return BoolAttr;
     }
     assert(false && "Invalid attribute index");
@@ -3389,7 +3385,7 @@ public:
   }
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_FftTypeAttr;
+      case 0: return HLO_FftTypeAttr;
       case 1: return I64ElementsAttr;
     }
     assert(false && "Invalid attribute index");
@@ -3442,7 +3438,7 @@ public:
 class mhlo_fusion : public OpInfo {
 public:
   unsigned getNumOperands() const override { return 1; }
-  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumAttributes() const override { return 1; }
   unsigned getNumRegions() const override { return 1; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
@@ -3453,21 +3449,19 @@ public:
   }
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_FusionKindAttr;
-      case 1: return anonymous_735;
+      case 0: return HLO_FusionKindAttr;
     }
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "fusion_kind";
-      case 1: return "output_operand_aliases";
     }
     assert(false && "Invalid attribute index");
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_737;
+      case 0: return anonymous_747;
     }
     assert(false && "Invalid result index");
   }
@@ -3488,7 +3482,7 @@ public:
   }
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_GatherDimensionNumbers;
+      case 0: return GatherDimensionNumbers;
       case 1: return I64ElementsAttr;
       case 2: return BoolAttr;
     }
@@ -3568,7 +3562,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_541;
+      case 0: return HLO_TensorOrTokenOrTuple;
     }
     assert(false && "Invalid result index");
   }
@@ -3662,7 +3656,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_StaticShapeTensorOrToken;
+      case 0: return HLO_TensorOrToken;
     }
     assert(false && "Invalid result index");
   }
@@ -3693,7 +3687,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_StaticShapeIntFpOrComplexTensor;
+      case 0: return HLO_IntFpOrComplexTensor;
     }
     assert(false && "Invalid result index");
   }
@@ -4158,7 +4152,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_648;
+      case 0: return anonymous_651;
     }
     assert(false && "Invalid result index");
   }
@@ -4202,8 +4196,8 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_IntFpOrComplexTensor;
-      case 1: return HLO_IntFpOrComplexTensor;
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
     }
     assert(false && "Invalid operand index");
   }
@@ -4219,7 +4213,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_IntFpOrComplexTensor;
+      case 0: return HLO_Tensor;
     }
     assert(false && "Invalid result index");
   }
@@ -4302,7 +4296,7 @@ public:
   }
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_ChannelHandle;
+      case 0: return ChannelHandle;
       case 1: return BoolAttr;
     }
     assert(false && "Invalid attribute index");
@@ -4316,7 +4310,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_StaticShapeTensorOrToken;
+      case 0: return HLO_TensorOrToken;
     }
     assert(false && "Invalid result index");
   }
@@ -4405,7 +4399,7 @@ public:
     switch (index) {
       case 0: return I64Attr;
       case 1: return I64ElementsAttr;
-      case 2: return MHLO_ChannelHandle;
+      case 2: return ChannelHandle;
       case 3: return UnitAttr;
     }
     assert(false && "Invalid attribute index");
@@ -4476,8 +4470,8 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_IntFpOrComplexTensor;
-      case 1: return HLO_IntFpOrComplexTensor;
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
     }
     assert(false && "Invalid operand index");
   }
@@ -4493,7 +4487,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_IntFpOrComplexTensor;
+      case 0: return HLO_Tensor;
     }
     assert(false && "Invalid result index");
   }
@@ -4522,7 +4516,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_648;
+      case 0: return anonymous_651;
     }
     assert(false && "Invalid result index");
   }
@@ -4566,7 +4560,7 @@ public:
   unsigned getNumResults() const override { return 0; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_541;
+      case 0: return HLO_TensorOrTokenOrTuple;
     }
     assert(false && "Invalid operand index");
   }
@@ -4633,7 +4627,7 @@ public:
   }
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_RngAlgorithmAttr;
+      case 0: return HLO_RngAlgorithmAttr;
     }
     assert(false && "Invalid attribute index");
   }
@@ -4646,7 +4640,7 @@ public:
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_IntOrFpTensor;
-      case 1: return HLO_StaticShapeIntOrFpTensor;
+      case 1: return HLO_IntOrFpTensor;
     }
     assert(false && "Invalid result index");
   }
@@ -4660,15 +4654,15 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_714;
-      case 1: return anonymous_714;
+      case 0: return anonymous_726;
+      case 1: return anonymous_726;
       case 2: return HLO_DimensionTensor;
     }
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_RngDistributionAttr;
+      case 0: return HLO_RngDistributionAttr;
     }
     assert(false && "Invalid attribute index");
   }
@@ -4785,14 +4779,14 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
-      case 1: return anonymous_700;
+      case 1: return anonymous_713;
       case 2: return HLO_Tensor;
     }
     assert(false && "Invalid operand index");
   }
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_ScatterDimensionNumbers;
+      case 0: return ScatterDimensionNumbers;
       case 1: return BoolAttr;
       case 2: return BoolAttr;
     }
@@ -4899,7 +4893,7 @@ public:
   }
   AttrType getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return MHLO_ChannelHandle;
+      case 0: return ChannelHandle;
       case 1: return BoolAttr;
     }
     assert(false && "Invalid attribute index");
@@ -4960,8 +4954,8 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_IntTensor;
-      case 1: return HLO_IntTensor;
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
     }
     assert(false && "Invalid operand index");
   }
@@ -4977,7 +4971,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_IntTensor;
+      case 0: return HLO_Tensor;
     }
     assert(false && "Invalid result index");
   }
@@ -4991,8 +4985,8 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_IntTensor;
-      case 1: return HLO_IntTensor;
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
     }
     assert(false && "Invalid operand index");
   }
@@ -5008,7 +5002,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_IntTensor;
+      case 0: return HLO_Tensor;
     }
     assert(false && "Invalid result index");
   }
@@ -5022,8 +5016,8 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_IntTensor;
-      case 1: return HLO_IntTensor;
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
     }
     assert(false && "Invalid operand index");
   }
@@ -5039,7 +5033,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_IntTensor;
+      case 0: return HLO_Tensor;
     }
     assert(false && "Invalid result index");
   }
@@ -5053,7 +5047,7 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_629;
+      case 0: return anonymous_632;
     }
     assert(false && "Invalid operand index");
   }
@@ -5069,7 +5063,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_629;
+      case 0: return anonymous_632;
     }
     assert(false && "Invalid result index");
   }
@@ -5214,7 +5208,7 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
-      case 1: return anonymous_638;
+      case 1: return anonymous_641;
     }
     assert(false && "Invalid operand index");
   }
@@ -5244,8 +5238,8 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_IntFpOrComplexTensor;
-      case 1: return HLO_IntFpOrComplexTensor;
+      case 0: return HLO_Tensor;
+      case 1: return HLO_Tensor;
     }
     assert(false && "Invalid operand index");
   }
@@ -5261,37 +5255,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_IntFpOrComplexTensor;
-    }
-    assert(false && "Invalid result index");
-  }
-};
-
-class mhlo_tan : public OpInfo {
-public:
-  unsigned getNumOperands() const override { return 1; }
-  unsigned getNumAttributes() const override { return 0; }
-  unsigned getNumRegions() const override { return 0; }
-  unsigned getNumResults() const override { return 1; }
-  OpAndResType getOperandType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_FpOrComplexTensor;
-    }
-    assert(false && "Invalid operand index");
-  }
-  AttrType getAttributeType(unsigned index) const override {
-    switch (index) {
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::string getAttributeName(unsigned index) const override {
-    switch (index) {
-    }
-    assert(false && "Invalid attribute index");
-  }
-  OpAndResType getResultType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_FpOrComplexTensor;
+      case 0: return HLO_Tensor;
     }
     assert(false && "Invalid result index");
   }
@@ -5443,7 +5407,7 @@ public:
       case 0: return BoolAttr;
       case 1: return BoolAttr;
       case 2: return BoolAttr;
-      case 3: return MHLO_TransposeAttr;
+      case 3: return HLO_TransposeAttr;
     }
     assert(false && "Invalid attribute index");
   }
@@ -5472,7 +5436,7 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_541;
+      case 0: return HLO_TensorOrTokenOrTuple;
     }
     assert(false && "Invalid operand index");
   }
@@ -5550,7 +5514,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_728;
+      case 0: return anonymous_740;
     }
     assert(false && "Invalid result index");
   }
@@ -5564,7 +5528,7 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_722;
+      case 0: return anonymous_734;
     }
     assert(false && "Invalid operand index");
   }
@@ -5641,7 +5605,7 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_716;
+      case 0: return anonymous_728;
     }
     assert(false && "Invalid result index");
   }
@@ -5680,6 +5644,7 @@ public:
 
 std::string opAndResTypeToString(OpAndResType type) {
   if (type == DefaultUnknownOpAndResType) return "DefaultUnknownOpAndResType";
+  if (type == HLO_AsyncBundle) return "HLO_AsyncBundle";
   if (type == HLO_ComplexTensor) return "HLO_ComplexTensor";
   if (type == HLO_DimensionTensor) return "HLO_DimensionTensor";
   if (type == HLO_Fp32Or64Tensor) return "HLO_Fp32Or64Tensor";
@@ -5693,32 +5658,28 @@ std::string opAndResTypeToString(OpAndResType type) {
   if (type == HLO_PredTensor) return "HLO_PredTensor";
   if (type == HLO_QuantizedIntTensor) return "HLO_QuantizedIntTensor";
   if (type == HLO_ScalarIntTensor) return "HLO_ScalarIntTensor";
-  if (type == HLO_StaticShapeIntFpOrComplexTensor) return "HLO_StaticShapeIntFpOrComplexTensor";
-  if (type == HLO_StaticShapeIntOrFpTensor) return "HLO_StaticShapeIntOrFpTensor";
   if (type == HLO_StaticShapeTensor) return "HLO_StaticShapeTensor";
-  if (type == HLO_StaticShapeTensorOrToken) return "HLO_StaticShapeTensorOrToken";
   if (type == HLO_Tensor) return "HLO_Tensor";
   if (type == HLO_TensorOrToken) return "HLO_TensorOrToken";
+  if (type == HLO_TensorOrTokenOrTuple) return "HLO_TensorOrTokenOrTuple";
   if (type == HLO_Token) return "HLO_Token";
   if (type == HLO_Tuple) return "HLO_Tuple";
   if (type == I32Tensor) return "I32Tensor";
   if (type == Index) return "Index";
-  if (type == MHLO_AsyncBundle) return "MHLO_AsyncBundle";
   if (type == Shape_WitnessType) return "Shape_WitnessType";
-  if (type == anonymous_516) return "anonymous_516";
-  if (type == anonymous_541) return "anonymous_541";
-  if (type == anonymous_629) return "anonymous_629";
-  if (type == anonymous_638) return "anonymous_638";
-  if (type == anonymous_648) return "anonymous_648";
-  if (type == anonymous_677) return "anonymous_677";
-  if (type == anonymous_679) return "anonymous_679";
-  if (type == anonymous_700) return "anonymous_700";
-  if (type == anonymous_714) return "anonymous_714";
-  if (type == anonymous_716) return "anonymous_716";
-  if (type == anonymous_722) return "anonymous_722";
+  if (type == anonymous_526) return "anonymous_526";
+  if (type == anonymous_632) return "anonymous_632";
+  if (type == anonymous_641) return "anonymous_641";
+  if (type == anonymous_651) return "anonymous_651";
+  if (type == anonymous_686) return "anonymous_686";
+  if (type == anonymous_688) return "anonymous_688";
+  if (type == anonymous_713) return "anonymous_713";
+  if (type == anonymous_726) return "anonymous_726";
   if (type == anonymous_728) return "anonymous_728";
-  if (type == anonymous_737) return "anonymous_737";
-  if (type == anonymous_744) return "anonymous_744";
+  if (type == anonymous_734) return "anonymous_734";
+  if (type == anonymous_740) return "anonymous_740";
+  if (type == anonymous_747) return "anonymous_747";
+  if (type == anonymous_754) return "anonymous_754";
   assert(false && "Invalid OpAndResType");
 }
 
@@ -5726,39 +5687,36 @@ std::string attrTypeToString(AttrType type) {
   if (type == DefaultUnknownAttrType) return "DefaultUnknownAttrType";
   if (type == ArrayAttr) return "ArrayAttr";
   if (type == BoolAttr) return "BoolAttr";
+  if (type == BoolElementsAttr) return "BoolElementsAttr";
   if (type == CHLO_ComparisonDirectionAttr) return "CHLO_ComparisonDirectionAttr";
   if (type == CHLO_ComparisonTypeAttr) return "CHLO_ComparisonTypeAttr";
+  if (type == ChannelHandle) return "ChannelHandle";
+  if (type == ConvDimensionNumbers) return "ConvDimensionNumbers";
+  if (type == DotDimensionNumbers) return "DotDimensionNumbers";
   if (type == ElementsAttr) return "ElementsAttr";
   if (type == F32Attr) return "F32Attr";
   if (type == FlatSymbolRefAttr) return "FlatSymbolRefAttr";
+  if (type == GatherDimensionNumbers) return "GatherDimensionNumbers";
+  if (type == HLO_ArrayOfLayoutAttr) return "HLO_ArrayOfLayoutAttr";
+  if (type == HLO_ComparisonDirectionAttr) return "HLO_ComparisonDirectionAttr";
+  if (type == HLO_ComparisonTypeAttr) return "HLO_ComparisonTypeAttr";
+  if (type == HLO_CustomCallApiVersionAttr) return "HLO_CustomCallApiVersionAttr";
+  if (type == HLO_DomainKindAttr) return "HLO_DomainKindAttr";
+  if (type == HLO_FftTypeAttr) return "HLO_FftTypeAttr";
+  if (type == HLO_FlatSymbolRefArrayAttr) return "HLO_FlatSymbolRefArrayAttr";
+  if (type == HLO_FusionKindAttr) return "HLO_FusionKindAttr";
+  if (type == HLO_PrecisionConfigAttr) return "HLO_PrecisionConfigAttr";
+  if (type == HLO_RngAlgorithmAttr) return "HLO_RngAlgorithmAttr";
+  if (type == HLO_RngDistributionAttr) return "HLO_RngDistributionAttr";
+  if (type == HLO_TransposeAttr) return "HLO_TransposeAttr";
   if (type == I32Attr) return "I32Attr";
   if (type == I64Attr) return "I64Attr";
   if (type == I64ElementsAttr) return "I64ElementsAttr";
-  if (type == MHLO_ArrayOfLayoutAttr) return "MHLO_ArrayOfLayoutAttr";
-  if (type == MHLO_BoolElementsAttr) return "MHLO_BoolElementsAttr";
-  if (type == MHLO_ChannelHandle) return "MHLO_ChannelHandle";
-  if (type == MHLO_ComparisonDirectionAttr) return "MHLO_ComparisonDirectionAttr";
-  if (type == MHLO_ComparisonTypeAttr) return "MHLO_ComparisonTypeAttr";
-  if (type == MHLO_ConvDimensionNumbers) return "MHLO_ConvDimensionNumbers";
-  if (type == MHLO_CustomCallApiVersionAttr) return "MHLO_CustomCallApiVersionAttr";
-  if (type == MHLO_CustomCallScheduleAttr) return "MHLO_CustomCallScheduleAttr";
-  if (type == MHLO_DomainKindAttr) return "MHLO_DomainKindAttr";
-  if (type == MHLO_DotDimensionNumbers) return "MHLO_DotDimensionNumbers";
-  if (type == MHLO_FftTypeAttr) return "MHLO_FftTypeAttr";
-  if (type == MHLO_FlatSymbolRefArrayAttr) return "MHLO_FlatSymbolRefArrayAttr";
-  if (type == MHLO_FusionKindAttr) return "MHLO_FusionKindAttr";
-  if (type == MHLO_GatherDimensionNumbers) return "MHLO_GatherDimensionNumbers";
-  if (type == MHLO_PrecisionConfigAttr) return "MHLO_PrecisionConfigAttr";
-  if (type == MHLO_RngAlgorithmAttr) return "MHLO_RngAlgorithmAttr";
-  if (type == MHLO_RngDistributionAttr) return "MHLO_RngDistributionAttr";
-  if (type == MHLO_ScatterDimensionNumbers) return "MHLO_ScatterDimensionNumbers";
-  if (type == MHLO_TransposeAttr) return "MHLO_TransposeAttr";
+  if (type == ScatterDimensionNumbers) return "ScatterDimensionNumbers";
   if (type == StrAttr) return "StrAttr";
   if (type == TypedAttrInterface) return "TypedAttrInterface";
   if (type == UnitAttr) return "UnitAttr";
-  if (type == anonymous_687) return "anonymous_687";
-  if (type == anonymous_694) return "anonymous_694";
-  if (type == anonymous_735) return "anonymous_735";
+  if (type == anonymous_707) return "anonymous_707";
   assert(false && "Invalid AttrType");
 }
 
@@ -6087,8 +6045,6 @@ OpInfoPtr createOpInfo(std::string name) {
     return std::make_unique<mhlo_stochastic_convert>();
   if (name == "mhlo.subtract")
     return std::make_unique<mhlo_subtract>();
-  if (name == "mhlo.tan")
-    return std::make_unique<mhlo_tan>();
   if (name == "mhlo.tanh")
     return std::make_unique<mhlo_tanh>();
   if (name == "mhlo.torch_index_select")

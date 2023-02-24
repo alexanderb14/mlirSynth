@@ -6,9 +6,9 @@
 #include "transforms/MemrefMinifyPass.h"
 
 #include "lhlo/transforms/passes.h"
-#include "mhlo/IR/register.h"
-#include "mhlo/transforms/passes.h"
-#include "transforms/passes.h"
+#include "mlir-hlo/Dialect/mhlo/IR/register.h"
+#include "mlir-hlo/Dialect/mhlo/transforms/passes.h"
+#include "mlir-hlo/Transforms/passes.h"
 #include "mlir/IR/AsmState.h"
 #include "mlir/IR/Dialect.h"
 #include "mlir/IR/MLIRContext.h"

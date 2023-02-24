@@ -12,9 +12,9 @@
 #include "transforms/MemrefMinifyPass.h"
 
 #include "lhlo/transforms/passes.h"
-#include "mhlo/IR/register.h"
-#include "mhlo/transforms/passes.h"
-#include "transforms/passes.h"
+#include "mlir-hlo/Dialect/mhlo/IR/register.h"
+#include "mlir-hlo/Dialect/mhlo/transforms/passes.h"
+#include "mlir-hlo/Transforms/passes.h"
 #include "mlir/IR/AsmState.h"
 #include "mlir/IR/Dialect.h"
 #include "mlir/IR/MLIRContext.h"
@@ -83,8 +83,8 @@ int main(int argc, char **argv) {
     llvm::errs() << errorMessage << "\n";
     return 1;
   }
-  auto sourceMgr = std::make_shared<SourceMgr>();
-  sourceMgr->AddNewSourceBuffer(std::move(file), SMLoc());
+  SourceMgr sourceMgr;
+  sourceMgr.AddNewSourceBuffer(std::move(file), SMLoc());
 
   FallbackAsmResourceMap fallbackResourceMap;
   ParserConfig config(&ctx, /*verifyAfterParse=*/true, &fallbackResourceMap);

@@ -2,7 +2,6 @@
 #define IRSYNTH_ARRAYUTILS_H
 
 #include "llvm/ADT/ArrayRef.h"
-#include "llvm/Support/raw_ostream.h"
 
 #include <cstdint>
 

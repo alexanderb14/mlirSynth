@@ -5,9 +5,9 @@
 
 #include "mlir/Dialect/Affine/IR/AffineOps.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
+#include "mlir/IR/BlockAndValueMapping.h"
 #include "mlir/IR/Builders.h"
 #include "mlir/IR/BuiltinOps.h"
-#include "mlir/IR/IRMapping.h"
 #include "mlir/Pass/AnalysisManager.h"
 #include "mlir/Pass/Pass.h"
 #include "mlir/Pass/PassManager.h"
@@ -48,7 +48,7 @@ void isolateStmt(ScopStmt *stmt) {
 
   // For each loop in the loop stack, create a new loop that looks like the old
   // one.
-  IRMapping mapping;
+  BlockAndValueMapping mapping;
   auto newLoop = dyn_cast<AffineForOp>(outestForOp);
 
   // Traverse the loop stack in reverse order.

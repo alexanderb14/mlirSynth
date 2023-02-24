@@ -1,5 +1,7 @@
 #import "ArrayUtils.h"
 
+#include "llvm/Support/raw_ostream.h"
+
 #include <math.h>
 
 using namespace llvm;

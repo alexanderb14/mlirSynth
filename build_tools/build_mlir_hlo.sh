@@ -11,7 +11,6 @@ fi
 git clone https://github.com/tensorflow/mlir-hlo.git
 pushd mlir-hlo
 git checkout $(cat ../build_tools/mlir_hlo_version.txt)
-git am < ../build_tools/llvm_patches/disable-TOSA-to-make-mlir-hlo-build.patch
 
 git clone https://github.com/llvm/llvm-project.git
 pushd llvm-project
@@ -50,7 +49,6 @@ cmake .. -GNinja \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
   -DMLIR_DIR=${PWD}/../llvm-build/lib/cmake/mlir
-mkdir include
 cmake --build .
 popd
 
