@@ -555,7 +555,7 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
   stats.numExecuted++;
 
   double *out = getReturnDataPtr(retCand);
-  // printArray(out, returnShape);
+  // printArray(out, returnShape, llvm::outs());
 
   // Hash and add to store if hash doesn't exist yet.
   double hash = hashArray(out, returnShape);
@@ -573,7 +573,7 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
     if (areArraysEqual(refOut, out, returnShape)) {
       LLVM_DEBUG(llvm::dbgs() << "Found a match!\n");
       LLVM_DEBUG(module->print(llvm::dbgs()));
-      // printArray(out, returnShape);
+      // printArray(out, returnShape, llvm::outs());
 
       candidateStore->merge(localCandidateStore);
       stats.numOps = newCandidate->getNumOps();
@@ -621,6 +621,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   assert(succeeded(jitAndInvoke(inputModule, args, ret, false)));
 
   double *refOut = getReturnDataPtr(ret);
+  // printArray(refOut, targetShape, llvm::outs());
   if (options.printArgsAndResults)
     printArgsAndResultsInPython(args, refOut, targetShape);
 
