@@ -89,9 +89,10 @@ genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
 std::vector<std::pair<Attribute, OpAndResType>>
 genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
                     llvm::ArrayRef<int64_t> &targetShape, int maxRank) {
-  std::vector<std::pair<Attribute, OpAndResType>> tensorValues;
+  std::vector<std::pair<Attribute, OpAndResType>> attributes;
 
   if (maxRank >= 0) {
+    // Create scalars.
     std::vector<Attribute> attrs = {
         //        builder.getBoolAttr(true),    builder.getBoolAttr(false),
         builder.getF64FloatAttr(0.0),
@@ -104,7 +105,7 @@ genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
     for (auto attr : attrs) {
       Type type = RankedTensorType::get({}, attr.cast<TypedAttr>().getType());
       auto attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attr);
-      tensorValues.emplace_back(attrDense,
+      attributes.emplace_back(attrDense,
                                 OpAndResType::HLO_Tensor);
     }
   }
@@ -124,7 +125,7 @@ genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
     Type type = RankedTensorType::get({targetShape[0], targetShape[1]},
                                       builder.getI1Type());
     auto attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attrVect);
-    tensorValues.emplace_back(attrDense,
+    attributes.emplace_back(attrDense,
                               OpAndResType::HLO_PredTensor);
 
     // Create a matrix with 0 values.
@@ -135,11 +136,11 @@ genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
     type = RankedTensorType::get({targetShape[0], targetShape[1]},
                                  builder.getF64Type());
     attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attrVect);
-    tensorValues.emplace_back(attrDense,
+    attributes.emplace_back(attrDense,
                               OpAndResType::HLO_Tensor);
   }
 
-  return tensorValues;
+  return attributes;
 }
 
 void printAttributes(std::vector<std::pair<Attribute, OpAndResType>>& attributes) {
@@ -158,11 +159,11 @@ genAttributes(MLIRContext &ctx, Region::BlockArgListType &functionArgs,
   std::vector<std::pair<Attribute, OpAndResType>> attributes;
   OpBuilder builder(&ctx);
 
-  auto shapeValues = genShapeAttributes(builder, functionArgs);
-  attributes.insert(attributes.end(), shapeValues.begin(), shapeValues.end());
+  auto shapeAttributes = genShapeAttributes(builder, functionArgs);
+  attributes.insert(attributes.end(), shapeAttributes.begin(), shapeAttributes.end());
 
-  auto tensorValues = genTensorAttributes(builder, functionArgs, targetShape, maxRank);
-  attributes.insert(attributes.end(), tensorValues.begin(), tensorValues.end());
+  auto tensorAttributes = genTensorAttributes(builder, functionArgs, targetShape, maxRank);
+  attributes.insert(attributes.end(), tensorAttributes.begin(), tensorAttributes.end());
 
   // printAttributes(attributes);
 
