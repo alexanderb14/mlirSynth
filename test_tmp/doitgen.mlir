@@ -26,12 +26,12 @@ module {
     }
     return %alloc_0 : memref<5x3x7xf64>
   }
-  //func.func @fn_0_raised(%arg0: tensor<7xf64>, %arg1: tensor<5x3x7xf64>, %arg2: tensor<7x7xf64>) -> tensor<5x3x7xf64> attributes {irsynth.raised} {
-  //  %0 = "mhlo.dot_general"(%arg1, %arg2) {dot_dimension_numbers = #mhlo.dot<lhs_contracting_dimensions = [2], rhs_contracting_dimensions = [0]>} : (tensor<5x3x7xf64>, tensor<7x7xf64>) -> tensor<5x3x7xf64>
-  //  return %0 : tensor<5x3x7xf64>
-  //}
+  func.func @fn_0_raised_0(%arg0: tensor<7xf64>, %arg1: tensor<5x3x7xf64>, %arg2: tensor<7x7xf64>) -> tensor<5x3x7xf64> attributes {irsynth.raised} {
+    %0 = "mhlo.dot_general"(%arg1, %arg2) {dot_dimension_numbers = #mhlo.dot<lhs_contracting_dimensions = [2], rhs_contracting_dimensions = [0]>} : (tensor<5x3x7xf64>, tensor<7x7xf64>) -> tensor<5x3x7xf64>
+    return %0 : tensor<5x3x7xf64>
+  }
 
-  func.func @fn_0_raised(%arg0: tensor<7xf64>, %arg1: tensor<5x3x7xf64>, %arg2: tensor<7x7xf64>) -> tensor<5x3x7xf64> attributes {irsynth.raised} {
+  func.func @fn_0_raised_1(%arg0: tensor<7xf64>, %arg1: tensor<5x3x7xf64>, %arg2: tensor<7x7xf64>) -> tensor<5x3x7xf64> attributes {irsynth.raised} {
     %0 = "mhlo.reshape"(%arg1) {new_sizes = dense<[5, 3, 1, 7]> : tensor<4xi64>} : (tensor<5x3x7xf64>) -> tensor<5x3x1x7xf64>
     %1 = "mhlo.dot_general"(%0, %arg2) {dot_dimension_numbers = #mhlo.dot<lhs_contracting_dimensions = [3], rhs_contracting_dimensions = [0]>} : (tensor<5x3x1x7xf64>, tensor<7x7xf64>) -> tensor<5x3x1x7xf64>
     %2 = "mhlo.reshape"(%1) {new_sizes = dense<[5, 3, 7]> : tensor<3xi64>} : (tensor<5x3x1x7xf64>) -> tensor<5x3x7xf64>
