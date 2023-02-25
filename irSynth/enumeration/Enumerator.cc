@@ -681,7 +681,10 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
       }
 
       // - Regions.
-      // TODO: Add regions.
+      auto regionsGenereated = genRegions(ctx);
+      for (unsigned i = 0; i < opInfo->getNumRegions(); i++) {
+        regions.push_back(regionsGenereated);
+      }
 
       auto operandArgTuples =
           getCartesianProduct(operands, attributes, regions);
