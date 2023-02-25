@@ -92,31 +92,26 @@ int main(int argc, char **argv) {
       parseSourceFileForTool(sourceMgr, config, /*insertImplicitModule*/ false);
   assert(inputOp && "Failed to parse input file");
 
-  // Load modules.
-  // - Original function (in affine).
-  auto originalFunction = getFunctions(inputOp.get(), "irsynth.original")[0];
+  // Load original function module (in affine).
+  auto originalFunctions = getFunctions(inputOp.get(), "irsynth.original");
+  assert(originalFunctions.size() == 1 &&
+         "Expected one function with the irsynth.original attribute");
+  auto originalFunction = originalFunctions[0];
+
   originalFunction->setAttr("llvm.emit_c_interface", UnitAttr::get(&ctx));
   originalFunction.setSymName("foo");
 
   auto originalModuleRef = createModule(ctx, &originalFunction);
   auto originalModule = originalModuleRef.release();
 
-  // - HLO function.
-  auto hloFunction = getFunctions(inputOp.get(), "irsynth.raised")[0];
-  hloFunction->setAttr("llvm.emit_c_interface", UnitAttr::get(&ctx));
-  hloFunction.setSymName("foo");
-  auto hloModuleRef = createModule(ctx, &hloFunction);
-  auto hloModule = hloModuleRef.release();
-
   // Create inputs.
   auto args = createArgs(originalFunction);
   randomlyInitializeArgs(originalFunction, args);
   auto targetShape = getReturnShape(originalFunction);
 
-  // Lower and run the functions on the inputs.
+  // Lower and run the original function on the inputs.
   auto executor = std::make_shared<Executor>(&ctx);
 
-  // - Original function (in affine).
   assert(succeeded(executor->lowerAffineToLLVMDialect(originalModule)) &&
          "Failed to lower affine to LLVM dialect");
   auto refRet = getOwningMemRefForShape(targetShape);
@@ -126,23 +121,37 @@ int main(int argc, char **argv) {
   if (printArgsAndResults)
     printArgsAndResultsInPython(args, refOut, targetShape);
 
-  // - HLO function.
-  assert(succeeded(executor->lowerCHLOToLLVMDialect(hloModule)) &&
-         "Failed to lower chlo to LLVM dialect");
-  auto hloRet = getOwningMemRefForShape(targetShape);
-  assert(succeeded(jitAndInvoke(hloModule, args, hloRet, false)));
-  double *hloOut = getReturnDataPtr(hloRet);
 
-  // Print the results.
-  if (areArraysEqual(refOut, hloOut, targetShape)) {
-    llvm::outs() << "\033[1;42mResults are equal.\033[0m";
-  } else {
-    llvm::outs() << "\033[1;41mResults are different.\033[0m";
+  // Load HLO function module(s).
+  auto hloFunctions = getFunctions(inputOp.get(), "irsynth.raised");
+  for (auto hloFunction : hloFunctions) {
+    auto functionName = hloFunction.getName().str();
+
+    hloFunction->setAttr("llvm.emit_c_interface", UnitAttr::get(&ctx));
+    hloFunction.setSymName("foo");
+    auto hloModuleRef = createModule(ctx, &hloFunction);
+    auto hloModule = hloModuleRef.release();
+
+    // Lower and run the hlo function on the inputs.
+    assert(succeeded(executor->lowerCHLOToLLVMDialect(hloModule)) &&
+           "Failed to lower chlo to LLVM dialect");
+    auto hloRet = getOwningMemRefForShape(targetShape);
+    convertScalarToMemrefArgs(args);
+    assert(succeeded(jitAndInvoke(hloModule, args, hloRet, false)));
+    double *hloOut = getReturnDataPtr(hloRet);
+
+    // Print the results.
+    llvm::outs() << functionName << ": ";
+    if (areArraysEqual(refOut, hloOut, targetShape)) {
+      llvm::outs() << "\033[1;42mResults are equal.\033[0m";
+    } else {
+      llvm::outs() << "\033[1;41mResults are different.\033[0m";
+    }
+    llvm::outs() << "\n";
+
+    printArray(refOut, targetShape, llvm::outs());
+    llvm::outs() << "\n";
+    printArray(hloOut, targetShape, llvm::outs());
+    llvm::outs() << "\n";
   }
-  llvm::outs() << "\n";
-
-  printArray(refOut, targetShape, llvm::outs());
-  llvm::outs() << "\n";
-  printArray(hloOut, targetShape, llvm::outs());
-  llvm::outs() << "\n";
 }
