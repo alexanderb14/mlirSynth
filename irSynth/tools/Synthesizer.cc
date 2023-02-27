@@ -362,9 +362,7 @@ int main(int argc, char **argv) {
         }
       }
       // Remove the remaining call site arguments.
-      for (; operandIdx < callSite.getNumOperands(); ++operandIdx) {
-        callSite->eraseOperand(operandIdx);
-      }
+      callSite->eraseOperands(operandIdx, callSite.getNumOperands() - operandIdx);
 
       // Results: Tensor to memref.
       assert(callSite.getNumResults() == synthesizedFunc.getNumResults() &&
