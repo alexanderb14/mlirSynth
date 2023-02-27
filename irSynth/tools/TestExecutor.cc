@@ -50,6 +50,8 @@ int main(int argc, char **argv) {
   cl::opt<bool> printArgsAndResults("print-args-and-results",
                                     cl::desc("Print args and results"),
                                     cl::init(false));
+  cl::opt<bool> printResults("print-results", cl::desc("Print results"),
+                             cl::init(false));
   cl::ParseCommandLineOptions(argc, argv, "MLIR enumerator\n");
 
   // Initialize LLVM.
@@ -149,9 +151,11 @@ int main(int argc, char **argv) {
     }
     llvm::outs() << "\n";
 
-    printArray(refOut, targetShape, llvm::outs());
-    llvm::outs() << "\n";
-    printArray(hloOut, targetShape, llvm::outs());
-    llvm::outs() << "\n";
+    if (printResults) {
+      printArray(refOut, targetShape, llvm::outs());
+      llvm::outs() << "\n";
+      printArray(hloOut, targetShape, llvm::outs());
+      llvm::outs() << "\n";
+    }
   }
 }
