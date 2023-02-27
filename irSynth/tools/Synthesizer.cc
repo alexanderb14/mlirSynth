@@ -8,6 +8,7 @@
 #include "execution/Executor.h"
 #include "mlir/IR/BuiltinTypes.h"
 #include "mlir/IR/Location.h"
+#include "mlir/IR/Verifier.h"
 #include "transforms/CopyModifiedMemrefsPass.h"
 #include "transforms/LoopDistributionPass.h"
 #include "transforms/LoopOutlinePass.h"
@@ -402,5 +403,7 @@ int main(int argc, char **argv) {
 
   inputOp.get()->print(llvm::outs());
 
+  if (failed(verify(inputOp.get())))
+    return 1;
   return 0;
 }
