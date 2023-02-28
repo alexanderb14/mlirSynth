@@ -198,18 +198,18 @@ int main(int argc, char **argv) {
       parseSourceFileForTool(sourceMgr, config, /*insertImplicitModule*/ false);
   assert(inputOp && "Failed to parse input file");
 
-  // Transform the input op to prepare for synthesis.
-  mlir::PassManager pm(ctx);
+  // Preprocessing to prepare program for synthesis.
+  mlir::PassManager prePm(ctx);
   if (distribute)
-    pm.addPass(createLoopDistributionPass());
-  pm.addPass(createMemrefMinifyPass());
-  pm.addPass(createLoopOutlinePass());
-  pm.addPass(createCopyModifiedMemrefsPass());
-  if (failed(pm.run(inputOp.get()))) {
-    llvm::errs() << "Failed to run passes on input file\n";
+    prePm.addPass(createLoopDistributionPass());
+  prePm.addPass(createMemrefMinifyPass());
+  prePm.addPass(createLoopOutlinePass());
+  prePm.addPass(createCopyModifiedMemrefsPass());
+  if (failed(prePm.run(inputOp.get()))) {
+    llvm::errs() << "Failed to run preprocessing passes\n";
     return 1;
   }
-  LLVM_DEBUG(llvm::dbgs() << "After preparation transformations:\n");
+  LLVM_DEBUG(llvm::dbgs() << "After preprocessing:\n");
   LLVM_DEBUG(inputOp.get()->print(llvm::dbgs()));
 
   // Parse the funcion ops.
@@ -399,9 +399,12 @@ int main(int argc, char **argv) {
     }
   }
 
+  // Print.
   inputOp.get()->print(llvm::outs());
 
+  // Verify.
   if (failed(verify(inputOp.get())))
     return 1;
+
   return 0;
 }
