@@ -61,11 +61,12 @@ target_include_directories(execution
 
 # Lib: Transform
 add_library(transform
+  transforms/CleanupPass.cc
   transforms/CopyModifiedMemrefsPass.cc
-  transforms/MemrefMinifyPass.cc
   transforms/LoopDistributionPass.cc
   transforms/LoopOutlinePass.cc
-  transforms/CleanupPass.cc
+  transforms/MemrefMinifyPass.cc
+  transforms/TargetOutlinePass.cc
   transforms/Utils.cc)
 target_include_directories(transform
   PRIVATE ${CMAKE_CURRENT_LIST_DIR})

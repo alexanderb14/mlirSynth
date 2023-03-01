@@ -4,6 +4,7 @@
 #include "transforms/LoopDistributionPass.h"
 #include "transforms/LoopOutlinePass.h"
 #include "transforms/MemrefMinifyPass.h"
+#include "transforms/TargetOutlinePass.h"
 
 #include "lhlo/transforms/passes.h"
 #include "mlir-hlo/Dialect/mhlo/IR/register.h"
@@ -38,11 +39,12 @@ int main(int argc, char **argv) {
 
   registerPolyhedralAnalysisPass();
 
-  registerCopyModifiedMemrefsPass();
   registerCleanupPass();
+  registerCopyModifiedMemrefsPass();
   registerLoopDistributionPass();
   registerLoopOutlinePass();
   registerMemrefMinifyPass();
+  registerTargetOutlinePass();
 
   return mlir::asMainReturnCode(mlir::MlirOptMain(
       argc, argv, "Synthesizer opt driver\n", registry, true));

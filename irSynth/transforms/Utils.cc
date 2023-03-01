@@ -15,3 +15,47 @@ llvm::SmallVector<mlir::Operation *> getTopLevelLoops(func::FuncOp &op) {
   }
   return loops;
 }
+
+llvm::SmallVector<Value> getOutOfBlockDefValues(mlir::Block *block) {
+  // Get all values.
+  llvm::DenseMap<Value, bool> allValues;
+  // - Defined in the block.
+  block->walk([&](Operation *op) {
+    for (auto result : op->getResults())
+      allValues[result] = true;
+  });
+  // - Defined as arguments.
+  for (auto arg : block->getArguments())
+    allValues[arg] = true;
+
+  // Get all ops.
+  llvm::SetVector<Operation *> allOps;
+  block->walk([&](Operation *op) { allOps.insert(op); });
+
+  llvm::SetVector<Value> undefinedValues;
+  for (auto &op : allOps) {
+    for (auto operand : op->getOperands()) {
+      if (allValues.count(operand) == 0 && !operand.getType().isa<IndexType>())
+        undefinedValues.insert(operand);
+    }
+  }
+
+  // Convert to vector so that it has a stable order.
+  llvm::SmallVector<Value> undefinedValuesVec;
+  for (auto value : undefinedValues)
+    undefinedValuesVec.push_back(value);
+
+  return undefinedValuesVec;
+}
+
+llvm::SetVector<Value> getLoadedMemRefValues(mlir::Operation *op) {
+  llvm::SetVector<Value> values;
+  op->walk([&](AffineLoadOp loadOp) { values.insert(loadOp.getMemRef()); });
+  return values;
+}
+
+llvm::SetVector<Value> getStoredMemRefValues(mlir::Operation *op) {
+  llvm::SetVector<Value> values;
+  op->walk([&](AffineStoreOp storeOp) { values.insert(storeOp.getMemRef()); });
+  return values;
+}
