@@ -5,11 +5,11 @@
 #include "execution/Executor.h"
 #include "mlir/Target/LLVMIR/Dialect/LLVMIR/LLVMToLLVMIRTranslation.h"
 #include "mlir/Tools/ParseUtilities.h"
+#include "transforms/ChangeSizesPass.h"
 #include "transforms/CleanupPass.h"
 #include "transforms/CopyModifiedMemrefsPass.h"
 #include "transforms/LoopDistributionPass.h"
 #include "transforms/LoopOutlinePass.h"
-#include "transforms/MemrefMinifyPass.h"
 
 #include "lhlo/transforms/passes.h"
 #include "mlir-hlo/Dialect/mhlo/IR/register.h"

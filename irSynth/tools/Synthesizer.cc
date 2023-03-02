@@ -1,18 +1,18 @@
 #include "ContextManager.h"
 
 #include "Common.h"
-#include "enumeration/CartesianProduct.h"
 #include "enumeration/Candidate.h"
+#include "enumeration/CartesianProduct.h"
 #include "enumeration/Enumerator.h"
 #include "enumeration/Guide.h"
 #include "execution/Executor.h"
 #include "mlir/IR/BuiltinTypes.h"
 #include "mlir/IR/Location.h"
 #include "mlir/IR/Verifier.h"
+#include "transforms/ChangeSizesPass.h"
 #include "transforms/CopyModifiedMemrefsPass.h"
 #include "transforms/LoopDistributionPass.h"
 #include "transforms/LoopOutlinePass.h"
-#include "transforms/MemrefMinifyPass.h"
 
 #include "lhlo/IR/lhlo_ops.h"
 #include "lhlo/transforms/passes.h"
@@ -202,7 +202,7 @@ int main(int argc, char **argv) {
   mlir::PassManager prePm(ctx);
   if (distribute)
     prePm.addPass(createLoopDistributionPass());
-  prePm.addPass(createMemrefMinifyPass());
+  prePm.addPass(createChangeSizesPass());
   prePm.addPass(createLoopOutlinePass());
   prePm.addPass(createCopyModifiedMemrefsPass());
   if (failed(prePm.run(inputOp.get()))) {

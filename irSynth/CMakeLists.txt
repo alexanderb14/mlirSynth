@@ -61,11 +61,11 @@ target_include_directories(execution
 
 # Lib: Transform
 add_library(transform
+  transforms/ChangeSizesPass.cc
   transforms/CleanupPass.cc
   transforms/CopyModifiedMemrefsPass.cc
   transforms/LoopDistributionPass.cc
   transforms/LoopOutlinePass.cc
-  transforms/MemrefMinifyPass.cc
   transforms/PrepareTargetPass.cc
   transforms/TargetOutlinePass.cc
   transforms/Utils.cc)

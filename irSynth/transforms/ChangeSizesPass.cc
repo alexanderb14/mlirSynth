@@ -1,4 +1,4 @@
-#include "MemrefMinifyPass.h"
+#include "ChangeSizesPass.h"
 
 #include "mlir/Dialect/Affine/IR/AffineOps.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
@@ -13,6 +13,8 @@
 
 using namespace mlir;
 
+using SizeMap = llvm::DenseMap<int64_t, int64_t>;
+
 int nextPrime(int n) {
   if (n <= 2)
     return 2;
@@ -26,7 +28,7 @@ int nextPrime(int n) {
   return n;
 }
 
-llvm::DenseMap<int64_t, int64_t> getMinifedDimensionMap(func::FuncOp &func) {
+SizeMap getMinifedSizeMap(func::FuncOp &func) {
   bool debug = false;
 
   // Collect all memref types.
@@ -75,7 +77,7 @@ llvm::DenseMap<int64_t, int64_t> getMinifedDimensionMap(func::FuncOp &func) {
 
   // Create a mapping from sorted dimensions to their minified values. Minified
   // values are prime numbers.
-  llvm::DenseMap<int64_t, int64_t> minifiedDimensions;
+  SizeMap minifiedDimensions;
   int64_t minifiedValue = 3;
   for (auto dim : sortedDimensions) {
     minifiedDimensions[dim] = minifiedValue;
@@ -91,58 +93,63 @@ llvm::DenseMap<int64_t, int64_t> getMinifedDimensionMap(func::FuncOp &func) {
   return minifiedDimensions;
 }
 
-void minifyMemrefs(func::FuncOp &func,
-                   llvm::DenseMap<int64_t, int64_t> &minifiedDimensions) {
+void changeTensorSizes(func::FuncOp &func,
+                   SizeMap &minifiedSizes) {
+}
+
+
+void changeMemrefSizes(func::FuncOp &func,
+                   SizeMap &newSizes) {
   // In function signatures.
   auto type = func.getFunctionType();
   // - Minify memref types in function arguments.
-  llvm::SmallVector<Type> minifiedArgTypes;
+  llvm::SmallVector<Type> newArgTypes;
   for (auto argType : type.getInputs()) {
     if (argType.isa<MemRefType>()) {
       auto memrefType = argType.cast<MemRefType>();
-      llvm::SmallVector<int64_t> minifiedShape;
+      llvm::SmallVector<int64_t> newShape;
       for (auto dim : memrefType.getShape()) {
         long newDim;
-        if (minifiedDimensions.count(dim) == 0)
+        if (newSizes.count(dim) == 0)
           newDim = dim;
         else
-          newDim = minifiedDimensions[dim];
-        minifiedShape.push_back(newDim);
+          newDim = newSizes[dim];
+        newShape.push_back(newDim);
       }
-      auto minifiedType =
-          MemRefType::get(minifiedShape, memrefType.getElementType());
-      minifiedArgTypes.push_back(minifiedType);
+      auto newType =
+          MemRefType::get(newShape, memrefType.getElementType());
+      newArgTypes.push_back(newType);
     } else {
-      minifiedArgTypes.push_back(argType);
+      newArgTypes.push_back(argType);
     }
   }
 
   // - Minify memref types in function results.
-  llvm::SmallVector<Type> minifiedResultTypes;
+  llvm::SmallVector<Type> newResultTypes;
   for (auto resultType : type.getResults()) {
     if (resultType.isa<MemRefType>()) {
       auto memrefType = resultType.cast<MemRefType>();
-      llvm::SmallVector<int64_t> minifiedShape;
+      llvm::SmallVector<int64_t> newShape;
       for (auto dim : memrefType.getShape()) {
         long newDim;
-        if (minifiedDimensions.count(dim) == 0)
+        if (newSizes.count(dim) == 0)
           newDim = dim;
         else
-          newDim = minifiedDimensions[dim];
-        minifiedShape.push_back(newDim);
+          newDim = newSizes[dim];
+        newShape.push_back(newDim);
       }
-      auto minifiedType =
-          MemRefType::get(minifiedShape, memrefType.getElementType());
-      minifiedResultTypes.push_back(minifiedType);
+      auto newType =
+          MemRefType::get(newShape, memrefType.getElementType());
+      newResultTypes.push_back(newType);
     } else {
-      minifiedResultTypes.push_back(resultType);
+      newResultTypes.push_back(resultType);
     }
   }
 
   // - Set the new function type.
-  auto minifiedType = FunctionType::get(type.getContext(), minifiedArgTypes,
-                                        minifiedResultTypes);
-  func.setType(minifiedType);
+  auto newType = FunctionType::get(type.getContext(), newArgTypes,
+                                        newResultTypes);
+  func.setType(newType);
 
   // In operations.
   func->walk([&](Operation *op) {
@@ -150,43 +157,43 @@ void minifyMemrefs(func::FuncOp &func,
     for (auto operand : op->getOperands()) {
       if (operand.getType().isa<MemRefType>()) {
         auto type = operand.getType().cast<MemRefType>();
-        llvm::SmallVector<int64_t> minifiedShape;
+        llvm::SmallVector<int64_t> newShape;
         for (auto dim : type.getShape()) {
           long newDim;
-          if (minifiedDimensions.count(dim) == 0)
+          if (newSizes.count(dim) == 0)
             newDim = dim;
           else
-            newDim = minifiedDimensions[dim];
-          minifiedShape.push_back(newDim);
+            newDim = newSizes[dim];
+          newShape.push_back(newDim);
         }
-        auto minifiedType =
-            MemRefType::get(minifiedShape, type.getElementType());
-        operand.setType(minifiedType);
+        auto newType =
+            MemRefType::get(newShape, type.getElementType());
+        operand.setType(newType);
       }
     }
     // - Minify memref types in operation results.
     for (auto type : op->getResultTypes()) {
       if (type.isa<MemRefType>()) {
         auto resType = type.cast<MemRefType>();
-        llvm::SmallVector<int64_t> minifiedShape;
+        llvm::SmallVector<int64_t> newShape;
         for (auto dim : resType.getShape()) {
           long newDim;
-          if (minifiedDimensions.count(dim) == 0)
+          if (newSizes.count(dim) == 0)
             newDim = dim;
           else
-            newDim = minifiedDimensions[dim];
-          minifiedShape.push_back(newDim);
+            newDim = newSizes[dim];
+          newShape.push_back(newDim);
         }
-        auto minifiedType =
-            MemRefType::get(minifiedShape, resType.getElementType());
-        resType = minifiedType;
+        auto newType =
+            MemRefType::get(newShape, resType.getElementType());
+        resType = newType;
       }
     }
   });
 }
 
-void minifyLoopBounds(func::FuncOp &func,
-                      llvm::DenseMap<int64_t, int64_t> &minifiedDimensions) {
+void changeLoopBounds(func::FuncOp &func,
+                      SizeMap &newSizes) {
   bool debug = false;
 
   func->walk([&](Operation *op) {
@@ -200,17 +207,17 @@ void minifyLoopBounds(func::FuncOp &func,
         if (expr.isa<AffineDimExpr>()) {
           auto dimExpr = expr.cast<AffineDimExpr>();
           auto dim = dimExpr.getPosition();
-          if (minifiedDimensions.count(dim) == 0)
+          if (newSizes.count(dim) == 0)
             ubExprs.push_back(expr);
           else
-            ubExprs.push_back(getAffineConstantExpr(minifiedDimensions[dim],
+            ubExprs.push_back(getAffineConstantExpr(newSizes[dim],
                                                     op->getContext()));
         } else if (expr.isa<AffineConstantExpr>()) {
           auto dim = expr.cast<AffineConstantExpr>().getValue();
-          if (minifiedDimensions.count(dim) == 0)
+          if (newSizes.count(dim) == 0)
             ubExprs.push_back(expr);
           else
-            ubExprs.push_back(getAffineConstantExpr(minifiedDimensions[dim],
+            ubExprs.push_back(getAffineConstantExpr(newSizes[dim],
                                                     op->getContext()));
         } else if (expr.isa<AffineBinaryOpExpr>()) {
         } else {
@@ -218,50 +225,90 @@ void minifyLoopBounds(func::FuncOp &func,
           assert(false && "Unexpected expression type");
         }
       }
-      auto ubMapMinified = AffineMap::get(
+      auto ubMapNew = AffineMap::get(
           ubMap.getNumDims(), ubMap.getNumSymbols(), ubExprs, op->getContext());
-      if (ubMapMinified.getNumResults())
-        forOp.setUpperBoundMap(ubMapMinified);
+      if (ubMapNew.getNumResults())
+        forOp.setUpperBoundMap(ubMapNew);
 
       if (debug) {
         llvm::outs() << "Loop bounds: " << ubMap << "\n";
-        llvm::outs() << "Minified loop bounds: " << ubMapMinified << "\n";
+        llvm::outs() << "Minified loop bounds: " << ubMapNew << "\n";
       }
     }
   });
 }
 
-void annotateMinifiedDimensions(
-    func::FuncOp &func, llvm::DenseMap<int64_t, int64_t> &minifiedDimensions) {
-  std::string minifiedDimensionsStr;
+void annotateChangedSizes(
+    func::FuncOp &func, SizeMap &newSizes) {
+  std::string newSizesStr;
   bool first = true;
-  for (auto dim : minifiedDimensions) {
+  for (auto dim : newSizes) {
     if (!first)
-      minifiedDimensionsStr += ",";
+      newSizesStr += ",";
     first = false;
-    minifiedDimensionsStr +=
+    newSizesStr +=
         std::to_string(dim.first) + ":" + std::to_string(dim.second);
   }
-  func->setAttr("minified_dimensions",
-                StringAttr::get(func->getContext(), minifiedDimensionsStr));
+  func->setAttr("changed_sizes",
+                StringAttr::get(func->getContext(), newSizesStr));
 }
 
-void MemrefMinifyPass::runOnOperation() {
+SizeMap getChangedSizes(func::FuncOp &func) {
+  SizeMap changedSizes;
+
+  auto changedSizesAttr = func->getAttr("changed_sizes");
+  assert(changedSizesAttr && "No changed_sizes attribute found");
+  auto changedSizesStr = changedSizesAttr.cast<StringAttr>().getValue().str();
+
+  std::stringstream ss(changedSizesStr);
+  std::string token;
+  while (std::getline(ss, token, ',')) {
+    std::stringstream ss2(token);
+    std::string dimStr;
+    std::string newDimStr;
+    std::getline(ss2, dimStr, ':');
+    std::getline(ss2, newDimStr, ':');
+    long dim = std::stol(dimStr);
+    long newDim = std::stol(newDimStr);
+    changedSizes[newDim] = dim;
+  }
+
+  return changedSizes;
+}
+
+void ChangeSizesPass::runOnOperation() {
   auto operation = getOperation();
 
-  operation->walk([&](Operation *op) {
-    if (isa<func::FuncOp>(op)) {
-      auto func = cast<func::FuncOp>(op);
+  if (mode == "minify") {
+    operation->walk([&](Operation *op) {
+      if (isa<func::FuncOp>(op)) {
+        auto func = cast<func::FuncOp>(op);
 
-      auto minifiedDimensions = getMinifedDimensionMap(func);
-      minifyMemrefs(func, minifiedDimensions);
-      minifyLoopBounds(func, minifiedDimensions);
+        auto minifiedSizes = getMinifedSizeMap(func);
+        changeMemrefSizes(func, minifiedSizes);
+        changeLoopBounds(func, minifiedSizes);
 
-      annotateMinifiedDimensions(func, minifiedDimensions);
-    }
-  });
+        annotateChangedSizes(func, minifiedSizes);
+      }
+    });
+  } else if (mode == "restore") {
+    operation->walk([&](Operation *op) {
+      if (isa<func::FuncOp>(op)) {
+        auto func = cast<func::FuncOp>(op);
+
+        auto changedSizes = getChangedSizes(func);
+        changeMemrefSizes(func, changedSizes);
+        changeTensorSizes(func, changedSizes);
+        changeLoopBounds(func, changedSizes);
+      }
+    });
+
+  } else {
+    llvm::outs() << "Unknown mode: " << mode << "\n";
+    assert(false && "Unknown mode");
+  }
 }
 
-std::unique_ptr<OperationPass<ModuleOp>> createMemrefMinifyPass() {
-  return std::make_unique<MemrefMinifyPass>();
+std::unique_ptr<OperationPass<ModuleOp>> createChangeSizesPass() {
+  return std::make_unique<ChangeSizesPass>();
 }

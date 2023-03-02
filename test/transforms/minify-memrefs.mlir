@@ -1,6 +1,6 @@
-// RUN: opt %s --minify-memrefs | FileCheck %s
+// RUN: opt %s --change-sizes | FileCheck %s
 
-// CHECK:       func.func @foo(%arg0: memref<3x5xf64>, %arg1: memref<3x5xf64>) -> memref<3x5xf64> attributes {minified_dimensions = "1000:3,2000:5"} {
+// CHECK:       func.func @foo(%arg0: memref<3x5xf64>, %arg1: memref<3x5xf64>) -> memref<3x5xf64> attributes {changed_sizes = "1000:3,2000:5"} {
 // CHECK-NEXT:    %alloc = memref.alloc() : memref<3x5xf64>
 // CHECK-NEXT:    affine.for %arg2 = 0 to 3 {
 // CHECK-NEXT:      affine.for %arg3 = 0 to 5 {
