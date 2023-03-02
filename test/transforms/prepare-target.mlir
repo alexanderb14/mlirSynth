@@ -1,6 +1,6 @@
 // RUN: opt %s --prepare-target | FileCheck %s
 
-// CHECK:       func.func @main(%arg0: memref<3x5xf64>) -> memref<3x5xf64> attributes {irsynth.target} {
+// CHECK:       func.func @main(%arg0: memref<3x5xf64>) -> memref<3x5xf64> {
 // CHECK-NEXT:    affine.for %arg1 = 0 to 3 {
 // CHECK-NEXT:      affine.for %arg2 = 0 to 5 {
 // CHECK-NEXT:        %0 = affine.load %arg0[%arg1, %arg2] : memref<3x5xf64>

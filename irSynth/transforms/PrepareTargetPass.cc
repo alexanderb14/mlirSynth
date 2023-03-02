@@ -15,11 +15,11 @@ using namespace mlir;
 void PrepareTargetPass::runOnOperation() {
   auto module = getOperation();
 
-  llvm::SetVector<Operation *> toErase;
-  llvm::SetVector<Operation *> toKeep;
+  llvm::SetVector<Operation *> toKeep, toErase;
   for (auto func : module.getOps<func::FuncOp>()) {
     if (func->hasAttr("irsynth.target")) {
       toKeep.insert(func);
+      func->removeAttr("irsynth.target");
     } else {
       toErase.insert(func);
     }
