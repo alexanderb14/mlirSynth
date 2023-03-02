@@ -7,6 +7,7 @@
 #include "mlir/IR/BlockAndValueMapping.h"
 #include "mlir/IR/Builders.h"
 #include "mlir/IR/BuiltinOps.h"
+#include "mlir/IR/BuiltinTypes.h"
 #include "mlir/Pass/AnalysisManager.h"
 #include "mlir/Pass/Pass.h"
 #include "mlir/Pass/PassManager.h"
@@ -14,6 +15,7 @@
 using namespace mlir;
 
 using SizeMap = llvm::DenseMap<int64_t, int64_t>;
+using Shape = ::llvm::SmallVector<int64_t>;
 
 int nextPrime(int n) {
   if (n <= 2)
@@ -64,7 +66,7 @@ SizeMap getMinifedSizeMap(func::FuncOp &func) {
   }
 
   // Sort them.
-  llvm::SmallVector<int64_t> sortedDimensions;
+  Shape sortedDimensions;
   for (auto dim : dimensions)
     sortedDimensions.push_back(dim);
   std::sort(sortedDimensions.begin(), sortedDimensions.end());
@@ -93,47 +95,45 @@ SizeMap getMinifedSizeMap(func::FuncOp &func) {
   return minifiedDimensions;
 }
 
-void changeTensorSizes(func::FuncOp &func, SizeMap &minifiedSizes) {}
+Shape resizeShape(::llvm::ArrayRef<int64_t> oldShape, SizeMap newSizes) {
+  Shape newShape;
 
-void changeMemrefSizes(func::FuncOp &func, SizeMap &newSizes) {
-  // In function signatures.
+  for (auto dim : oldShape) {
+    long newDim;
+    if (newSizes.count(dim) == 0)
+      newDim = dim;
+    else
+      newDim = newSizes[dim];
+    newShape.push_back(newDim);
+  }
+
+  return newShape;
+}
+
+template <typename OpTy>
+void changeTypeSizes(func::FuncOp &func, SizeMap &newSizes) {
+  // In function signature.
   auto type = func.getFunctionType();
-  // - Minify memref types in function arguments.
+  // - Change memref types in function arguments.
   llvm::SmallVector<Type> newArgTypes;
   for (auto argType : type.getInputs()) {
-    if (argType.isa<MemRefType>()) {
-      auto memrefType = argType.cast<MemRefType>();
-      llvm::SmallVector<int64_t> newShape;
-      for (auto dim : memrefType.getShape()) {
-        long newDim;
-        if (newSizes.count(dim) == 0)
-          newDim = dim;
-        else
-          newDim = newSizes[dim];
-        newShape.push_back(newDim);
-      }
-      auto newType = MemRefType::get(newShape, memrefType.getElementType());
+    if (argType.isa<OpTy>()) {
+      auto type = argType.cast<OpTy>();
+      Shape newShape = resizeShape(type.getShape(), newSizes);
+      auto newType = OpTy::get(newShape, type.getElementType());
       newArgTypes.push_back(newType);
     } else {
       newArgTypes.push_back(argType);
     }
   }
 
-  // - Minify memref types in function results.
+  // - Change memref types in function results.
   llvm::SmallVector<Type> newResultTypes;
   for (auto resultType : type.getResults()) {
-    if (resultType.isa<MemRefType>()) {
-      auto memrefType = resultType.cast<MemRefType>();
-      llvm::SmallVector<int64_t> newShape;
-      for (auto dim : memrefType.getShape()) {
-        long newDim;
-        if (newSizes.count(dim) == 0)
-          newDim = dim;
-        else
-          newDim = newSizes[dim];
-        newShape.push_back(newDim);
-      }
-      auto newType = MemRefType::get(newShape, memrefType.getElementType());
+    if (resultType.isa<OpTy>()) {
+      auto type = resultType.cast<OpTy>();
+      Shape newShape = resizeShape(type.getShape(), newSizes);
+      auto newType = OpTy::get(newShape, type.getElementType());
       newResultTypes.push_back(newType);
     } else {
       newResultTypes.push_back(resultType);
@@ -145,40 +145,35 @@ void changeMemrefSizes(func::FuncOp &func, SizeMap &newSizes) {
       FunctionType::get(type.getContext(), newArgTypes, newResultTypes);
   func.setType(newType);
 
+  // In the arguments of the body block of the function.
+  auto &block = func.getBody().front();
+  for (auto& arg : llvm::enumerate(block.getArguments())) {
+    if (arg.value().getType().isa<OpTy>()) {
+      auto type = arg.value().getType().cast<OpTy>();
+      Shape newShape = resizeShape(type.getShape(), newSizes);
+      auto newType = OpTy::get(newShape, type.getElementType());
+      block.getArgument(arg.index()).setType(newType);
+    }
+  }
+
   // In operations.
   func->walk([&](Operation *op) {
-    // - Minify memref types in operation operands.
+    // - Change memref types in operation operands.
     for (auto operand : op->getOperands()) {
-      if (operand.getType().isa<MemRefType>()) {
-        auto type = operand.getType().cast<MemRefType>();
-        llvm::SmallVector<int64_t> newShape;
-        for (auto dim : type.getShape()) {
-          long newDim;
-          if (newSizes.count(dim) == 0)
-            newDim = dim;
-          else
-            newDim = newSizes[dim];
-          newShape.push_back(newDim);
-        }
-        auto newType = MemRefType::get(newShape, type.getElementType());
+      if (operand.getType().isa<OpTy>()) {
+        auto type = operand.getType().cast<OpTy>();
+        Shape newShape = resizeShape(type.getShape(), newSizes);
+        auto newType = OpTy::get(newShape, type.getElementType());
         operand.setType(newType);
       }
     }
-    // - Minify memref types in operation results.
-    for (auto type : op->getResultTypes()) {
-      if (type.isa<MemRefType>()) {
-        auto resType = type.cast<MemRefType>();
-        llvm::SmallVector<int64_t> newShape;
-        for (auto dim : resType.getShape()) {
-          long newDim;
-          if (newSizes.count(dim) == 0)
-            newDim = dim;
-          else
-            newDim = newSizes[dim];
-          newShape.push_back(newDim);
-        }
-        auto newType = MemRefType::get(newShape, resType.getElementType());
-        resType = newType;
+    // - Change memref types in operation results.
+    for (auto res : op->getResultTypes()) {
+      if (res.isa<OpTy>()) {
+        auto type = res.cast<OpTy>();
+        Shape newShape = resizeShape(type.getShape(), newSizes);
+        auto newType = OpTy::get(newShape, type.getElementType());
+        type = newType;
       }
     }
   });
@@ -265,6 +260,10 @@ SizeMap getChangedSizes(func::FuncOp &func) {
   return changedSizes;
 }
 
+void removeChangedSizesAnnotation(func::FuncOp &func) {
+  func->removeAttr("changed_sizes");
+}
+
 void ChangeSizesPass::runOnOperation() {
   auto operation = getOperation();
 
@@ -274,7 +273,7 @@ void ChangeSizesPass::runOnOperation() {
         auto func = cast<func::FuncOp>(op);
 
         auto minifiedSizes = getMinifedSizeMap(func);
-        changeMemrefSizes(func, minifiedSizes);
+        changeTypeSizes<MemRefType>(func, minifiedSizes);
         changeLoopBounds(func, minifiedSizes);
 
         annotateChangedSizes(func, minifiedSizes);
@@ -286,9 +285,11 @@ void ChangeSizesPass::runOnOperation() {
         auto func = cast<func::FuncOp>(op);
 
         auto changedSizes = getChangedSizes(func);
-        changeMemrefSizes(func, changedSizes);
-        changeTensorSizes(func, changedSizes);
+        changeTypeSizes<MemRefType>(func, changedSizes);
+        changeTypeSizes<RankedTensorType>(func, changedSizes);
         changeLoopBounds(func, changedSizes);
+
+        removeChangedSizesAnnotation(func);
       }
     });
 
