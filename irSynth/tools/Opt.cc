@@ -4,6 +4,7 @@
 #include "transforms/LoopDistributionPass.h"
 #include "transforms/LoopOutlinePass.h"
 #include "transforms/MemrefMinifyPass.h"
+#include "transforms/PrepareTargetPass.h"
 #include "transforms/TargetOutlinePass.h"
 
 #include "lhlo/transforms/passes.h"
@@ -44,6 +45,7 @@ int main(int argc, char **argv) {
   registerLoopDistributionPass();
   registerLoopOutlinePass();
   registerMemrefMinifyPass();
+  registerPrepareTargetPass();
   registerTargetOutlinePass();
 
   return mlir::asMainReturnCode(mlir::MlirOptMain(

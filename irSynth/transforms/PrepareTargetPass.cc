@@ -1,0 +1,42 @@
+#include "PrepareTargetPass.h"
+
+#include "mlir/Dialect/Affine/IR/AffineOps.h"
+#include "mlir/Dialect/Func/IR/FuncOps.h"
+#include "mlir/Dialect/MemRef/IR/MemRef.h"
+#include "mlir/IR/BlockAndValueMapping.h"
+#include "mlir/IR/Builders.h"
+#include "mlir/IR/BuiltinOps.h"
+#include "mlir/Pass/AnalysisManager.h"
+#include "mlir/Pass/Pass.h"
+#include "mlir/Pass/PassManager.h"
+
+using namespace mlir;
+
+void PrepareTargetPass::runOnOperation() {
+  auto operation = getOperation();
+
+  llvm::SetVector<Operation *> toErase;
+  llvm::SetVector<Operation *> toKeep;
+  for (auto func : operation.getOps<func::FuncOp>()) {
+    if (func->hasAttr("irsynth.target")) {
+      toKeep.insert(func);
+    } else {
+      toErase.insert(func);
+    }
+  }
+  assert(toKeep.size() == 1 &&
+         "Expected exactly one function with irsynth.target attribute");
+
+  // Rename the target function to "main".
+  auto targetFunc = cast<func::FuncOp>(toKeep.front());
+  targetFunc->setAttr("sym_name",
+                      StringAttr::get(targetFunc->getContext(), "main"));
+
+  // Remove all other functions.
+  for (auto *op : toErase)
+    op->erase();
+}
+
+std::unique_ptr<OperationPass<ModuleOp>> createPrepareTargetPass() {
+  return std::make_unique<PrepareTargetPass>();
+}

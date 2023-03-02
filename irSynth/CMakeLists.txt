@@ -66,6 +66,7 @@ add_library(transform
   transforms/LoopDistributionPass.cc
   transforms/LoopOutlinePass.cc
   transforms/MemrefMinifyPass.cc
+  transforms/PrepareTargetPass.cc
   transforms/TargetOutlinePass.cc
   transforms/Utils.cc)
 target_include_directories(transform
