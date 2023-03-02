@@ -26,12 +26,12 @@ int nextPrime(int n) {
   return n;
 }
 
-llvm::DenseMap<int64_t, int64_t> getMinifedDimensionMap(ModuleOp &op) {
+llvm::DenseMap<int64_t, int64_t> getMinifedDimensionMap(func::FuncOp &func) {
   bool debug = false;
 
   // Collect all memref types.
   llvm::SetVector<MemRefType> memrefTypes;
-  op->walk([&](Operation *op) {
+  func->walk([&](Operation *op) {
     // - Collect from operation operands.
     for (auto operand : op->getOperands())
       if (operand.getType().isa<MemRefType>())
@@ -91,10 +91,9 @@ llvm::DenseMap<int64_t, int64_t> getMinifedDimensionMap(ModuleOp &op) {
   return minifiedDimensions;
 }
 
-void minifyMemrefs(ModuleOp &op,
+void minifyMemrefs(func::FuncOp &func,
                    llvm::DenseMap<int64_t, int64_t> &minifiedDimensions) {
   // In function signatures.
-  for (auto func : op.getOps<func::FuncOp>()) {
     auto type = func.getFunctionType();
     // - Minify memref types in function arguments.
     llvm::SmallVector<Type> minifiedArgTypes;
@@ -144,10 +143,9 @@ void minifyMemrefs(ModuleOp &op,
     auto minifiedType = FunctionType::get(type.getContext(), minifiedArgTypes,
                                           minifiedResultTypes);
     func.setType(minifiedType);
-  }
 
   // In operations.
-  op->walk([&](Operation *op) {
+  func->walk([&](Operation *op) {
     // - Minify memref types in operation operands.
     for (auto operand : op->getOperands()) {
       if (operand.getType().isa<MemRefType>()) {
@@ -187,7 +185,7 @@ void minifyMemrefs(ModuleOp &op,
   });
 }
 
-void minifyLoopBounds(ModuleOp &op,
+void minifyLoopBounds(func::FuncOp &op,
                       llvm::DenseMap<int64_t, int64_t> &minifiedDimensions) {
   bool debug = false;
 
@@ -236,10 +234,15 @@ void minifyLoopBounds(ModuleOp &op,
 void MemrefMinifyPass::runOnOperation() {
   auto operation = getOperation();
 
-  auto minifiedDimensions = getMinifedDimensionMap(operation);
+  operation->walk([&](Operation *op) {
+    if (isa<func::FuncOp>(op)) {
+      auto func = cast<func::FuncOp>(op);
 
-  minifyMemrefs(operation, minifiedDimensions);
-  minifyLoopBounds(operation, minifiedDimensions);
+      auto minifiedDimensions = getMinifedDimensionMap(func);
+      minifyMemrefs(func, minifiedDimensions);
+      minifyLoopBounds(func, minifiedDimensions);
+    }
+  });
 }
 
 std::unique_ptr<OperationPass<ModuleOp>> createMemrefMinifyPass() {
