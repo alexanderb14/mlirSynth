@@ -13,11 +13,11 @@
 using namespace mlir;
 
 void PrepareTargetPass::runOnOperation() {
-  auto operation = getOperation();
+  auto module = getOperation();
 
   llvm::SetVector<Operation *> toErase;
   llvm::SetVector<Operation *> toKeep;
-  for (auto func : operation.getOps<func::FuncOp>()) {
+  for (auto func : module.getOps<func::FuncOp>()) {
     if (func->hasAttr("irsynth.target")) {
       toKeep.insert(func);
     } else {
@@ -35,6 +35,10 @@ void PrepareTargetPass::runOnOperation() {
   // Remove all other functions.
   for (auto *op : toErase)
     op->erase();
+
+  // Strip attributes from the module.
+  for (auto attr : module->getAttrs())
+    module->removeAttr(attr.getName());
 }
 
 std::unique_ptr<OperationPass<ModuleOp>> createPrepareTargetPass() {
