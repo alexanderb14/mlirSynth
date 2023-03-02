@@ -93,13 +93,9 @@ SizeMap getMinifedSizeMap(func::FuncOp &func) {
   return minifiedDimensions;
 }
 
-void changeTensorSizes(func::FuncOp &func,
-                   SizeMap &minifiedSizes) {
-}
+void changeTensorSizes(func::FuncOp &func, SizeMap &minifiedSizes) {}
 
-
-void changeMemrefSizes(func::FuncOp &func,
-                   SizeMap &newSizes) {
+void changeMemrefSizes(func::FuncOp &func, SizeMap &newSizes) {
   // In function signatures.
   auto type = func.getFunctionType();
   // - Minify memref types in function arguments.
@@ -116,8 +112,7 @@ void changeMemrefSizes(func::FuncOp &func,
           newDim = newSizes[dim];
         newShape.push_back(newDim);
       }
-      auto newType =
-          MemRefType::get(newShape, memrefType.getElementType());
+      auto newType = MemRefType::get(newShape, memrefType.getElementType());
       newArgTypes.push_back(newType);
     } else {
       newArgTypes.push_back(argType);
@@ -138,8 +133,7 @@ void changeMemrefSizes(func::FuncOp &func,
           newDim = newSizes[dim];
         newShape.push_back(newDim);
       }
-      auto newType =
-          MemRefType::get(newShape, memrefType.getElementType());
+      auto newType = MemRefType::get(newShape, memrefType.getElementType());
       newResultTypes.push_back(newType);
     } else {
       newResultTypes.push_back(resultType);
@@ -147,8 +141,8 @@ void changeMemrefSizes(func::FuncOp &func,
   }
 
   // - Set the new function type.
-  auto newType = FunctionType::get(type.getContext(), newArgTypes,
-                                        newResultTypes);
+  auto newType =
+      FunctionType::get(type.getContext(), newArgTypes, newResultTypes);
   func.setType(newType);
 
   // In operations.
@@ -166,8 +160,7 @@ void changeMemrefSizes(func::FuncOp &func,
             newDim = newSizes[dim];
           newShape.push_back(newDim);
         }
-        auto newType =
-            MemRefType::get(newShape, type.getElementType());
+        auto newType = MemRefType::get(newShape, type.getElementType());
         operand.setType(newType);
       }
     }
@@ -184,16 +177,14 @@ void changeMemrefSizes(func::FuncOp &func,
             newDim = newSizes[dim];
           newShape.push_back(newDim);
         }
-        auto newType =
-            MemRefType::get(newShape, resType.getElementType());
+        auto newType = MemRefType::get(newShape, resType.getElementType());
         resType = newType;
       }
     }
   });
 }
 
-void changeLoopBounds(func::FuncOp &func,
-                      SizeMap &newSizes) {
+void changeLoopBounds(func::FuncOp &func, SizeMap &newSizes) {
   bool debug = false;
 
   func->walk([&](Operation *op) {
@@ -210,23 +201,23 @@ void changeLoopBounds(func::FuncOp &func,
           if (newSizes.count(dim) == 0)
             ubExprs.push_back(expr);
           else
-            ubExprs.push_back(getAffineConstantExpr(newSizes[dim],
-                                                    op->getContext()));
+            ubExprs.push_back(
+                getAffineConstantExpr(newSizes[dim], op->getContext()));
         } else if (expr.isa<AffineConstantExpr>()) {
           auto dim = expr.cast<AffineConstantExpr>().getValue();
           if (newSizes.count(dim) == 0)
             ubExprs.push_back(expr);
           else
-            ubExprs.push_back(getAffineConstantExpr(newSizes[dim],
-                                                    op->getContext()));
+            ubExprs.push_back(
+                getAffineConstantExpr(newSizes[dim], op->getContext()));
         } else if (expr.isa<AffineBinaryOpExpr>()) {
         } else {
           llvm::outs() << "expr type: " << (unsigned int)expr.getKind() << "\n";
           assert(false && "Unexpected expression type");
         }
       }
-      auto ubMapNew = AffineMap::get(
-          ubMap.getNumDims(), ubMap.getNumSymbols(), ubExprs, op->getContext());
+      auto ubMapNew = AffineMap::get(ubMap.getNumDims(), ubMap.getNumSymbols(),
+                                     ubExprs, op->getContext());
       if (ubMapNew.getNumResults())
         forOp.setUpperBoundMap(ubMapNew);
 
@@ -238,16 +229,14 @@ void changeLoopBounds(func::FuncOp &func,
   });
 }
 
-void annotateChangedSizes(
-    func::FuncOp &func, SizeMap &newSizes) {
+void annotateChangedSizes(func::FuncOp &func, SizeMap &newSizes) {
   std::string newSizesStr;
   bool first = true;
   for (auto dim : newSizes) {
     if (!first)
       newSizesStr += ",";
     first = false;
-    newSizesStr +=
-        std::to_string(dim.first) + ":" + std::to_string(dim.second);
+    newSizesStr += std::to_string(dim.first) + ":" + std::to_string(dim.second);
   }
   func->setAttr("changed_sizes",
                 StringAttr::get(func->getContext(), newSizesStr));
