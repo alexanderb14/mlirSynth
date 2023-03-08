@@ -179,6 +179,28 @@ void changeTypeSizes(func::FuncOp &func, SizeMap &newSizes) {
   });
 }
 
+void changeConstantValues(func::FuncOp &func, SizeMap &newSizes) {
+  func->walk([&](Operation *op) {
+    // Check if op is a mhlo.constant
+    if (op->getName().getStringRef() == "mhlo.constant") {
+      // Get the value of the constant.
+      auto value = op->getAttrOfType<DenseElementsAttr>("value");
+      // Get the type of the constant.
+      auto type = value.getType().cast<ShapedType>();
+      // Get the shape of the constant.
+      auto shape = type.getShape();
+      // Resize the shape.
+      auto newShape = resizeShape(shape, newSizes);
+      // Create a new type with the new shape.
+      auto newType = RankedTensorType::get(newShape, type.getElementType());
+      // Create a new value with the new type.
+      auto newValue = value.reshape(newType);
+      // Set the new value.
+      op->setAttr("value", newValue);
+    }
+  });
+}
+
 void changeLoopBounds(func::FuncOp &func, SizeMap &newSizes) {
   bool debug = false;
 
@@ -288,6 +310,7 @@ void ChangeSizesPass::runOnOperation() {
         changeTypeSizes<MemRefType>(func, changedSizes);
         changeTypeSizes<RankedTensorType>(func, changedSizes);
         changeLoopBounds(func, changedSizes);
+        changeConstantValues(func, changedSizes);
 
         removeChangedSizesAnnotation(func);
       }
