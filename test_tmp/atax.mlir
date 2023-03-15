@@ -30,9 +30,8 @@ module {
 
   func.func @fn_0_raised(%arg2: tensor<3x5xf64>, %arg3: tensor<5xf64>, %arg5: tensor<3xf64>) -> tensor<5xf64> attributes {irsynth.raised} {
 
-    %0 = "mhlo.transpose" (%arg2) {permutation = dense<[1, 0]> : tensor<2xi64>} : (tensor<3x5xf64>) -> tensor<5x3xf64>
     %1 = "mhlo.dot"(%arg2, %arg3) : (tensor<3x5xf64>, tensor<5xf64>) -> tensor<3xf64>
-    %2 = "mhlo.dot"(%0, %1) : (tensor<5x3xf64>, tensor<3xf64>) -> tensor<5xf64>
+    %2 = "mhlo.dot"(%1, %arg2) : (tensor<3xf64>, tensor<3x5xf64>) -> tensor<5xf64>
 
     return %2: tensor<5xf64>
   }
