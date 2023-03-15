@@ -23,14 +23,12 @@ module {
     }
     return %alloc : memref<5x5xf64>
   }
-  func.func @fn_0_raised(%arg0: tensor<5x5xf64> {irsynth.symmetric}, %arg1: tensor<5x3xf64>, %arg2: f64, %arg3: f64) -> tensor<5x5xf64> attributes {irsynth.raised} {
-    %from_elements = tensor.from_elements %arg3 : tensor<1xf64>
-    %from_elements_0 = tensor.from_elements %arg2 : tensor<1xf64>
+  func.func @fn_0_raised(%arg0: tensor<5x5xf64> {irsynth.symmetric}, %arg1: tensor<5x3xf64>, %arg2: tensor<f64>, %arg3: tensor<f64>) -> tensor<5x5xf64> attributes {irsynth.raised} {
     
     %0 = "mhlo.transpose"(%arg1) {permutation = dense<[1, 0]> : tensor<2xi64>} : (tensor<5x3xf64>) -> tensor<3x5xf64>
     %1 = "mhlo.dot"(%arg1, %0) : (tensor<5x3xf64>, tensor<3x5xf64>) -> tensor<5x5xf64>
-    %2 = chlo.broadcast_multiply %1, %from_elements : (tensor<5x5xf64>, tensor<1xf64>) -> tensor<5x5xf64>
-    %3 = chlo.broadcast_multiply %arg0, %from_elements_0 : (tensor<5x5xf64>, tensor<1xf64>) -> tensor<5x5xf64>
+    %2 = chlo.broadcast_multiply %1, %arg3: (tensor<5x5xf64>, tensor<f64>) -> tensor<5x5xf64>
+    %3 = chlo.broadcast_multiply %arg0, %arg2: (tensor<5x5xf64>, tensor<f64>) -> tensor<5x5xf64>
     %4 = mhlo.add %3, %2 : tensor<5x5xf64>
 
     %5 = mhlo.constant dense<[[true, false, false, false, false], [true, true, false, false, false], [true, true, true, false, false], [true, true, true, true, false], [true, true, true, true, true]]> : tensor<5x5xi1>
