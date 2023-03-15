@@ -23,8 +23,8 @@ module {
     }
     return %alloc : memref<5x5xf64>
   }
-  func.func @fn_0_raised(%arg0: tensor<5x5xf64> {irsynth.symmetric}, %arg1: tensor<5x3xf64>, %arg2: tensor<f64>, %arg3: tensor<f64>) -> tensor<5x5xf64> attributes {irsynth.raised} {
-    
+
+  func.func @fn_0_raised_1(%arg0: tensor<5x5xf64> {irsynth.symmetric}, %arg1: tensor<5x3xf64>, %arg2: tensor<f64>, %arg3: tensor<f64>) -> tensor<5x5xf64> attributes {irsynth.raised} {
     %0 = "mhlo.transpose"(%arg1) {permutation = dense<[1, 0]> : tensor<2xi64>} : (tensor<5x3xf64>) -> tensor<3x5xf64>
     %1 = "mhlo.dot"(%arg1, %0) : (tensor<5x3xf64>, tensor<3x5xf64>) -> tensor<5x5xf64>
     %2 = chlo.broadcast_multiply %1, %arg3: (tensor<5x5xf64>, tensor<f64>) -> tensor<5x5xf64>
@@ -34,7 +34,26 @@ module {
     %5 = mhlo.constant dense<[[true, false, false, false, false], [true, true, false, false, false], [true, true, true, false, false], [true, true, true, true, false], [true, true, true, true, true]]> : tensor<5x5xi1>
     %6 = mhlo.select %5, %4, %arg0 : tensor<5x5xi1>, tensor<5x5xf64>
 
-    return %6 : tensor<5x5xf64>
+    return %6: tensor<5x5xf64>
+  }
+
+  func.func @fn_0_raised_2(%arg0: tensor<5x5xf64> {irsynth.symmetric}, %arg1: tensor<5x3xf64>, %arg2: tensor<f64>, %arg3: tensor<f64>) -> tensor<5x5xf64> attributes {irsynth.raised} {
+    %0 = "mhlo.transpose"(%arg1) {permutation = dense<[1, 0]> : tensor<2xi64>} : (tensor<5x3xf64>) -> tensor<3x5xf64>
+    %1 = "mhlo.dot"(%arg1, %0) : (tensor<5x3xf64>, tensor<3x5xf64>) -> tensor<5x5xf64>
+    %2 = chlo.broadcast_multiply %1, %arg3: (tensor<5x5xf64>, tensor<f64>) -> tensor<5x5xf64>
+    %3 = chlo.broadcast_multiply %arg0, %arg2: (tensor<5x5xf64>, tensor<f64>) -> tensor<5x5xf64>
+    %4 = mhlo.add %3, %2 : tensor<5x5xf64>
+
+    %5 = "mhlo.iota"() {iota_dimension = 0 : i64} : () -> tensor<5x5xi32>
+    %6 = mhlo.constant dense<0> : tensor<i32>
+    %7 = "mhlo.broadcast_in_dim"(%6) {broadcast_dimensions = dense<> : tensor<0xi64>} : (tensor<i32>) -> tensor<5x5xi32>
+    %8 = mhlo.add %5, %7 : tensor<5x5xi32>
+    %9 = "mhlo.iota"() {iota_dimension = 1 : i64} : () -> tensor<5x5xi32>
+    %10 = mhlo.compare  GE, %8, %9,  SIGNED : (tensor<5x5xi32>, tensor<5x5xi32>) -> tensor<5x5xi1>
+
+    %11 = mhlo.select %10, %4, %arg0 : tensor<5x5xi1>, tensor<5x5xf64>
+
+    return %11 : tensor<5x5xf64>
   }
 }
 
