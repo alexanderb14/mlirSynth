@@ -37,4 +37,11 @@ module {
     %2 = "mhlo.reshape"(%1) {new_sizes = dense<[5, 3, 7]> : tensor<3xi64>} : (tensor<5x3x1x7xf64>) -> tensor<5x3x7xf64>
     return %2 : tensor<5x3x7xf64>
   }
+
+  func.func @fn_0_raised_2(%arg0: tensor<7xf64>, %arg1: tensor<5x3x7xf64>, %arg2: tensor<7x7xf64>) -> tensor<5x3x7xf64> attributes {irsynth.raised} {
+    %0 = "mhlo.reshape"(%arg1) {new_sizes = dense<[15, 7]> : tensor<2xi64>} : (tensor<5x3x7xf64>) -> tensor<15x7xf64>
+    %1 = "mhlo.dot" (%0, %arg2) : (tensor<15x7xf64>, tensor<7x7xf64>) -> tensor<15x7xf64>
+    %2 = "mhlo.reshape"(%1) {new_sizes = dense<[5, 3, 7]> : tensor<3xi64>} : (tensor<15x7xf64>) -> tensor<5x3x7xf64>
+    return %2: tensor<5x3x7xf64>
+  }
 }
