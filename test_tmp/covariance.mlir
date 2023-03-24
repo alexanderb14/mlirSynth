@@ -60,18 +60,13 @@ module {
       %16 = mhlo.add %arg8, %arg9 : tensor<f64>
       mhlo.return %16 : tensor<f64>
     }
-    %3 = "mhlo.broadcast_in_dim"(%arg2) {broadcast_dimensions = dense<> : tensor<0xi64>} : (tensor<f64>) -> tensor<3xf64>
-    %4 = mhlo.divide %1, %3 : tensor<3xf64>
-    %5 = "mhlo.broadcast_in_dim"(%4) {broadcast_dimensions = dense<1> : tensor<1xi64>} : (tensor<3xf64>) -> tensor<1x3xf64>
-    %6 = "mhlo.broadcast_in_dim"(%5) {broadcast_dimensions = dense<[0, 1]> : tensor<2xi64>} : (tensor<1x3xf64>) -> tensor<5x3xf64>
-    %7 = mhlo.subtract %arg3, %6 : tensor<5x3xf64>
+    %4 = "chlo.broadcast_divide"(%1, %arg2) : (tensor<3xf64>, tensor<f64>) -> tensor<3xf64>
+    %7 = "chlo.broadcast_subtract"(%arg3, %4) : (tensor<5x3xf64>, tensor<3xf64>) -> tensor<5x3xf64>
     %8 = "mhlo.transpose"(%7) {permutation = dense<[1, 0]> : tensor<2xi64>} : (tensor<5x3xf64>) -> tensor<3x5xf64>
     %9 = "mhlo.dot_general"(%8, %7) {dot_dimension_numbers = #mhlo.dot<lhs_contracting_dimensions = [1], rhs_contracting_dimensions = [0]>, precision_config = [#mhlo<precision DEFAULT>, #mhlo<precision DEFAULT>]} : (tensor<3x5xf64>, tensor<5x3xf64>) -> tensor<3x3xf64>
     %11 = mhlo.constant dense<1.000000e+00> : tensor<f64>
     %12 = mhlo.subtract %arg2, %11: tensor<f64>
-    %13 = mhlo.convert %12 : tensor<f64>
-    %14 = "mhlo.broadcast_in_dim"(%13) {broadcast_dimensions = dense<> : tensor<0xi64>} : (tensor<f64>) -> tensor<3x3xf64>
-    %15 = mhlo.divide %9, %14 : tensor<3x3xf64>
+    %15 = "chlo.broadcast_divide"(%9, %12) : (tensor<3x3xf64>, tensor<f64>) -> tensor<3x3xf64>
 
     return %15 : tensor<3x3xf64>
   }
