@@ -87,9 +87,7 @@ module {
     }
     %6 = "chlo.broadcast_divide"(%5, %arg0) : (tensor<3xf64>, tensor<f64>) -> tensor<3xf64>
 
-    %7 = mhlo.reshape %6 : (tensor<3xf64>) -> tensor<1x3xf64>
-    %8 = "mhlo.broadcast_in_dim"(%7) {broadcast_dimensions = dense<[0, 1]> : tensor<2xi64>} : (tensor<1x3xf64>) -> tensor<5x3xf64>
-    %9 = mhlo.subtract %arg1, %8 : tensor<5x3xf64>
+    %9 = "chlo.broadcast_subtract"(%arg1, %6) : (tensor<5x3xf64>, tensor<3xf64>) -> tensor<5x3xf64>
     %10 = mhlo.multiply %9, %9 : tensor<5x3xf64>
     %11 = mhlo.reduce(%10 init: %4) across dimensions = [0] : (tensor<5x3xf64>, tensor<f64>) -> tensor<3xf64>
      reducer(%arg2: tensor<f64>, %arg3: tensor<f64>)  {
@@ -100,15 +98,12 @@ module {
     %13 = mhlo.sqrt %12 : tensor<3xf64>
     %14 = mhlo.compare  LE, %13, %2,  FLOAT : (tensor<3xf64>, tensor<3xf64>) -> tensor<3xi1>
     %15 = mhlo.select %14, %1, %13 : tensor<3xi1>, tensor<3xf64>
-    %16 = mhlo.reshape %6 : (tensor<3xf64>) -> tensor<1x3xf64>
-    %17 = "mhlo.broadcast_in_dim"(%16) {broadcast_dimensions = dense<[0, 1]> : tensor<2xi64>} : (tensor<1x3xf64>) -> tensor<5x3xf64>
-    %18 = mhlo.subtract %arg1, %17 : tensor<5x3xf64>
+    %18 = "chlo.broadcast_subtract"(%arg1, %6) : (tensor<5x3xf64>, tensor<3xf64>) -> tensor<5x3xf64>
     %19 = mhlo.sqrt %arg0 : tensor<f64>
     %20 = "mhlo.broadcast_in_dim"(%19) {broadcast_dimensions = dense<> : tensor<0xi64>} : (tensor<f64>) -> tensor<3xf64>
     %21 = mhlo.multiply %20, %15 : tensor<3xf64>
-    %22 = mhlo.reshape %21 : (tensor<3xf64>) -> tensor<1x3xf64>
-    %23 = "mhlo.broadcast_in_dim"(%22) {broadcast_dimensions = dense<[0, 1]> : tensor<2xi64>} : (tensor<1x3xf64>) -> tensor<5x3xf64>
-    %24 = mhlo.divide %18, %23 : tensor<5x3xf64>
+    %24 = "chlo.broadcast_divide"(%18, %21) : (tensor<5x3xf64>, tensor<3xf64>) -> tensor<5x3xf64>
+
     %25 = "mhlo.transpose"(%24) {permutation = dense<[1, 0]> : tensor<2xi64>} : (tensor<5x3xf64>) -> tensor<3x5xf64>
     %26 = "mhlo.dot"(%25, %24) {precision_config = [#mhlo<precision DEFAULT>, #mhlo<precision DEFAULT>]} : (tensor<3x5xf64>, tensor<5x3xf64>) -> tensor<3x3xf64>
     %27 = "mhlo.iota"() {iota_dimension = 0 : i64} : () -> tensor<3xi32>
