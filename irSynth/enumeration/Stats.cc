@@ -63,6 +63,7 @@ void EnumerationStats::dump() {
                << "\"numExecuted\":" << numExecuted << ","
                << "\"numIgnored\":" << numIgnored << ","
                << "\"numOps\":" << numOps << ",";
+
   llvm::outs() << "\"processingStatusCounts\":{";
   bool first = true;
   for (auto &kv : processingStatusCounts) {
@@ -73,6 +74,7 @@ void EnumerationStats::dump() {
     ProcessingStatus status = kv.first;
     llvm::outs() << "\"" << processingStatusToStr(status) << "\":" << kv.second;
   }
+  llvm::outs() << "}";
 
   llvm::outs() << "}\n";
 }
