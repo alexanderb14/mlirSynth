@@ -124,8 +124,8 @@ def run_benchmarks_all(benchmarks, prune_eq_configs=[True, False],
 
         stats_all.append(stats)
 
-    with open('/tmp/stats.json', 'w') as f:
-        json.dump(stats_all, f, indent=2)
+        with open('/tmp/stats.json', 'w') as f:
+            json.dump(stats_all, f, indent=2)
 
 
 def run_benchmarks_best(benchmarks):
@@ -140,8 +140,8 @@ def run_benchmarks_best(benchmarks):
 
         stats_all.append(stats)
 
-    with open('/tmp/stats.json', 'w') as f:
-        json.dump(stats_all, f, indent=2)
+        with open('/tmp/stats.json', 'w') as f:
+            json.dump(stats_all, f, indent=2)
 
 
 def plot_results():
