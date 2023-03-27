@@ -5,6 +5,7 @@
 #include "enumeration/Candidate.h"
 #include "enumeration/Generators.h"
 #include "enumeration/OpInfos.h"
+#include "enumeration/ProcessingStatus.h"
 #include "enumeration/Stats.h"
 #include "execution/ArgUtils.h"
 #include "execution/ArrayUtils.h"
@@ -31,52 +32,6 @@
 
 using namespace llvm;
 using namespace mlir;
-
-enum ProcessingStatus {
-  reject_hasTooManyOps,
-  reject_isNotResultTypeInferrable,
-  reject_hasUnsupportedShapeRank,
-  reject_isNotAllDefsAreUsed,
-  reject_isNotVerifiable,
-  reject_hasNoArguments,
-  reject_hasUnknownRankAndShape,
-  reject_isNotCompilableToLLVM,
-  reject_hasEmptyReturnShape,
-  reject_isNotExecutable,
-  reject_hashNotUnique,
-  accept_as_candidate,
-  accept_as_solution,
-};
-
-std::string processingStatusToStr(ProcessingStatus &status) {
-  if (status == reject_hasTooManyOps)
-    return "reject_hasTooManyOps";
-  if (status == reject_isNotResultTypeInferrable)
-    return "reject_isNotResultTypeInferrable";
-  if (status == reject_hasUnsupportedShapeRank)
-    return "reject_hasUnsupportedShapeRank";
-  if (status == reject_isNotAllDefsAreUsed)
-    return "reject_isNotAllDefsAreUsed";
-  if (status == reject_isNotVerifiable)
-    return "reject_isNotVerifiable";
-  if (status == reject_hasNoArguments)
-    return "reject_hasNoArguments";
-  if (status == reject_hasUnknownRankAndShape)
-    return "reject_hasUnknownRankAndShape";
-  if (status == reject_isNotCompilableToLLVM)
-    return "reject_isNotCompilableToLLVM";
-  if (status == reject_hasEmptyReturnShape)
-    return "reject_hasEmptyReturnShape";
-  if (status == reject_isNotExecutable)
-    return "reject_isNotExecutable";
-  if (status == reject_hashNotUnique)
-    return "reject_hashNotUnique";
-  if (status == accept_as_candidate)
-    return "accept_as_candidate";
-  if (status == accept_as_solution)
-    return "accept_as_solution";
-  assert(false && "Processing Status not known");
-}
 
 unsigned maxShapeRank = 4;
 
@@ -702,6 +657,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                 process(ctx, processingStats, opName, opInfo, executor, args,
                         candidateStore, localCandidateStore, refOut, options,
                         operandArgTuple, processingResult, targetShape);
+            processingStats.addProcessingStatus(status);
             stats.merge(processingStats);
 
             // Print candidate.

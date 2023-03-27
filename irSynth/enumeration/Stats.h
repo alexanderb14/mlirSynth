@@ -1,12 +1,19 @@
 #ifndef IRSYNTH_STATS_H
 #define IRSYNTH_STATS_H
 
+#include "ProcessingStatus.h"
+
 #include <mutex>
+#include <unordered_map>
 
 class EnumerationStats {
 public:
-  void dump();
+  EnumerationStats();
+
+  void addProcessingStatus(ProcessingStatus status);
   void merge(EnumerationStats &other);
+
+  void dump();
 
 public:
   unsigned numEnumerated = 0;
@@ -17,6 +24,7 @@ public:
 
 private:
   std::mutex mutex;
+  std::unordered_map<ProcessingStatus, unsigned> processingStatusCounts;
 };
 
 #endif // IRSYNTH_STATS_H
