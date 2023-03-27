@@ -163,8 +163,7 @@ OwningOpRef<ModuleOp> createModule(MLIRContext &ctx, Region *region) {
   return module;
 }
 
-LogicalResult inferResultTypes(MLIRContext &ctx, Operation *op,
-                               RegisteredOperationName &opName) {
+LogicalResult inferHLOResultTypes(Operation *op) {
   // Not all operations have the infer return types function.
   // Therefore, we implement some manually.
   auto opNameStr = op->getName().getStringRef().str();
@@ -233,8 +232,10 @@ LogicalResult inferResultTypes(MLIRContext &ctx, Operation *op,
     return success();
   }
 
-  // Check if the operation is well-formed. If not, bail out
-  // early because otherwise type inference will assert.
+  return failure();
+}
+
+LogicalResult verifyOp(Operation *op, RegisteredOperationName &opName) {
   std::vector<std::string> verifyTraitsOnlyOps = {"mhlo.dot"};
   std::string opname = op->getName().getStringRef().str();
   bool verifyTraitsOnly =
@@ -250,7 +251,10 @@ LogicalResult inferResultTypes(MLIRContext &ctx, Operation *op,
       return failure();
     }
   }
+  return success();
+}
 
+LogicalResult inferResultTypes(MLIRContext &ctx, Operation *op) {
   // Infer the type.
   SmallVector<mlir::Type> inferredTypes;
   if (auto inferResultTypes = dyn_cast<InferTypeOpInterface>(op)) {
@@ -453,10 +457,16 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
   }
 
   // Infer the operation result type.
-  if (failed(inferResultTypes(ctx, op, opName))) {
-    if (options.printInvalidCandidates)
-      createModule(ctx, newCandidate->getRegion())->dump();
-    return reject_isNotResultTypeInferrable;
+  if (failed(inferHLOResultTypes(op))) {
+    if (failed(verifyOp(op, opName))) {
+      return reject_isNotVerifiable;
+    }
+
+    if (failed(inferResultTypes(ctx, op))) {
+      if (options.printInvalidCandidates)
+        createModule(ctx, newCandidate->getRegion())->dump();
+      return reject_isNotResultTypeInferrable;
+    }
   }
 
   // Check if the operation result shape rank is supported.
