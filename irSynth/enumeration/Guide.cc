@@ -2,7 +2,9 @@
 
 #include "analysis/PolyhedralAnalysis.h"
 
+#include "mlir/Dialect/Affine/IR/AffineOps.h"
 #include "mlir/Dialect/Arith/IR/Arith.h"
+#include "llvm/ADT/ArrayRef.h"
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/connected_components.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
@@ -51,13 +53,77 @@ int computeNumCyclesWithSelfEdges(BoostGraph &g) {
   return numCycles;
 }
 
+llvm::SmallVector<llvm::ArrayRef<int64_t>>
+getUsedMemrefShapes(mlir::Operation *op) {
+  llvm::SmallVector<llvm::ArrayRef<int64_t>> memrefShapes;
+
+  // Collect shapes
+  for (auto operand : op->getOperands()) {
+    // Case 1: Operand is an argument
+    if (auto lhsArg = operand.dyn_cast<mlir::BlockArgument>()) {
+      if (auto memrefType = lhsArg.getType().dyn_cast<mlir::MemRefType>()) {
+        auto memrefShape = memrefType.getShape();
+        memrefShapes.push_back(memrefShape);
+      }
+    }
+
+    // Case 2: Operand is an affine.load
+    if (auto *lhsOp = operand.getDefiningOp()) {
+      if (auto loadOp = mlir::dyn_cast<mlir::AffineLoadOp>(lhsOp)) {
+        auto memrefType = loadOp.getMemRefType();
+        auto memrefShape = memrefType.getShape();
+        memrefShapes.push_back(memrefShape);
+      }
+    }
+  }
+
+  // Recursive walk the use chain
+  for (auto operand : op->getOperands()) {
+    if (auto *definingOp = operand.getDefiningOp()) {
+      auto memrefShapesOperand = getUsedMemrefShapes(definingOp);
+      memrefShapes.append(memrefShapesOperand.begin(),
+                          memrefShapesOperand.end());
+    }
+  }
+
+  return memrefShapes;
+}
+
+int countNumMultipliedMismatchingMemrefAccesses(mlir::Operation *op) {
+  int numMultipliedMismatchingMemrefs = 0;
+
+  // Walk over affine.store operations
+  op->walk([&](mlir::arith::MulFOp mulOp) {
+    auto memrefShapes = getUsedMemrefShapes(mulOp);
+
+    // Check if all memref shapes have a matching dimension with at least one
+    // other memref shape. Matching dimensions can be their first-last or
+    // last-first dimensions.
+    for (auto memrefShape : memrefShapes) {
+      bool hasMatchingDimension = false;
+      for (auto memrefShapeOther : memrefShapes) {
+        if (memrefShape[0] == memrefShapeOther.back() ||
+            memrefShape.back() == memrefShapeOther[0]) {
+          hasMatchingDimension = true;
+          break;
+        }
+      }
+      if (!hasMatchingDimension) {
+        numMultipliedMismatchingMemrefs++;
+      }
+    }
+  });
+
+  return numMultipliedMismatchingMemrefs;
+}
+
 std::vector<std::string> predictOps(std::vector<std::string> &supportedOps,
                                     mlir::Operation *op) {
   Scop scop(op);
   auto dg = scop.getDependenceGraph();
   auto g = constructBoostGraph(dg);
 
-  // Make decisions.
+  // Element wise heuristics
   std::vector<std::string> ops;
   if (countNumArithDiv(op) > 0)
     ops.emplace_back("chlo.broadcast_divide");
@@ -68,8 +134,13 @@ std::vector<std::string> predictOps(std::vector<std::string> &supportedOps,
   if (countNumArithMul(op) > 0)
     ops.emplace_back("chlo.broadcast_multiply");
 
+  // Transpose heuristics
+  if (countNumMultipliedMismatchingMemrefAccesses(op) > 0) {
+    ops.emplace_back("mhlo.transpose");
+  }
+
+  // Reduction heuristics
   if (computeNumCyclesWithSelfEdges(g) > 0) {
-    ops.emplace_back("mhlo.dot");
     ops.emplace_back("mhlo.dot_general");
     ops.emplace_back("mhlo.reduce");
   }
