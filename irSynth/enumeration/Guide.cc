@@ -15,27 +15,27 @@
 
 using namespace mlir;
 
-int countNumArithDiv(mlir::Operation *op) {
+int countNumArithDiv(Operation *op) {
   int numArithDiv = 0;
-  op->walk([&](mlir::arith::DivFOp op) { numArithDiv++; });
+  op->walk([&](arith::DivFOp op) { numArithDiv++; });
   return numArithDiv;
 }
 
-int countNumArithAdd(mlir::Operation *op) {
+int countNumArithAdd(Operation *op) {
   int numArithAdd = 0;
-  op->walk([&](mlir::arith::AddFOp op) { numArithAdd++; });
+  op->walk([&](arith::AddFOp op) { numArithAdd++; });
   return numArithAdd;
 }
 
-int countNumArithSub(mlir::Operation *op) {
+int countNumArithSub(Operation *op) {
   int numArithSub = 0;
-  op->walk([&](mlir::arith::SubFOp op) { numArithSub++; });
+  op->walk([&](arith::SubFOp op) { numArithSub++; });
   return numArithSub;
 }
 
-int countNumArithMul(mlir::Operation *op) {
+int countNumArithMul(Operation *op) {
   int numArithMul = 0;
-  op->walk([&](mlir::arith::MulFOp op) { numArithMul++; });
+  op->walk([&](arith::MulFOp op) { numArithMul++; });
   return numArithMul;
 }
 
@@ -56,14 +56,14 @@ int computeNumCyclesWithSelfEdges(BoostGraph &g) {
 }
 
 llvm::SmallVector<llvm::ArrayRef<int64_t>>
-getUsedMemrefShapes(mlir::Operation *op) {
+getUsedMemrefShapes(Operation *op) {
   llvm::SmallVector<llvm::ArrayRef<int64_t>> memrefShapes;
 
   // Collect shapes
   for (auto operand : op->getOperands()) {
     // Case 1: Operand is an argument
-    if (auto lhsArg = operand.dyn_cast<mlir::BlockArgument>()) {
-      if (auto memrefType = lhsArg.getType().dyn_cast<mlir::MemRefType>()) {
+    if (auto lhsArg = operand.dyn_cast<BlockArgument>()) {
+      if (auto memrefType = lhsArg.getType().dyn_cast<MemRefType>()) {
         auto memrefShape = memrefType.getShape();
         memrefShapes.push_back(memrefShape);
       }
@@ -71,7 +71,7 @@ getUsedMemrefShapes(mlir::Operation *op) {
 
     // Case 2: Operand is an affine.load
     if (auto *lhsOp = operand.getDefiningOp()) {
-      if (auto loadOp = mlir::dyn_cast<mlir::AffineLoadOp>(lhsOp)) {
+      if (auto loadOp = dyn_cast<AffineLoadOp>(lhsOp)) {
         auto memrefType = loadOp.getMemRefType();
         auto memrefShape = memrefType.getShape();
         memrefShapes.push_back(memrefShape);
@@ -91,11 +91,11 @@ getUsedMemrefShapes(mlir::Operation *op) {
   return memrefShapes;
 }
 
-int countNumMultipliedMismatchingMemrefAccesses(mlir::Operation *op) {
+int countNumMultipliedMismatchingMemrefAccesses(Operation *op) {
   int numMultipliedMismatchingMemrefs = 0;
 
   // Walk over affine.store operations
-  op->walk([&](mlir::arith::MulFOp mulOp) {
+  op->walk([&](arith::MulFOp mulOp) {
     auto memrefShapes = getUsedMemrefShapes(mulOp);
 
     // Check if all memref shapes have a matching dimension with at least one
@@ -119,9 +119,9 @@ int countNumMultipliedMismatchingMemrefAccesses(mlir::Operation *op) {
   return numMultipliedMismatchingMemrefs;
 }
 
-int countNumLoopBoundMaps(mlir::Operation *op) {
+int countNumLoopBoundMaps(Operation *op) {
   int numLoopBoundMaps = 0;
-  op->walk([&](mlir::AffineForOp forOp) {
+  op->walk([&](AffineForOp forOp) {
     if (forOp.getUpperBoundMap() || forOp.getLowerBoundMap()) {
       numLoopBoundMaps++;
     }
@@ -130,7 +130,7 @@ int countNumLoopBoundMaps(mlir::Operation *op) {
 }
 
 std::vector<std::string> predictOps(std::vector<std::string> &supportedOps,
-                                    mlir::Operation *op) {
+                                    Operation *op) {
   Scop scop(op);
   auto dg = scop.getDependenceGraph();
   auto g = constructBoostGraph(dg);
