@@ -1,6 +1,13 @@
 import argparse
 
-header = """
+header = """/*===- Cartesian Product Generators -----------------------------*- C++ -*-===*\
+|*                                                                            *|
+|* The arguments to ranges::views::cartesian_product need to be known         *|
+|* at compile time. Therefore, this generator-approach. TODO: Replace.        *|
+|* Automatically generated file, do not edit!                                 *|
+|*                                                                            *|
+\*===----------------------------------------------------------------------===*/
+
 #include "CartesianProduct.h"
 
 #include "enumeration/Generators.h"
@@ -14,13 +21,21 @@ header = """
 using namespace llvm;
 using namespace mlir;
 
+int getTotalNumOps(ArgTuple tuple) {
+  int totalNumOps = 1;
+  for (const auto &operand : tuple.operands) {
+    totalNumOps += operand->getNumOps();
+  }
+  return totalNumOps;
+}
+
 """
 
 body_header = """
 std::vector<ArgTuple>
-getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
-                    std::vector<std::vector<Attribute>> &attributes,
-                    std::vector<std::vector<RegionPtr>> &regions) {
+CartesianProduct::generate(std::vector<std::vector<CandidatePtr>> &operands,
+                           std::vector<std::vector<Attribute>> &attributes,
+                           std::vector<std::vector<RegionPtr>> &regions) {
   unsigned numOperands = operands.size();
   unsigned numAttributes = attributes.size();
   unsigned numRegions = regions.size();
@@ -76,7 +91,8 @@ def get_action(numOperands, numAttributes, numRegions):
         counter += 1
     src += "      tuple.regions = {" + ", ".join(regions) + "};\n"
 
-    src += "      ret.push_back(tuple);\n"
+    src += "      if (getTotalNumOps(tuple) <= maxNumOps)\n"
+    src += "        ret.push_back(tuple);\n"
     src += "    }\n"
     src += "    return ret;\n"
 
@@ -91,16 +107,7 @@ def main():
     parser.add_argument("--output", type=str)
     args = parser.parse_args()
 
-    src = "/*===- Cartesian Product Generators -----------------------------*- C++ -*-===*\\\n"
-    src += "|*                                                                            *|\n"
-    src += "|* The arguments to ranges::views::cartesian_product need to be known         *|\n"
-    src += "|* at compile time. Therefore, this generator-approach. TODO: Replace.        *|\n"
-    src += "|* Automatically generated file, do not edit!                                 *|\n"
-    src += "|*                                                                            *|\n"
-    src += "\*===----------------------------------------------------------------------===*/\n"
-
-    src += header
-
+    src = header
     src += body_header
     for i in range(0, args.max_operands + 1):
         for j in range(0, args.max_attributes + 1):

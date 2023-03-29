@@ -607,6 +607,8 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                    candidateStore, options, processingResult);
   }
 
+  CartesianProduct cartesianProduct(options.maxNumOps);
+
   // Get the current time.
   auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -652,7 +654,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
       }
 
       auto operandArgTuples =
-          getCartesianProduct(operands, attributes, regions);
+          cartesianProduct.generate(operands, attributes, regions);
 
       // Enumerate cartesian product.
       auto status = failableParallelForEach(

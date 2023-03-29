@@ -1,5 +1,5 @@
-/*===- Cartesian Product Generators -----------------------------*- C++ -*-===*\
-|*                                                                            *|
+/*===- Cartesian Product Generators -----------------------------*- C++
+-*-===*|* *|
 |* The arguments to ranges::views::cartesian_product need to be known         *|
 |* at compile time. Therefore, this generator-approach. TODO: Replace.        *|
 |* Automatically generated file, do not edit!                                 *|
@@ -19,10 +19,18 @@
 using namespace llvm;
 using namespace mlir;
 
+int getTotalNumOps(ArgTuple tuple) {
+  int totalNumOps = 1;
+  for (const auto &operand : tuple.operands) {
+    totalNumOps += operand->getNumOps();
+  }
+  return totalNumOps;
+}
+
 std::vector<ArgTuple>
-getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
-                    std::vector<std::vector<Attribute>> &attributes,
-                    std::vector<std::vector<RegionPtr>> &regions) {
+CartesianProduct::generate(std::vector<std::vector<CandidatePtr>> &operands,
+                           std::vector<std::vector<Attribute>> &attributes,
+                           std::vector<std::vector<RegionPtr>> &regions) {
   unsigned numOperands = operands.size();
   unsigned numAttributes = attributes.size();
   unsigned numRegions = regions.size();
@@ -35,7 +43,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {};
       tuple.attributes = {};
       tuple.regions = {std::get<0>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -46,7 +55,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {};
       tuple.attributes = {};
       tuple.regions = {std::get<0>(cand), std::get<1>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -57,7 +67,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {};
       tuple.attributes = {std::get<0>(cand)};
       tuple.regions = {};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -68,7 +79,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {};
       tuple.attributes = {std::get<0>(cand)};
       tuple.regions = {std::get<1>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -80,7 +92,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {};
       tuple.attributes = {std::get<0>(cand)};
       tuple.regions = {std::get<1>(cand), std::get<2>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -91,7 +104,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {};
       tuple.attributes = {std::get<0>(cand), std::get<1>(cand)};
       tuple.regions = {};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -103,7 +117,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {};
       tuple.attributes = {std::get<0>(cand), std::get<1>(cand)};
       tuple.regions = {std::get<2>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -115,7 +130,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {};
       tuple.attributes = {std::get<0>(cand), std::get<1>(cand)};
       tuple.regions = {std::get<2>(cand), std::get<3>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -126,7 +142,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand)};
       tuple.attributes = {};
       tuple.regions = {};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -137,7 +154,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand)};
       tuple.attributes = {};
       tuple.regions = {std::get<1>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -149,7 +167,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand)};
       tuple.attributes = {};
       tuple.regions = {std::get<1>(cand), std::get<2>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -160,7 +179,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand)};
       tuple.attributes = {std::get<1>(cand)};
       tuple.regions = {};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -172,7 +192,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand)};
       tuple.attributes = {std::get<1>(cand)};
       tuple.regions = {std::get<2>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -184,7 +205,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand)};
       tuple.attributes = {std::get<1>(cand)};
       tuple.regions = {std::get<2>(cand), std::get<3>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -196,7 +218,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand)};
       tuple.attributes = {std::get<1>(cand), std::get<2>(cand)};
       tuple.regions = {};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -208,7 +231,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand)};
       tuple.attributes = {std::get<1>(cand), std::get<2>(cand)};
       tuple.regions = {std::get<3>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -220,7 +244,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand)};
       tuple.attributes = {std::get<1>(cand), std::get<2>(cand)};
       tuple.regions = {std::get<3>(cand), std::get<4>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -231,7 +256,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand), std::get<1>(cand)};
       tuple.attributes = {};
       tuple.regions = {};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -243,7 +269,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand), std::get<1>(cand)};
       tuple.attributes = {};
       tuple.regions = {std::get<2>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -255,7 +282,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand), std::get<1>(cand)};
       tuple.attributes = {};
       tuple.regions = {std::get<2>(cand), std::get<3>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -267,7 +295,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand), std::get<1>(cand)};
       tuple.attributes = {std::get<2>(cand)};
       tuple.regions = {};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -279,7 +308,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand), std::get<1>(cand)};
       tuple.attributes = {std::get<2>(cand)};
       tuple.regions = {std::get<3>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -291,7 +321,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand), std::get<1>(cand)};
       tuple.attributes = {std::get<2>(cand)};
       tuple.regions = {std::get<3>(cand), std::get<4>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -303,7 +334,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand), std::get<1>(cand)};
       tuple.attributes = {std::get<2>(cand), std::get<3>(cand)};
       tuple.regions = {};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -315,7 +347,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand), std::get<1>(cand)};
       tuple.attributes = {std::get<2>(cand), std::get<3>(cand)};
       tuple.regions = {std::get<4>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -328,7 +361,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
       tuple.operands = {std::get<0>(cand), std::get<1>(cand)};
       tuple.attributes = {std::get<2>(cand), std::get<3>(cand)};
       tuple.regions = {std::get<4>(cand), std::get<5>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -341,7 +375,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
                         std::get<2>(cand)};
       tuple.attributes = {};
       tuple.regions = {};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -354,7 +389,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
                         std::get<2>(cand)};
       tuple.attributes = {};
       tuple.regions = {std::get<3>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -367,7 +403,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
                         std::get<2>(cand)};
       tuple.attributes = {};
       tuple.regions = {std::get<3>(cand), std::get<4>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -380,7 +417,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
                         std::get<2>(cand)};
       tuple.attributes = {std::get<3>(cand)};
       tuple.regions = {};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -393,7 +431,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
                         std::get<2>(cand)};
       tuple.attributes = {std::get<3>(cand)};
       tuple.regions = {std::get<4>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -407,7 +446,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
                         std::get<2>(cand)};
       tuple.attributes = {std::get<3>(cand)};
       tuple.regions = {std::get<4>(cand), std::get<5>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -420,7 +460,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
                         std::get<2>(cand)};
       tuple.attributes = {std::get<3>(cand), std::get<4>(cand)};
       tuple.regions = {};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -434,7 +475,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
                         std::get<2>(cand)};
       tuple.attributes = {std::get<3>(cand), std::get<4>(cand)};
       tuple.regions = {std::get<5>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
@@ -448,7 +490,8 @@ getCartesianProduct(std::vector<std::vector<CandidatePtr>> &operands,
                         std::get<2>(cand)};
       tuple.attributes = {std::get<3>(cand), std::get<4>(cand)};
       tuple.regions = {std::get<5>(cand), std::get<6>(cand)};
-      ret.push_back(tuple);
+      if (getTotalNumOps(tuple) <= maxNumOps)
+        ret.push_back(tuple);
     }
     return ret;
   }
