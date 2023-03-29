@@ -13,6 +13,8 @@
 
 #include <unordered_map>
 
+using namespace mlir;
+
 int countNumArithDiv(mlir::Operation *op) {
   int numArithDiv = 0;
   op->walk([&](mlir::arith::DivFOp op) { numArithDiv++; });
@@ -117,6 +119,16 @@ int countNumMultipliedMismatchingMemrefAccesses(mlir::Operation *op) {
   return numMultipliedMismatchingMemrefs;
 }
 
+int countNumLoopBoundMaps(mlir::Operation *op) {
+  int numLoopBoundMaps = 0;
+  op->walk([&](mlir::AffineForOp forOp) {
+    if (forOp.getUpperBoundMap() || forOp.getLowerBoundMap()) {
+      numLoopBoundMaps++;
+    }
+  });
+  return numLoopBoundMaps;
+}
+
 std::vector<std::string> predictOps(std::vector<std::string> &supportedOps,
                                     mlir::Operation *op) {
   Scop scop(op);
@@ -137,6 +149,11 @@ std::vector<std::string> predictOps(std::vector<std::string> &supportedOps,
   // Transpose heuristics
   if (countNumMultipliedMismatchingMemrefAccesses(op) > 0) {
     ops.emplace_back("mhlo.transpose");
+  }
+
+  // Select heuristics
+  if (countNumLoopBoundMaps(op) > 0) {
+    ops.emplace_back("mhlo.select");
   }
 
   // Reduction heuristics
