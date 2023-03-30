@@ -5,10 +5,15 @@ using namespace mlir;
 
 SmallVector<Value> Candidate::merge(MLIRContext &ctx,
                                     std::vector<CandidatePtr> &others) {
+  auto othersUnique = others;
+  std::sort(othersUnique.begin(), othersUnique.end());
+  othersUnique.erase(std::unique(othersUnique.begin(), othersUnique.end()),
+                     othersUnique.end());
+
   // Merge other candidates into this one.
   BlockAndValueMapping mapping;
   mlir::DenseMap<unsigned, BlockArgument> seenArgs;
-  for (auto &other : others) {
+  for (auto &other : othersUnique) {
     auto &block = region->getBlocks().front();
     OpBuilder builder(&ctx);
     builder.setInsertionPoint(&block, block.end());
@@ -36,17 +41,17 @@ SmallVector<Value> Candidate::merge(MLIRContext &ctx,
     }
   }
 
+  // Add other candidates op counters to own.
+  for (auto &other : othersUnique) {
+    numOps += other->getNumOps();
+  }
+
   // Get result values.
   SmallVector<Value> resultValues = {};
   for (auto &other : others) {
     for (auto result : other->getResults()) {
       resultValues.push_back(mapping.lookupOrDefault(result));
     }
-  }
-
-  // Add other candidates op counters to own.
-  for (auto &other : others) {
-    numOps += other->getNumOps();
   }
 
   return resultValues;
