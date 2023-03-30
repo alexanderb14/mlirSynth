@@ -122,7 +122,7 @@ int countNumMultipliedMismatchingMemrefAccesses(Operation *op) {
 int countNumLoopBoundMaps(Operation *op) {
   int numLoopBoundMaps = 0;
   op->walk([&](AffineForOp forOp) {
-    if (forOp.getUpperBoundMap() || forOp.getLowerBoundMap()) {
+    if (!forOp.hasConstantUpperBound()) {
       numLoopBoundMaps++;
     }
   });
