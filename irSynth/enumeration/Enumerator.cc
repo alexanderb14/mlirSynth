@@ -366,7 +366,7 @@ bool isAttributeNameRelevant(std::string attrName) {
       attrName == "dot_dimension_numbers");
 }
 
-std::vector<std::string> getRelevantAttributeNames(OpInfoPtr &opInfo) {
+std::vector<std::string> getRelevantAttributeNames(GrammarOpPtr &opInfo) {
   std::vector<std::string> attrNames;
   for (unsigned i = 0; i < opInfo->getNumAttributes(); i++) {
     std::string attrName = opInfo->getAttributeName(i);
@@ -377,7 +377,7 @@ std::vector<std::string> getRelevantAttributeNames(OpInfoPtr &opInfo) {
 }
 
 ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
-                         RegisteredOperationName &opName, OpInfoPtr &opInfo,
+                         RegisteredOperationName &opName, GrammarOpPtr &opInfo,
                          IExecutorPtr &executor,
                          std::vector<ReturnAndArgType> &args,
                          CandidateStorePtr &candidateStore,
@@ -625,7 +625,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
       std::vector<std::vector<RegionPtr>> regions;
 
       // - Operands.
-      auto opInfo = createOpInfo(opName.getStringRef().str());
+      auto opInfo = createGrammarOp(opName.getStringRef().str());
       for (unsigned i = 0; i < opInfo->getNumOperands(); i++) {
         auto operandCandidates = candidateStore->getCandidates(numOps, opInfo->getOperandType(i));
         operands.push_back(operandCandidates);

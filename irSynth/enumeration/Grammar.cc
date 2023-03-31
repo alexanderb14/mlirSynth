@@ -1,6 +1,6 @@
 /*===- TableGen'erated file -------------------------------------*- C++ -*-===*\
 |*                                                                            *|
-|* Getters for Operation Infos                                                *|
+|* Grammar (generated from tablegen)                                          *|
 |*                                                                            *|
 |* Automatically generated file, do not edit!                                 *|
 |*                                                                            *|
@@ -12,7 +12,7 @@
 #include <memory>
 #include <string>
 
-class chlo_acos : public OpInfo {
+class chlo_acos : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -42,7 +42,7 @@ public:
   }
 };
 
-class chlo_acosh : public OpInfo {
+class chlo_acosh : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -72,7 +72,7 @@ public:
   }
 };
 
-class chlo_asin : public OpInfo {
+class chlo_asin : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -102,7 +102,7 @@ public:
   }
 };
 
-class chlo_asinh : public OpInfo {
+class chlo_asinh : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -132,7 +132,7 @@ public:
   }
 };
 
-class chlo_atan : public OpInfo {
+class chlo_atan : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -162,7 +162,7 @@ public:
   }
 };
 
-class chlo_atanh : public OpInfo {
+class chlo_atanh : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -192,7 +192,7 @@ public:
   }
 };
 
-class chlo_bessel_i1e : public OpInfo {
+class chlo_bessel_i1e : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -222,7 +222,7 @@ public:
   }
 };
 
-class chlo_broadcast_add : public OpInfo {
+class chlo_broadcast_add : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -255,7 +255,7 @@ public:
   }
 };
 
-class chlo_broadcast_and : public OpInfo {
+class chlo_broadcast_and : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -288,7 +288,7 @@ public:
   }
 };
 
-class chlo_broadcast_atan2 : public OpInfo {
+class chlo_broadcast_atan2 : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -321,7 +321,7 @@ public:
   }
 };
 
-class chlo_broadcast_compare : public OpInfo {
+class chlo_broadcast_compare : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 3; }
@@ -358,7 +358,7 @@ public:
   }
 };
 
-class chlo_broadcast_complex : public OpInfo {
+class chlo_broadcast_complex : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -391,7 +391,7 @@ public:
   }
 };
 
-class chlo_broadcast_divide : public OpInfo {
+class chlo_broadcast_divide : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -424,7 +424,7 @@ public:
   }
 };
 
-class chlo_broadcast_maximum : public OpInfo {
+class chlo_broadcast_maximum : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -457,7 +457,7 @@ public:
   }
 };
 
-class chlo_broadcast_minimum : public OpInfo {
+class chlo_broadcast_minimum : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -490,7 +490,7 @@ public:
   }
 };
 
-class chlo_broadcast_multiply : public OpInfo {
+class chlo_broadcast_multiply : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -523,7 +523,7 @@ public:
   }
 };
 
-class chlo_broadcast_next_after : public OpInfo {
+class chlo_broadcast_next_after : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -556,7 +556,7 @@ public:
   }
 };
 
-class chlo_broadcast_or : public OpInfo {
+class chlo_broadcast_or : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -589,7 +589,7 @@ public:
   }
 };
 
-class chlo_broadcast_polygamma : public OpInfo {
+class chlo_broadcast_polygamma : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -622,7 +622,7 @@ public:
   }
 };
 
-class chlo_broadcast_power : public OpInfo {
+class chlo_broadcast_power : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -655,7 +655,7 @@ public:
   }
 };
 
-class chlo_broadcast_remainder : public OpInfo {
+class chlo_broadcast_remainder : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -688,7 +688,7 @@ public:
   }
 };
 
-class chlo_broadcast_select : public OpInfo {
+class chlo_broadcast_select : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 0; }
@@ -720,7 +720,7 @@ public:
   }
 };
 
-class chlo_broadcast_shift_left : public OpInfo {
+class chlo_broadcast_shift_left : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -753,7 +753,7 @@ public:
   }
 };
 
-class chlo_broadcast_shift_right_arithmetic : public OpInfo {
+class chlo_broadcast_shift_right_arithmetic : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -786,7 +786,7 @@ public:
   }
 };
 
-class chlo_broadcast_shift_right_logical : public OpInfo {
+class chlo_broadcast_shift_right_logical : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -819,7 +819,7 @@ public:
   }
 };
 
-class chlo_broadcast_subtract : public OpInfo {
+class chlo_broadcast_subtract : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -852,7 +852,7 @@ public:
   }
 };
 
-class chlo_broadcast_xor : public OpInfo {
+class chlo_broadcast_xor : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -885,7 +885,7 @@ public:
   }
 };
 
-class chlo_broadcast_zeta : public OpInfo {
+class chlo_broadcast_zeta : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -918,7 +918,7 @@ public:
   }
 };
 
-class chlo_conj : public OpInfo {
+class chlo_conj : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -948,7 +948,7 @@ public:
   }
 };
 
-class chlo_constant_like : public OpInfo {
+class chlo_constant_like : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -980,7 +980,7 @@ public:
   }
 };
 
-class chlo_constant : public OpInfo {
+class chlo_constant : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 1; }
@@ -1011,7 +1011,7 @@ public:
   }
 };
 
-class chlo_cosh : public OpInfo {
+class chlo_cosh : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1041,7 +1041,7 @@ public:
   }
 };
 
-class chlo_digamma : public OpInfo {
+class chlo_digamma : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1071,7 +1071,7 @@ public:
   }
 };
 
-class chlo_dynamic_reshape : public OpInfo {
+class chlo_dynamic_reshape : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1102,7 +1102,7 @@ public:
   }
 };
 
-class chlo_erf : public OpInfo {
+class chlo_erf : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1132,7 +1132,7 @@ public:
   }
 };
 
-class chlo_erfc : public OpInfo {
+class chlo_erfc : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1162,37 +1162,7 @@ public:
   }
 };
 
-class chlo_is_inf : public OpInfo {
-public:
-  unsigned getNumOperands() const override { return 1; }
-  unsigned getNumAttributes() const override { return 0; }
-  unsigned getNumRegions() const override { return 0; }
-  unsigned getNumResults() const override { return 1; }
-  OpAndResType getOperandType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_FpTensor;
-    }
-    assert(false && "Invalid operand index");
-  }
-  AttrType getAttributeType(unsigned index) const override {
-    switch (index) {
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::string getAttributeName(unsigned index) const override {
-    switch (index) {
-    }
-    assert(false && "Invalid attribute index");
-  }
-  OpAndResType getResultType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_PredTensor;
-    }
-    assert(false && "Invalid result index");
-  }
-};
-
-class chlo_is_neg_inf : public OpInfo {
+class chlo_is_inf : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1222,7 +1192,7 @@ public:
   }
 };
 
-class chlo_is_pos_inf : public OpInfo {
+class chlo_is_neg_inf : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1252,7 +1222,37 @@ public:
   }
 };
 
-class chlo_lgamma : public OpInfo {
+class chlo_is_pos_inf : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  AttrType getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return HLO_PredTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class chlo_lgamma : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1282,7 +1282,7 @@ public:
   }
 };
 
-class chlo_minimum_broadcast_shapes : public OpInfo {
+class chlo_minimum_broadcast_shapes : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1312,7 +1312,7 @@ public:
   }
 };
 
-class chlo_next_after : public OpInfo {
+class chlo_next_after : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1343,7 +1343,7 @@ public:
   }
 };
 
-class chlo_polygamma : public OpInfo {
+class chlo_polygamma : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1374,7 +1374,7 @@ public:
   }
 };
 
-class chlo_rank_specialization_cluster : public OpInfo {
+class chlo_rank_specialization_cluster : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1404,7 +1404,7 @@ public:
   }
 };
 
-class chlo_rank_specialization_cluster_yield : public OpInfo {
+class chlo_rank_specialization_cluster_yield : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1433,7 +1433,7 @@ public:
   }
 };
 
-class chlo_sinh : public OpInfo {
+class chlo_sinh : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1463,7 +1463,7 @@ public:
   }
 };
 
-class chlo_tan : public OpInfo {
+class chlo_tan : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1493,7 +1493,7 @@ public:
   }
 };
 
-class chlo_top_k : public OpInfo {
+class chlo_top_k : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -1526,7 +1526,7 @@ public:
   }
 };
 
-class chlo_zeta : public OpInfo {
+class chlo_zeta : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1557,7 +1557,7 @@ public:
   }
 };
 
-class mhlo_abs : public OpInfo {
+class mhlo_abs : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1587,7 +1587,7 @@ public:
   }
 };
 
-class mhlo_add_dependency : public OpInfo {
+class mhlo_add_dependency : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1618,7 +1618,7 @@ public:
   }
 };
 
-class mhlo_add : public OpInfo {
+class mhlo_add : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1649,7 +1649,7 @@ public:
   }
 };
 
-class mhlo_after_all : public OpInfo {
+class mhlo_after_all : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1679,7 +1679,7 @@ public:
   }
 };
 
-class mhlo_all_gather : public OpInfo {
+class mhlo_all_gather : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 4; }
@@ -1717,7 +1717,7 @@ public:
   }
 };
 
-class mhlo_all_reduce : public OpInfo {
+class mhlo_all_reduce : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 3; }
@@ -1753,7 +1753,7 @@ public:
   }
 };
 
-class mhlo_all_to_all : public OpInfo {
+class mhlo_all_to_all : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 4; }
@@ -1791,7 +1791,7 @@ public:
   }
 };
 
-class mhlo_and : public OpInfo {
+class mhlo_and : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1822,7 +1822,7 @@ public:
   }
 };
 
-class mhlo_async_done : public OpInfo {
+class mhlo_async_done : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 3; }
@@ -1858,7 +1858,7 @@ public:
   }
 };
 
-class mhlo_async_start : public OpInfo {
+class mhlo_async_start : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 3; }
@@ -1894,7 +1894,7 @@ public:
   }
 };
 
-class mhlo_async_update : public OpInfo {
+class mhlo_async_update : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 3; }
@@ -1930,7 +1930,7 @@ public:
   }
 };
 
-class mhlo_atan2 : public OpInfo {
+class mhlo_atan2 : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -1961,7 +1961,7 @@ public:
   }
 };
 
-class mhlo_batch_norm_grad : public OpInfo {
+class mhlo_batch_norm_grad : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 5; }
   unsigned getNumAttributes() const override { return 2; }
@@ -2001,7 +2001,7 @@ public:
   }
 };
 
-class mhlo_batch_norm_inference : public OpInfo {
+class mhlo_batch_norm_inference : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 5; }
   unsigned getNumAttributes() const override { return 2; }
@@ -2039,7 +2039,7 @@ public:
   }
 };
 
-class mhlo_batch_norm_training : public OpInfo {
+class mhlo_batch_norm_training : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 2; }
@@ -2077,7 +2077,7 @@ public:
   }
 };
 
-class mhlo_bitcast_convert : public OpInfo {
+class mhlo_bitcast_convert : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2107,7 +2107,7 @@ public:
   }
 };
 
-class mhlo_bitcast : public OpInfo {
+class mhlo_bitcast : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2137,7 +2137,7 @@ public:
   }
 };
 
-class mhlo_broadcast_in_dim : public OpInfo {
+class mhlo_broadcast_in_dim : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -2169,7 +2169,7 @@ public:
   }
 };
 
-class mhlo_broadcast : public OpInfo {
+class mhlo_broadcast : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -2201,7 +2201,7 @@ public:
   }
 };
 
-class mhlo_case : public OpInfo {
+class mhlo_case : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2231,7 +2231,7 @@ public:
   }
 };
 
-class mhlo_cbrt : public OpInfo {
+class mhlo_cbrt : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2261,7 +2261,7 @@ public:
   }
 };
 
-class mhlo_ceil : public OpInfo {
+class mhlo_ceil : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2291,7 +2291,7 @@ public:
   }
 };
 
-class mhlo_cholesky : public OpInfo {
+class mhlo_cholesky : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -2323,7 +2323,7 @@ public:
   }
 };
 
-class mhlo_clamp : public OpInfo {
+class mhlo_clamp : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2355,7 +2355,7 @@ public:
   }
 };
 
-class mhlo_count_leading_zeros : public OpInfo {
+class mhlo_count_leading_zeros : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2385,7 +2385,7 @@ public:
   }
 };
 
-class mhlo_collective_permute : public OpInfo {
+class mhlo_collective_permute : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
@@ -2419,7 +2419,7 @@ public:
   }
 };
 
-class mhlo_compare : public OpInfo {
+class mhlo_compare : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 2; }
@@ -2454,7 +2454,7 @@ public:
   }
 };
 
-class mhlo_complex : public OpInfo {
+class mhlo_complex : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2485,7 +2485,7 @@ public:
   }
 };
 
-class mhlo_compute_reshape_shape : public OpInfo {
+class mhlo_compute_reshape_shape : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2516,7 +2516,7 @@ public:
   }
 };
 
-class mhlo_concatenate : public OpInfo {
+class mhlo_concatenate : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -2548,7 +2548,7 @@ public:
   }
 };
 
-class mhlo_constant : public OpInfo {
+class mhlo_constant : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 1; }
@@ -2579,7 +2579,7 @@ public:
   }
 };
 
-class mhlo_convert : public OpInfo {
+class mhlo_convert : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2609,7 +2609,7 @@ public:
   }
 };
 
-class mhlo_convolution : public OpInfo {
+class mhlo_convolution : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 9; }
@@ -2658,7 +2658,7 @@ public:
   }
 };
 
-class mhlo_copy : public OpInfo {
+class mhlo_copy : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -2690,7 +2690,7 @@ public:
   }
 };
 
-class mhlo_cosine : public OpInfo {
+class mhlo_cosine : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2720,7 +2720,7 @@ public:
   }
 };
 
-class mhlo_create_token : public OpInfo {
+class mhlo_create_token : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2749,7 +2749,7 @@ public:
   }
 };
 
-class mhlo_cross_replica_sum : public OpInfo {
+class mhlo_cross_replica_sum : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -2781,7 +2781,7 @@ public:
   }
 };
 
-class mhlo_cstr_reshapable : public OpInfo {
+class mhlo_cstr_reshapable : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2812,7 +2812,7 @@ public:
   }
 };
 
-class mhlo_custom_call : public OpInfo {
+class mhlo_custom_call : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 8; }
@@ -2858,7 +2858,7 @@ public:
   }
 };
 
-class mhlo_divide : public OpInfo {
+class mhlo_divide : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2889,7 +2889,7 @@ public:
   }
 };
 
-class mhlo_domain : public OpInfo {
+class mhlo_domain : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 3; }
@@ -2925,7 +2925,7 @@ public:
   }
 };
 
-class mhlo_dot_general : public OpInfo {
+class mhlo_dot_general : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 2; }
@@ -2960,7 +2960,7 @@ public:
   }
 };
 
-class mhlo_dot : public OpInfo {
+class mhlo_dot : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -2993,7 +2993,7 @@ public:
   }
 };
 
-class mhlo_dynamic_broadcast_in_dim : public OpInfo {
+class mhlo_dynamic_broadcast_in_dim : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 3; }
@@ -3030,7 +3030,7 @@ public:
   }
 };
 
-class mhlo_dynamic_conv : public OpInfo {
+class mhlo_dynamic_conv : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 9; }
@@ -3080,7 +3080,7 @@ public:
   }
 };
 
-class mhlo_dynamic_gather : public OpInfo {
+class mhlo_dynamic_gather : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 2; }
@@ -3116,7 +3116,7 @@ public:
   }
 };
 
-class mhlo_dynamic_iota : public OpInfo {
+class mhlo_dynamic_iota : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -3148,7 +3148,7 @@ public:
   }
 };
 
-class mhlo_dynamic_pad : public OpInfo {
+class mhlo_dynamic_pad : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 5; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3182,7 +3182,7 @@ public:
   }
 };
 
-class mhlo_dynamic_reshape : public OpInfo {
+class mhlo_dynamic_reshape : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3213,7 +3213,7 @@ public:
   }
 };
 
-class mhlo_dynamic_slice : public OpInfo {
+class mhlo_dynamic_slice : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -3246,7 +3246,7 @@ public:
   }
 };
 
-class mhlo_dynamic_update_slice : public OpInfo {
+class mhlo_dynamic_update_slice : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3278,7 +3278,7 @@ public:
   }
 };
 
-class mhlo_einsum : public OpInfo {
+class mhlo_einsum : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -3311,7 +3311,7 @@ public:
   }
 };
 
-class mhlo_exponential : public OpInfo {
+class mhlo_exponential : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3341,7 +3341,7 @@ public:
   }
 };
 
-class mhlo_exponential_minus_one : public OpInfo {
+class mhlo_exponential_minus_one : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3371,7 +3371,7 @@ public:
   }
 };
 
-class mhlo_fft : public OpInfo {
+class mhlo_fft : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
@@ -3405,7 +3405,7 @@ public:
   }
 };
 
-class mhlo_floor : public OpInfo {
+class mhlo_floor : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3435,7 +3435,7 @@ public:
   }
 };
 
-class mhlo_fusion : public OpInfo {
+class mhlo_fusion : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -3467,7 +3467,7 @@ public:
   }
 };
 
-class mhlo_gather : public OpInfo {
+class mhlo_gather : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 3; }
@@ -3504,7 +3504,7 @@ public:
   }
 };
 
-class mhlo_get_dimension_size : public OpInfo {
+class mhlo_get_dimension_size : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -3536,7 +3536,7 @@ public:
   }
 };
 
-class mhlo_get_tuple_element : public OpInfo {
+class mhlo_get_tuple_element : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -3568,7 +3568,7 @@ public:
   }
 };
 
-class mhlo_if : public OpInfo {
+class mhlo_if : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3598,7 +3598,7 @@ public:
   }
 };
 
-class mhlo_imag : public OpInfo {
+class mhlo_imag : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3628,7 +3628,7 @@ public:
   }
 };
 
-class mhlo_infeed : public OpInfo {
+class mhlo_infeed : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
@@ -3662,7 +3662,7 @@ public:
   }
 };
 
-class mhlo_iota : public OpInfo {
+class mhlo_iota : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 1; }
@@ -3693,7 +3693,7 @@ public:
   }
 };
 
-class mhlo_is_finite : public OpInfo {
+class mhlo_is_finite : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3723,7 +3723,7 @@ public:
   }
 };
 
-class mhlo_log_plus_one : public OpInfo {
+class mhlo_log_plus_one : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3753,7 +3753,7 @@ public:
   }
 };
 
-class mhlo_log : public OpInfo {
+class mhlo_log : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3783,7 +3783,7 @@ public:
   }
 };
 
-class mhlo_logistic : public OpInfo {
+class mhlo_logistic : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3813,7 +3813,7 @@ public:
   }
 };
 
-class mhlo_map : public OpInfo {
+class mhlo_map : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -3845,7 +3845,7 @@ public:
   }
 };
 
-class mhlo_maximum : public OpInfo {
+class mhlo_maximum : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3876,7 +3876,7 @@ public:
   }
 };
 
-class mhlo_minimum : public OpInfo {
+class mhlo_minimum : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3907,7 +3907,7 @@ public:
   }
 };
 
-class mhlo_multiply : public OpInfo {
+class mhlo_multiply : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3938,7 +3938,7 @@ public:
   }
 };
 
-class mhlo_negate : public OpInfo {
+class mhlo_negate : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3968,7 +3968,7 @@ public:
   }
 };
 
-class mhlo_not : public OpInfo {
+class mhlo_not : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3998,7 +3998,7 @@ public:
   }
 };
 
-class mhlo_optimization_barrier : public OpInfo {
+class mhlo_optimization_barrier : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4028,7 +4028,7 @@ public:
   }
 };
 
-class mhlo_or : public OpInfo {
+class mhlo_or : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4059,7 +4059,7 @@ public:
   }
 };
 
-class mhlo_outfeed : public OpInfo {
+class mhlo_outfeed : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -4092,7 +4092,7 @@ public:
   }
 };
 
-class mhlo_pad : public OpInfo {
+class mhlo_pad : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 3; }
@@ -4129,7 +4129,7 @@ public:
   }
 };
 
-class mhlo_partition_id : public OpInfo {
+class mhlo_partition_id : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4158,7 +4158,7 @@ public:
   }
 };
 
-class mhlo_popcnt : public OpInfo {
+class mhlo_popcnt : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4188,7 +4188,7 @@ public:
   }
 };
 
-class mhlo_power : public OpInfo {
+class mhlo_power : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4219,7 +4219,7 @@ public:
   }
 };
 
-class mhlo_real_dynamic_slice : public OpInfo {
+class mhlo_real_dynamic_slice : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 4; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4252,7 +4252,7 @@ public:
   }
 };
 
-class mhlo_real : public OpInfo {
+class mhlo_real : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4282,7 +4282,7 @@ public:
   }
 };
 
-class mhlo_recv : public OpInfo {
+class mhlo_recv : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
@@ -4316,7 +4316,7 @@ public:
   }
 };
 
-class mhlo_reduce : public OpInfo {
+class mhlo_reduce : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -4349,7 +4349,7 @@ public:
   }
 };
 
-class mhlo_reduce_precision : public OpInfo {
+class mhlo_reduce_precision : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
@@ -4383,7 +4383,7 @@ public:
   }
 };
 
-class mhlo_reduce_scatter : public OpInfo {
+class mhlo_reduce_scatter : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 4; }
@@ -4421,7 +4421,7 @@ public:
   }
 };
 
-class mhlo_reduce_window : public OpInfo {
+class mhlo_reduce_window : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 5; }
@@ -4462,7 +4462,7 @@ public:
   }
 };
 
-class mhlo_remainder : public OpInfo {
+class mhlo_remainder : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4493,7 +4493,7 @@ public:
   }
 };
 
-class mhlo_replica_id : public OpInfo {
+class mhlo_replica_id : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4522,7 +4522,7 @@ public:
   }
 };
 
-class mhlo_reshape : public OpInfo {
+class mhlo_reshape : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4552,7 +4552,7 @@ public:
   }
 };
 
-class mhlo_return : public OpInfo {
+class mhlo_return : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4581,7 +4581,7 @@ public:
   }
 };
 
-class mhlo_reverse : public OpInfo {
+class mhlo_reverse : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -4613,7 +4613,7 @@ public:
   }
 };
 
-class mhlo_rng_bit_generator : public OpInfo {
+class mhlo_rng_bit_generator : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -4646,7 +4646,7 @@ public:
   }
 };
 
-class mhlo_rng : public OpInfo {
+class mhlo_rng : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 1; }
@@ -4680,7 +4680,7 @@ public:
   }
 };
 
-class mhlo_round_nearest_even : public OpInfo {
+class mhlo_round_nearest_even : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4710,7 +4710,7 @@ public:
   }
 };
 
-class mhlo_round_nearest_afz : public OpInfo {
+class mhlo_round_nearest_afz : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4740,7 +4740,7 @@ public:
   }
 };
 
-class mhlo_rsqrt : public OpInfo {
+class mhlo_rsqrt : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4770,7 +4770,7 @@ public:
   }
 };
 
-class mhlo_scatter : public OpInfo {
+class mhlo_scatter : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 3; }
@@ -4808,7 +4808,7 @@ public:
   }
 };
 
-class mhlo_select_and_scatter : public OpInfo {
+class mhlo_select_and_scatter : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 3; }
@@ -4846,7 +4846,7 @@ public:
   }
 };
 
-class mhlo_select : public OpInfo {
+class mhlo_select : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4878,7 +4878,7 @@ public:
   }
 };
 
-class mhlo_send : public OpInfo {
+class mhlo_send : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 2; }
@@ -4913,7 +4913,7 @@ public:
   }
 };
 
-class mhlo_set_dimension_size : public OpInfo {
+class mhlo_set_dimension_size : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -4946,7 +4946,7 @@ public:
   }
 };
 
-class mhlo_shift_left : public OpInfo {
+class mhlo_shift_left : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4977,7 +4977,7 @@ public:
   }
 };
 
-class mhlo_shift_right_arithmetic : public OpInfo {
+class mhlo_shift_right_arithmetic : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5008,7 +5008,7 @@ public:
   }
 };
 
-class mhlo_shift_right_logical : public OpInfo {
+class mhlo_shift_right_logical : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5039,7 +5039,7 @@ public:
   }
 };
 
-class mhlo_sign : public OpInfo {
+class mhlo_sign : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5069,7 +5069,7 @@ public:
   }
 };
 
-class mhlo_sine : public OpInfo {
+class mhlo_sine : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5099,7 +5099,7 @@ public:
   }
 };
 
-class mhlo_slice : public OpInfo {
+class mhlo_slice : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 3; }
@@ -5135,7 +5135,7 @@ public:
   }
 };
 
-class mhlo_sort : public OpInfo {
+class mhlo_sort : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
@@ -5169,7 +5169,7 @@ public:
   }
 };
 
-class mhlo_sqrt : public OpInfo {
+class mhlo_sqrt : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5199,7 +5199,7 @@ public:
   }
 };
 
-class mhlo_stochastic_convert : public OpInfo {
+class mhlo_stochastic_convert : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5230,7 +5230,7 @@ public:
   }
 };
 
-class mhlo_subtract : public OpInfo {
+class mhlo_subtract : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5261,7 +5261,7 @@ public:
   }
 };
 
-class mhlo_tanh : public OpInfo {
+class mhlo_tanh : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5291,7 +5291,7 @@ public:
   }
 };
 
-class mhlo_torch_index_select : public OpInfo {
+class mhlo_torch_index_select : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 2; }
@@ -5326,7 +5326,7 @@ public:
   }
 };
 
-class mhlo_trace : public OpInfo {
+class mhlo_trace : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -5357,7 +5357,7 @@ public:
   }
 };
 
-class mhlo_transpose : public OpInfo {
+class mhlo_transpose : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -5389,7 +5389,7 @@ public:
   }
 };
 
-class mhlo_triangular_solve : public OpInfo {
+class mhlo_triangular_solve : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 4; }
@@ -5428,7 +5428,7 @@ public:
   }
 };
 
-class mhlo_tuple : public OpInfo {
+class mhlo_tuple : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5458,7 +5458,7 @@ public:
   }
 };
 
-class mhlo_unary_einsum : public OpInfo {
+class mhlo_unary_einsum : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -5490,7 +5490,7 @@ public:
   }
 };
 
-class mhlo_uniform_dequantize : public OpInfo {
+class mhlo_uniform_dequantize : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5520,7 +5520,7 @@ public:
   }
 };
 
-class mhlo_uniform_quantize : public OpInfo {
+class mhlo_uniform_quantize : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5550,7 +5550,7 @@ public:
   }
 };
 
-class mhlo_while : public OpInfo {
+class mhlo_while : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5580,7 +5580,7 @@ public:
   }
 };
 
-class mhlo_xla_rng_get_and_update_state : public OpInfo {
+class mhlo_xla_rng_get_and_update_state : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 1; }
@@ -5611,7 +5611,7 @@ public:
   }
 };
 
-class mhlo_xor : public OpInfo {
+class mhlo_xor : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5720,7 +5720,7 @@ std::string attrTypeToString(AttrType type) {
   assert(false && "Invalid AttrType");
 }
 
-OpInfoPtr createOpInfo(std::string name) {
+GrammarOpPtr createGrammarOp(std::string name) {
   if (name == "chlo.acos")
     return std::make_unique<chlo_acos>();
   if (name == "chlo.acosh")

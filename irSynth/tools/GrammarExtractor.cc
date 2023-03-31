@@ -165,9 +165,9 @@ void emitUsedAttrTypesAsEnum(const RecordKeeper &records, raw_ostream &os) {
 }
 
 void emitAbstractOp(raw_ostream &os) {
-  os << "class OpInfo {\n";
+  os << "class GrammarOp {\n";
   os << "public:\n";
-  os << "  virtual ~OpInfo() {}\n";
+  os << "  virtual ~GrammarOp() {}\n";
   os << "  virtual unsigned getNumOperands() const = 0;\n";
   os << "  virtual unsigned getNumAttributes() const = 0;\n";
   os << "  virtual unsigned getNumRegions() const = 0;\n";
@@ -177,7 +177,7 @@ void emitAbstractOp(raw_ostream &os) {
   os << "  virtual std::string getAttributeName(unsigned index) const = 0;\n";
   os << "  virtual OpAndResType getResultType(unsigned index) const = 0;\n";
   os << "};\n";
-  os << "using OpInfoPtr = std::unique_ptr<OpInfo>;\n";
+  os << "using GrammarOpPtr = std::unique_ptr<GrammarOp>;\n";
   os << "\n";
 }
 
@@ -193,7 +193,7 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
     auto tblgenOp = tblgen::Operator(record);
 
     std::string opName = makeClangCompatible(tblgenOp.getOperationName());
-    os << "class " << opName << " : public OpInfo {\n";
+    os << "class " << opName << " : public GrammarOp {\n";
     os << "public:\n";
 
     os << "  unsigned getNumOperands() const override {";
@@ -297,12 +297,12 @@ void emitAttrTypeToStringFn(const RecordKeeper &records, raw_ostream &os) {
 }
 
 void emitConstructorDecl(raw_ostream &os) {
-  os << "OpInfoPtr createOpInfo(std::string name);\n";
+  os << "GrammarOpPtr createGrammarOp(std::string name);\n";
   os << "\n";
 }
 
 void emitConstructorFn(const RecordKeeper &records, raw_ostream &os) {
-  os << "OpInfoPtr createOpInfo(std::string name) {\n";
+  os << "GrammarOpPtr createGrammarOp(std::string name) {\n";
   for (auto *record : getOpDefinitions(records)) {
     auto tblgenOp = tblgen::Operator(record);
 

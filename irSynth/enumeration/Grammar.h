@@ -88,9 +88,9 @@ enum AttrType {
   anonymous_707
 };
 
-class OpInfo {
+class GrammarOp {
 public:
-  virtual ~OpInfo() {}
+  virtual ~GrammarOp() {}
   virtual unsigned getNumOperands() const = 0;
   virtual unsigned getNumAttributes() const = 0;
   virtual unsigned getNumRegions() const = 0;
@@ -100,10 +100,10 @@ public:
   virtual std::string getAttributeName(unsigned index) const = 0;
   virtual OpAndResType getResultType(unsigned index) const = 0;
 };
-using OpInfoPtr = std::unique_ptr<OpInfo>;
+using GrammarOpPtr = std::unique_ptr<GrammarOp>;
 
 std::string opAndResTypeToString(OpAndResType type);
 std::string attrTypeToString(AttrType type);
-OpInfoPtr createOpInfo(std::string name);
+GrammarOpPtr createGrammarOp(std::string name);
 
 #endif // IRSYNTH_GRAMMAR_H
