@@ -343,7 +343,7 @@ static bool emitGrammarOpDecls(const RecordKeeper &recordKeeper, raw_ostream &os
 }
 
 static bool emitGrammarOpDefs(const RecordKeeper &recordKeeper, raw_ostream &os) {
-  emitSourceFileHeader("Getters for Operation Infos", os);
+  emitSourceFileHeader("Grammar (generated from tablegen)", os);
   emitSrcIncludes(os);
 
   emitConcreteOps(recordKeeper, os);
