@@ -241,6 +241,8 @@ int main(int argc, char **argv) {
   llvm::DenseMap<func::FuncOp, std::vector<unsigned>>
       originalToSynthesizedArgIds;
 
+  bool failedAtLeastOnce = false;
+
   EnumerationStats stats;
   for (auto inputFuncOrig : functions) {
     auto inputFunc = inputFuncOrig.clone();
@@ -277,13 +279,18 @@ int main(int argc, char **argv) {
 
     if (result) {
       if (printSynthesisSteps) {
-        llvm::outs() << "Synthesized function " << inputFunc.getName() << ":\n"
-          << "--------------------------\n";
+        llvm::errs() << "\033[1;42m"
+                     << "Succeeded synthesizing function " << inputFunc.getName()
+                     << "\033[0m"
+                     << "\n";
         result->module->print(llvm::outs());
       }
     } else {
-      llvm::errs() << "Failed to synthesize function " << inputFunc.getName()
+      llvm::errs() << "\033[1;41m"
+                   << "Failed synthesizing function " << inputFunc.getName()
+                   << "\033[0m"
                    << "\n";
+      failedAtLeastOnce = true;
     }
 
     if (result) {
@@ -406,5 +413,7 @@ int main(int argc, char **argv) {
   if (failed(verify(inputOp.get())))
     return 1;
 
+  if (failedAtLeastOnce)
+    return 1;
   return 0;
 }
