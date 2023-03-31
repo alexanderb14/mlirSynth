@@ -15,28 +15,11 @@
 
 using namespace mlir;
 
-int countNumArithDiv(Operation *op) {
-  int numArithDiv = 0;
-  op->walk([&](arith::DivFOp op) { numArithDiv++; });
-  return numArithDiv;
-}
-
-int countNumArithAdd(Operation *op) {
-  int numArithAdd = 0;
-  op->walk([&](arith::AddFOp op) { numArithAdd++; });
-  return numArithAdd;
-}
-
-int countNumArithSub(Operation *op) {
-  int numArithSub = 0;
-  op->walk([&](arith::SubFOp op) { numArithSub++; });
-  return numArithSub;
-}
-
-int countNumArithMul(Operation *op) {
-  int numArithMul = 0;
-  op->walk([&](arith::MulFOp op) { numArithMul++; });
-  return numArithMul;
+template <typename T>
+int countNumOps(Operation *op) {
+  int numOps = 0;
+  op->walk([&](T op) { numOps++; });
+  return numOps;
 }
 
 int computeNumCyclesWithSelfEdges(BoostGraph &g) {
@@ -137,14 +120,15 @@ std::vector<std::string> predictOps(std::vector<std::string> &supportedOps,
 
   // Element wise heuristics
   std::vector<std::string> ops;
-  if (countNumArithDiv(op) > 0)
+  if (countNumOps<arith::DivFOp>(op) > 0)
     ops.emplace_back("chlo.broadcast_divide");
-  if (countNumArithAdd(op) > 0)
+  if (countNumOps<arith::AddFOp>(op) > 0)
     ops.emplace_back("chlo.broadcast_add");
-  if (countNumArithSub(op) > 0)
+  if (countNumOps<arith::SubFOp>(op) > 0)
     ops.emplace_back("chlo.broadcast_subtract");
-  if (countNumArithMul(op) > 0)
+  if (countNumOps<arith::MulFOp>(op) > 0)
     ops.emplace_back("chlo.broadcast_multiply");
+
 
   // Transpose heuristics
   if (countNumMultipliedMismatchingMemrefAccesses(op) > 0) {
