@@ -1,7 +1,7 @@
 #ifndef IRSYNTH_ATTRIBUTEGEN_H
 #define IRSYNTH_ATTRIBUTEGEN_H
 
-#include "enumeration/OpInfos.h"
+#include "enumeration/Grammar.h"
 
 #include "mlir/IR/Attributes.h"
 #include "mlir/IR/Builders.h"

@@ -4,7 +4,7 @@
 #include "enumeration/CartesianProduct.h"
 #include "enumeration/Candidate.h"
 #include "enumeration/Generators.h"
-#include "enumeration/OpInfos.h"
+#include "enumeration/Grammar.h"
 #include "enumeration/ProcessingStatus.h"
 #include "enumeration/Stats.h"
 #include "execution/ArgUtils.h"

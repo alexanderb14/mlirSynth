@@ -6,7 +6,7 @@
 |*                                                                            *|
 \*===----------------------------------------------------------------------===*/
 
-#include "OpInfos.h"
+#include "Grammar.h"
 
 #include <cassert>
 #include <memory>

@@ -42,7 +42,7 @@ add_library(enumeration
   enumeration/CandidateStore.cc
   enumeration/Enumerator.cc
   enumeration/Guide.cc
-  enumeration/OpInfos.cc
+  enumeration/Grammar.cc
   enumeration/ProcessingStatus.cc
   enumeration/Stats.cc)
 target_include_directories(enumeration

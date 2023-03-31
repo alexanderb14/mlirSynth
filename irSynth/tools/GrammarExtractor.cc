@@ -122,7 +122,7 @@ void emitHdrIncludes(raw_ostream &os) {
 }
 
 void emitSrcIncludes(raw_ostream &os) {
-  os << "#include \"OpInfos.h\"\n";
+  os << "#include \"Grammar.h\"\n";
   os << "\n";
   os << "#include <cassert>\n";
   os << "#include <memory>\n";
@@ -326,9 +326,9 @@ void emitIncludeGuardEnd(raw_ostream &os, const std::string &guard) {
   os << "#endif // " << guard << "\n";
 }
 
-static bool emitOpInfoDecls(const RecordKeeper &recordKeeper, raw_ostream &os) {
-  emitSourceFileHeader("Getters for Operation Infos", os);
-  emitIncludeGuardStart(os, "IRSYNTH_OPINFOS_H");
+static bool emitGrammarOpDecls(const RecordKeeper &recordKeeper, raw_ostream &os) {
+  emitSourceFileHeader("Grammar (generated from tablegen)", os);
+  emitIncludeGuardStart(os, "IRSYNTH_GRAMMAR_H");
   emitHdrIncludes(os);
 
   emitUsedOpAndResTypesAsEnum(recordKeeper, os);
@@ -337,12 +337,12 @@ static bool emitOpInfoDecls(const RecordKeeper &recordKeeper, raw_ostream &os) {
   emitOpAndResTypeToStringDecl(os);
   emitAttrTypeToStringDecl(os);
   emitConstructorDecl(os);
-  emitIncludeGuardEnd(os, "IRSYNTH_OPINFOS_H");
+  emitIncludeGuardEnd(os, "IRSYNTH_GRAMMAR_H");
 
   return false;
 }
 
-static bool emitOpInfoDefs(const RecordKeeper &recordKeeper, raw_ostream &os) {
+static bool emitGrammarOpDefs(const RecordKeeper &recordKeeper, raw_ostream &os) {
   emitSourceFileHeader("Getters for Operation Infos", os);
   emitSrcIncludes(os);
 
@@ -355,15 +355,15 @@ static bool emitOpInfoDefs(const RecordKeeper &recordKeeper, raw_ostream &os) {
 }
 
 static mlir::GenRegistration
-    genOpInfoDecls("gen-op-info-decls", "Generate op info declarations",
+    genGrammarDecls("gen-grammar-decls", "Generate grammar declarations",
                    [](const RecordKeeper &records, raw_ostream &os) {
-                     return emitOpInfoDecls(records, os);
+                     return emitGrammarOpDecls(records, os);
                    });
 
 static mlir::GenRegistration
-    genOpInfoDefs("gen-op-info-defs", "Generate op info definitions",
+    genGrammarDefs("gen-grammar-defs", "Generate grammar definitions",
                   [](const RecordKeeper &records, raw_ostream &os) {
-                    return emitOpInfoDefs(records, os);
+                    return emitGrammarOpDefs(records, os);
                   });
 
 int main(int argc, char **argv) { return MlirTblgenMain(argc, argv); }

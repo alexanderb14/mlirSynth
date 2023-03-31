@@ -1,13 +1,13 @@
 /*===- TableGen'erated file -------------------------------------*- C++ -*-===*\
 |*                                                                            *|
-|* Getters for Operation Infos                                                *|
+|* Grammar (generated from tablegen)                                          *|
 |*                                                                            *|
 |* Automatically generated file, do not edit!                                 *|
 |*                                                                            *|
 \*===----------------------------------------------------------------------===*/
 
-#ifndef IRSYNTH_OPINFOS_H
-#define IRSYNTH_OPINFOS_H
+#ifndef IRSYNTH_GRAMMAR_H
+#define IRSYNTH_GRAMMAR_H
 
 #include <memory>
 #include <string>
@@ -106,4 +106,4 @@ std::string opAndResTypeToString(OpAndResType type);
 std::string attrTypeToString(AttrType type);
 OpInfoPtr createOpInfo(std::string name);
 
-#endif // IRSYNTH_OPINFOS_H
+#endif // IRSYNTH_GRAMMAR_H

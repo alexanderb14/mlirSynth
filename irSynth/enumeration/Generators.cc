@@ -1,6 +1,6 @@
 #include "Generators.h"
 
-#include "enumeration/OpInfos.h"
+#include "enumeration/Grammar.h"
 #include "mlir-hlo/Dialect/mhlo/IR/hlo_ops.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/IR/BuiltinAttributes.h"

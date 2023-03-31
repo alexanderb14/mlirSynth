@@ -4,6 +4,7 @@
 
 #include "mlir/Dialect/Affine/IR/AffineOps.h"
 #include "mlir/Dialect/Arith/IR/Arith.h"
+#include "mlir/Dialect/Math/IR/Math.h"
 #include "llvm/ADT/ArrayRef.h"
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/connected_components.hpp>
@@ -129,16 +130,22 @@ std::vector<std::string> predictOps(std::vector<std::string> &supportedOps,
   if (countNumOps<arith::MulFOp>(op) > 0)
     ops.emplace_back("chlo.broadcast_multiply");
 
-
-  // Transpose heuristics
-  if (countNumMultipliedMismatchingMemrefAccesses(op) > 0) {
-    ops.emplace_back("mhlo.transpose");
-  }
-
-  // Select heuristics
-  if (countNumLoopBoundMaps(op) > 0) {
+  if (countNumOps<math::SqrtOp>(op) > 0)
+    ops.emplace_back("mhlo.sqrt");
+  if (countNumOps<arith::SelectOp>(op) > 0) {
     ops.emplace_back("mhlo.select");
   }
+  if (countNumOps<arith::CmpFOp>(op) > 0) {
+    ops.emplace_back("mhlo.compare");
+  }
+
+  // Transpose heuristics
+  if (countNumMultipliedMismatchingMemrefAccesses(op) > 0)
+    ops.emplace_back("mhlo.transpose");
+
+  // Select heuristics
+  if (countNumLoopBoundMaps(op) > 0)
+    ops.emplace_back("mhlo.select");
 
   // Reduction heuristics
   if (computeNumCyclesWithSelfEdges(g) > 0) {

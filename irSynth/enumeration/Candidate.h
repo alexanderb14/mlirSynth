@@ -1,7 +1,7 @@
 #ifndef IRSYNTH_CANDIDATE_H
 #define IRSYNTH_CANDIDATE_H
 
-#include "enumeration/OpInfos.h"
+#include "enumeration/Grammar.h"
 
 #include "mlir/IR/Block.h"
 #include "mlir/IR/BlockAndValueMapping.h"

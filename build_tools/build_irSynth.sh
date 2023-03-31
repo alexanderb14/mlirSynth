@@ -42,9 +42,9 @@ GEN_COMMON="-Imlir-hlo \
 -Imlir-hlo/llvm-build/include \
 -Imlir-hlo/llvm-build/tools/mlir/include"
 cat $TD_FILES | ./build/bin/grammar-extractor $GEN_COMMON \
-  -gen-op-info-decls -o irSynth/enumeration/OpInfos.h
+  -gen-grammar-decls -o irSynth/enumeration/Grammar.h
 cat $TD_FILES | ./build/bin/grammar-extractor $GEN_COMMON \
-  -gen-op-info-defs -o irSynth/enumeration/OpInfos.cc
+  -gen-grammar-defs -o irSynth/enumeration/Grammar.cc
 
 # Build irSynth.
 pushd build
