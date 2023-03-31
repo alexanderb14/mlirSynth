@@ -27,9 +27,9 @@ cmake .. -GNinja \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 popd
 
-# Generate OpInfos from tablegen.
+# Generate Grammar from tablegen files.
 pushd build
-cmake --build . --target tablegen-opinfos
+cmake --build . --target grammar-extractor
 popd
 TD_FILES="mlir-hlo/stablehlo/stablehlo/dialect/ChloOps.td \
 mlir-hlo/include/mlir-hlo/Dialect/mhlo/IR/hlo_ops.td"
@@ -41,9 +41,9 @@ GEN_COMMON="-Imlir-hlo \
 -Imlir-hlo/llvm-project/mlir/include \
 -Imlir-hlo/llvm-build/include \
 -Imlir-hlo/llvm-build/tools/mlir/include"
-cat $TD_FILES | ./build/bin/tablegen-opinfos $GEN_COMMON \
+cat $TD_FILES | ./build/bin/grammar-extractor $GEN_COMMON \
   -gen-op-info-decls -o irSynth/enumeration/OpInfos.h
-cat $TD_FILES | ./build/bin/tablegen-opinfos $GEN_COMMON \
+cat $TD_FILES | ./build/bin/grammar-extractor $GEN_COMMON \
   -gen-op-info-defs -o irSynth/enumeration/OpInfos.cc
 
 # Build irSynth.

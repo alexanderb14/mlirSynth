@@ -117,11 +117,11 @@ target_link_libraries(test-executor
           transform)
 llvm_update_compile_flags(test-executor)
 
-# Exe: Tablegen Extractor
+# Exe: Grammar Extractor
 set(LLVM_LINK_COMPONENTS TableGen)
-add_llvm_executable(tablegen-opinfos
-  tools/TablegenExtractor.cc)
-target_link_libraries(tablegen-opinfos
+add_llvm_executable(grammar-extractor
+  tools/GrammarExtractor.cc)
+target_link_libraries(grammar-extractor
   PRIVATE MLIRIR
           MLIRTableGen
           MLIRTblgenLib
