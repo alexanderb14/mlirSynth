@@ -12,6 +12,7 @@
 #include <memory>
 #include <string>
 
+namespace grammar {
 class chlo_acos : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
@@ -6072,3 +6073,4 @@ GrammarOpPtr createGrammarOp(std::string name) {
   assert(false && "Invalid op name");
 }
 
+} // namespace grammar

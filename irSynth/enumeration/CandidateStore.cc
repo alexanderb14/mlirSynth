@@ -7,13 +7,13 @@ void CandidateStore::addCandidate(const CandidatePtr &candidate) {
   std::lock_guard<std::mutex> lock(addCandidatesMutex);
 
   unsigned weight = candidate->getNumOps();
-  OpAndResType opAndResType = candidate->getOpAndResType();
+  grammar::OpAndResType opAndResType = candidate->getOpAndResType();
 
   candidateToId[candidate.get()] = candidateToId.size();
 
   if (weightToCandidates.find(weight) == weightToCandidates.end())
     weightToCandidates[weight] =
-        std::unordered_map<OpAndResType, std::vector<CandidatePtr>>();
+        std::unordered_map<grammar::OpAndResType, std::vector<CandidatePtr>>();
 
   if (weightToCandidates[weight].find(opAndResType) ==
       weightToCandidates[weight].end())
@@ -49,7 +49,8 @@ std::vector<CandidatePtr> CandidateStore::getCandidates(unsigned weight) {
 }
 
 std::vector<CandidatePtr>
-CandidateStore::getCandidates(unsigned weight, OpAndResType opAndResType) {
+CandidateStore::getCandidates(unsigned weight,
+                              grammar::OpAndResType opAndResType) {
   std::vector<CandidatePtr> candidates;
 
   for (unsigned i = 0; i < weight; i++) {

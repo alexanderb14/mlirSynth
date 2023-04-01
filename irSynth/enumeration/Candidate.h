@@ -17,7 +17,8 @@ using CandidatePtr = std::shared_ptr<Candidate>;
 
 class Candidate {
 public:
-  Candidate(std::vector<CandidatePtr> predecessors, OpAndResType returnType) {
+  Candidate(std::vector<CandidatePtr> predecessors,
+            grammar::OpAndResType returnType) {
     this->predecessors = predecessors;
     this->returnType = returnType;
     region = std::make_shared<mlir::Region>();
@@ -54,8 +55,10 @@ public:
   }
   double getHash() { return hash; }
 
-  void setOpAndResType(OpAndResType ioType) { this->returnType = ioType; }
-  OpAndResType getOpAndResType() { return returnType; }
+  void setOpAndResType(grammar::OpAndResType ioType) {
+    this->returnType = ioType;
+  }
+  grammar::OpAndResType getOpAndResType() { return returnType; }
 
 private:
   std::vector<unsigned> argIds;
@@ -67,7 +70,7 @@ private:
   double hash;
   bool hashExists = false;
 
-  OpAndResType returnType;
+  grammar::OpAndResType returnType;
 };
 
 #endif // IRSYNTH_CANDIDATE_H

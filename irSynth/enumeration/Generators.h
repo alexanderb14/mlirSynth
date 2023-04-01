@@ -8,7 +8,7 @@
 #include "mlir/IR/MLIRContext.h"
 #include "mlir/IR/Region.h"
 
-std::vector<std::pair<mlir::Attribute, OpAndResType>>
+std::vector<std::pair<mlir::Attribute, grammar::OpAndResType>>
 genAttributes(mlir::MLIRContext &ctx,
               mlir::Region::BlockArgListType &functionArgs,
               llvm::ArrayRef<int64_t> &targetShape, int maxRank);

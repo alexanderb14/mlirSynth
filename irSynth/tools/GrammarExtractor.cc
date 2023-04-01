@@ -12,6 +12,7 @@
 
 using namespace llvm;
 using namespace mlir;
+using namespace mlir::tblgen;
 
 std::vector<Record *> getOpDefinitions(const RecordKeeper &recordKeeper) {
   if (!recordKeeper.getClass("Op"))
@@ -34,7 +35,7 @@ std::vector<Record *> getAttrDefinitions(const RecordKeeper &recordKeeper) {
 std::vector<std::string> getUsedOpAndResTypes(const RecordKeeper &records) {
   std::set<std::string> types;
   for (auto *record : getOpDefinitions(records)) {
-    auto tblgenOp = tblgen::Operator(record);
+    auto tblgenOp = Operator(record);
     for (auto &operand : tblgenOp.getOperands()) {
       types.insert(operand.constraint.getDefName().str());
     }
@@ -57,7 +58,7 @@ std::vector<std::string> getUsedOpAndResTypes(const RecordKeeper &records) {
 std::vector<std::string> getUsedAttrTypes(const RecordKeeper &records) {
   std::set<std::string> types;
   for (auto *record : getOpDefinitions(records)) {
-    auto tblgenOp = tblgen::Operator(record);
+    auto tblgenOp = Operator(record);
     for (auto &attr : tblgenOp.getAttributes()) {
       types.insert(attr.attr.getDefName().str());
     }
@@ -95,7 +96,7 @@ void printDefinitions(RecordKeeper &records, raw_ostream &os) {
   os << "\n";
   for (auto *record : getOpDefinitions(records)) {
     os << "Op: " << record->getName() << "\n";
-    auto tblgenOp = tblgen::Operator(record);
+    auto tblgenOp = Operator(record);
 
     // Operands
     os << "  Operands:\n";
@@ -190,7 +191,7 @@ std::string makeClangCompatible(const std::string &name) {
 
 void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
   for (auto *record : getOpDefinitions(records)) {
-    auto tblgenOp = tblgen::Operator(record);
+    auto tblgenOp = Operator(record);
 
     std::string opName = makeClangCompatible(tblgenOp.getOperationName());
     os << "class " << opName << " : public GrammarOp {\n";
@@ -304,7 +305,7 @@ void emitConstructorDecl(raw_ostream &os) {
 void emitConstructorFn(const RecordKeeper &records, raw_ostream &os) {
   os << "GrammarOpPtr createGrammarOp(std::string name) {\n";
   for (auto *record : getOpDefinitions(records)) {
-    auto tblgenOp = tblgen::Operator(record);
+    auto tblgenOp = Operator(record);
 
     std::string opName = makeClangCompatible(tblgenOp.getOperationName());
 
@@ -326,17 +327,27 @@ void emitIncludeGuardEnd(raw_ostream &os, const std::string &guard) {
   os << "#endif // " << guard << "\n";
 }
 
+void emitNamespaceStart(raw_ostream &os, const std::string &ns) {
+  os << "namespace " << ns << " {\n";
+}
+
+void emitNamespaceEnd(raw_ostream &os, const std::string &ns) {
+  os << "} // namespace " << ns << "\n";
+}
+
 static bool emitGrammarOpDecls(const RecordKeeper &recordKeeper, raw_ostream &os) {
   emitSourceFileHeader("Grammar (generated from tablegen)", os);
   emitIncludeGuardStart(os, "IRSYNTH_GRAMMAR_H");
   emitHdrIncludes(os);
 
+  emitNamespaceStart(os, "grammar");
   emitUsedOpAndResTypesAsEnum(recordKeeper, os);
   emitUsedAttrTypesAsEnum(recordKeeper, os);
   emitAbstractOp(os);
   emitOpAndResTypeToStringDecl(os);
   emitAttrTypeToStringDecl(os);
   emitConstructorDecl(os);
+  emitNamespaceEnd(os, "grammar");
   emitIncludeGuardEnd(os, "IRSYNTH_GRAMMAR_H");
 
   return false;
@@ -346,10 +357,12 @@ static bool emitGrammarOpDefs(const RecordKeeper &recordKeeper, raw_ostream &os)
   emitSourceFileHeader("Grammar (generated from tablegen)", os);
   emitSrcIncludes(os);
 
+  emitNamespaceStart(os, "grammar");
   emitConcreteOps(recordKeeper, os);
   emitOpAndResTypeToStringFn(recordKeeper, os);
   emitAttrTypeToStringFn(recordKeeper, os);
   emitConstructorFn(recordKeeper, os);
+  emitNamespaceEnd(os, "grammar");
 
   return false;
 }

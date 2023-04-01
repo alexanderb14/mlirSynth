@@ -24,9 +24,9 @@ DenseElementsAttr getDenseElementsAttr(std::vector<Attribute> attrVect) {
   return DenseElementsAttr::get(type.cast<TensorType>(), attrVect);
 }
 
-std::vector<std::pair<Attribute, OpAndResType>>
+std::vector<std::pair<Attribute, grammar::OpAndResType>>
 genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
-  std::vector<std::pair<Attribute, OpAndResType>> attributes;
+  std::vector<std::pair<Attribute, grammar::OpAndResType>> attributes;
 
   for (auto arg : functionArgs) {
     if (!arg.getType().isa<ShapedType>())
@@ -40,7 +40,7 @@ genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
       attrVect.push_back(builder.getI64IntegerAttr(dim));
     }
     attributes.emplace_back(getDenseElementsAttr(attrVect),
-                            OpAndResType::HLO_DimensionTensor);
+                            grammar::OpAndResType::HLO_DimensionTensor);
 
     // Dimension at previous last inserted: E.g. [3, 5, 7] -> [3, 5, 1, 7]
     attrVect = std::vector<Attribute>();
@@ -53,7 +53,7 @@ genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
       dimIdx++;
     }
     attributes.emplace_back(getDenseElementsAttr(attrVect),
-                            OpAndResType::HLO_DimensionTensor);
+                            grammar::OpAndResType::HLO_DimensionTensor);
 
     // Leading dimension inserted: E.g. [5] -> [1, 5] or [3, 5] -> [1, 3, 5]
     attrVect = std::vector<Attribute>();
@@ -62,7 +62,7 @@ genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
       attrVect.push_back(builder.getI64IntegerAttr(dim));
     }
     attributes.emplace_back(getDenseElementsAttr(attrVect),
-                            OpAndResType::HLO_DimensionTensor);
+                            grammar::OpAndResType::HLO_DimensionTensor);
 
     // Trailing dimension inserted: E.g. [5] -> [5, 1] or [3, 5] -> [3, 5, 1]
     attrVect = std::vector<Attribute>();
@@ -71,7 +71,7 @@ genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
     }
     attrVect.push_back(builder.getI64IntegerAttr(1));
     attributes.emplace_back(getDenseElementsAttr(attrVect),
-                            OpAndResType::HLO_DimensionTensor);
+                            grammar::OpAndResType::HLO_DimensionTensor);
 
     // Transpose: E.g. [3, 5] -> [5, 3]
     attrVect = std::vector<Attribute>();
@@ -80,16 +80,16 @@ genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
     }
     std::reverse(attrVect.begin(), attrVect.end());
     attributes.emplace_back(getDenseElementsAttr(attrVect),
-                            OpAndResType::HLO_DimensionTensor);
+                            grammar::OpAndResType::HLO_DimensionTensor);
   }
 
   return attributes;
 }
 
-std::vector<std::pair<Attribute, OpAndResType>>
+std::vector<std::pair<Attribute, grammar::OpAndResType>>
 genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
                     llvm::ArrayRef<int64_t> &targetShape, int maxRank) {
-  std::vector<std::pair<Attribute, OpAndResType>> attributes;
+  std::vector<std::pair<Attribute, grammar::OpAndResType>> attributes;
 
   if (maxRank >= 0) {
     // Create scalars.
@@ -105,8 +105,7 @@ genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
     for (auto attr : attrs) {
       Type type = RankedTensorType::get({}, attr.cast<TypedAttr>().getType());
       auto attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attr);
-      attributes.emplace_back(attrDense,
-                                OpAndResType::HLO_Tensor);
+      attributes.emplace_back(attrDense, grammar::OpAndResType::HLO_Tensor);
     }
   }
 
@@ -125,8 +124,7 @@ genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
     Type type = RankedTensorType::get({targetShape[0], targetShape[1]},
                                       builder.getI1Type());
     auto attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attrVect);
-    attributes.emplace_back(attrDense,
-                              OpAndResType::HLO_PredTensor);
+    attributes.emplace_back(attrDense, grammar::OpAndResType::HLO_PredTensor);
 
     // Create a matrix with 0 values.
     attrVect = std::vector<Attribute>();
@@ -136,14 +134,14 @@ genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
     type = RankedTensorType::get({targetShape[0], targetShape[1]},
                                  builder.getF64Type());
     attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attrVect);
-    attributes.emplace_back(attrDense,
-                              OpAndResType::HLO_Tensor);
+    attributes.emplace_back(attrDense, grammar::OpAndResType::HLO_Tensor);
   }
 
   return attributes;
 }
 
-void printAttributes(std::vector<std::pair<Attribute, OpAndResType>>& attributes) {
+void printAttributes(
+    std::vector<std::pair<Attribute, grammar::OpAndResType>> &attributes) {
   llvm::outs() << "Attributes:"
                << "\n--------\n";
   for (auto attr : attributes) {
@@ -153,17 +151,20 @@ void printAttributes(std::vector<std::pair<Attribute, OpAndResType>>& attributes
   }
 }
 
-std::vector<std::pair<Attribute, OpAndResType>>
+std::vector<std::pair<Attribute, grammar::OpAndResType>>
 genAttributes(MLIRContext &ctx, Region::BlockArgListType &functionArgs,
               llvm::ArrayRef<int64_t> &targetShape, int maxRank) {
-  std::vector<std::pair<Attribute, OpAndResType>> attributes;
+  std::vector<std::pair<Attribute, grammar::OpAndResType>> attributes;
   OpBuilder builder(&ctx);
 
   auto shapeAttributes = genShapeAttributes(builder, functionArgs);
-  attributes.insert(attributes.end(), shapeAttributes.begin(), shapeAttributes.end());
+  attributes.insert(attributes.end(), shapeAttributes.begin(),
+                    shapeAttributes.end());
 
-  auto tensorAttributes = genTensorAttributes(builder, functionArgs, targetShape, maxRank);
-  attributes.insert(attributes.end(), tensorAttributes.begin(), tensorAttributes.end());
+  auto tensorAttributes =
+      genTensorAttributes(builder, functionArgs, targetShape, maxRank);
+  attributes.insert(attributes.end(), tensorAttributes.begin(),
+                    tensorAttributes.end());
 
   // printAttributes(attributes);
 

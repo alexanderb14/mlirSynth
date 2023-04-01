@@ -12,6 +12,7 @@
 #include <memory>
 #include <string>
 
+namespace grammar {
 enum OpAndResType {
   DefaultUnknownOpAndResType,
   HLO_AsyncBundle,
@@ -106,4 +107,5 @@ std::string opAndResTypeToString(OpAndResType type);
 std::string attrTypeToString(AttrType type);
 GrammarOpPtr createGrammarOp(std::string name);
 
+} // namespace grammar
 #endif // IRSYNTH_GRAMMAR_H

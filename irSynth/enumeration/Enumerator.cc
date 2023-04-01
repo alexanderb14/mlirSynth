@@ -1,8 +1,8 @@
 #include "Enumerator.h"
 
 #include "Common.h"
-#include "enumeration/CartesianProduct.h"
 #include "enumeration/Candidate.h"
+#include "enumeration/CartesianProduct.h"
 #include "enumeration/Generators.h"
 #include "enumeration/Grammar.h"
 #include "enumeration/ProcessingStatus.h"
@@ -320,7 +320,8 @@ void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
 
   unsigned argId = 0;
   for (auto &input : inputs) {
-    CandidatePtr candidate(new Candidate({}, OpAndResType::HLO_Tensor));
+    CandidatePtr candidate(
+        new Candidate({}, grammar::OpAndResType::HLO_Tensor));
     candidate->addArgument(ctx, input, argId++);
     candidateStore->addCandidate(candidate);
   }
@@ -362,11 +363,13 @@ bool hasRankedAndKnownShape(Operation *op) {
 }
 
 bool isAttributeNameRelevant(std::string attrName) {
-  return !(attrName == "precision_config" || attrName == "broadcast_dimensions" ||
-      attrName == "dot_dimension_numbers");
+  return !(attrName == "precision_config" ||
+           attrName == "broadcast_dimensions" ||
+           attrName == "dot_dimension_numbers");
 }
 
-std::vector<std::string> getRelevantAttributeNames(GrammarOpPtr &opInfo) {
+std::vector<std::string>
+getRelevantAttributeNames(grammar::GrammarOpPtr &opInfo) {
   std::vector<std::string> attrNames;
   for (unsigned i = 0; i < opInfo->getNumAttributes(); i++) {
     std::string attrName = opInfo->getAttributeName(i);
@@ -377,8 +380,8 @@ std::vector<std::string> getRelevantAttributeNames(GrammarOpPtr &opInfo) {
 }
 
 ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
-                         RegisteredOperationName &opName, GrammarOpPtr &opInfo,
-                         IExecutorPtr &executor,
+                         RegisteredOperationName &opName,
+                         grammar::GrammarOpPtr &opInfo, IExecutorPtr &executor,
                          std::vector<ReturnAndArgType> &args,
                          CandidateStorePtr &candidateStore,
                          CandidateStorePtr &localCandidateStore, double *refOut,
@@ -388,8 +391,8 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
   stats.numEnumerated++;
 
   // Create candidate.
-  CandidatePtr newCandidate =
-      std::make_shared<Candidate>(operandArgTuple.operands, OpAndResType::HLO_Tensor);
+  CandidatePtr newCandidate = std::make_shared<Candidate>(
+      operandArgTuple.operands, grammar::OpAndResType::HLO_Tensor);
   auto builder = OpBuilder(&ctx);
 
   // Set up operands.
@@ -625,9 +628,10 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
       std::vector<std::vector<RegionPtr>> regions;
 
       // - Operands.
-      auto opInfo = createGrammarOp(opName.getStringRef().str());
+      auto opInfo = grammar::createGrammarOp(opName.getStringRef().str());
       for (unsigned i = 0; i < opInfo->getNumOperands(); i++) {
-        auto operandCandidates = candidateStore->getCandidates(numOps, opInfo->getOperandType(i));
+        auto operandCandidates =
+            candidateStore->getCandidates(numOps, opInfo->getOperandType(i));
         operands.push_back(operandCandidates);
       }
 
