@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -x
 
 if ! [ -f "$PWD/../irSynth/README.md" ]; then
   echo "ERROR: Run this script from the root of the repository."
