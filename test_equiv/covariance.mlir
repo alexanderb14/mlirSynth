@@ -61,11 +61,12 @@ module {
       mhlo.return %16 : tensor<f64>
     }
     %4 = "chlo.broadcast_divide"(%1, %arg2) : (tensor<3xf64>, tensor<f64>) -> tensor<3xf64>
+
     %7 = "chlo.broadcast_subtract"(%arg3, %4) : (tensor<5x3xf64>, tensor<3xf64>) -> tensor<5x3xf64>
     %8 = "mhlo.transpose"(%7) {permutation = dense<[1, 0]> : tensor<2xi64>} : (tensor<5x3xf64>) -> tensor<3x5xf64>
     %9 = "mhlo.dot"(%8, %7) : (tensor<3x5xf64>, tensor<5x3xf64>) -> tensor<3x3xf64>
     %11 = mhlo.constant dense<1.000000e+00> : tensor<f64>
-    %12 = mhlo.subtract %arg2, %11: tensor<f64>
+    %12 = "chlo.broadcast_subtract"(%arg2, %11) : (tensor<f64>, tensor<f64>) -> tensor<f64>
     %15 = "chlo.broadcast_divide"(%9, %12) : (tensor<3x3xf64>, tensor<f64>) -> tensor<3x3xf64>
 
     return %15 : tensor<3x3xf64>
