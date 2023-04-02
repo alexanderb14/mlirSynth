@@ -15,6 +15,8 @@ Benchmark = collections.namedtuple(
     'Benchmark', ['file', 'name', 'ops', 'distribute', 'max_num_ops'])
 
 benchmarks = [
+    Benchmark('benchmarks/covariance.mlir', 'covariance',
+              ['mhlo.dot_general', 'mhlo.transpose', 'chlo.broadcast_divide', 'chlo.broadcast_subtract', 'mhlo.reduce'], False, 3),
     Benchmark('benchmarks/doitgen.mlir', 'doitgen',
               ['mhlo.dot_general'], False, 3),
     Benchmark('testfiles/correlation_1.mlir', 'correlation_1',
@@ -45,6 +47,7 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 res_dir = '/tmp/exp_results'
 cpu_count = multiprocessing.cpu_count()
 program = os.path.join(script_dir, '../build/bin/synthesizer')
+
 
 def run_program(x):
     start = time.time()
@@ -107,15 +110,16 @@ def run_benchmark(benchmark, prune_equivalent_candidates, ops, distribute, max_n
 
 
 def run_benchmarks_all(benchmarks, prune_eq_configs=[True, False],
-              ops_configs=['ground_truth', 'heuristic', 'all'],
-              distribute_configs=[True, False]):
+                       ops_configs=['ground_truth', 'heuristic', 'all'],
+                       distribute_configs=[True, False]):
 
     configs = []
     for benchmark in benchmarks:
         for prune_equivalent_candidates in prune_eq_configs:
             for ops in ops_configs:
                 for distribute in distribute_configs:
-                    configs.append((benchmark, prune_equivalent_candidates, ops, distribute, 6))
+                    configs.append(
+                        (benchmark, prune_equivalent_candidates, ops, distribute, 6))
 
     stats_all = []
     for config in tqdm.tqdm(configs):
