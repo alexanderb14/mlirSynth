@@ -46,7 +46,8 @@ add_library(enumeration
   enumeration/ProcessingStatus.cc
   enumeration/Stats.cc)
 target_include_directories(enumeration
-  PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+  PRIVATE ${CMAKE_CURRENT_LIST_DIR}
+          ${MHLO_INCLUDE_DIRS})
 target_link_libraries(enumeration
   PRIVATE cartesian_product
           analysis)

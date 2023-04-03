@@ -6,12 +6,28 @@
 |*                                                                            *|
 \*===----------------------------------------------------------------------===*/
 
+
 #include "Grammar.h"
+
+#include "mlir/IR/BuiltinAttributes.h"
+#include "mlir/IR/TensorEncoding.h"
+#include "stablehlo/dialect/Base.h"
+
+// Include order below matters.
+#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops_enums.h.inc"
+#define GET_ATTRDEF_CLASSES
+#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops_attrs.h.inc"
+#define GET_TYPEDEF_CLASSES
+#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops_typedefs.h.inc"
+
+// Include order matters
+#include "stablehlo/dialect/ChloEnums.h.inc"
+#define GET_ATTRDEF_CLASSES
+#include "stablehlo/dialect/ChloAttrs.h.inc"
 
 #include <cassert>
 #include <memory>
 #include <string>
-
 namespace grammar {
 class chlo_acos : public GrammarOp {
 public:
@@ -25,7 +41,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -55,7 +71,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -85,7 +101,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -115,7 +131,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -145,7 +161,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -175,7 +191,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -205,7 +221,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -236,9 +252,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -269,9 +285,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -302,9 +318,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -335,11 +351,11 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
-      case 1: return CHLO_ComparisonDirectionAttr;
-      case 2: return CHLO_ComparisonTypeAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::chlo::ComparisonDirectionAttr();
+      case 2: return ::mlir::chlo::ComparisonTypeAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -372,9 +388,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -405,9 +421,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -438,9 +454,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -471,9 +487,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -504,9 +520,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -537,9 +553,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -570,9 +586,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -603,9 +619,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -636,9 +652,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -669,9 +685,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -703,7 +719,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -734,9 +750,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -767,9 +783,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -800,9 +816,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -833,9 +849,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -866,9 +882,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -899,9 +915,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -931,7 +947,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -961,9 +977,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return TypedAttrInterface;
+      case 0: return ::mlir::TypedAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -992,9 +1008,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return ElementsAttr;
+      case 0: return ::mlir::ElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -1024,7 +1040,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1054,7 +1070,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1085,7 +1101,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1115,7 +1131,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1145,7 +1161,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1175,7 +1191,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1205,7 +1221,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1235,7 +1251,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1265,7 +1281,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1295,7 +1311,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1326,7 +1342,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1357,7 +1373,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1387,7 +1403,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1417,7 +1433,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1446,7 +1462,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1476,7 +1492,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1506,9 +1522,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64Attr;
+      case 0: return ::mlir::IntegerAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -1540,7 +1556,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1570,7 +1586,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1601,7 +1617,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1632,7 +1648,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1662,7 +1678,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1692,12 +1708,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64Attr;
-      case 1: return I64ElementsAttr;
-      case 2: return ChannelHandle;
-      case 3: return UnitAttr;
+      case 0: return ::mlir::IntegerAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+      case 2: return ::mlir::mhlo::ChannelHandleAttr();
+      case 3: return ::mlir::UnitAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -1730,11 +1746,11 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
-      case 1: return ChannelHandle;
-      case 2: return UnitAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::mhlo::ChannelHandleAttr();
+      case 2: return ::mlir::UnitAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -1766,12 +1782,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64Attr;
-      case 1: return I64Attr;
-      case 2: return I64Attr;
-      case 3: return I64ElementsAttr;
+      case 0: return ::mlir::IntegerAttr();
+      case 1: return ::mlir::IntegerAttr();
+      case 2: return ::mlir::IntegerAttr();
+      case 3: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -1805,7 +1821,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1835,11 +1851,11 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return FlatSymbolRefAttr;
-      case 1: return StrAttr;
-      case 2: return I64Attr;
+      case 0: return ::mlir::FlatSymbolRefAttr();
+      case 1: return ::mlir::StringAttr();
+      case 2: return ::mlir::IntegerAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -1871,11 +1887,11 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return FlatSymbolRefAttr;
-      case 1: return StrAttr;
-      case 2: return I64Attr;
+      case 0: return ::mlir::FlatSymbolRefAttr();
+      case 1: return ::mlir::StringAttr();
+      case 2: return ::mlir::IntegerAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -1907,11 +1923,11 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return FlatSymbolRefAttr;
-      case 1: return StrAttr;
-      case 2: return I64Attr;
+      case 0: return ::mlir::FlatSymbolRefAttr();
+      case 1: return ::mlir::StringAttr();
+      case 2: return ::mlir::IntegerAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -1944,7 +1960,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1978,10 +1994,10 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return F32Attr;
-      case 1: return I64Attr;
+      case 0: return ::mlir::FloatAttr();
+      case 1: return ::mlir::IntegerAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -2018,10 +2034,10 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return F32Attr;
-      case 1: return I64Attr;
+      case 0: return ::mlir::FloatAttr();
+      case 1: return ::mlir::IntegerAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -2054,10 +2070,10 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return F32Attr;
-      case 1: return I64Attr;
+      case 0: return ::mlir::FloatAttr();
+      case 1: return ::mlir::IntegerAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -2090,7 +2106,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2120,7 +2136,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2150,9 +2166,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -2182,9 +2198,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -2214,7 +2230,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2244,7 +2260,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2274,7 +2290,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2304,9 +2320,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return BoolAttr;
+      case 0: return ::mlir::BoolAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -2338,7 +2354,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2368,7 +2384,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2398,10 +2414,10 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
-      case 1: return ChannelHandle;
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::mhlo::ChannelHandleAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -2433,10 +2449,10 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_ComparisonDirectionAttr;
-      case 1: return HLO_ComparisonTypeAttr;
+      case 0: return ::mlir::mhlo::ComparisonDirectionAttr();
+      case 1: return ::mlir::mhlo::ComparisonTypeAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -2468,7 +2484,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2499,7 +2515,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2529,9 +2545,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64Attr;
+      case 0: return ::mlir::IntegerAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -2560,9 +2576,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return ElementsAttr;
+      case 0: return ::mlir::ElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -2592,7 +2608,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2623,17 +2639,17 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
-      case 1: return I64ElementsAttr;
-      case 2: return I64ElementsAttr;
-      case 3: return I64ElementsAttr;
-      case 4: return BoolElementsAttr;
-      case 5: return ConvDimensionNumbers;
-      case 6: return I64Attr;
-      case 7: return I64Attr;
-      case 8: return HLO_PrecisionConfigAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+      case 2: return ::mlir::DenseIntElementsAttr();
+      case 3: return ::mlir::DenseIntElementsAttr();
+      case 4: return ::mlir::DenseElementsAttr();
+      case 5: return ::mlir::mhlo::ConvDimensionNumbersAttr();
+      case 6: return ::mlir::IntegerAttr();
+      case 7: return ::mlir::IntegerAttr();
+      case 8: return ::mlir::ArrayAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -2671,9 +2687,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return UnitAttr;
+      case 0: return ::mlir::UnitAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -2703,7 +2719,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2732,7 +2748,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2762,9 +2778,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -2795,7 +2811,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2825,16 +2841,16 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return StrAttr;
-      case 1: return BoolAttr;
-      case 2: return StrAttr;
-      case 3: return HLO_CustomCallApiVersionAttr;
-      case 4: return HLO_FlatSymbolRefArrayAttr;
-      case 5: return HLO_ArrayOfLayoutAttr;
-      case 6: return HLO_ArrayOfLayoutAttr;
-      case 7: return anonymous_707;
+      case 0: return ::mlir::StringAttr();
+      case 1: return ::mlir::BoolAttr();
+      case 2: return ::mlir::StringAttr();
+      case 3: return ::mlir::mhlo::CustomCallApiVersionAttr();
+      case 4: return ::mlir::ArrayAttr();
+      case 5: return ::mlir::ArrayAttr();
+      case 6: return ::mlir::ArrayAttr();
+      case 7: return ::mlir::ArrayAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -2872,7 +2888,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2902,11 +2918,11 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_DomainKindAttr;
-      case 1: return StrAttr;
-      case 2: return StrAttr;
+      case 0: return ::mlir::mhlo::DomainKindAttr();
+      case 1: return ::mlir::StringAttr();
+      case 2: return ::mlir::StringAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -2939,10 +2955,10 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return DotDimensionNumbers;
-      case 1: return HLO_PrecisionConfigAttr;
+      case 0: return ::mlir::mhlo::DotDimensionNumbersAttr();
+      case 1: return ::mlir::ArrayAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -2974,9 +2990,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_PrecisionConfigAttr;
+      case 0: return ::mlir::ArrayAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3007,11 +3023,11 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
-      case 1: return I64ElementsAttr;
-      case 2: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+      case 2: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3045,17 +3061,17 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
-      case 1: return I64ElementsAttr;
-      case 2: return I64ElementsAttr;
-      case 3: return I64ElementsAttr;
-      case 4: return BoolElementsAttr;
-      case 5: return ConvDimensionNumbers;
-      case 6: return I64Attr;
-      case 7: return I64Attr;
-      case 8: return HLO_PrecisionConfigAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+      case 2: return ::mlir::DenseIntElementsAttr();
+      case 3: return ::mlir::DenseIntElementsAttr();
+      case 4: return ::mlir::DenseElementsAttr();
+      case 5: return ::mlir::mhlo::ConvDimensionNumbersAttr();
+      case 6: return ::mlir::IntegerAttr();
+      case 7: return ::mlir::IntegerAttr();
+      case 8: return ::mlir::ArrayAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3095,10 +3111,10 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return GatherDimensionNumbers;
-      case 1: return BoolAttr;
+      case 0: return ::mlir::mhlo::GatherDimensionNumbersAttr();
+      case 1: return ::mlir::BoolAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3129,9 +3145,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64Attr;
+      case 0: return ::mlir::IntegerAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3165,7 +3181,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3196,7 +3212,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3227,9 +3243,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3261,7 +3277,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3292,9 +3308,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return StrAttr;
+      case 0: return ::mlir::StringAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3324,7 +3340,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3354,7 +3370,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3384,10 +3400,10 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_FftTypeAttr;
-      case 1: return I64ElementsAttr;
+      case 0: return ::mlir::mhlo::FftTypeAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3418,7 +3434,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3448,9 +3464,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_FusionKindAttr;
+      case 0: return ::mlir::mhlo::FusionKindAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3481,11 +3497,11 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return GatherDimensionNumbers;
-      case 1: return I64ElementsAttr;
-      case 2: return BoolAttr;
+      case 0: return ::mlir::mhlo::GatherDimensionNumbersAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+      case 2: return ::mlir::BoolAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3517,9 +3533,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64Attr;
+      case 0: return ::mlir::IntegerAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3549,9 +3565,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I32Attr;
+      case 0: return ::mlir::IntegerAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3581,7 +3597,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3611,7 +3627,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3641,10 +3657,10 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return StrAttr;
-      case 1: return ArrayAttr;
+      case 0: return ::mlir::StringAttr();
+      case 1: return ::mlir::ArrayAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3674,9 +3690,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64Attr;
+      case 0: return ::mlir::IntegerAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3706,7 +3722,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3736,7 +3752,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3766,7 +3782,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3796,7 +3812,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3826,9 +3842,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3859,7 +3875,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3890,7 +3906,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3921,7 +3937,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3951,7 +3967,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3981,7 +3997,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4011,7 +4027,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4042,7 +4058,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4073,9 +4089,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return StrAttr;
+      case 0: return ::mlir::StringAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -4106,11 +4122,11 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
-      case 1: return I64ElementsAttr;
-      case 2: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+      case 2: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -4141,7 +4157,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4171,7 +4187,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4202,7 +4218,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4235,7 +4251,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4265,7 +4281,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4295,10 +4311,10 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return ChannelHandle;
-      case 1: return BoolAttr;
+      case 0: return ::mlir::mhlo::ChannelHandleAttr();
+      case 1: return ::mlir::BoolAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -4330,9 +4346,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -4362,10 +4378,10 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I32Attr;
-      case 1: return I32Attr;
+      case 0: return ::mlir::IntegerAttr();
+      case 1: return ::mlir::IntegerAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -4396,12 +4412,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64Attr;
-      case 1: return I64ElementsAttr;
-      case 2: return ChannelHandle;
-      case 3: return UnitAttr;
+      case 0: return ::mlir::IntegerAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+      case 2: return ::mlir::mhlo::ChannelHandleAttr();
+      case 3: return ::mlir::UnitAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -4435,13 +4451,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
-      case 1: return I64ElementsAttr;
-      case 2: return I64ElementsAttr;
-      case 3: return I64ElementsAttr;
-      case 4: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+      case 2: return ::mlir::DenseIntElementsAttr();
+      case 3: return ::mlir::DenseIntElementsAttr();
+      case 4: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -4476,7 +4492,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4505,7 +4521,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4535,7 +4551,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4565,7 +4581,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4594,9 +4610,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -4626,9 +4642,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_RngAlgorithmAttr;
+      case 0: return ::mlir::mhlo::RngAlgorithmAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -4661,9 +4677,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return HLO_RngDistributionAttr;
+      case 0: return ::mlir::mhlo::RngDistributionAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -4693,7 +4709,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4723,7 +4739,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4753,7 +4769,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4785,11 +4801,11 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return ScatterDimensionNumbers;
-      case 1: return BoolAttr;
-      case 2: return BoolAttr;
+      case 0: return ::mlir::mhlo::ScatterDimensionNumbersAttr();
+      case 1: return ::mlir::BoolAttr();
+      case 2: return ::mlir::BoolAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -4823,11 +4839,11 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
-      case 1: return I64ElementsAttr;
-      case 2: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+      case 2: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -4861,7 +4877,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4892,10 +4908,10 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return ChannelHandle;
-      case 1: return BoolAttr;
+      case 0: return ::mlir::mhlo::ChannelHandleAttr();
+      case 1: return ::mlir::BoolAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -4927,9 +4943,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64Attr;
+      case 0: return ::mlir::IntegerAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -4960,7 +4976,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4991,7 +5007,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5022,7 +5038,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5052,7 +5068,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5082,7 +5098,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5112,11 +5128,11 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
-      case 1: return I64ElementsAttr;
-      case 2: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+      case 2: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -5148,10 +5164,10 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64Attr;
-      case 1: return BoolAttr;
+      case 0: return ::mlir::IntegerAttr();
+      case 1: return ::mlir::BoolAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -5182,7 +5198,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5213,7 +5229,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5244,7 +5260,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5274,7 +5290,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5305,10 +5321,10 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64Attr;
-      case 1: return I64Attr;
+      case 0: return ::mlir::IntegerAttr();
+      case 1: return ::mlir::IntegerAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -5339,9 +5355,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return StrAttr;
+      case 0: return ::mlir::StringAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -5370,9 +5386,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64ElementsAttr;
+      case 0: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -5403,12 +5419,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return BoolAttr;
-      case 1: return BoolAttr;
-      case 2: return BoolAttr;
-      case 3: return HLO_TransposeAttr;
+      case 0: return ::mlir::BoolAttr();
+      case 1: return ::mlir::BoolAttr();
+      case 2: return ::mlir::BoolAttr();
+      case 3: return ::mlir::mhlo::TransposeAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -5441,7 +5457,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5471,9 +5487,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return StrAttr;
+      case 0: return ::mlir::StringAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -5503,7 +5519,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5533,7 +5549,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5563,7 +5579,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5592,9 +5608,9 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return I64Attr;
+      case 0: return ::mlir::IntegerAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -5625,7 +5641,7 @@ public:
     }
     assert(false && "Invalid operand index");
   }
-  AttrType getAttributeType(unsigned index) const override {
+  mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5682,43 +5698,6 @@ std::string opAndResTypeToString(OpAndResType type) {
   if (type == anonymous_747) return "anonymous_747";
   if (type == anonymous_754) return "anonymous_754";
   assert(false && "Invalid OpAndResType");
-}
-
-std::string attrTypeToString(AttrType type) {
-  if (type == DefaultUnknownAttrType) return "DefaultUnknownAttrType";
-  if (type == ArrayAttr) return "ArrayAttr";
-  if (type == BoolAttr) return "BoolAttr";
-  if (type == BoolElementsAttr) return "BoolElementsAttr";
-  if (type == CHLO_ComparisonDirectionAttr) return "CHLO_ComparisonDirectionAttr";
-  if (type == CHLO_ComparisonTypeAttr) return "CHLO_ComparisonTypeAttr";
-  if (type == ChannelHandle) return "ChannelHandle";
-  if (type == ConvDimensionNumbers) return "ConvDimensionNumbers";
-  if (type == DotDimensionNumbers) return "DotDimensionNumbers";
-  if (type == ElementsAttr) return "ElementsAttr";
-  if (type == F32Attr) return "F32Attr";
-  if (type == FlatSymbolRefAttr) return "FlatSymbolRefAttr";
-  if (type == GatherDimensionNumbers) return "GatherDimensionNumbers";
-  if (type == HLO_ArrayOfLayoutAttr) return "HLO_ArrayOfLayoutAttr";
-  if (type == HLO_ComparisonDirectionAttr) return "HLO_ComparisonDirectionAttr";
-  if (type == HLO_ComparisonTypeAttr) return "HLO_ComparisonTypeAttr";
-  if (type == HLO_CustomCallApiVersionAttr) return "HLO_CustomCallApiVersionAttr";
-  if (type == HLO_DomainKindAttr) return "HLO_DomainKindAttr";
-  if (type == HLO_FftTypeAttr) return "HLO_FftTypeAttr";
-  if (type == HLO_FlatSymbolRefArrayAttr) return "HLO_FlatSymbolRefArrayAttr";
-  if (type == HLO_FusionKindAttr) return "HLO_FusionKindAttr";
-  if (type == HLO_PrecisionConfigAttr) return "HLO_PrecisionConfigAttr";
-  if (type == HLO_RngAlgorithmAttr) return "HLO_RngAlgorithmAttr";
-  if (type == HLO_RngDistributionAttr) return "HLO_RngDistributionAttr";
-  if (type == HLO_TransposeAttr) return "HLO_TransposeAttr";
-  if (type == I32Attr) return "I32Attr";
-  if (type == I64Attr) return "I64Attr";
-  if (type == I64ElementsAttr) return "I64ElementsAttr";
-  if (type == ScatterDimensionNumbers) return "ScatterDimensionNumbers";
-  if (type == StrAttr) return "StrAttr";
-  if (type == TypedAttrInterface) return "TypedAttrInterface";
-  if (type == UnitAttr) return "UnitAttr";
-  if (type == anonymous_707) return "anonymous_707";
-  assert(false && "Invalid AttrType");
 }
 
 GrammarOpPtr createGrammarOp(std::string name) {

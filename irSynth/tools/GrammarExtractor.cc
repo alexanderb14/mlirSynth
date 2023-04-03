@@ -1,11 +1,16 @@
+#include "mlir/IR/BuiltinAttributes.h"
+#include "mlir/TableGen/Attribute.h"
+#include "mlir/TableGen/AttrOrTypeDef.h"
 #include "mlir/TableGen/GenInfo.h"
 #include "mlir/TableGen/Operator.h"
 #include "mlir/Tools/mlir-tblgen/MlirTblgenMain.h"
+#include "llvm/ADT/StringRef.h"
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/InitLLVM.h"
 #include "llvm/TableGen/Main.h"
 #include "llvm/TableGen/Record.h"
 #include "llvm/TableGen/TableGenBackend.h"
+#include "llvm/ADT/STLExtras.h"
 
 #include <map>
 #include <set>
@@ -117,18 +122,38 @@ void printDefinitions(RecordKeeper &records, raw_ostream &os) {
 }
 
 void emitHdrIncludes(raw_ostream &os) {
-  os << "#include <memory>\n";
-  os << "#include <string>\n";
-  os << "\n";
+  os << R"(
+#include "mlir/IR/Attributes.h"
+
+#include <memory>
+#include <string>
+)";
 }
 
 void emitSrcIncludes(raw_ostream &os) {
-  os << "#include \"Grammar.h\"\n";
-  os << "\n";
-  os << "#include <cassert>\n";
-  os << "#include <memory>\n";
-  os << "#include <string>\n";
-  os << "\n";
+  os << R"(
+#include "Grammar.h"
+
+#include "mlir/IR/BuiltinAttributes.h"
+#include "mlir/IR/TensorEncoding.h"
+#include "stablehlo/dialect/Base.h"
+
+// Include order below matters.
+#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops_enums.h.inc"
+#define GET_ATTRDEF_CLASSES
+#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops_attrs.h.inc"
+#define GET_TYPEDEF_CLASSES
+#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops_typedefs.h.inc"
+
+// Include order matters
+#include "stablehlo/dialect/ChloEnums.h.inc"
+#define GET_ATTRDEF_CLASSES
+#include "stablehlo/dialect/ChloAttrs.h.inc"
+
+#include <cassert>
+#include <memory>
+#include <string>
+)";
 }
 
 void emitUsedOpAndResTypesAsEnum(const RecordKeeper &records, raw_ostream &os) {
@@ -165,21 +190,58 @@ void emitUsedAttrTypesAsEnum(const RecordKeeper &records, raw_ostream &os) {
   os << "\n";
 }
 
-void emitAbstractOp(raw_ostream &os) {
-  os << "class GrammarOp {\n";
-  os << "public:\n";
-  os << "  virtual ~GrammarOp() {}\n";
-  os << "  virtual unsigned getNumOperands() const = 0;\n";
-  os << "  virtual unsigned getNumAttributes() const = 0;\n";
-  os << "  virtual unsigned getNumRegions() const = 0;\n";
-  os << "  virtual unsigned getNumResults() const = 0;\n";
-  os << "  virtual OpAndResType getOperandType(unsigned index) const = 0;\n";
-  os << "  virtual AttrType getAttributeType(unsigned index) const = 0;\n";
-  os << "  virtual std::string getAttributeName(unsigned index) const = 0;\n";
-  os << "  virtual OpAndResType getResultType(unsigned index) const = 0;\n";
-  os << "};\n";
-  os << "using GrammarOpPtr = std::unique_ptr<GrammarOp>;\n";
+void emitUsedAttrTypeValues(const RecordKeeper &records, raw_ostream &os) {
+  auto enumDefs = records.getAllDerivedDefinitionsIfDefined("EnumAttrInfo");
+  for (auto *enumDefRecord : enumDefs) {
+    EnumAttr enumAttr(enumDefRecord);
+    os << enumAttr.getEnumClassName() << "\n";
+    for (auto enumerant : enumAttr.getAllCases()) {
+      os << "  " << enumerant.getSymbol() << "\n";
+    }
+  }
   os << "\n";
+
+  auto attrDefs = records.getAllDerivedDefinitionsIfDefined("AttrDef");
+  for (auto *attrDefRecord : attrDefs) {
+    AttrOrTypeDef attrDef(attrDefRecord);
+    os << attrDef.getCppClassName() << "\n";
+
+    for (auto param : attrDef.getParameters()) {
+      os << "  " << param.getName();
+      os << " : ";
+
+      std::string paramType = param.getCppType().str();
+      if (auto *paramDefInit = dyn_cast<llvm::DefInit>(param.getDef())) {
+        auto *rec = paramDefInit->getDef();
+        if (!rec->isSubClassOf("EnumParameter"))
+          paramType = rec->getName();
+      }
+
+      // Exctract all what is after the rightmost ::
+      auto pos = paramType.rfind("::");
+      if (pos != std::string::npos)
+        paramType = paramType.substr(pos + 2);
+      os << paramType << "\n";
+    }
+  }
+}
+
+void emitAbstractOp(raw_ostream &os) {
+  os << R"(
+class GrammarOp {
+public:
+  virtual ~GrammarOp() {}
+  virtual unsigned getNumOperands() const = 0;
+  virtual unsigned getNumAttributes() const = 0;
+  virtual unsigned getNumRegions() const = 0;
+  virtual unsigned getNumResults() const = 0;
+  virtual OpAndResType getOperandType(unsigned index) const = 0;
+  virtual mlir::Attribute getAttributeType(unsigned index) const = 0;
+  virtual std::string getAttributeName(unsigned index) const = 0;
+  virtual OpAndResType getResultType(unsigned index) const = 0;
+};
+using GrammarOpPtr = std::unique_ptr<GrammarOp>;
+)";
 }
 
 std::string makeClangCompatible(const std::string &name) {
@@ -226,11 +288,13 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
     os << "  }\n";
 
     // Attributes
-    os << "  AttrType getAttributeType(unsigned index) const override {\n";
+    os << "  mlir::Attribute getAttributeType(unsigned index) const override {\n";
     os << "    switch (index) {\n";
     for (int i = 0; i < tblgenOp.getNumAttributes(); ++i) {
       auto &attr = tblgenOp.getAttribute(i);
-      os << "      case " << i << ": return " << attr.attr.getDefName()
+      auto attrName = attr.attr.getDefName();
+      auto attrType = attr.attr.getReturnType();
+      os << "      case " << i << ": return " << attr.attr.getStorageType() << "()"
          << ";\n";
     }
     os << "    }\n";
@@ -342,13 +406,14 @@ static bool emitGrammarOpDecls(const RecordKeeper &recordKeeper, raw_ostream &os
 
   emitNamespaceStart(os, "grammar");
   emitUsedOpAndResTypesAsEnum(recordKeeper, os);
-  emitUsedAttrTypesAsEnum(recordKeeper, os);
+  //emitUsedAttrTypesAsEnum(recordKeeper, os);
   emitAbstractOp(os);
   emitOpAndResTypeToStringDecl(os);
-  emitAttrTypeToStringDecl(os);
+  //emitAttrTypeToStringDecl(os);
   emitConstructorDecl(os);
   emitNamespaceEnd(os, "grammar");
   emitIncludeGuardEnd(os, "IRSYNTH_GRAMMAR_H");
+  //emitUsedAttrTypeValues(recordKeeper, os);
 
   return false;
 }
@@ -360,7 +425,7 @@ static bool emitGrammarOpDefs(const RecordKeeper &recordKeeper, raw_ostream &os)
   emitNamespaceStart(os, "grammar");
   emitConcreteOps(recordKeeper, os);
   emitOpAndResTypeToStringFn(recordKeeper, os);
-  emitAttrTypeToStringFn(recordKeeper, os);
+  //emitAttrTypeToStringFn(recordKeeper, os);
   emitConstructorFn(recordKeeper, os);
   emitNamespaceEnd(os, "grammar");
 

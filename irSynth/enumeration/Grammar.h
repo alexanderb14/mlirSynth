@@ -9,9 +9,11 @@
 #ifndef IRSYNTH_GRAMMAR_H
 #define IRSYNTH_GRAMMAR_H
 
+
+#include "mlir/IR/Attributes.h"
+
 #include <memory>
 #include <string>
-
 namespace grammar {
 enum OpAndResType {
   DefaultUnknownOpAndResType,
@@ -53,41 +55,6 @@ enum OpAndResType {
   anonymous_754
 };
 
-enum AttrType {
-  DefaultUnknownAttrType,
-  ArrayAttr,
-  BoolAttr,
-  BoolElementsAttr,
-  CHLO_ComparisonDirectionAttr,
-  CHLO_ComparisonTypeAttr,
-  ChannelHandle,
-  ConvDimensionNumbers,
-  DotDimensionNumbers,
-  ElementsAttr,
-  F32Attr,
-  FlatSymbolRefAttr,
-  GatherDimensionNumbers,
-  HLO_ArrayOfLayoutAttr,
-  HLO_ComparisonDirectionAttr,
-  HLO_ComparisonTypeAttr,
-  HLO_CustomCallApiVersionAttr,
-  HLO_DomainKindAttr,
-  HLO_FftTypeAttr,
-  HLO_FlatSymbolRefArrayAttr,
-  HLO_FusionKindAttr,
-  HLO_PrecisionConfigAttr,
-  HLO_RngAlgorithmAttr,
-  HLO_RngDistributionAttr,
-  HLO_TransposeAttr,
-  I32Attr,
-  I64Attr,
-  I64ElementsAttr,
-  ScatterDimensionNumbers,
-  StrAttr,
-  TypedAttrInterface,
-  UnitAttr,
-  anonymous_707
-};
 
 class GrammarOp {
 public:
@@ -97,14 +64,12 @@ public:
   virtual unsigned getNumRegions() const = 0;
   virtual unsigned getNumResults() const = 0;
   virtual OpAndResType getOperandType(unsigned index) const = 0;
-  virtual AttrType getAttributeType(unsigned index) const = 0;
+  virtual mlir::Attribute getAttributeType(unsigned index) const = 0;
   virtual std::string getAttributeName(unsigned index) const = 0;
   virtual OpAndResType getResultType(unsigned index) const = 0;
 };
 using GrammarOpPtr = std::unique_ptr<GrammarOp>;
-
 std::string opAndResTypeToString(OpAndResType type);
-std::string attrTypeToString(AttrType type);
 GrammarOpPtr createGrammarOp(std::string name);
 
 } // namespace grammar
