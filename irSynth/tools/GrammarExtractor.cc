@@ -1,19 +1,20 @@
 #include "mlir/IR/BuiltinAttributes.h"
-#include "mlir/TableGen/Attribute.h"
 #include "mlir/TableGen/AttrOrTypeDef.h"
+#include "mlir/TableGen/Attribute.h"
 #include "mlir/TableGen/GenInfo.h"
 #include "mlir/TableGen/Operator.h"
 #include "mlir/Tools/mlir-tblgen/MlirTblgenMain.h"
+#include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/InitLLVM.h"
 #include "llvm/TableGen/Main.h"
 #include "llvm/TableGen/Record.h"
 #include "llvm/TableGen/TableGenBackend.h"
-#include "llvm/ADT/STLExtras.h"
 
 #include <map>
 #include <set>
+#include <string>
 
 using namespace llvm;
 using namespace mlir;
@@ -124,6 +125,7 @@ void printDefinitions(RecordKeeper &records, raw_ostream &os) {
 void emitHdrIncludes(raw_ostream &os) {
   os << R"(
 #include "mlir/IR/Attributes.h"
+#include "mlir/IR/MLIRContext.h"
 
 #include <memory>
 #include <string>
@@ -197,7 +199,8 @@ void emitUsedAttrTypeValues(const RecordKeeper &records, raw_ostream &os) {
   auto enumDefs = records.getAllDerivedDefinitionsIfDefined("EnumAttrInfo");
   for (auto *enumDefRecord : enumDefs) {
     EnumAttr enumAttr(enumDefRecord);
-    os << enumAttr.getEnumClassName() << ", " << enumAttr.getCppNamespace() << "\n";
+    os << enumAttr.getEnumClassName() << ", " << enumAttr.getCppNamespace()
+       << "\n";
     for (auto enumerant : enumAttr.getAllCases()) {
       os << "  " << enumerant.getSymbol() << "\n";
     }
@@ -229,13 +232,14 @@ void emitUsedAttrTypeValues(const RecordKeeper &records, raw_ostream &os) {
   }
 }
 
-std::unordered_map<std::string, Record*> getEnumAttrDefs(const RecordKeeper &records) {
-  std::unordered_map<std::string, Record*> enumAttrDefs;
+std::unordered_map<std::string, Record *>
+getEnumAttrDefs(const RecordKeeper &records) {
+  std::unordered_map<std::string, Record *> enumAttrDefs;
   auto enumDefs = records.getAllDerivedDefinitionsIfDefined("EnumAttrInfo");
   for (auto *enumDefRecord : enumDefs) {
     EnumAttr enumAttr(enumDefRecord);
-    std::string enumName =
-        enumAttr.getCppNamespace().str() + "::" + enumAttr.getEnumClassName().str();
+    std::string enumName = enumAttr.getCppNamespace().str() +
+                           "::" + enumAttr.getEnumClassName().str();
     enumAttrDefs[enumName] = enumDefRecord;
   }
   return enumAttrDefs;
@@ -256,11 +260,10 @@ void emitEnumerants(std::unordered_map<std::string, Record *> &enumAttrDefs,
     }
   }
 
-  if (!enumerantsStr.empty()) {
-    os << "  auto " + param.getName() + "_enumerants = {\n";
-    os << enumerantsStr;
-    os << "  };\n";
-  }
+  os << "  std::vector<" + enumQualName + "> " + param.getName() +
+            "Enumerants = {\n";
+  os << enumerantsStr;
+  os << "  };\n";
 }
 
 std::string getGenFnName(AttrOrTypeDef &attrDef) {
@@ -276,11 +279,52 @@ void emitAttrGen(const RecordKeeper &records, raw_ostream &os) {
   for (auto *attrDefRecord : attrDefs) {
     AttrOrTypeDef attrDef(attrDefRecord);
 
-    os << "std::vector<mlir::Attribute> " << getGenFnName(attrDef) << "() {\n";
+    // Emit function declaration.
+    os << "std::vector<mlir::Attribute> " << getGenFnName(attrDef)
+       << "(mlir::MLIRContext &ctx) {\n";
+
+    // Emit enumerants.
     for (auto param : attrDef.getParameters()) {
       os << "  // " << param.getName() << " : " << param.getCppType() << "\n";
       emitEnumerants(enumAttrDefs, param, os);
     }
+
+    // Emit attribute generation.
+    os << "  std::vector<mlir::Attribute> ret;\n";
+
+    // - For loop header.
+    int paramIdx = 0;
+    for (auto param : attrDef.getParameters()) {
+      std::string enumerantName = param.getName().str() + "Enumerant";
+      os << std::string(2 + paramIdx * 2, ' ')
+         << "for (auto " + enumerantName + " : " + param.getName() +
+                "Enumerants) {\n";
+      paramIdx++;
+    }
+
+    // - Call.
+    os << std::string(2 + paramIdx * 2, ' ');
+    os << "ret.push_back(::mlir::" << attrDef.getDialect().getName()
+       << "::" << attrDef.getCppClassName().str() << "::get(&ctx, \n";
+
+    int paramIdx2 = 0;
+    for (auto param : attrDef.getParameters()) {
+      os << std::string(4 + paramIdx * 2, ' ');
+      os << param.getName().str() + "Enumerant";
+
+      if (paramIdx2 < paramIdx - 1)
+        os << ",\n";
+      paramIdx2++;
+    }
+
+    os << "));\n";
+
+    // - For loop footer.
+    for (int i = paramIdx; i > 0; i--) {
+      os << std::string(i * 2, ' ') << "}\n";
+    }
+    os << "  return ret;\n";
+
     os << "}\n";
   }
 }
@@ -348,13 +392,15 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
     os << "  }\n";
 
     // Attributes
-    os << "  mlir::Attribute getAttributeType(unsigned index) const override {\n";
+    os << "  mlir::Attribute getAttributeType(unsigned index) const override "
+          "{\n";
     os << "    switch (index) {\n";
     for (int i = 0; i < tblgenOp.getNumAttributes(); ++i) {
       auto &attr = tblgenOp.getAttribute(i);
       auto attrName = attr.attr.getDefName();
       auto attrType = attr.attr.getReturnType();
-      os << "      case " << i << ": return " << attr.attr.getStorageType() << "()"
+      os << "      case " << i << ": return " << attr.attr.getStorageType()
+         << "()"
          << ";\n";
     }
     os << "    }\n";
@@ -365,8 +411,7 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
     os << "    switch (index) {\n";
     for (int i = 0; i < tblgenOp.getNumAttributes(); ++i) {
       auto &attr = tblgenOp.getAttribute(i);
-      os << "      case " << i << ": return \"" << attr.name.str()
-         << "\";\n";
+      os << "      case " << i << ": return \"" << attr.name.str() << "\";\n";
     }
     os << "    }\n";
     os << "    assert(false && \"Invalid attribute index\");\n";
@@ -381,7 +426,8 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
       if (!attr.attr.isOptional())
         os << "    attrs.push_back(" << attr.attr.getStorageType() << "());\n";
       else
-        os << "    // attrs.push_back(" << attr.attr.getStorageType() << "());\n";
+        os << "    // attrs.push_back(" << attr.attr.getStorageType()
+           << "());\n";
     }
     os << "    return attrs;\n";
     os << "  }\n";
@@ -473,37 +519,39 @@ void emitNamespaceEnd(raw_ostream &os, const std::string &ns) {
   os << "} // namespace " << ns << "\n";
 }
 
-static bool emitGrammarOpDecls(const RecordKeeper &recordKeeper, raw_ostream &os) {
+static bool emitGrammarOpDecls(const RecordKeeper &recordKeeper,
+                               raw_ostream &os) {
   emitSourceFileHeader("Grammar (generated from tablegen)", os);
   emitIncludeGuardStart(os, "IRSYNTH_GRAMMAR_H");
   emitHdrIncludes(os);
 
   emitNamespaceStart(os, "grammar");
   emitUsedOpAndResTypesAsEnum(recordKeeper, os);
-  //emitUsedAttrTypesAsEnum(recordKeeper, os);
+  // emitUsedAttrTypesAsEnum(recordKeeper, os);
   emitAbstractOp(os);
   emitOpAndResTypeToStringDecl(os);
-  //emitAttrTypeToStringDecl(os);
+  // emitAttrTypeToStringDecl(os);
   emitConstructorDecl(os);
   emitNamespaceEnd(os, "grammar");
   emitIncludeGuardEnd(os, "IRSYNTH_GRAMMAR_H");
-  //emitUsedAttrTypeValues(recordKeeper, os);
+  // emitUsedAttrTypeValues(recordKeeper, os);
 
-  //for (const auto &def : recordKeeper.getDefs()) {
-  //  os << def.first << "\n";
-  //}
+  // for (const auto &def : recordKeeper.getDefs()) {
+  //   os << def.first << "\n";
+  // }
 
   return false;
 }
 
-static bool emitGrammarOpDefs(const RecordKeeper &recordKeeper, raw_ostream &os) {
+static bool emitGrammarOpDefs(const RecordKeeper &recordKeeper,
+                              raw_ostream &os) {
   emitSourceFileHeader("Grammar (generated from tablegen)", os);
   emitSrcIncludes(os);
 
   emitNamespaceStart(os, "grammar");
   emitConcreteOps(recordKeeper, os);
   emitOpAndResTypeToStringFn(recordKeeper, os);
-  //emitAttrTypeToStringFn(recordKeeper, os);
+  // emitAttrTypeToStringFn(recordKeeper, os);
   emitConstructorFn(recordKeeper, os);
   emitNamespaceEnd(os, "grammar");
   emitAttrGen(recordKeeper, os);
@@ -513,14 +561,14 @@ static bool emitGrammarOpDefs(const RecordKeeper &recordKeeper, raw_ostream &os)
 
 static mlir::GenRegistration
     genGrammarDecls("gen-grammar-decls", "Generate grammar declarations",
-                   [](const RecordKeeper &records, raw_ostream &os) {
-                     return emitGrammarOpDecls(records, os);
-                   });
+                    [](const RecordKeeper &records, raw_ostream &os) {
+                      return emitGrammarOpDecls(records, os);
+                    });
 
 static mlir::GenRegistration
     genGrammarDefs("gen-grammar-defs", "Generate grammar definitions",
-                  [](const RecordKeeper &records, raw_ostream &os) {
-                    return emitGrammarOpDefs(records, os);
-                  });
+                   [](const RecordKeeper &records, raw_ostream &os) {
+                     return emitGrammarOpDefs(records, os);
+                   });
 
 int main(int argc, char **argv) { return MlirTblgenMain(argc, argv); }

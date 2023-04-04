@@ -6909,15 +6909,38 @@ GrammarOpPtr createGrammarOp(std::string name) {
 }
 
 } // namespace grammar
-std::vector<mlir::Attribute> genAll_mhlo_ArgResultAliasAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_ArgResultAliasAttr(mlir::MLIRContext &ctx) {
   // argTupleIndices : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> argTupleIndicesEnumerants = {
+  };
   // resultIndex : int64_t
+  std::vector<int64_t> resultIndexEnumerants = {
+  };
   // resultTupleIndices : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> resultTupleIndicesEnumerants = {
+  };
   // isMustAlias : bool
+  std::vector<bool> isMustAliasEnumerants = {
+  };
+  std::vector<mlir::Attribute> ret;
+  for (auto argTupleIndicesEnumerant : argTupleIndicesEnumerants) {
+    for (auto resultIndexEnumerant : resultIndexEnumerants) {
+      for (auto resultTupleIndicesEnumerant : resultTupleIndicesEnumerants) {
+        for (auto isMustAliasEnumerant : isMustAliasEnumerants) {
+          ret.push_back(::mlir::mhlo::ArgResultAliasAttr::get(&ctx, 
+            argTupleIndicesEnumerant,
+            resultIndexEnumerant,
+            resultTupleIndicesEnumerant,
+            isMustAliasEnumerant));
+        }
+      }
+    }
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_chlo_ComparisonDirectionAttr() {
+std::vector<mlir::Attribute> genAll_chlo_ComparisonDirectionAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::chlo::ComparisonDirection
-  auto value_enumerants = {
+  std::vector<::mlir::chlo::ComparisonDirection> valueEnumerants = {
     ::mlir::chlo::ComparisonDirection::EQ,
     ::mlir::chlo::ComparisonDirection::NE,
     ::mlir::chlo::ComparisonDirection::GE,
@@ -6925,47 +6948,166 @@ std::vector<mlir::Attribute> genAll_chlo_ComparisonDirectionAttr() {
     ::mlir::chlo::ComparisonDirection::LE,
     ::mlir::chlo::ComparisonDirection::LT,
   };
+  std::vector<mlir::Attribute> ret;
+  for (auto valueEnumerant : valueEnumerants) {
+    ret.push_back(::mlir::chlo::ComparisonDirectionAttr::get(&ctx, 
+      valueEnumerant));
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_chlo_ComparisonTypeAttr() {
+std::vector<mlir::Attribute> genAll_chlo_ComparisonTypeAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::chlo::ComparisonType
-  auto value_enumerants = {
+  std::vector<::mlir::chlo::ComparisonType> valueEnumerants = {
     ::mlir::chlo::ComparisonType::NOTYPE,
     ::mlir::chlo::ComparisonType::FLOAT,
     ::mlir::chlo::ComparisonType::TOTALORDER,
     ::mlir::chlo::ComparisonType::SIGNED,
     ::mlir::chlo::ComparisonType::UNSIGNED,
   };
+  std::vector<mlir::Attribute> ret;
+  for (auto valueEnumerant : valueEnumerants) {
+    ret.push_back(::mlir::chlo::ComparisonTypeAttr::get(&ctx, 
+      valueEnumerant));
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_ChannelHandleAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_ChannelHandleAttr(mlir::MLIRContext &ctx) {
   // handle : int64_t
+  std::vector<int64_t> handleEnumerants = {
+  };
   // type : int64_t
+  std::vector<int64_t> typeEnumerants = {
+  };
+  std::vector<mlir::Attribute> ret;
+  for (auto handleEnumerant : handleEnumerants) {
+    for (auto typeEnumerant : typeEnumerants) {
+      ret.push_back(::mlir::mhlo::ChannelHandleAttr::get(&ctx, 
+        handleEnumerant,
+        typeEnumerant));
+    }
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_ConvDimensionNumbersAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_ConvDimensionNumbersAttr(mlir::MLIRContext &ctx) {
   // inputBatchDimension : int64_t
+  std::vector<int64_t> inputBatchDimensionEnumerants = {
+  };
   // inputFeatureDimension : int64_t
+  std::vector<int64_t> inputFeatureDimensionEnumerants = {
+  };
   // inputSpatialDimensions : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> inputSpatialDimensionsEnumerants = {
+  };
   // kernelInputFeatureDimension : int64_t
+  std::vector<int64_t> kernelInputFeatureDimensionEnumerants = {
+  };
   // kernelOutputFeatureDimension : int64_t
+  std::vector<int64_t> kernelOutputFeatureDimensionEnumerants = {
+  };
   // kernelSpatialDimensions : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> kernelSpatialDimensionsEnumerants = {
+  };
   // outputBatchDimension : int64_t
+  std::vector<int64_t> outputBatchDimensionEnumerants = {
+  };
   // outputFeatureDimension : int64_t
+  std::vector<int64_t> outputFeatureDimensionEnumerants = {
+  };
   // outputSpatialDimensions : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> outputSpatialDimensionsEnumerants = {
+  };
+  std::vector<mlir::Attribute> ret;
+  for (auto inputBatchDimensionEnumerant : inputBatchDimensionEnumerants) {
+    for (auto inputFeatureDimensionEnumerant : inputFeatureDimensionEnumerants) {
+      for (auto inputSpatialDimensionsEnumerant : inputSpatialDimensionsEnumerants) {
+        for (auto kernelInputFeatureDimensionEnumerant : kernelInputFeatureDimensionEnumerants) {
+          for (auto kernelOutputFeatureDimensionEnumerant : kernelOutputFeatureDimensionEnumerants) {
+            for (auto kernelSpatialDimensionsEnumerant : kernelSpatialDimensionsEnumerants) {
+              for (auto outputBatchDimensionEnumerant : outputBatchDimensionEnumerants) {
+                for (auto outputFeatureDimensionEnumerant : outputFeatureDimensionEnumerants) {
+                  for (auto outputSpatialDimensionsEnumerant : outputSpatialDimensionsEnumerants) {
+                    ret.push_back(::mlir::mhlo::ConvDimensionNumbersAttr::get(&ctx, 
+                      inputBatchDimensionEnumerant,
+                      inputFeatureDimensionEnumerant,
+                      inputSpatialDimensionsEnumerant,
+                      kernelInputFeatureDimensionEnumerant,
+                      kernelOutputFeatureDimensionEnumerant,
+                      kernelSpatialDimensionsEnumerant,
+                      outputBatchDimensionEnumerant,
+                      outputFeatureDimensionEnumerant,
+                      outputSpatialDimensionsEnumerant));
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_DotDimensionNumbersAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_DotDimensionNumbersAttr(mlir::MLIRContext &ctx) {
   // lhsBatchingDimensions : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> lhsBatchingDimensionsEnumerants = {
+  };
   // rhsBatchingDimensions : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> rhsBatchingDimensionsEnumerants = {
+  };
   // lhsContractingDimensions : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> lhsContractingDimensionsEnumerants = {
+  };
   // rhsContractingDimensions : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> rhsContractingDimensionsEnumerants = {
+  };
+  std::vector<mlir::Attribute> ret;
+  for (auto lhsBatchingDimensionsEnumerant : lhsBatchingDimensionsEnumerants) {
+    for (auto rhsBatchingDimensionsEnumerant : rhsBatchingDimensionsEnumerants) {
+      for (auto lhsContractingDimensionsEnumerant : lhsContractingDimensionsEnumerants) {
+        for (auto rhsContractingDimensionsEnumerant : rhsContractingDimensionsEnumerants) {
+          ret.push_back(::mlir::mhlo::DotDimensionNumbersAttr::get(&ctx, 
+            lhsBatchingDimensionsEnumerant,
+            rhsBatchingDimensionsEnumerant,
+            lhsContractingDimensionsEnumerant,
+            rhsContractingDimensionsEnumerant));
+        }
+      }
+    }
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_GatherDimensionNumbersAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_GatherDimensionNumbersAttr(mlir::MLIRContext &ctx) {
   // offsetDims : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> offsetDimsEnumerants = {
+  };
   // collapsedSliceDims : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> collapsedSliceDimsEnumerants = {
+  };
   // startIndexMap : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> startIndexMapEnumerants = {
+  };
   // indexVectorDim : int64_t
+  std::vector<int64_t> indexVectorDimEnumerants = {
+  };
+  std::vector<mlir::Attribute> ret;
+  for (auto offsetDimsEnumerant : offsetDimsEnumerants) {
+    for (auto collapsedSliceDimsEnumerant : collapsedSliceDimsEnumerants) {
+      for (auto startIndexMapEnumerant : startIndexMapEnumerants) {
+        for (auto indexVectorDimEnumerant : indexVectorDimEnumerants) {
+          ret.push_back(::mlir::mhlo::GatherDimensionNumbersAttr::get(&ctx, 
+            offsetDimsEnumerant,
+            collapsedSliceDimsEnumerant,
+            startIndexMapEnumerant,
+            indexVectorDimEnumerant));
+        }
+      }
+    }
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_ComparisonDirectionAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_ComparisonDirectionAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::ComparisonDirection
-  auto value_enumerants = {
+  std::vector<::mlir::mhlo::ComparisonDirection> valueEnumerants = {
     ::mlir::mhlo::ComparisonDirection::EQ,
     ::mlir::mhlo::ComparisonDirection::NE,
     ::mlir::mhlo::ComparisonDirection::GE,
@@ -6973,91 +7115,200 @@ std::vector<mlir::Attribute> genAll_mhlo_ComparisonDirectionAttr() {
     ::mlir::mhlo::ComparisonDirection::LE,
     ::mlir::mhlo::ComparisonDirection::LT,
   };
+  std::vector<mlir::Attribute> ret;
+  for (auto valueEnumerant : valueEnumerants) {
+    ret.push_back(::mlir::mhlo::ComparisonDirectionAttr::get(&ctx, 
+      valueEnumerant));
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_ComparisonTypeAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_ComparisonTypeAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::ComparisonType
-  auto value_enumerants = {
+  std::vector<::mlir::mhlo::ComparisonType> valueEnumerants = {
     ::mlir::mhlo::ComparisonType::NOTYPE,
     ::mlir::mhlo::ComparisonType::FLOAT,
     ::mlir::mhlo::ComparisonType::TOTALORDER,
     ::mlir::mhlo::ComparisonType::SIGNED,
     ::mlir::mhlo::ComparisonType::UNSIGNED,
   };
+  std::vector<mlir::Attribute> ret;
+  for (auto valueEnumerant : valueEnumerants) {
+    ret.push_back(::mlir::mhlo::ComparisonTypeAttr::get(&ctx, 
+      valueEnumerant));
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_DequantizeModeAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_DequantizeModeAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::DequantizeMode
-  auto value_enumerants = {
+  std::vector<::mlir::mhlo::DequantizeMode> valueEnumerants = {
     ::mlir::mhlo::DequantizeMode::MIN_COMBINED,
   };
+  std::vector<mlir::Attribute> ret;
+  for (auto valueEnumerant : valueEnumerants) {
+    ret.push_back(::mlir::mhlo::DequantizeModeAttr::get(&ctx, 
+      valueEnumerant));
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_DomainKindAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_DomainKindAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::DomainKind
-  auto value_enumerants = {
+  std::vector<::mlir::mhlo::DomainKind> valueEnumerants = {
     ::mlir::mhlo::DomainKind::sharding,
   };
+  std::vector<mlir::Attribute> ret;
+  for (auto valueEnumerant : valueEnumerants) {
+    ret.push_back(::mlir::mhlo::DomainKindAttr::get(&ctx, 
+      valueEnumerant));
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_FftTypeAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_FftTypeAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::FftType
-  auto value_enumerants = {
+  std::vector<::mlir::mhlo::FftType> valueEnumerants = {
     ::mlir::mhlo::FftType::FFT,
     ::mlir::mhlo::FftType::IFFT,
     ::mlir::mhlo::FftType::RFFT,
     ::mlir::mhlo::FftType::IRFFT,
   };
+  std::vector<mlir::Attribute> ret;
+  for (auto valueEnumerant : valueEnumerants) {
+    ret.push_back(::mlir::mhlo::FftTypeAttr::get(&ctx, 
+      valueEnumerant));
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_FusionKindAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_FusionKindAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::FusionKind
-  auto value_enumerants = {
+  std::vector<::mlir::mhlo::FusionKind> valueEnumerants = {
     ::mlir::mhlo::FusionKind::kLoop,
     ::mlir::mhlo::FusionKind::kInput,
     ::mlir::mhlo::FusionKind::kOutput,
     ::mlir::mhlo::FusionKind::kCustom,
   };
+  std::vector<mlir::Attribute> ret;
+  for (auto valueEnumerant : valueEnumerants) {
+    ret.push_back(::mlir::mhlo::FusionKindAttr::get(&ctx, 
+      valueEnumerant));
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_PrecisionAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_PrecisionAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::Precision
-  auto value_enumerants = {
+  std::vector<::mlir::mhlo::Precision> valueEnumerants = {
     ::mlir::mhlo::Precision::DEFAULT,
     ::mlir::mhlo::Precision::HIGH,
     ::mlir::mhlo::Precision::HIGHEST,
     ::mlir::mhlo::Precision::PACKED_NIBBLE,
   };
+  std::vector<mlir::Attribute> ret;
+  for (auto valueEnumerant : valueEnumerants) {
+    ret.push_back(::mlir::mhlo::PrecisionAttr::get(&ctx, 
+      valueEnumerant));
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_RngAlgorithmAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_RngAlgorithmAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::RngAlgorithm
-  auto value_enumerants = {
+  std::vector<::mlir::mhlo::RngAlgorithm> valueEnumerants = {
     ::mlir::mhlo::RngAlgorithm::DEFAULT,
     ::mlir::mhlo::RngAlgorithm::THREE_FRY,
     ::mlir::mhlo::RngAlgorithm::PHILOX,
   };
+  std::vector<mlir::Attribute> ret;
+  for (auto valueEnumerant : valueEnumerants) {
+    ret.push_back(::mlir::mhlo::RngAlgorithmAttr::get(&ctx, 
+      valueEnumerant));
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_RngDistributionAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_RngDistributionAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::RngDistribution
-  auto value_enumerants = {
+  std::vector<::mlir::mhlo::RngDistribution> valueEnumerants = {
     ::mlir::mhlo::RngDistribution::UNIFORM,
     ::mlir::mhlo::RngDistribution::NORMAL,
   };
+  std::vector<mlir::Attribute> ret;
+  for (auto valueEnumerant : valueEnumerants) {
+    ret.push_back(::mlir::mhlo::RngDistributionAttr::get(&ctx, 
+      valueEnumerant));
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_TransposeAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_TransposeAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::Transpose
-  auto value_enumerants = {
+  std::vector<::mlir::mhlo::Transpose> valueEnumerants = {
     ::mlir::mhlo::Transpose::TRANSPOSE_INVALID,
     ::mlir::mhlo::Transpose::NO_TRANSPOSE,
     ::mlir::mhlo::Transpose::TRANSPOSE,
     ::mlir::mhlo::Transpose::ADJOINT,
   };
+  std::vector<mlir::Attribute> ret;
+  for (auto valueEnumerant : valueEnumerants) {
+    ret.push_back(::mlir::mhlo::TransposeAttr::get(&ctx, 
+      valueEnumerant));
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_OutputOperandAliasAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_OutputOperandAliasAttr(mlir::MLIRContext &ctx) {
   // outputTupleIndices : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> outputTupleIndicesEnumerants = {
+  };
   // operandIndex : int64_t
+  std::vector<int64_t> operandIndexEnumerants = {
+  };
   // operandTupleIndices : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> operandTupleIndicesEnumerants = {
+  };
+  std::vector<mlir::Attribute> ret;
+  for (auto outputTupleIndicesEnumerant : outputTupleIndicesEnumerants) {
+    for (auto operandIndexEnumerant : operandIndexEnumerants) {
+      for (auto operandTupleIndicesEnumerant : operandTupleIndicesEnumerants) {
+        ret.push_back(::mlir::mhlo::OutputOperandAliasAttr::get(&ctx, 
+          outputTupleIndicesEnumerant,
+          operandIndexEnumerant,
+          operandTupleIndicesEnumerant));
+      }
+    }
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_ScatterDimensionNumbersAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_ScatterDimensionNumbersAttr(mlir::MLIRContext &ctx) {
   // updateWindowDims : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> updateWindowDimsEnumerants = {
+  };
   // insertedWindowDims : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> insertedWindowDimsEnumerants = {
+  };
   // scatterDimsToOperandDims : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> scatterDimsToOperandDimsEnumerants = {
+  };
   // indexVectorDim : int64_t
+  std::vector<int64_t> indexVectorDimEnumerants = {
+  };
+  std::vector<mlir::Attribute> ret;
+  for (auto updateWindowDimsEnumerant : updateWindowDimsEnumerants) {
+    for (auto insertedWindowDimsEnumerant : insertedWindowDimsEnumerants) {
+      for (auto scatterDimsToOperandDimsEnumerant : scatterDimsToOperandDimsEnumerants) {
+        for (auto indexVectorDimEnumerant : indexVectorDimEnumerants) {
+          ret.push_back(::mlir::mhlo::ScatterDimensionNumbersAttr::get(&ctx, 
+            updateWindowDimsEnumerant,
+            insertedWindowDimsEnumerant,
+            scatterDimsToOperandDimsEnumerant,
+            indexVectorDimEnumerant));
+        }
+      }
+    }
+  }
+  return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_TypeExtensionsAttr() {
+std::vector<mlir::Attribute> genAll_mhlo_TypeExtensionsAttr(mlir::MLIRContext &ctx) {
   // bounds : ::llvm::ArrayRef<int64_t>
+  std::vector<::llvm::ArrayRef<int64_t>> boundsEnumerants = {
+  };
+  std::vector<mlir::Attribute> ret;
+  for (auto boundsEnumerant : boundsEnumerants) {
+    ret.push_back(::mlir::mhlo::TypeExtensionsAttr::get(&ctx, 
+      boundsEnumerant));
+  }
+  return ret;
 }

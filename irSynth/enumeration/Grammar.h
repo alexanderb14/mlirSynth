@@ -11,6 +11,7 @@
 
 
 #include "mlir/IR/Attributes.h"
+#include "mlir/IR/MLIRContext.h"
 
 #include <memory>
 #include <string>
