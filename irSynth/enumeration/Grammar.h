@@ -14,6 +14,8 @@
 
 #include <memory>
 #include <string>
+#include <vector>
+
 namespace grammar {
 enum OpAndResType {
   DefaultUnknownOpAndResType,
@@ -66,6 +68,7 @@ public:
   virtual OpAndResType getOperandType(unsigned index) const = 0;
   virtual mlir::Attribute getAttributeType(unsigned index) const = 0;
   virtual std::string getAttributeName(unsigned index) const = 0;
+  virtual std::vector<mlir::Attribute> getAttributes() const = 0;
   virtual OpAndResType getResultType(unsigned index) const = 0;
 };
 using GrammarOpPtr = std::unique_ptr<GrammarOp>;

@@ -127,6 +127,8 @@ void emitHdrIncludes(raw_ostream &os) {
 
 #include <memory>
 #include <string>
+#include <vector>
+
 )";
 }
 
@@ -153,6 +155,7 @@ void emitSrcIncludes(raw_ostream &os) {
 #include <cassert>
 #include <memory>
 #include <string>
+
 )";
 }
 
@@ -194,7 +197,7 @@ void emitUsedAttrTypeValues(const RecordKeeper &records, raw_ostream &os) {
   auto enumDefs = records.getAllDerivedDefinitionsIfDefined("EnumAttrInfo");
   for (auto *enumDefRecord : enumDefs) {
     EnumAttr enumAttr(enumDefRecord);
-    os << enumAttr.getEnumClassName() << "\n";
+    os << enumAttr.getEnumClassName() << ", " << enumAttr.getCppNamespace() << "\n";
     for (auto enumerant : enumAttr.getAllCases()) {
       os << "  " << enumerant.getSymbol() << "\n";
     }
@@ -226,6 +229,62 @@ void emitUsedAttrTypeValues(const RecordKeeper &records, raw_ostream &os) {
   }
 }
 
+std::unordered_map<std::string, Record*> getEnumAttrDefs(const RecordKeeper &records) {
+  std::unordered_map<std::string, Record*> enumAttrDefs;
+  auto enumDefs = records.getAllDerivedDefinitionsIfDefined("EnumAttrInfo");
+  for (auto *enumDefRecord : enumDefs) {
+    EnumAttr enumAttr(enumDefRecord);
+    std::string enumName =
+        enumAttr.getCppNamespace().str() + "::" + enumAttr.getEnumClassName().str();
+    enumAttrDefs[enumName] = enumDefRecord;
+  }
+  return enumAttrDefs;
+}
+
+void emitEnumerants(std::unordered_map<std::string, Record *> &enumAttrDefs,
+                    AttrOrTypeParameter &param, raw_ostream &os) {
+  std::string enumerantsStr;
+
+  std::string enumQualName = param.getCppType().str();
+  auto enumDefRecord = enumAttrDefs.find(enumQualName);
+  if (enumDefRecord != enumAttrDefs.end()) {
+    EnumAttr enumAttr(enumDefRecord->second);
+    for (auto enumerant : enumAttr.getAllCases()) {
+      std::string enumerantQualName =
+          enumQualName + "::" + enumerant.getSymbol().str();
+      enumerantsStr += "    " + enumerantQualName + ",\n";
+    }
+  }
+
+  if (!enumerantsStr.empty()) {
+    os << "  auto " + param.getName() + "_enumerants = {\n";
+    os << enumerantsStr;
+    os << "  };\n";
+  }
+}
+
+std::string getGenFnName(AttrOrTypeDef &attrDef) {
+  std::string attrName = attrDef.getDialect().getName().str() + "_" +
+                         attrDef.getCppClassName().str();
+  return "genAll_" + attrName;
+}
+
+void emitAttrGen(const RecordKeeper &records, raw_ostream &os) {
+  auto enumAttrDefs = getEnumAttrDefs(records);
+
+  auto attrDefs = records.getAllDerivedDefinitionsIfDefined("AttrDef");
+  for (auto *attrDefRecord : attrDefs) {
+    AttrOrTypeDef attrDef(attrDefRecord);
+
+    os << "std::vector<mlir::Attribute> " << getGenFnName(attrDef) << "() {\n";
+    for (auto param : attrDef.getParameters()) {
+      os << "  // " << param.getName() << " : " << param.getCppType() << "\n";
+      emitEnumerants(enumAttrDefs, param, os);
+    }
+    os << "}\n";
+  }
+}
+
 void emitAbstractOp(raw_ostream &os) {
   os << R"(
 class GrammarOp {
@@ -238,6 +297,7 @@ public:
   virtual OpAndResType getOperandType(unsigned index) const = 0;
   virtual mlir::Attribute getAttributeType(unsigned index) const = 0;
   virtual std::string getAttributeName(unsigned index) const = 0;
+  virtual std::vector<mlir::Attribute> getAttributes() const = 0;
   virtual OpAndResType getResultType(unsigned index) const = 0;
 };
 using GrammarOpPtr = std::unique_ptr<GrammarOp>;
@@ -310,6 +370,20 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
     }
     os << "    }\n";
     os << "    assert(false && \"Invalid attribute index\");\n";
+    os << "  }\n";
+
+    os << "  std::vector<mlir::Attribute> getAttributes() const override {\n";
+    os << "    std::vector<mlir::Attribute> attrs;\n";
+    for (int i = 0; i < tblgenOp.getNumAttributes(); ++i) {
+      auto &attr = tblgenOp.getAttribute(i);
+      auto attrName = attr.attr.getDefName();
+      auto attrType = attr.attr.getReturnType();
+      if (!attr.attr.isOptional())
+        os << "    attrs.push_back(" << attr.attr.getStorageType() << "());\n";
+      else
+        os << "    // attrs.push_back(" << attr.attr.getStorageType() << "());\n";
+    }
+    os << "    return attrs;\n";
     os << "  }\n";
 
     // Results
@@ -415,6 +489,10 @@ static bool emitGrammarOpDecls(const RecordKeeper &recordKeeper, raw_ostream &os
   emitIncludeGuardEnd(os, "IRSYNTH_GRAMMAR_H");
   //emitUsedAttrTypeValues(recordKeeper, os);
 
+  //for (const auto &def : recordKeeper.getDefs()) {
+  //  os << def.first << "\n";
+  //}
+
   return false;
 }
 
@@ -428,6 +506,7 @@ static bool emitGrammarOpDefs(const RecordKeeper &recordKeeper, raw_ostream &os)
   //emitAttrTypeToStringFn(recordKeeper, os);
   emitConstructorFn(recordKeeper, os);
   emitNamespaceEnd(os, "grammar");
+  emitAttrGen(recordKeeper, os);
 
   return false;
 }

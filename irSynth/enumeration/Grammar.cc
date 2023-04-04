@@ -28,6 +28,7 @@
 #include <cassert>
 #include <memory>
 #include <string>
+
 namespace grammar {
 class chlo_acos : public GrammarOp {
 public:
@@ -50,6 +51,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -81,6 +86,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -110,6 +119,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -141,6 +154,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -170,6 +187,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -201,6 +222,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -230,6 +255,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -264,6 +293,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -297,6 +331,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -329,6 +368,11 @@ public:
       case 0: return "broadcast_dimensions";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -367,6 +411,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    attrs.push_back(::mlir::chlo::ComparisonDirectionAttr());
+    // attrs.push_back(::mlir::chlo::ComparisonTypeAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_PredTensor;
@@ -399,6 +450,11 @@ public:
       case 0: return "broadcast_dimensions";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -433,6 +489,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -465,6 +526,11 @@ public:
       case 0: return "broadcast_dimensions";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -499,6 +565,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -531,6 +602,11 @@ public:
       case 0: return "broadcast_dimensions";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -565,6 +641,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -597,6 +678,11 @@ public:
       case 0: return "broadcast_dimensions";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -631,6 +717,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -663,6 +754,11 @@ public:
       case 0: return "broadcast_dimensions";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -697,6 +793,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -728,6 +829,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -762,6 +867,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -794,6 +904,11 @@ public:
       case 0: return "broadcast_dimensions";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -828,6 +943,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -860,6 +980,11 @@ public:
       case 0: return "broadcast_dimensions";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -894,6 +1019,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -927,6 +1057,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
@@ -956,6 +1091,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -989,6 +1128,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::TypedAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -1020,6 +1164,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::ElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_StaticShapeTensor;
@@ -1050,6 +1199,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -1079,6 +1232,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -1111,6 +1268,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -1140,6 +1301,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -1171,6 +1336,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
@@ -1200,6 +1369,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -1231,6 +1404,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_PredTensor;
@@ -1260,6 +1437,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -1291,6 +1472,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
@@ -1320,6 +1505,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -1352,6 +1541,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
@@ -1383,6 +1576,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
@@ -1412,6 +1609,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -1443,6 +1644,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
     }
@@ -1471,6 +1676,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -1501,6 +1710,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -1534,6 +1747,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::IntegerAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -1566,6 +1784,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
@@ -1595,6 +1817,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -1627,6 +1853,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrToken;
@@ -1658,6 +1888,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -1687,6 +1921,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -1726,6 +1964,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::IntegerAttr());
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::mhlo::ChannelHandleAttr());
+    // attrs.push_back(::mlir::UnitAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -1761,6 +2007,13 @@ public:
       case 2: return "use_global_device_ids";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::mhlo::ChannelHandleAttr());
+    // attrs.push_back(::mlir::UnitAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -1800,6 +2053,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::IntegerAttr());
+    attrs.push_back(::mlir::IntegerAttr());
+    attrs.push_back(::mlir::IntegerAttr());
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -1830,6 +2091,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -1867,6 +2132,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::FlatSymbolRefAttr());
+    attrs.push_back(::mlir::StringAttr());
+    // attrs.push_back(::mlir::IntegerAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrTokenOrTuple;
@@ -1902,6 +2174,13 @@ public:
       case 2: return "group_id";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::FlatSymbolRefAttr());
+    attrs.push_back(::mlir::StringAttr());
+    // attrs.push_back(::mlir::IntegerAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -1939,6 +2218,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::FlatSymbolRefAttr());
+    attrs.push_back(::mlir::StringAttr());
+    // attrs.push_back(::mlir::IntegerAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_AsyncBundle;
@@ -1969,6 +2255,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -2007,6 +2297,12 @@ public:
       case 1: return "feature_index";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::FloatAttr());
+    attrs.push_back(::mlir::IntegerAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -2048,6 +2344,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::FloatAttr());
+    attrs.push_back(::mlir::IntegerAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return anonymous_686;
@@ -2084,6 +2386,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::FloatAttr());
+    attrs.push_back(::mlir::IntegerAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return anonymous_686;
@@ -2116,6 +2424,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2145,6 +2457,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -2178,6 +2494,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_StaticShapeTensor;
@@ -2210,6 +2531,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2239,6 +2565,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -2270,6 +2600,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
@@ -2299,6 +2633,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -2332,6 +2670,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::BoolAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -2364,6 +2707,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2393,6 +2740,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -2427,6 +2778,12 @@ public:
       case 1: return "channel_handle";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::mhlo::ChannelHandleAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -2463,6 +2820,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::mhlo::ComparisonDirectionAttr());
+    // attrs.push_back(::mlir::mhlo::ComparisonTypeAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_PredTensor;
@@ -2494,6 +2857,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_ComplexTensor;
@@ -2524,6 +2891,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -2557,6 +2928,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::IntegerAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2588,6 +2964,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::ElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_StaticShapeTensor;
@@ -2617,6 +2998,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -2667,6 +3052,19 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::DenseElementsAttr());
+    attrs.push_back(::mlir::mhlo::ConvDimensionNumbersAttr());
+    attrs.push_back(::mlir::IntegerAttr());
+    attrs.push_back(::mlir::IntegerAttr());
+    // attrs.push_back(::mlir::ArrayAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2699,6 +3097,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::UnitAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2729,6 +3132,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -2757,6 +3164,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -2790,6 +3201,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -2820,6 +3236,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -2867,6 +3287,18 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::StringAttr());
+    // attrs.push_back(::mlir::BoolAttr());
+    // attrs.push_back(::mlir::StringAttr());
+    // attrs.push_back(::mlir::mhlo::CustomCallApiVersionAttr());
+    // attrs.push_back(::mlir::ArrayAttr());
+    // attrs.push_back(::mlir::ArrayAttr());
+    // attrs.push_back(::mlir::ArrayAttr());
+    // attrs.push_back(::mlir::ArrayAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrTokenOrTuple;
@@ -2897,6 +3329,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -2934,6 +3370,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::mhlo::DomainKindAttr());
+    attrs.push_back(::mlir::StringAttr());
+    attrs.push_back(::mlir::StringAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrToken;
@@ -2969,6 +3412,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::mhlo::DotDimensionNumbersAttr());
+    // attrs.push_back(::mlir::ArrayAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3001,6 +3450,11 @@ public:
       case 0: return "precision_config";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::ArrayAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -3038,6 +3492,13 @@ public:
       case 2: return "known_nonexpanding_dimensions";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -3089,6 +3550,19 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::DenseElementsAttr());
+    attrs.push_back(::mlir::mhlo::ConvDimensionNumbersAttr());
+    attrs.push_back(::mlir::IntegerAttr());
+    attrs.push_back(::mlir::IntegerAttr());
+    // attrs.push_back(::mlir::ArrayAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3125,6 +3599,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::mhlo::GatherDimensionNumbersAttr());
+    // attrs.push_back(::mlir::BoolAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3156,6 +3636,11 @@ public:
       case 0: return "iota_dimension";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::IntegerAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -3191,6 +3676,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3221,6 +3710,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -3255,6 +3748,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3286,6 +3784,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -3320,6 +3822,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::StringAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3350,6 +3857,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -3379,6 +3890,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -3414,6 +3929,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::mhlo::FftTypeAttr());
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3443,6 +3964,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -3475,6 +4000,11 @@ public:
       case 0: return "fusion_kind";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::mhlo::FusionKindAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -3513,6 +4043,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::mhlo::GatherDimensionNumbersAttr());
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::BoolAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3544,6 +4081,11 @@ public:
       case 0: return "dimension";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::IntegerAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -3577,6 +4119,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::IntegerAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrTokenOrTuple;
@@ -3607,6 +4154,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrToken;
@@ -3636,6 +4187,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -3671,6 +4226,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::StringAttr());
+    // attrs.push_back(::mlir::ArrayAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrToken;
@@ -3702,6 +4263,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::IntegerAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_IntFpOrComplexTensor;
@@ -3731,6 +4297,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -3762,6 +4332,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -3792,6 +4366,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -3821,6 +4399,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -3854,6 +4436,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3884,6 +4471,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -3916,6 +4507,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3947,6 +4542,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -3976,6 +4575,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -4007,6 +4610,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_PredOrIntTensor;
@@ -4036,6 +4643,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -4067,6 +4678,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -4100,6 +4715,11 @@ public:
       case 0: return "outfeed_config";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::StringAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -4138,6 +4758,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -4166,6 +4793,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -4197,6 +4828,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_IntTensor;
@@ -4227,6 +4862,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -4261,6 +4900,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -4290,6 +4933,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -4325,6 +4972,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::mhlo::ChannelHandleAttr());
+    // attrs.push_back(::mlir::BoolAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrToken;
@@ -4357,6 +5010,11 @@ public:
       case 0: return "dimensions";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -4391,6 +5049,12 @@ public:
       case 1: return "mantissa_bits";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::IntegerAttr());
+    attrs.push_back(::mlir::IntegerAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -4429,6 +5093,14 @@ public:
       case 3: return "use_global_device_ids";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::IntegerAttr());
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::mhlo::ChannelHandleAttr());
+    // attrs.push_back(::mlir::UnitAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -4471,6 +5143,15 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -4502,6 +5183,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -4530,6 +5215,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -4561,6 +5250,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_StaticShapeTensor;
@@ -4590,6 +5283,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -4622,6 +5319,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -4653,6 +5355,11 @@ public:
       case 0: return "rng_algorithm";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::mhlo::RngAlgorithmAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -4689,6 +5396,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::mhlo::RngDistributionAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_PredIntOrFpTensor;
@@ -4718,6 +5430,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -4749,6 +5465,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
@@ -4778,6 +5498,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -4817,6 +5541,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::mhlo::ScatterDimensionNumbersAttr());
+    // attrs.push_back(::mlir::BoolAttr());
+    // attrs.push_back(::mlir::BoolAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -4855,6 +5586,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    // attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -4886,6 +5624,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -4922,6 +5664,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::mhlo::ChannelHandleAttr());
+    // attrs.push_back(::mlir::BoolAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Token;
@@ -4955,6 +5703,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::IntegerAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -4985,6 +5738,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -5017,6 +5774,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -5048,6 +5809,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -5078,6 +5843,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return anonymous_632;
@@ -5107,6 +5876,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -5144,6 +5917,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -5178,6 +5958,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    // attrs.push_back(::mlir::IntegerAttr());
+    // attrs.push_back(::mlir::BoolAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -5207,6 +5993,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -5239,6 +6029,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -5270,6 +6064,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -5299,6 +6097,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -5335,6 +6137,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::IntegerAttr());
+    attrs.push_back(::mlir::IntegerAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -5367,6 +6175,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::StringAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
     }
@@ -5397,6 +6210,11 @@ public:
       case 0: return "permutation";
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::DenseIntElementsAttr());
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -5437,6 +6255,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::BoolAttr());
+    attrs.push_back(::mlir::BoolAttr());
+    attrs.push_back(::mlir::BoolAttr());
+    attrs.push_back(::mlir::mhlo::TransposeAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
@@ -5466,6 +6292,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -5499,6 +6329,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::StringAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
@@ -5528,6 +6363,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -5559,6 +6398,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_QuantizedIntTensor;
@@ -5588,6 +6431,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -5620,6 +6467,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    attrs.push_back(::mlir::IntegerAttr());
+    return attrs;
+  }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return anonymous_728;
@@ -5650,6 +6502,10 @@ public:
     switch (index) {
     }
     assert(false && "Invalid attribute index");
+  }
+  std::vector<mlir::Attribute> getAttributes() const override {
+    std::vector<mlir::Attribute> attrs;
+    return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
@@ -6053,3 +6909,155 @@ GrammarOpPtr createGrammarOp(std::string name) {
 }
 
 } // namespace grammar
+std::vector<mlir::Attribute> genAll_mhlo_ArgResultAliasAttr() {
+  // argTupleIndices : ::llvm::ArrayRef<int64_t>
+  // resultIndex : int64_t
+  // resultTupleIndices : ::llvm::ArrayRef<int64_t>
+  // isMustAlias : bool
+}
+std::vector<mlir::Attribute> genAll_chlo_ComparisonDirectionAttr() {
+  // value : ::mlir::chlo::ComparisonDirection
+  auto value_enumerants = {
+    ::mlir::chlo::ComparisonDirection::EQ,
+    ::mlir::chlo::ComparisonDirection::NE,
+    ::mlir::chlo::ComparisonDirection::GE,
+    ::mlir::chlo::ComparisonDirection::GT,
+    ::mlir::chlo::ComparisonDirection::LE,
+    ::mlir::chlo::ComparisonDirection::LT,
+  };
+}
+std::vector<mlir::Attribute> genAll_chlo_ComparisonTypeAttr() {
+  // value : ::mlir::chlo::ComparisonType
+  auto value_enumerants = {
+    ::mlir::chlo::ComparisonType::NOTYPE,
+    ::mlir::chlo::ComparisonType::FLOAT,
+    ::mlir::chlo::ComparisonType::TOTALORDER,
+    ::mlir::chlo::ComparisonType::SIGNED,
+    ::mlir::chlo::ComparisonType::UNSIGNED,
+  };
+}
+std::vector<mlir::Attribute> genAll_mhlo_ChannelHandleAttr() {
+  // handle : int64_t
+  // type : int64_t
+}
+std::vector<mlir::Attribute> genAll_mhlo_ConvDimensionNumbersAttr() {
+  // inputBatchDimension : int64_t
+  // inputFeatureDimension : int64_t
+  // inputSpatialDimensions : ::llvm::ArrayRef<int64_t>
+  // kernelInputFeatureDimension : int64_t
+  // kernelOutputFeatureDimension : int64_t
+  // kernelSpatialDimensions : ::llvm::ArrayRef<int64_t>
+  // outputBatchDimension : int64_t
+  // outputFeatureDimension : int64_t
+  // outputSpatialDimensions : ::llvm::ArrayRef<int64_t>
+}
+std::vector<mlir::Attribute> genAll_mhlo_DotDimensionNumbersAttr() {
+  // lhsBatchingDimensions : ::llvm::ArrayRef<int64_t>
+  // rhsBatchingDimensions : ::llvm::ArrayRef<int64_t>
+  // lhsContractingDimensions : ::llvm::ArrayRef<int64_t>
+  // rhsContractingDimensions : ::llvm::ArrayRef<int64_t>
+}
+std::vector<mlir::Attribute> genAll_mhlo_GatherDimensionNumbersAttr() {
+  // offsetDims : ::llvm::ArrayRef<int64_t>
+  // collapsedSliceDims : ::llvm::ArrayRef<int64_t>
+  // startIndexMap : ::llvm::ArrayRef<int64_t>
+  // indexVectorDim : int64_t
+}
+std::vector<mlir::Attribute> genAll_mhlo_ComparisonDirectionAttr() {
+  // value : ::mlir::mhlo::ComparisonDirection
+  auto value_enumerants = {
+    ::mlir::mhlo::ComparisonDirection::EQ,
+    ::mlir::mhlo::ComparisonDirection::NE,
+    ::mlir::mhlo::ComparisonDirection::GE,
+    ::mlir::mhlo::ComparisonDirection::GT,
+    ::mlir::mhlo::ComparisonDirection::LE,
+    ::mlir::mhlo::ComparisonDirection::LT,
+  };
+}
+std::vector<mlir::Attribute> genAll_mhlo_ComparisonTypeAttr() {
+  // value : ::mlir::mhlo::ComparisonType
+  auto value_enumerants = {
+    ::mlir::mhlo::ComparisonType::NOTYPE,
+    ::mlir::mhlo::ComparisonType::FLOAT,
+    ::mlir::mhlo::ComparisonType::TOTALORDER,
+    ::mlir::mhlo::ComparisonType::SIGNED,
+    ::mlir::mhlo::ComparisonType::UNSIGNED,
+  };
+}
+std::vector<mlir::Attribute> genAll_mhlo_DequantizeModeAttr() {
+  // value : ::mlir::mhlo::DequantizeMode
+  auto value_enumerants = {
+    ::mlir::mhlo::DequantizeMode::MIN_COMBINED,
+  };
+}
+std::vector<mlir::Attribute> genAll_mhlo_DomainKindAttr() {
+  // value : ::mlir::mhlo::DomainKind
+  auto value_enumerants = {
+    ::mlir::mhlo::DomainKind::sharding,
+  };
+}
+std::vector<mlir::Attribute> genAll_mhlo_FftTypeAttr() {
+  // value : ::mlir::mhlo::FftType
+  auto value_enumerants = {
+    ::mlir::mhlo::FftType::FFT,
+    ::mlir::mhlo::FftType::IFFT,
+    ::mlir::mhlo::FftType::RFFT,
+    ::mlir::mhlo::FftType::IRFFT,
+  };
+}
+std::vector<mlir::Attribute> genAll_mhlo_FusionKindAttr() {
+  // value : ::mlir::mhlo::FusionKind
+  auto value_enumerants = {
+    ::mlir::mhlo::FusionKind::kLoop,
+    ::mlir::mhlo::FusionKind::kInput,
+    ::mlir::mhlo::FusionKind::kOutput,
+    ::mlir::mhlo::FusionKind::kCustom,
+  };
+}
+std::vector<mlir::Attribute> genAll_mhlo_PrecisionAttr() {
+  // value : ::mlir::mhlo::Precision
+  auto value_enumerants = {
+    ::mlir::mhlo::Precision::DEFAULT,
+    ::mlir::mhlo::Precision::HIGH,
+    ::mlir::mhlo::Precision::HIGHEST,
+    ::mlir::mhlo::Precision::PACKED_NIBBLE,
+  };
+}
+std::vector<mlir::Attribute> genAll_mhlo_RngAlgorithmAttr() {
+  // value : ::mlir::mhlo::RngAlgorithm
+  auto value_enumerants = {
+    ::mlir::mhlo::RngAlgorithm::DEFAULT,
+    ::mlir::mhlo::RngAlgorithm::THREE_FRY,
+    ::mlir::mhlo::RngAlgorithm::PHILOX,
+  };
+}
+std::vector<mlir::Attribute> genAll_mhlo_RngDistributionAttr() {
+  // value : ::mlir::mhlo::RngDistribution
+  auto value_enumerants = {
+    ::mlir::mhlo::RngDistribution::UNIFORM,
+    ::mlir::mhlo::RngDistribution::NORMAL,
+  };
+}
+std::vector<mlir::Attribute> genAll_mhlo_TransposeAttr() {
+  // value : ::mlir::mhlo::Transpose
+  auto value_enumerants = {
+    ::mlir::mhlo::Transpose::TRANSPOSE_INVALID,
+    ::mlir::mhlo::Transpose::NO_TRANSPOSE,
+    ::mlir::mhlo::Transpose::TRANSPOSE,
+    ::mlir::mhlo::Transpose::ADJOINT,
+  };
+}
+std::vector<mlir::Attribute> genAll_mhlo_OutputOperandAliasAttr() {
+  // outputTupleIndices : ::llvm::ArrayRef<int64_t>
+  // operandIndex : int64_t
+  // operandTupleIndices : ::llvm::ArrayRef<int64_t>
+}
+std::vector<mlir::Attribute> genAll_mhlo_ScatterDimensionNumbersAttr() {
+  // updateWindowDims : ::llvm::ArrayRef<int64_t>
+  // insertedWindowDims : ::llvm::ArrayRef<int64_t>
+  // scatterDimsToOperandDims : ::llvm::ArrayRef<int64_t>
+  // indexVectorDim : int64_t
+}
+std::vector<mlir::Attribute> genAll_mhlo_TypeExtensionsAttr() {
+  // bounds : ::llvm::ArrayRef<int64_t>
+}
