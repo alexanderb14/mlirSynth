@@ -19,7 +19,6 @@
 
 namespace grammar {
 enum OpAndResType {
-  DefaultUnknownOpAndResType,
   HLO_AsyncBundle,
   HLO_ComplexTensor,
   HLO_DimensionTensor,

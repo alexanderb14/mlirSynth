@@ -20,6 +20,8 @@ using namespace llvm;
 using namespace mlir;
 using namespace mlir::tblgen;
 
+// Utility functions
+// -----------------------------------------------------------------------------
 std::vector<Record *> getOpDefinitions(const RecordKeeper &recordKeeper) {
   if (!recordKeeper.getClass("Op"))
     return {};
@@ -50,15 +52,7 @@ std::vector<std::string> getUsedOpAndResTypes(const RecordKeeper &records) {
     }
   }
 
-  // Add Unknown type as 1st element.
-  std::vector<std::string> typesVec;
-  typesVec.reserve(types.size());
-  for (auto &type : types) {
-    typesVec.push_back(type);
-  }
-  typesVec.insert(typesVec.begin(), "DefaultUnknownOpAndResType");
-
-  return typesVec;
+  return std::vector<std::string>(types.begin(), types.end());
 }
 
 std::vector<std::string> getUsedAttrTypes(const RecordKeeper &records) {
@@ -70,58 +64,30 @@ std::vector<std::string> getUsedAttrTypes(const RecordKeeper &records) {
     }
   }
 
-  // Add Unknown type as 1st element.
-  std::vector<std::string> typesVec;
-  typesVec.reserve(types.size());
-  for (auto &type : types) {
-    typesVec.push_back(type);
-  }
-  typesVec.insert(typesVec.begin(), "DefaultUnknownAttrType");
-
-  return typesVec;
+  return std::vector<std::string>(types.begin(), types.end());
 }
 
-void printDefinitions(RecordKeeper &records, raw_ostream &os) {
-  os << "Classes:\n";
-  for (const auto &it : records.getClasses()) {
-    os << it.second->getName() << "\n";
-  }
-
-  os << "\n";
-  os << "Type definitions:\n";
-  for (auto *record : getTypeDefinitions(records)) {
-    os << record->getName() << "\n";
-  }
-
-  os << "\n";
-  os << "Attr definitions:\n";
-  for (auto *record : getAttrDefinitions(records)) {
-    os << record->getName() << "\n";
-  }
-
-  os << "\n";
-  for (auto *record : getOpDefinitions(records)) {
-    os << "Op: " << record->getName() << "\n";
-    auto tblgenOp = Operator(record);
-
-    // Operands
-    os << "  Operands:\n";
-    for (auto &operand : tblgenOp.getOperands()) {
-      // os << "    " << operand.name << ": ";
-      os << "    ";
-      os << operand.constraint.getDefName() << "\n";
-    }
-
-    // Results
-    os << "  Results:\n";
-    for (auto &result : tblgenOp.getResults()) {
-      // os << "    " << result.name << ": ";
-      os << "    ";
-      os << result.constraint.getDefName() << "\n";
-    }
-  }
+std::string makeClangCompatible(const std::string &name) {
+  std::string res = name;
+  std::replace(res.begin(), res.end(), '.', '_');
+  std::replace(res.begin(), res.end(), '-', '_');
+  return res;
 }
 
+// Include guard emitters
+// -----------------------------------------------------------------------------
+void emitIncludeGuardStart(raw_ostream &os, const std::string &guard) {
+  os << "#ifndef " << guard << "\n";
+  os << "#define " << guard << "\n";
+  os << "\n";
+}
+
+void emitIncludeGuardEnd(raw_ostream &os, const std::string &guard) {
+  os << "#endif // " << guard << "\n";
+}
+
+// Header emitters
+// -----------------------------------------------------------------------------
 void emitHdrIncludes(raw_ostream &os) {
   os << R"(
 #include "mlir/IR/Attributes.h"
@@ -161,6 +127,19 @@ void emitSrcIncludes(raw_ostream &os) {
 )";
 }
 
+// Namespace emitters
+// -----------------------------------------------------------------------------
+void emitNamespaceStart(raw_ostream &os, const std::string &ns) {
+  os << "namespace " << ns << " {\n";
+}
+
+void emitNamespaceEnd(raw_ostream &os, const std::string &ns) {
+  os << "} // namespace " << ns << "\n";
+}
+
+
+// Op / Attr type emitters
+// -----------------------------------------------------------------------------
 void emitUsedOpAndResTypesAsEnum(const RecordKeeper &records, raw_ostream &os) {
   auto types = getUsedOpAndResTypes(records);
 
@@ -232,6 +211,8 @@ void emitUsedAttrTypeValues(const RecordKeeper &records, raw_ostream &os) {
   }
 }
 
+// Enum type generator emitters
+// -----------------------------------------------------------------------------
 std::unordered_map<std::string, Record *>
 getEnumAttrDefs(const RecordKeeper &records) {
   std::unordered_map<std::string, Record *> enumAttrDefs;
@@ -269,7 +250,7 @@ void emitEnumerants(std::unordered_map<std::string, Record *> &enumAttrDefs,
 std::string getGenFnName(AttrOrTypeDef &attrDef) {
   std::string attrName = attrDef.getDialect().getName().str() + "_" +
                          attrDef.getCppClassName().str();
-  return "genAll_" + attrName;
+  return "gen_" + attrName;
 }
 
 void emitAttrGen(const RecordKeeper &records, raw_ostream &os) {
@@ -329,6 +310,8 @@ void emitAttrGen(const RecordKeeper &records, raw_ostream &os) {
   }
 }
 
+// Grammar Operation emitters
+// -----------------------------------------------------------------------------
 void emitAbstractOp(raw_ostream &os) {
   os << R"(
 class GrammarOp {
@@ -346,13 +329,6 @@ public:
 };
 using GrammarOpPtr = std::unique_ptr<GrammarOp>;
 )";
-}
-
-std::string makeClangCompatible(const std::string &name) {
-  std::string res = name;
-  std::replace(res.begin(), res.end(), '.', '_');
-  std::replace(res.begin(), res.end(), '-', '_');
-  return res;
 }
 
 void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
@@ -501,24 +477,8 @@ void emitConstructorFn(const RecordKeeper &records, raw_ostream &os) {
   os << "\n";
 }
 
-void emitIncludeGuardStart(raw_ostream &os, const std::string &guard) {
-  os << "#ifndef " << guard << "\n";
-  os << "#define " << guard << "\n";
-  os << "\n";
-}
-
-void emitIncludeGuardEnd(raw_ostream &os, const std::string &guard) {
-  os << "#endif // " << guard << "\n";
-}
-
-void emitNamespaceStart(raw_ostream &os, const std::string &ns) {
-  os << "namespace " << ns << " {\n";
-}
-
-void emitNamespaceEnd(raw_ostream &os, const std::string &ns) {
-  os << "} // namespace " << ns << "\n";
-}
-
+// Emitters
+// -----------------------------------------------------------------------------
 static bool emitGrammarOpDecls(const RecordKeeper &recordKeeper,
                                raw_ostream &os) {
   emitSourceFileHeader("Grammar (generated from tablegen)", os);
@@ -535,10 +495,6 @@ static bool emitGrammarOpDecls(const RecordKeeper &recordKeeper,
   emitNamespaceEnd(os, "grammar");
   emitIncludeGuardEnd(os, "IRSYNTH_GRAMMAR_H");
   // emitUsedAttrTypeValues(recordKeeper, os);
-
-  // for (const auto &def : recordKeeper.getDefs()) {
-  //   os << def.first << "\n";
-  // }
 
   return false;
 }

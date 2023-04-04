@@ -6516,7 +6516,6 @@ public:
 };
 
 std::string opAndResTypeToString(OpAndResType type) {
-  if (type == DefaultUnknownOpAndResType) return "DefaultUnknownOpAndResType";
   if (type == HLO_AsyncBundle) return "HLO_AsyncBundle";
   if (type == HLO_ComplexTensor) return "HLO_ComplexTensor";
   if (type == HLO_DimensionTensor) return "HLO_DimensionTensor";
@@ -6909,7 +6908,7 @@ GrammarOpPtr createGrammarOp(std::string name) {
 }
 
 } // namespace grammar
-std::vector<mlir::Attribute> genAll_mhlo_ArgResultAliasAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_ArgResultAliasAttr(mlir::MLIRContext &ctx) {
   // argTupleIndices : ::llvm::ArrayRef<int64_t>
   std::vector<::llvm::ArrayRef<int64_t>> argTupleIndicesEnumerants = {
   };
@@ -6938,7 +6937,7 @@ std::vector<mlir::Attribute> genAll_mhlo_ArgResultAliasAttr(mlir::MLIRContext &c
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_chlo_ComparisonDirectionAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_chlo_ComparisonDirectionAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::chlo::ComparisonDirection
   std::vector<::mlir::chlo::ComparisonDirection> valueEnumerants = {
     ::mlir::chlo::ComparisonDirection::EQ,
@@ -6955,7 +6954,7 @@ std::vector<mlir::Attribute> genAll_chlo_ComparisonDirectionAttr(mlir::MLIRConte
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_chlo_ComparisonTypeAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_chlo_ComparisonTypeAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::chlo::ComparisonType
   std::vector<::mlir::chlo::ComparisonType> valueEnumerants = {
     ::mlir::chlo::ComparisonType::NOTYPE,
@@ -6971,7 +6970,7 @@ std::vector<mlir::Attribute> genAll_chlo_ComparisonTypeAttr(mlir::MLIRContext &c
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_ChannelHandleAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_ChannelHandleAttr(mlir::MLIRContext &ctx) {
   // handle : int64_t
   std::vector<int64_t> handleEnumerants = {
   };
@@ -6988,7 +6987,7 @@ std::vector<mlir::Attribute> genAll_mhlo_ChannelHandleAttr(mlir::MLIRContext &ct
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_ConvDimensionNumbersAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_ConvDimensionNumbersAttr(mlir::MLIRContext &ctx) {
   // inputBatchDimension : int64_t
   std::vector<int64_t> inputBatchDimensionEnumerants = {
   };
@@ -7047,7 +7046,7 @@ std::vector<mlir::Attribute> genAll_mhlo_ConvDimensionNumbersAttr(mlir::MLIRCont
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_DotDimensionNumbersAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_DotDimensionNumbersAttr(mlir::MLIRContext &ctx) {
   // lhsBatchingDimensions : ::llvm::ArrayRef<int64_t>
   std::vector<::llvm::ArrayRef<int64_t>> lhsBatchingDimensionsEnumerants = {
   };
@@ -7076,7 +7075,7 @@ std::vector<mlir::Attribute> genAll_mhlo_DotDimensionNumbersAttr(mlir::MLIRConte
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_GatherDimensionNumbersAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_GatherDimensionNumbersAttr(mlir::MLIRContext &ctx) {
   // offsetDims : ::llvm::ArrayRef<int64_t>
   std::vector<::llvm::ArrayRef<int64_t>> offsetDimsEnumerants = {
   };
@@ -7105,7 +7104,7 @@ std::vector<mlir::Attribute> genAll_mhlo_GatherDimensionNumbersAttr(mlir::MLIRCo
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_ComparisonDirectionAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_ComparisonDirectionAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::ComparisonDirection
   std::vector<::mlir::mhlo::ComparisonDirection> valueEnumerants = {
     ::mlir::mhlo::ComparisonDirection::EQ,
@@ -7122,7 +7121,7 @@ std::vector<mlir::Attribute> genAll_mhlo_ComparisonDirectionAttr(mlir::MLIRConte
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_ComparisonTypeAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_ComparisonTypeAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::ComparisonType
   std::vector<::mlir::mhlo::ComparisonType> valueEnumerants = {
     ::mlir::mhlo::ComparisonType::NOTYPE,
@@ -7138,7 +7137,7 @@ std::vector<mlir::Attribute> genAll_mhlo_ComparisonTypeAttr(mlir::MLIRContext &c
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_DequantizeModeAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_DequantizeModeAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::DequantizeMode
   std::vector<::mlir::mhlo::DequantizeMode> valueEnumerants = {
     ::mlir::mhlo::DequantizeMode::MIN_COMBINED,
@@ -7150,7 +7149,7 @@ std::vector<mlir::Attribute> genAll_mhlo_DequantizeModeAttr(mlir::MLIRContext &c
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_DomainKindAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_DomainKindAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::DomainKind
   std::vector<::mlir::mhlo::DomainKind> valueEnumerants = {
     ::mlir::mhlo::DomainKind::sharding,
@@ -7162,7 +7161,7 @@ std::vector<mlir::Attribute> genAll_mhlo_DomainKindAttr(mlir::MLIRContext &ctx) 
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_FftTypeAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_FftTypeAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::FftType
   std::vector<::mlir::mhlo::FftType> valueEnumerants = {
     ::mlir::mhlo::FftType::FFT,
@@ -7177,7 +7176,7 @@ std::vector<mlir::Attribute> genAll_mhlo_FftTypeAttr(mlir::MLIRContext &ctx) {
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_FusionKindAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_FusionKindAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::FusionKind
   std::vector<::mlir::mhlo::FusionKind> valueEnumerants = {
     ::mlir::mhlo::FusionKind::kLoop,
@@ -7192,7 +7191,7 @@ std::vector<mlir::Attribute> genAll_mhlo_FusionKindAttr(mlir::MLIRContext &ctx) 
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_PrecisionAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_PrecisionAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::Precision
   std::vector<::mlir::mhlo::Precision> valueEnumerants = {
     ::mlir::mhlo::Precision::DEFAULT,
@@ -7207,7 +7206,7 @@ std::vector<mlir::Attribute> genAll_mhlo_PrecisionAttr(mlir::MLIRContext &ctx) {
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_RngAlgorithmAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_RngAlgorithmAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::RngAlgorithm
   std::vector<::mlir::mhlo::RngAlgorithm> valueEnumerants = {
     ::mlir::mhlo::RngAlgorithm::DEFAULT,
@@ -7221,7 +7220,7 @@ std::vector<mlir::Attribute> genAll_mhlo_RngAlgorithmAttr(mlir::MLIRContext &ctx
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_RngDistributionAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_RngDistributionAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::RngDistribution
   std::vector<::mlir::mhlo::RngDistribution> valueEnumerants = {
     ::mlir::mhlo::RngDistribution::UNIFORM,
@@ -7234,7 +7233,7 @@ std::vector<mlir::Attribute> genAll_mhlo_RngDistributionAttr(mlir::MLIRContext &
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_TransposeAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_TransposeAttr(mlir::MLIRContext &ctx) {
   // value : ::mlir::mhlo::Transpose
   std::vector<::mlir::mhlo::Transpose> valueEnumerants = {
     ::mlir::mhlo::Transpose::TRANSPOSE_INVALID,
@@ -7249,7 +7248,7 @@ std::vector<mlir::Attribute> genAll_mhlo_TransposeAttr(mlir::MLIRContext &ctx) {
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_OutputOperandAliasAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_OutputOperandAliasAttr(mlir::MLIRContext &ctx) {
   // outputTupleIndices : ::llvm::ArrayRef<int64_t>
   std::vector<::llvm::ArrayRef<int64_t>> outputTupleIndicesEnumerants = {
   };
@@ -7272,7 +7271,7 @@ std::vector<mlir::Attribute> genAll_mhlo_OutputOperandAliasAttr(mlir::MLIRContex
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_ScatterDimensionNumbersAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_ScatterDimensionNumbersAttr(mlir::MLIRContext &ctx) {
   // updateWindowDims : ::llvm::ArrayRef<int64_t>
   std::vector<::llvm::ArrayRef<int64_t>> updateWindowDimsEnumerants = {
   };
@@ -7301,7 +7300,7 @@ std::vector<mlir::Attribute> genAll_mhlo_ScatterDimensionNumbersAttr(mlir::MLIRC
   }
   return ret;
 }
-std::vector<mlir::Attribute> genAll_mhlo_TypeExtensionsAttr(mlir::MLIRContext &ctx) {
+std::vector<mlir::Attribute> gen_mhlo_TypeExtensionsAttr(mlir::MLIRContext &ctx) {
   // bounds : ::llvm::ArrayRef<int64_t>
   std::vector<::llvm::ArrayRef<int64_t>> boundsEnumerants = {
   };
