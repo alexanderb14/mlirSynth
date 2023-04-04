@@ -137,7 +137,6 @@ void emitNamespaceEnd(raw_ostream &os, const std::string &ns) {
   os << "} // namespace " << ns << "\n";
 }
 
-
 // Op / Attr type emitters
 // -----------------------------------------------------------------------------
 void emitUsedOpAndResTypesAsEnum(const RecordKeeper &records, raw_ostream &os) {
