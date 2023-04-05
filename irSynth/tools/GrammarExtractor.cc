@@ -517,10 +517,6 @@ void emitOpAndResTypeToStringFn(const RecordKeeper &records, raw_ostream &os) {
   os << "\n";
 }
 
-void emitAttrTypeToStringDecl(raw_ostream &os) {
-  os << "std::string attrTypeToString(AttrType type);\n";
-}
-
 void emitConstructorDecl(raw_ostream &os) {
   os << "GrammarOpPtr createGrammarOp(std::string name);\n";
   os << "\n";
@@ -554,7 +550,6 @@ static bool emitGrammarOpDecls(const RecordKeeper &recordKeeper,
   emitAttrGenClass(recordKeeper, os);
   emitAbstractOpClass(os);
   emitOpAndResTypeToStringDecl(os);
-  // emitAttrTypeToStringDecl(os);
   emitConstructorDecl(os);
   emitNamespaceEnd(os, "grammar");
   emitIncludeGuardEnd(os, "IRSYNTH_GRAMMAR_H");
