@@ -420,91 +420,109 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloTypeExtensionsAttr() {
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genArrayAttr() {
+  llvm::outs() << "WARNING: Not implemented: genArrayAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genBoolAttr() {
+  llvm::outs() << "WARNING: Not implemented: genBoolAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genChannelHandleAttr() {
+  llvm::outs() << "WARNING: Not implemented: genChannelHandleAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genComparisonTypeAttr() {
+  llvm::outs() << "WARNING: Not implemented: genComparisonTypeAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genCustomCallApiVersionAttr() {
+  llvm::outs() << "WARNING: Not implemented: genCustomCallApiVersionAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genDenseElementsAttr() {
+  llvm::outs() << "WARNING: Not implemented: genDenseElementsAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genDenseIntElementsAttr() {
+  llvm::outs() << "WARNING: Not implemented: genDenseIntElementsAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genElementsAttr() {
+  llvm::outs() << "WARNING: Not implemented: genElementsAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genFlatSymbolRefAttr() {
+  llvm::outs() << "WARNING: Not implemented: genFlatSymbolRefAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genFloatAttr() {
+  llvm::outs() << "WARNING: Not implemented: genFloatAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genFusionKindAttr() {
+  llvm::outs() << "WARNING: Not implemented: genFusionKindAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genIntegerAttr() {
+  llvm::outs() << "WARNING: Not implemented: genIntegerAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genStringAttr() {
+  llvm::outs() << "WARNING: Not implemented: genStringAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genTypedAttr() {
+  llvm::outs() << "WARNING: Not implemented: genTypedAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genUnitAttr() {
+  llvm::outs() << "WARNING: Not implemented: genUnitAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
 
 std::vector<::llvm::SmallVector<int64_t>> AttributeGenerator::genLlvmSmallVectorint64t() {
+  llvm::outs() << "WARNING: Not implemented: genLlvmSmallVectorint64t\n";
   std::vector<::llvm::SmallVector<int64_t>> ret;
   return ret;
 }
 
 std::vector<bool> AttributeGenerator::genBool() {
+  llvm::outs() << "WARNING: Not implemented: genBool\n";
   std::vector<bool> ret;
   return ret;
 }
 
 std::vector<int64_t> AttributeGenerator::genInt64t() {
+  llvm::outs() << "WARNING: Not implemented: genInt64t\n";
   std::vector<int64_t> ret;
   return ret;
 }

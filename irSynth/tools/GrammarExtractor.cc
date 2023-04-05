@@ -367,11 +367,14 @@ void emitAttrGenFns(const RecordKeeper &records, raw_ostream &os) {
     os << "}\n\n";
   }
 
+  std::string notImplementedWarning = "WARNING: Not implemented";
+
   // Attr
   auto attrNonDefsGenFnNames = getAttrNonDefGenFnNames(records);
   for (auto &fnName : attrNonDefsGenFnNames) {
     os << "std::vector<mlir::Attribute> "
        << "AttributeGenerator::" << fnName << "() {\n";
+    os << "  llvm::outs() << \"" << notImplementedWarning << ": " << fnName << "\\n\";\n";
     os << "  std::vector<mlir::Attribute> ret;\n";
     os << "  return ret;\n";
     os << "}\n\n";
@@ -379,8 +382,11 @@ void emitAttrGenFns(const RecordKeeper &records, raw_ostream &os) {
 
   auto typesUsedInAttrDefs = getTypesUsedInAttrDefs(records);
   for (auto &type : typesUsedInAttrDefs) {
+    std::string fnName = getAttrGenFnName(type);
+
     os << "std::vector<" << type << "> "
-       << "AttributeGenerator::" << getAttrGenFnName(type) << "() {\n";
+       << "AttributeGenerator::" << fnName << "() {\n";
+    os << "  llvm::outs() << \"" << notImplementedWarning << ": " << fnName << "\\n\";\n";
     os << "  std::vector<" << type << "> ret;\n";
     os << "  return ret;\n";
     os << "}\n\n";
