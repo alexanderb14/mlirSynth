@@ -57,6 +57,53 @@ enum OpAndResType {
   anonymous_754
 };
 
+class AttributeGenerator {
+public:
+  AttributeGenerator(mlir::MLIRContext &ctx) : ctx(ctx) {}
+
+  // AttrDef generators
+  std::vector<mlir::Attribute> genChloComparisonDirectionAttr();
+  std::vector<mlir::Attribute> genChloComparisonTypeAttr();
+  std::vector<mlir::Attribute> genMhloArgResultAliasAttr();
+  std::vector<mlir::Attribute> genMhloChannelHandleAttr();
+  std::vector<mlir::Attribute> genMhloComparisonDirectionAttr();
+  std::vector<mlir::Attribute> genMhloComparisonTypeAttr();
+  std::vector<mlir::Attribute> genMhloConvDimensionNumbersAttr();
+  std::vector<mlir::Attribute> genMhloDequantizeModeAttr();
+  std::vector<mlir::Attribute> genMhloDomainKindAttr();
+  std::vector<mlir::Attribute> genMhloDotDimensionNumbersAttr();
+  std::vector<mlir::Attribute> genMhloFftTypeAttr();
+  std::vector<mlir::Attribute> genMhloFusionKindAttr();
+  std::vector<mlir::Attribute> genMhloGatherDimensionNumbersAttr();
+  std::vector<mlir::Attribute> genMhloOutputOperandAliasAttr();
+  std::vector<mlir::Attribute> genMhloPrecisionAttr();
+  std::vector<mlir::Attribute> genMhloRngAlgorithmAttr();
+  std::vector<mlir::Attribute> genMhloRngDistributionAttr();
+  std::vector<mlir::Attribute> genMhloScatterDimensionNumbersAttr();
+  std::vector<mlir::Attribute> genMhloTransposeAttr();
+  std::vector<mlir::Attribute> genMhloTypeExtensionsAttr();
+
+  // Attr generators
+  std::vector<mlir::Attribute> genArrayAttr();
+  std::vector<mlir::Attribute> genBoolAttr();
+  std::vector<mlir::Attribute> genChannelHandleAttr();
+  std::vector<mlir::Attribute> genComparisonTypeAttr();
+  std::vector<mlir::Attribute> genCustomCallApiVersionAttr();
+  std::vector<mlir::Attribute> genDenseElementsAttr();
+  std::vector<mlir::Attribute> genDenseIntElementsAttr();
+  std::vector<mlir::Attribute> genElementsAttr();
+  std::vector<mlir::Attribute> genFlatSymbolRefAttr();
+  std::vector<mlir::Attribute> genFloatAttr();
+  std::vector<mlir::Attribute> genFusionKindAttr();
+  std::vector<mlir::Attribute> genIntegerAttr();
+  std::vector<mlir::Attribute> genStringAttr();
+  std::vector<mlir::Attribute> genTypedAttr();
+  std::vector<mlir::Attribute> genUnitAttr();
+
+private:
+  mlir::MLIRContext &ctx;
+};
+using AttributeGeneratorPtr = std::shared_ptr<AttributeGenerator>;
 
 class GrammarOp {
 public:
@@ -68,35 +115,10 @@ public:
   virtual OpAndResType getOperandType(unsigned index) const = 0;
   virtual mlir::Attribute getAttributeType(unsigned index) const = 0;
   virtual std::string getAttributeName(unsigned index) const = 0;
-  virtual std::vector<mlir::Attribute> genAttributes(mlir::MLIRContext &ctx) const = 0;
+  virtual std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const = 0;
   virtual OpAndResType getResultType(unsigned index) const = 0;
 };
 using GrammarOpPtr = std::unique_ptr<GrammarOp>;
-
-class AttributeGenerator {
-public:
-  std::vector<mlir::Attribute> genMhloArgResultAliasAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genChloComparisonDirectionAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genChloComparisonTypeAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloChannelHandleAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloConvDimensionNumbersAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloDotDimensionNumbersAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloGatherDimensionNumbersAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloComparisonDirectionAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloComparisonTypeAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloDequantizeModeAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloDomainKindAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloFftTypeAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloFusionKindAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloPrecisionAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloRngAlgorithmAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloRngDistributionAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloTransposeAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloOutputOperandAliasAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloScatterDimensionNumbersAttr(mlir::MLIRContext &ctx);
-  std::vector<mlir::Attribute> genMhloTypeExtensionsAttr(mlir::MLIRContext &ctx);
-};
-
 std::string opAndResTypeToString(OpAndResType type);
 GrammarOpPtr createGrammarOp(std::string name);
 
