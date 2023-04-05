@@ -71,18 +71,10 @@ std::string opAndResTypeToString(OpAndResType type) {
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genMhloArgResultAliasAttr() {
-  // argTupleIndices : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> argTupleIndicesEnumerants = {
-  };
-  // resultIndex : int64_t
-  std::vector<int64_t> resultIndexEnumerants = {
-  };
-  // resultTupleIndices : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> resultTupleIndicesEnumerants = {
-  };
-  // isMustAlias : bool
-  std::vector<bool> isMustAliasEnumerants = {
-  };
+  std::vector<::llvm::SmallVector<int64_t>> argTupleIndicesEnumerants = genLlvmSmallVectorint64t();
+  std::vector<int64_t> resultIndexEnumerants = genInt64t();
+  std::vector<::llvm::SmallVector<int64_t>> resultTupleIndicesEnumerants = genLlvmSmallVectorint64t();
+  std::vector<bool> isMustAliasEnumerants = genBool();
   std::vector<mlir::Attribute> ret;
   for (const auto &v0 : argTupleIndicesEnumerants) {
     for (const auto &v1 : resultIndexEnumerants) {
@@ -99,8 +91,8 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloArgResultAliasAttr() {
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genChloComparisonDirectionAttr() {
-  // value : ::mlir::chlo::ComparisonDirection
   std::vector<::mlir::chlo::ComparisonDirection> valueEnumerants = {
     ::mlir::chlo::ComparisonDirection::EQ,
     ::mlir::chlo::ComparisonDirection::NE,
@@ -116,8 +108,8 @@ std::vector<mlir::Attribute> AttributeGenerator::genChloComparisonDirectionAttr(
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genChloComparisonTypeAttr() {
-  // value : ::mlir::chlo::ComparisonType
   std::vector<::mlir::chlo::ComparisonType> valueEnumerants = {
     ::mlir::chlo::ComparisonType::NOTYPE,
     ::mlir::chlo::ComparisonType::FLOAT,
@@ -132,13 +124,10 @@ std::vector<mlir::Attribute> AttributeGenerator::genChloComparisonTypeAttr() {
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloChannelHandleAttr() {
-  // handle : int64_t
-  std::vector<int64_t> handleEnumerants = {
-  };
-  // type : int64_t
-  std::vector<int64_t> typeEnumerants = {
-  };
+  std::vector<int64_t> handleEnumerants = genInt64t();
+  std::vector<int64_t> typeEnumerants = genInt64t();
   std::vector<mlir::Attribute> ret;
   for (const auto &v0 : handleEnumerants) {
     for (const auto &v1 : typeEnumerants) {
@@ -149,34 +138,17 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloChannelHandleAttr() {
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloConvDimensionNumbersAttr() {
-  // inputBatchDimension : int64_t
-  std::vector<int64_t> inputBatchDimensionEnumerants = {
-  };
-  // inputFeatureDimension : int64_t
-  std::vector<int64_t> inputFeatureDimensionEnumerants = {
-  };
-  // inputSpatialDimensions : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> inputSpatialDimensionsEnumerants = {
-  };
-  // kernelInputFeatureDimension : int64_t
-  std::vector<int64_t> kernelInputFeatureDimensionEnumerants = {
-  };
-  // kernelOutputFeatureDimension : int64_t
-  std::vector<int64_t> kernelOutputFeatureDimensionEnumerants = {
-  };
-  // kernelSpatialDimensions : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> kernelSpatialDimensionsEnumerants = {
-  };
-  // outputBatchDimension : int64_t
-  std::vector<int64_t> outputBatchDimensionEnumerants = {
-  };
-  // outputFeatureDimension : int64_t
-  std::vector<int64_t> outputFeatureDimensionEnumerants = {
-  };
-  // outputSpatialDimensions : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> outputSpatialDimensionsEnumerants = {
-  };
+  std::vector<int64_t> inputBatchDimensionEnumerants = genInt64t();
+  std::vector<int64_t> inputFeatureDimensionEnumerants = genInt64t();
+  std::vector<::llvm::SmallVector<int64_t>> inputSpatialDimensionsEnumerants = genLlvmSmallVectorint64t();
+  std::vector<int64_t> kernelInputFeatureDimensionEnumerants = genInt64t();
+  std::vector<int64_t> kernelOutputFeatureDimensionEnumerants = genInt64t();
+  std::vector<::llvm::SmallVector<int64_t>> kernelSpatialDimensionsEnumerants = genLlvmSmallVectorint64t();
+  std::vector<int64_t> outputBatchDimensionEnumerants = genInt64t();
+  std::vector<int64_t> outputFeatureDimensionEnumerants = genInt64t();
+  std::vector<::llvm::SmallVector<int64_t>> outputSpatialDimensionsEnumerants = genLlvmSmallVectorint64t();
   std::vector<mlir::Attribute> ret;
   for (const auto &v0 : inputBatchDimensionEnumerants) {
     for (const auto &v1 : inputFeatureDimensionEnumerants) {
@@ -208,19 +180,12 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloConvDimensionNumbersAttr
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloDotDimensionNumbersAttr() {
-  // lhsBatchingDimensions : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> lhsBatchingDimensionsEnumerants = {
-  };
-  // rhsBatchingDimensions : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> rhsBatchingDimensionsEnumerants = {
-  };
-  // lhsContractingDimensions : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> lhsContractingDimensionsEnumerants = {
-  };
-  // rhsContractingDimensions : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> rhsContractingDimensionsEnumerants = {
-  };
+  std::vector<::llvm::SmallVector<int64_t>> lhsBatchingDimensionsEnumerants = genLlvmSmallVectorint64t();
+  std::vector<::llvm::SmallVector<int64_t>> rhsBatchingDimensionsEnumerants = genLlvmSmallVectorint64t();
+  std::vector<::llvm::SmallVector<int64_t>> lhsContractingDimensionsEnumerants = genLlvmSmallVectorint64t();
+  std::vector<::llvm::SmallVector<int64_t>> rhsContractingDimensionsEnumerants = genLlvmSmallVectorint64t();
   std::vector<mlir::Attribute> ret;
   for (const auto &v0 : lhsBatchingDimensionsEnumerants) {
     for (const auto &v1 : rhsBatchingDimensionsEnumerants) {
@@ -237,19 +202,12 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloDotDimensionNumbersAttr(
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloGatherDimensionNumbersAttr() {
-  // offsetDims : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> offsetDimsEnumerants = {
-  };
-  // collapsedSliceDims : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> collapsedSliceDimsEnumerants = {
-  };
-  // startIndexMap : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> startIndexMapEnumerants = {
-  };
-  // indexVectorDim : int64_t
-  std::vector<int64_t> indexVectorDimEnumerants = {
-  };
+  std::vector<::llvm::SmallVector<int64_t>> offsetDimsEnumerants = genLlvmSmallVectorint64t();
+  std::vector<::llvm::SmallVector<int64_t>> collapsedSliceDimsEnumerants = genLlvmSmallVectorint64t();
+  std::vector<::llvm::SmallVector<int64_t>> startIndexMapEnumerants = genLlvmSmallVectorint64t();
+  std::vector<int64_t> indexVectorDimEnumerants = genInt64t();
   std::vector<mlir::Attribute> ret;
   for (const auto &v0 : offsetDimsEnumerants) {
     for (const auto &v1 : collapsedSliceDimsEnumerants) {
@@ -266,8 +224,8 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloGatherDimensionNumbersAt
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloComparisonDirectionAttr() {
-  // value : ::mlir::mhlo::ComparisonDirection
   std::vector<::mlir::mhlo::ComparisonDirection> valueEnumerants = {
     ::mlir::mhlo::ComparisonDirection::EQ,
     ::mlir::mhlo::ComparisonDirection::NE,
@@ -283,8 +241,8 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloComparisonDirectionAttr(
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloComparisonTypeAttr() {
-  // value : ::mlir::mhlo::ComparisonType
   std::vector<::mlir::mhlo::ComparisonType> valueEnumerants = {
     ::mlir::mhlo::ComparisonType::NOTYPE,
     ::mlir::mhlo::ComparisonType::FLOAT,
@@ -299,8 +257,8 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloComparisonTypeAttr() {
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloDequantizeModeAttr() {
-  // value : ::mlir::mhlo::DequantizeMode
   std::vector<::mlir::mhlo::DequantizeMode> valueEnumerants = {
     ::mlir::mhlo::DequantizeMode::MIN_COMBINED,
   };
@@ -311,8 +269,8 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloDequantizeModeAttr() {
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloDomainKindAttr() {
-  // value : ::mlir::mhlo::DomainKind
   std::vector<::mlir::mhlo::DomainKind> valueEnumerants = {
     ::mlir::mhlo::DomainKind::sharding,
   };
@@ -323,8 +281,8 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloDomainKindAttr() {
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloFftTypeAttr() {
-  // value : ::mlir::mhlo::FftType
   std::vector<::mlir::mhlo::FftType> valueEnumerants = {
     ::mlir::mhlo::FftType::FFT,
     ::mlir::mhlo::FftType::IFFT,
@@ -338,8 +296,8 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloFftTypeAttr() {
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloFusionKindAttr() {
-  // value : ::mlir::mhlo::FusionKind
   std::vector<::mlir::mhlo::FusionKind> valueEnumerants = {
     ::mlir::mhlo::FusionKind::kLoop,
     ::mlir::mhlo::FusionKind::kInput,
@@ -353,8 +311,8 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloFusionKindAttr() {
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloPrecisionAttr() {
-  // value : ::mlir::mhlo::Precision
   std::vector<::mlir::mhlo::Precision> valueEnumerants = {
     ::mlir::mhlo::Precision::DEFAULT,
     ::mlir::mhlo::Precision::HIGH,
@@ -368,8 +326,8 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloPrecisionAttr() {
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloRngAlgorithmAttr() {
-  // value : ::mlir::mhlo::RngAlgorithm
   std::vector<::mlir::mhlo::RngAlgorithm> valueEnumerants = {
     ::mlir::mhlo::RngAlgorithm::DEFAULT,
     ::mlir::mhlo::RngAlgorithm::THREE_FRY,
@@ -382,8 +340,8 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloRngAlgorithmAttr() {
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloRngDistributionAttr() {
-  // value : ::mlir::mhlo::RngDistribution
   std::vector<::mlir::mhlo::RngDistribution> valueEnumerants = {
     ::mlir::mhlo::RngDistribution::UNIFORM,
     ::mlir::mhlo::RngDistribution::NORMAL,
@@ -395,8 +353,8 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloRngDistributionAttr() {
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloTransposeAttr() {
-  // value : ::mlir::mhlo::Transpose
   std::vector<::mlir::mhlo::Transpose> valueEnumerants = {
     ::mlir::mhlo::Transpose::TRANSPOSE_INVALID,
     ::mlir::mhlo::Transpose::NO_TRANSPOSE,
@@ -410,16 +368,11 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloTransposeAttr() {
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloOutputOperandAliasAttr() {
-  // outputTupleIndices : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> outputTupleIndicesEnumerants = {
-  };
-  // operandIndex : int64_t
-  std::vector<int64_t> operandIndexEnumerants = {
-  };
-  // operandTupleIndices : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> operandTupleIndicesEnumerants = {
-  };
+  std::vector<::llvm::SmallVector<int64_t>> outputTupleIndicesEnumerants = genLlvmSmallVectorint64t();
+  std::vector<int64_t> operandIndexEnumerants = genInt64t();
+  std::vector<::llvm::SmallVector<int64_t>> operandTupleIndicesEnumerants = genLlvmSmallVectorint64t();
   std::vector<mlir::Attribute> ret;
   for (const auto &v0 : outputTupleIndicesEnumerants) {
     for (const auto &v1 : operandIndexEnumerants) {
@@ -433,19 +386,12 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloOutputOperandAliasAttr()
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloScatterDimensionNumbersAttr() {
-  // updateWindowDims : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> updateWindowDimsEnumerants = {
-  };
-  // insertedWindowDims : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> insertedWindowDimsEnumerants = {
-  };
-  // scatterDimsToOperandDims : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> scatterDimsToOperandDimsEnumerants = {
-  };
-  // indexVectorDim : int64_t
-  std::vector<int64_t> indexVectorDimEnumerants = {
-  };
+  std::vector<::llvm::SmallVector<int64_t>> updateWindowDimsEnumerants = genLlvmSmallVectorint64t();
+  std::vector<::llvm::SmallVector<int64_t>> insertedWindowDimsEnumerants = genLlvmSmallVectorint64t();
+  std::vector<::llvm::SmallVector<int64_t>> scatterDimsToOperandDimsEnumerants = genLlvmSmallVectorint64t();
+  std::vector<int64_t> indexVectorDimEnumerants = genInt64t();
   std::vector<mlir::Attribute> ret;
   for (const auto &v0 : updateWindowDimsEnumerants) {
     for (const auto &v1 : insertedWindowDimsEnumerants) {
@@ -462,10 +408,9 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloScatterDimensionNumbersA
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genMhloTypeExtensionsAttr() {
-  // bounds : ::llvm::SmallVector<int64_t>
-  std::vector<::llvm::SmallVector<int64_t>> boundsEnumerants = {
-  };
+  std::vector<::llvm::SmallVector<int64_t>> boundsEnumerants = genLlvmSmallVectorint64t();
   std::vector<mlir::Attribute> ret;
   for (const auto &v0 : boundsEnumerants) {
     ret.push_back(::mlir::mhlo::TypeExtensionsAttr::get(&ctx, 
@@ -473,78 +418,97 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloTypeExtensionsAttr() {
   }
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genArrayAttr() {
   std::vector<mlir::Attribute> ret;
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genBoolAttr() {
   std::vector<mlir::Attribute> ret;
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genChannelHandleAttr() {
   std::vector<mlir::Attribute> ret;
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genComparisonTypeAttr() {
   std::vector<mlir::Attribute> ret;
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genCustomCallApiVersionAttr() {
   std::vector<mlir::Attribute> ret;
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genDenseElementsAttr() {
   std::vector<mlir::Attribute> ret;
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genDenseIntElementsAttr() {
   std::vector<mlir::Attribute> ret;
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genElementsAttr() {
   std::vector<mlir::Attribute> ret;
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genFlatSymbolRefAttr() {
   std::vector<mlir::Attribute> ret;
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genFloatAttr() {
   std::vector<mlir::Attribute> ret;
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genFusionKindAttr() {
   std::vector<mlir::Attribute> ret;
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genIntegerAttr() {
   std::vector<mlir::Attribute> ret;
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genStringAttr() {
   std::vector<mlir::Attribute> ret;
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genTypedAttr() {
   std::vector<mlir::Attribute> ret;
   return ret;
 }
+
 std::vector<mlir::Attribute> AttributeGenerator::genUnitAttr() {
   std::vector<mlir::Attribute> ret;
   return ret;
 }
+
 std::vector<::llvm::SmallVector<int64_t>> AttributeGenerator::genLlvmSmallVectorint64t() {
   std::vector<::llvm::SmallVector<int64_t>> ret;
   return ret;
 }
+
 std::vector<bool> AttributeGenerator::genBool() {
   std::vector<bool> ret;
   return ret;
 }
+
 std::vector<int64_t> AttributeGenerator::genInt64t() {
   std::vector<int64_t> ret;
   return ret;
 }
+
 class chlo_acos : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }

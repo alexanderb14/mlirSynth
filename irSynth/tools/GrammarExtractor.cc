@@ -263,23 +263,26 @@ getEnumAttrDefs(const RecordKeeper &records) {
 
 void emitEnumerants(std::unordered_map<std::string, Record *> &enumAttrDefs,
                     AttrOrTypeParameter &param, raw_ostream &os) {
-  std::string enumerantsStr;
-
   std::string enumQualType = param.getCppStorageType().str();
   auto enumDefRecord = enumAttrDefs.find(enumQualType);
   if (enumDefRecord != enumAttrDefs.end()) {
+    std::string enumerantsStr;
+
     EnumAttr enumAttr(enumDefRecord->second);
     for (auto enumerant : enumAttr.getAllCases()) {
       std::string enumerantQualType =
           enumQualType + "::" + enumerant.getSymbol().str();
       enumerantsStr += "    " + enumerantQualType + ",\n";
     }
-  }
 
-  os << "  std::vector<" + enumQualType + "> " + param.getName() +
-            "Enumerants = {\n";
-  os << enumerantsStr;
-  os << "  };\n";
+    os << "  std::vector<" + enumQualType + "> " + param.getName() +
+              "Enumerants = {\n";
+    os << enumerantsStr;
+    os << "  };\n";
+  } else {
+    os << "  std::vector<" + enumQualType + "> " + param.getName() +
+              "Enumerants = " + getAttrGenFnName(enumQualType) + "();\n";
+  }
 }
 
 std::set<std::string> getTypesUsedInAttrDefs(const RecordKeeper &records) {
@@ -319,8 +322,6 @@ void emitAttrGenFns(const RecordKeeper &records, raw_ostream &os) {
 
     // Emit enumerants.
     for (auto param : attrDef.getParameters()) {
-      os << "  // " << param.getName() << " : " << param.getCppStorageType()
-         << "\n";
       emitEnumerants(enumAttrDefs, param, os);
     }
 
@@ -363,7 +364,7 @@ void emitAttrGenFns(const RecordKeeper &records, raw_ostream &os) {
     }
     os << "  return ret;\n";
 
-    os << "}\n";
+    os << "}\n\n";
   }
 
   // Attr
@@ -373,7 +374,7 @@ void emitAttrGenFns(const RecordKeeper &records, raw_ostream &os) {
        << "AttributeGenerator::" << fnName << "() {\n";
     os << "  std::vector<mlir::Attribute> ret;\n";
     os << "  return ret;\n";
-    os << "}\n";
+    os << "}\n\n";
   }
 
   auto typesUsedInAttrDefs = getTypesUsedInAttrDefs(records);
@@ -382,7 +383,7 @@ void emitAttrGenFns(const RecordKeeper &records, raw_ostream &os) {
        << "AttributeGenerator::" << getAttrGenFnName(type) << "() {\n";
     os << "  std::vector<" << type << "> ret;\n";
     os << "  return ret;\n";
-    os << "}\n";
+    os << "}\n\n";
   }
 }
 
