@@ -533,6 +533,18 @@ std::vector<mlir::Attribute> AttributeGenerator::genUnitAttr() {
   std::vector<mlir::Attribute> ret;
   return ret;
 }
+std::vector<::llvm::SmallVector<int64_t>> AttributeGenerator::genLlvmSmallVectorint64t() {
+  std::vector<::llvm::SmallVector<int64_t>> ret;
+  return ret;
+}
+std::vector<bool> AttributeGenerator::genBool() {
+  std::vector<bool> ret;
+  return ret;
+}
+std::vector<int64_t> AttributeGenerator::genInt64t() {
+  std::vector<int64_t> ret;
+  return ret;
+}
 class chlo_acos : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }

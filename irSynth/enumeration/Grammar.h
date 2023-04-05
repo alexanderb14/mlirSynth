@@ -100,6 +100,11 @@ public:
   std::vector<mlir::Attribute> genTypedAttr();
   std::vector<mlir::Attribute> genUnitAttr();
 
+  // Types used in enums
+  std::vector<::llvm::SmallVector<int64_t>> genLlvmSmallVectorint64t();
+  std::vector<bool> genBool();
+  std::vector<int64_t> genInt64t();
+
 private:
   mlir::MLIRContext &ctx;
 };
