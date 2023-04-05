@@ -446,7 +446,7 @@ public:
   virtual OpAndResType getOperandType(unsigned index) const = 0;
   virtual mlir::Attribute getAttributeType(unsigned index) const = 0;
   virtual std::string getAttributeName(unsigned index) const = 0;
-  virtual std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const = 0;
+  virtual std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const = 0;
   virtual OpAndResType getResultType(unsigned index) const = 0;
 };
 using GrammarOpPtr = std::unique_ptr<GrammarOp>;
@@ -513,9 +513,9 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
     os << "    assert(false && \"Invalid attribute index\");\n";
     os << "  }\n";
 
-    os << "  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr "
-          "&attrGen) const override {\n";
-    os << "    std::vector<mlir::Attribute> attrs;\n";
+    os << "  std::vector<std::vector<mlir::Attribute>> "
+          "genAttributes(AttributeGeneratorPtr &attrGen) const override {\n";
+    os << "    std::vector<std::vector<mlir::Attribute>> attrs;\n";
     for (int i = 0; i < tblgenOp.getNumAttributes(); ++i) {
       auto &attr = tblgenOp.getAttribute(i);
       auto varName = "attr" + std::to_string(i);
@@ -525,11 +525,8 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
       std::string prefix = "";
       if (attr.attr.isOptional())
         prefix = "// ";
-
-      os << "    " + prefix + "auto " << varName << " = attrGen->" << genFnName
-         << "();\n";
-      os << "    " + prefix + "attrs.insert(attrs.end(), " << varName
-         << ".begin(), " << varName << ".end());\n";
+      os << "    " + prefix + "attrs.push_back(attrGen->" << genFnName
+         << "());\n";
     }
     os << "    return attrs;\n";
     os << "  }\n";

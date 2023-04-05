@@ -549,8 +549,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -583,8 +583,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -617,8 +617,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -651,8 +651,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -685,8 +685,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -719,8 +719,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -753,8 +753,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -790,10 +790,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -829,10 +828,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -868,10 +866,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -911,14 +908,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genChloComparisonDirectionAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    // auto attr2 = attrGen->genComparisonTypeAttr();
-    // attrs.insert(attrs.end(), attr2.begin(), attr2.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    attrs.push_back(attrGen->genChloComparisonDirectionAttr());
+    // attrs.push_back(attrGen->genComparisonTypeAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -954,10 +948,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -993,10 +986,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1032,10 +1024,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1071,10 +1062,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1110,10 +1100,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1149,10 +1138,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1188,10 +1176,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1227,10 +1214,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1266,10 +1252,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1305,10 +1290,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1343,8 +1327,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1380,10 +1364,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1419,10 +1402,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1458,10 +1440,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1497,10 +1478,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1536,10 +1516,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1575,10 +1554,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1611,8 +1589,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1647,10 +1625,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genTypedAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genTypedAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1684,10 +1661,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genElementsAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1720,8 +1696,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1754,8 +1730,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1789,8 +1765,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1823,8 +1799,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1857,8 +1833,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1891,8 +1867,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1925,8 +1901,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1959,8 +1935,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -1993,8 +1969,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2027,8 +2003,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2062,8 +2038,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2097,8 +2073,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2131,8 +2107,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2165,8 +2141,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2198,8 +2174,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2232,8 +2208,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2268,10 +2244,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genIntegerAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2306,8 +2281,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2340,8 +2315,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2375,8 +2350,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2410,8 +2385,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2444,8 +2419,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2486,16 +2461,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    // auto attr2 = attrGen->genChannelHandleAttr();
-    // attrs.insert(attrs.end(), attr2.begin(), attr2.end());
-    // auto attr3 = attrGen->genUnitAttr();
-    // attrs.insert(attrs.end(), attr3.begin(), attr3.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genIntegerAttr());
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genChannelHandleAttr());
+    // attrs.push_back(attrGen->genUnitAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2534,14 +2505,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    // auto attr1 = attrGen->genChannelHandleAttr();
-    // attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    // auto attr2 = attrGen->genUnitAttr();
-    // attrs.insert(attrs.end(), attr2.begin(), attr2.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genChannelHandleAttr());
+    // attrs.push_back(attrGen->genUnitAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2582,16 +2550,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    auto attr2 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr2.begin(), attr2.end());
-    auto attr3 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr3.begin(), attr3.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genIntegerAttr());
+    attrs.push_back(attrGen->genIntegerAttr());
+    attrs.push_back(attrGen->genIntegerAttr());
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2625,8 +2589,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2665,14 +2629,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genFlatSymbolRefAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genStringAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    // auto attr2 = attrGen->genIntegerAttr();
-    // attrs.insert(attrs.end(), attr2.begin(), attr2.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genFlatSymbolRefAttr());
+    attrs.push_back(attrGen->genStringAttr());
+    // attrs.push_back(attrGen->genIntegerAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2711,14 +2672,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genFlatSymbolRefAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genStringAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    // auto attr2 = attrGen->genIntegerAttr();
-    // attrs.insert(attrs.end(), attr2.begin(), attr2.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genFlatSymbolRefAttr());
+    attrs.push_back(attrGen->genStringAttr());
+    // attrs.push_back(attrGen->genIntegerAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2757,14 +2715,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genFlatSymbolRefAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genStringAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    // auto attr2 = attrGen->genIntegerAttr();
-    // attrs.insert(attrs.end(), attr2.begin(), attr2.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genFlatSymbolRefAttr());
+    attrs.push_back(attrGen->genStringAttr());
+    // attrs.push_back(attrGen->genIntegerAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2798,8 +2753,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2840,12 +2795,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genFloatAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genFloatAttr());
+    attrs.push_back(attrGen->genIntegerAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2888,12 +2841,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genFloatAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genFloatAttr());
+    attrs.push_back(attrGen->genIntegerAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2932,12 +2883,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genFloatAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genFloatAttr());
+    attrs.push_back(attrGen->genIntegerAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -2972,8 +2921,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3006,8 +2955,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3042,10 +2991,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3080,10 +3028,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3116,8 +3063,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3150,8 +3097,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3184,8 +3131,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3220,10 +3167,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genBoolAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genBoolAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3258,8 +3204,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3292,8 +3238,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3330,12 +3276,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    // auto attr1 = attrGen->genChannelHandleAttr();
-    // attrs.insert(attrs.end(), attr1.begin(), attr1.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genChannelHandleAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3373,12 +3317,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genMhloComparisonDirectionAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    // auto attr1 = attrGen->genComparisonTypeAttr();
-    // attrs.insert(attrs.end(), attr1.begin(), attr1.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genMhloComparisonDirectionAttr());
+    // attrs.push_back(attrGen->genComparisonTypeAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3412,8 +3354,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3447,8 +3389,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3483,10 +3425,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genIntegerAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3520,10 +3461,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genElementsAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3556,8 +3496,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3609,26 +3549,17 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    // auto attr1 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    // auto attr2 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr2.begin(), attr2.end());
-    // auto attr3 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr3.begin(), attr3.end());
-    // auto attr4 = attrGen->genDenseElementsAttr();
-    // attrs.insert(attrs.end(), attr4.begin(), attr4.end());
-    auto attr5 = attrGen->genMhloConvDimensionNumbersAttr();
-    attrs.insert(attrs.end(), attr5.begin(), attr5.end());
-    auto attr6 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr6.begin(), attr6.end());
-    auto attr7 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr7.begin(), attr7.end());
-    // auto attr8 = attrGen->genArrayAttr();
-    // attrs.insert(attrs.end(), attr8.begin(), attr8.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseElementsAttr());
+    attrs.push_back(attrGen->genMhloConvDimensionNumbersAttr());
+    attrs.push_back(attrGen->genIntegerAttr());
+    attrs.push_back(attrGen->genIntegerAttr());
+    // attrs.push_back(attrGen->genArrayAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3663,10 +3594,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genUnitAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genUnitAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3699,8 +3629,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3732,8 +3662,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3768,10 +3698,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3805,8 +3734,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3855,24 +3784,16 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genStringAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    // auto attr1 = attrGen->genBoolAttr();
-    // attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    // auto attr2 = attrGen->genStringAttr();
-    // attrs.insert(attrs.end(), attr2.begin(), attr2.end());
-    // auto attr3 = attrGen->genCustomCallApiVersionAttr();
-    // attrs.insert(attrs.end(), attr3.begin(), attr3.end());
-    // auto attr4 = attrGen->genArrayAttr();
-    // attrs.insert(attrs.end(), attr4.begin(), attr4.end());
-    // auto attr5 = attrGen->genArrayAttr();
-    // attrs.insert(attrs.end(), attr5.begin(), attr5.end());
-    // auto attr6 = attrGen->genArrayAttr();
-    // attrs.insert(attrs.end(), attr6.begin(), attr6.end());
-    // auto attr7 = attrGen->genArrayAttr();
-    // attrs.insert(attrs.end(), attr7.begin(), attr7.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genStringAttr());
+    // attrs.push_back(attrGen->genBoolAttr());
+    // attrs.push_back(attrGen->genStringAttr());
+    // attrs.push_back(attrGen->genCustomCallApiVersionAttr());
+    // attrs.push_back(attrGen->genArrayAttr());
+    // attrs.push_back(attrGen->genArrayAttr());
+    // attrs.push_back(attrGen->genArrayAttr());
+    // attrs.push_back(attrGen->genArrayAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3906,8 +3827,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3946,14 +3867,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genMhloDomainKindAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genStringAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    auto attr2 = attrGen->genStringAttr();
-    attrs.insert(attrs.end(), attr2.begin(), attr2.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genMhloDomainKindAttr());
+    attrs.push_back(attrGen->genStringAttr());
+    attrs.push_back(attrGen->genStringAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -3991,12 +3909,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genMhloDotDimensionNumbersAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    // auto attr1 = attrGen->genArrayAttr();
-    // attrs.insert(attrs.end(), attr1.begin(), attr1.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genMhloDotDimensionNumbersAttr());
+    // attrs.push_back(attrGen->genArrayAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4032,10 +3948,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genArrayAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genArrayAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4075,14 +3990,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    // auto attr1 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    // auto attr2 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr2.begin(), attr2.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4135,26 +4047,17 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    // auto attr1 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    // auto attr2 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr2.begin(), attr2.end());
-    // auto attr3 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr3.begin(), attr3.end());
-    // auto attr4 = attrGen->genDenseElementsAttr();
-    // attrs.insert(attrs.end(), attr4.begin(), attr4.end());
-    auto attr5 = attrGen->genMhloConvDimensionNumbersAttr();
-    attrs.insert(attrs.end(), attr5.begin(), attr5.end());
-    auto attr6 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr6.begin(), attr6.end());
-    auto attr7 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr7.begin(), attr7.end());
-    // auto attr8 = attrGen->genArrayAttr();
-    // attrs.insert(attrs.end(), attr8.begin(), attr8.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseElementsAttr());
+    attrs.push_back(attrGen->genMhloConvDimensionNumbersAttr());
+    attrs.push_back(attrGen->genIntegerAttr());
+    attrs.push_back(attrGen->genIntegerAttr());
+    // attrs.push_back(attrGen->genArrayAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4193,12 +4096,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genMhloGatherDimensionNumbersAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    // auto attr1 = attrGen->genBoolAttr();
-    // attrs.insert(attrs.end(), attr1.begin(), attr1.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genMhloGatherDimensionNumbersAttr());
+    // attrs.push_back(attrGen->genBoolAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4233,10 +4134,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genIntegerAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4273,8 +4173,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4308,8 +4208,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4345,10 +4245,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4383,8 +4282,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4420,10 +4319,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genStringAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genStringAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4456,8 +4354,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4490,8 +4388,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4528,12 +4426,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genMhloFftTypeAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genMhloFftTypeAttr());
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4566,8 +4462,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4602,10 +4498,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genFusionKindAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genFusionKindAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4645,14 +4540,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genMhloGatherDimensionNumbersAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    // auto attr2 = attrGen->genBoolAttr();
-    // attrs.insert(attrs.end(), attr2.begin(), attr2.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genMhloGatherDimensionNumbersAttr());
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genBoolAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4687,10 +4579,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genIntegerAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4725,10 +4616,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genIntegerAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4761,8 +4651,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4795,8 +4685,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4833,12 +4723,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genStringAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    // auto attr1 = attrGen->genArrayAttr();
-    // attrs.insert(attrs.end(), attr1.begin(), attr1.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genStringAttr());
+    // attrs.push_back(attrGen->genArrayAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4872,10 +4760,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genIntegerAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4908,8 +4795,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4942,8 +4829,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -4976,8 +4863,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5010,8 +4897,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5046,10 +4933,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5083,8 +4969,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5118,8 +5004,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5153,8 +5039,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5187,8 +5073,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5221,8 +5107,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5255,8 +5141,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5290,8 +5176,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5327,10 +5213,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genStringAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genStringAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5370,14 +5255,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    auto attr2 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr2.begin(), attr2.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5409,8 +5291,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5443,8 +5325,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5478,8 +5360,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5515,8 +5397,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5549,8 +5431,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5587,12 +5469,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genMhloChannelHandleAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    // auto attr1 = attrGen->genBoolAttr();
-    // attrs.insert(attrs.end(), attr1.begin(), attr1.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genMhloChannelHandleAttr());
+    // attrs.push_back(attrGen->genBoolAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5628,10 +5508,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5668,12 +5547,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genIntegerAttr());
+    attrs.push_back(attrGen->genIntegerAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5714,16 +5591,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    // auto attr2 = attrGen->genChannelHandleAttr();
-    // attrs.insert(attrs.end(), attr2.begin(), attr2.end());
-    // auto attr3 = attrGen->genUnitAttr();
-    // attrs.insert(attrs.end(), attr3.begin(), attr3.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genIntegerAttr());
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genChannelHandleAttr());
+    // attrs.push_back(attrGen->genUnitAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5767,18 +5640,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    // auto attr1 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    // auto attr2 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr2.begin(), attr2.end());
-    // auto attr3 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr3.begin(), attr3.end());
-    // auto attr4 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr4.begin(), attr4.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5812,8 +5680,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5845,8 +5713,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5879,8 +5747,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5913,8 +5781,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5948,10 +5816,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5986,10 +5853,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genMhloRngAlgorithmAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genMhloRngAlgorithmAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6027,10 +5893,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genMhloRngDistributionAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genMhloRngDistributionAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6063,8 +5928,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6097,8 +5962,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6131,8 +5996,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6173,14 +6038,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genMhloScatterDimensionNumbersAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    // auto attr1 = attrGen->genBoolAttr();
-    // attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    // auto attr2 = attrGen->genBoolAttr();
-    // attrs.insert(attrs.end(), attr2.begin(), attr2.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genMhloScatterDimensionNumbersAttr());
+    // attrs.push_back(attrGen->genBoolAttr());
+    // attrs.push_back(attrGen->genBoolAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6221,14 +6083,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    // auto attr1 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    // auto attr2 = attrGen->genDenseIntElementsAttr();
-    // attrs.insert(attrs.end(), attr2.begin(), attr2.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6263,8 +6122,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6302,12 +6161,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genMhloChannelHandleAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    // auto attr1 = attrGen->genBoolAttr();
-    // attrs.insert(attrs.end(), attr1.begin(), attr1.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genMhloChannelHandleAttr());
+    // attrs.push_back(attrGen->genBoolAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6343,10 +6200,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genIntegerAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6380,8 +6236,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6415,8 +6271,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6450,8 +6306,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6484,8 +6340,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6518,8 +6374,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6558,14 +6414,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    auto attr2 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr2.begin(), attr2.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6602,12 +6455,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    // auto attr0 = attrGen->genIntegerAttr();
-    // attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    // auto attr1 = attrGen->genBoolAttr();
-    // attrs.insert(attrs.end(), attr1.begin(), attr1.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genIntegerAttr());
+    // attrs.push_back(attrGen->genBoolAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6640,8 +6491,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6675,8 +6526,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6710,8 +6561,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6744,8 +6595,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6783,12 +6634,10 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genIntegerAttr());
+    attrs.push_back(attrGen->genIntegerAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6823,10 +6672,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genStringAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genStringAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6860,10 +6708,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genDenseIntElementsAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6905,16 +6752,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genBoolAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
-    auto attr1 = attrGen->genBoolAttr();
-    attrs.insert(attrs.end(), attr1.begin(), attr1.end());
-    auto attr2 = attrGen->genBoolAttr();
-    attrs.insert(attrs.end(), attr2.begin(), attr2.end());
-    auto attr3 = attrGen->genMhloTransposeAttr();
-    attrs.insert(attrs.end(), attr3.begin(), attr3.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genBoolAttr());
+    attrs.push_back(attrGen->genBoolAttr());
+    attrs.push_back(attrGen->genBoolAttr());
+    attrs.push_back(attrGen->genMhloTransposeAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6947,8 +6790,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6983,10 +6826,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genStringAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genStringAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -7019,8 +6861,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -7053,8 +6895,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -7087,8 +6929,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -7122,10 +6964,9 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
-    auto attr0 = attrGen->genIntegerAttr();
-    attrs.insert(attrs.end(), attr0.begin(), attr0.end());
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genIntegerAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -7159,8 +7000,8 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
-  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {
-    std::vector<mlir::Attribute> attrs;
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {

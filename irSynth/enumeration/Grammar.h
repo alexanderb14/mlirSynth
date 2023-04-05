@@ -61,7 +61,7 @@ class AttributeGenerator {
 public:
   AttributeGenerator(mlir::MLIRContext &ctx) : ctx(ctx) {}
 
-  // AttrDef generators
+  // AttrDef generators. (exhaustively enumerate all combinations)
   std::vector<mlir::Attribute> genChloComparisonDirectionAttr();
   std::vector<mlir::Attribute> genChloComparisonTypeAttr();
   std::vector<mlir::Attribute> genMhloArgResultAliasAttr();
@@ -83,7 +83,7 @@ public:
   std::vector<mlir::Attribute> genMhloTransposeAttr();
   std::vector<mlir::Attribute> genMhloTypeExtensionsAttr();
 
-  // Attr generators
+  // Attr generators. (to be derived and implemented)
   std::vector<mlir::Attribute> genArrayAttr();
   std::vector<mlir::Attribute> genBoolAttr();
   std::vector<mlir::Attribute> genChannelHandleAttr();
@@ -100,7 +100,7 @@ public:
   std::vector<mlir::Attribute> genTypedAttr();
   std::vector<mlir::Attribute> genUnitAttr();
 
-  // Types used in enums
+  // Types used in enums. (to be derived and implemented)
   std::vector<::llvm::SmallVector<int64_t>> genLlvmSmallVectorint64t();
   std::vector<bool> genBool();
   std::vector<int64_t> genInt64t();
@@ -120,7 +120,7 @@ public:
   virtual OpAndResType getOperandType(unsigned index) const = 0;
   virtual mlir::Attribute getAttributeType(unsigned index) const = 0;
   virtual std::string getAttributeName(unsigned index) const = 0;
-  virtual std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const = 0;
+  virtual std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const = 0;
   virtual OpAndResType getResultType(unsigned index) const = 0;
 };
 using GrammarOpPtr = std::unique_ptr<GrammarOp>;
