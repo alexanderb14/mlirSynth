@@ -23,15 +23,8 @@ using namespace mlir::tblgen;
 
 // Utility functions
 // -----------------------------------------------------------------------------
-std::string makeClangCompatible(const std::string &name) {
-  std::string res = name;
-  std::replace(res.begin(), res.end(), '.', '_');
-  std::replace(res.begin(), res.end(), '-', '_');
-  return res;
-}
-
-std::string removeSpecialChars(std::string str) {
-  return std::regex_replace(str, std::regex("[^a-zA-Z0-9]"), "");
+std::string replaceSpecialChars(const std::string& str, const std::string& replaceWith = "") {
+  return std::regex_replace(str, std::regex("[^a-zA-Z0-9]"), replaceWith);
 }
 
 std::string cutAndUppercaseFirstChar(std::string qualType) {
@@ -50,7 +43,7 @@ std::string getAttrGenFnName(AttrOrTypeDef &attrDef) {
 }
 
 std::string getAttrGenFnName(tblgen::Attribute &attr) {
-  std::string dialectName; 
+  std::string dialectName;
   if (attr.getDialect()) {
     dialectName = attr.getDialect().getName().str();
     dialectName[0] = toupper(dialectName[0]);
@@ -61,7 +54,7 @@ std::string getAttrGenFnName(tblgen::Attribute &attr) {
 }
 
 std::string getAttrGenFnName(std::string attrName) {
-  attrName = removeSpecialChars(attrName);
+  attrName = replaceSpecialChars(attrName);
   attrName[0] = toupper(attrName[0]);
   return "gen" + attrName;
 }
@@ -130,8 +123,8 @@ std::set<std::string> getAttrNonDefGenFnNames(const RecordKeeper &records) {
 
   // Compute set difference attrGenFns - attrDefGenFns
   std::set<std::string> attrGenFnsOnly;
-  std::set_difference(allGenFns.begin(), allGenFns.end(),
-                      attrDefGenFns.begin(), attrDefGenFns.end(),
+  std::set_difference(allGenFns.begin(), allGenFns.end(), attrDefGenFns.begin(),
+                      attrDefGenFns.end(),
                       std::inserter(attrGenFnsOnly, attrGenFnsOnly.begin()));
 
   return attrGenFnsOnly;
@@ -289,7 +282,7 @@ void emitEnumerants(std::unordered_map<std::string, Record *> &enumAttrDefs,
   os << "  };\n";
 }
 
-std::set<std::string> getTypesUsedInEnums(const RecordKeeper &records) {
+std::set<std::string> getTypesUsedInAttrDefs(const RecordKeeper &records) {
   std::set<std::string> enumerandTypes;
 
   auto enumAttrDefs = getEnumAttrDefs(records);
@@ -300,7 +293,7 @@ std::set<std::string> getTypesUsedInEnums(const RecordKeeper &records) {
     for (auto param : attrDef.getParameters()) {
       std::string enumQualType = param.getCppStorageType().str();
 
-      // Only add defs that are not enums
+      // Only add defs that are in attr defs
       auto enumDefRecord = enumAttrDefs.find(enumQualType);
       if (enumDefRecord == enumAttrDefs.end()) {
         // Remove all special characters
@@ -322,12 +315,12 @@ void emitAttrGenFns(const RecordKeeper &records, raw_ostream &os) {
 
     // Emit function declaration.
     os << "std::vector<mlir::Attribute> "
-       << "AttributeGenerator::" << getAttrGenFnName(attrDef)
-       << "() {\n";
+       << "AttributeGenerator::" << getAttrGenFnName(attrDef) << "() {\n";
 
     // Emit enumerants.
     for (auto param : attrDef.getParameters()) {
-      os << "  // " << param.getName() << " : " << param.getCppStorageType() << "\n";
+      os << "  // " << param.getName() << " : " << param.getCppStorageType()
+         << "\n";
       emitEnumerants(enumAttrDefs, param, os);
     }
 
@@ -351,6 +344,8 @@ void emitAttrGenFns(const RecordKeeper &records, raw_ostream &os) {
 
     int paramIdx2 = 0;
     for (auto param : attrDef.getParameters()) {
+      (void)param; // Suppress unused variable warning.
+
       std::string enumerantName = "v" + std::to_string(paramIdx2);
       os << std::string(4 + paramIdx * 2, ' ');
       os << enumerantName;
@@ -381,8 +376,8 @@ void emitAttrGenFns(const RecordKeeper &records, raw_ostream &os) {
     os << "}\n";
   }
 
-  auto typesUsedInEnums = getTypesUsedInEnums(records);
-  for (auto &type : typesUsedInEnums) {
+  auto typesUsedInAttrDefs = getTypesUsedInAttrDefs(records);
+  for (auto &type : typesUsedInAttrDefs) {
     os << "std::vector<" << type << "> "
        << "AttributeGenerator::" << getAttrGenFnName(type) << "() {\n";
     os << "  std::vector<" << type << "> ret;\n";
@@ -414,10 +409,10 @@ public:
     os << "  std::vector<mlir::Attribute> " << fnName << "();\n";
   }
 
-  auto typesUsedInEnums = getTypesUsedInEnums(records);
+  auto typesUsedInAttrDefs = getTypesUsedInAttrDefs(records);
   os << "\n";
   os << "  // Types used in enums\n";
-  for (auto &typeName : typesUsedInEnums) {
+  for (auto &typeName : typesUsedInAttrDefs) {
     os << "  std::vector<" << typeName << "> " << getAttrGenFnName(typeName)
        << "();\n";
   }
@@ -455,7 +450,7 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
   for (auto *record : getOpDefinitions(records)) {
     auto tblgenOp = Operator(record);
 
-    std::string opName = makeClangCompatible(tblgenOp.getOperationName());
+    std::string opName = replaceSpecialChars(tblgenOp.getOperationName(), "_");
     os << "class " << opName << " : public GrammarOp {\n";
     os << "public:\n";
 
@@ -493,8 +488,6 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
     os << "    switch (index) {\n";
     for (int i = 0; i < tblgenOp.getNumAttributes(); ++i) {
       auto &attr = tblgenOp.getAttribute(i);
-      auto attrName = attr.attr.getDefName();
-      auto attrType = attr.attr.getReturnType();
       os << "      case " << i << ": return " << attr.attr.getStorageType()
          << "()"
          << ";\n";
@@ -513,16 +506,14 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
     os << "    assert(false && \"Invalid attribute index\");\n";
     os << "  }\n";
 
-    os << "  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr &attrGen) const override {\n";
+    os << "  std::vector<mlir::Attribute> genAttributes(AttributeGeneratorPtr "
+          "&attrGen) const override {\n";
     os << "    std::vector<mlir::Attribute> attrs;\n";
     for (int i = 0; i < tblgenOp.getNumAttributes(); ++i) {
       auto &attr = tblgenOp.getAttribute(i);
-      auto attrName = attr.attr.getDefName();
-      auto attrType = attr.attr.getReturnType();
       auto varName = "attr" + std::to_string(i);
 
       auto genFnName = getAttrGenFnName(attr.attr);
-
 
       std::string prefix = "";
       if (attr.attr.isOptional())
@@ -579,7 +570,7 @@ void emitConstructorFn(const RecordKeeper &records, raw_ostream &os) {
   for (auto *record : getOpDefinitions(records)) {
     auto tblgenOp = Operator(record);
 
-    std::string opName = makeClangCompatible(tblgenOp.getOperationName());
+    std::string opName = replaceSpecialChars(tblgenOp.getOperationName(), "_");
 
     os << "  if (name == \"" << tblgenOp.getOperationName() << "\")\n";
     os << "    return std::make_unique<" << opName << ">();\n";
