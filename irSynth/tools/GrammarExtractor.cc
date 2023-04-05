@@ -404,21 +404,21 @@ public:
 
   auto attrDefGenFnNames = getAttrDefGenFnNames(records);
   os << "\n";
-  os << "  // AttrDef generators\n";
+  os << "  // AttrDef generators. (exhaustively enumerate all combinations)\n";
   for (auto &fnName : attrDefGenFnNames) {
     os << "  std::vector<mlir::Attribute> " << fnName << "();\n";
   }
 
   auto attrNonDefsGenFnNames = getAttrNonDefGenFnNames(records);
   os << "\n";
-  os << "  // Attr generators\n";
+  os << "  // Attr generators. (to be derived and implemented)\n";
   for (auto &fnName : attrNonDefsGenFnNames) {
     os << "  std::vector<mlir::Attribute> " << fnName << "();\n";
   }
 
   auto typesUsedInAttrDefs = getTypesUsedInAttrDefs(records);
   os << "\n";
-  os << "  // Types used in enums\n";
+  os << "  // Types used in enums. (to be derived and implemented)\n";
   for (auto &typeName : typesUsedInAttrDefs) {
     os << "  std::vector<" << typeName << "> " << getAttrGenFnName(typeName)
        << "();\n";
