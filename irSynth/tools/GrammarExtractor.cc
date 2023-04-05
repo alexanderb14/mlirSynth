@@ -247,9 +247,11 @@ void emitEnumerants(std::unordered_map<std::string, Record *> &enumAttrDefs,
 }
 
 std::string getGenFnName(AttrOrTypeDef &attrDef) {
-  std::string attrName = attrDef.getDialect().getName().str() + "_" +
-                         attrDef.getCppClassName().str();
-  return "gen_" + attrName;
+  std::string dialectName = attrDef.getDialect().getName().str();
+  dialectName[0] = toupper(dialectName[0]);
+
+  std::string attrName = attrDef.getCppClassName().str();
+  return "gen" + dialectName + attrName;
 }
 
 void emitAttrGen(const RecordKeeper &records, raw_ostream &os) {
@@ -260,7 +262,8 @@ void emitAttrGen(const RecordKeeper &records, raw_ostream &os) {
     AttrOrTypeDef attrDef(attrDefRecord);
 
     // Emit function declaration.
-    os << "std::vector<mlir::Attribute> " << getGenFnName(attrDef)
+    os << "std::vector<mlir::Attribute> "
+       << "AttributeGenerator::" << getGenFnName(attrDef)
        << "(mlir::MLIRContext &ctx) {\n";
 
     // Emit enumerants.
@@ -309,9 +312,28 @@ void emitAttrGen(const RecordKeeper &records, raw_ostream &os) {
   }
 }
 
+void emitAttrGenClass(const RecordKeeper &records, raw_ostream &os) {
+  auto enumAttrDefs = getEnumAttrDefs(records);
+
+  os << R"(
+class AttributeGenerator {
+public:
+)";
+  auto attrDefs = records.getAllDerivedDefinitionsIfDefined("AttrDef");
+  for (auto *attrDefRecord : attrDefs) {
+    AttrOrTypeDef attrDef(attrDefRecord);
+
+    // Emit function declaration.
+    os << "  std::vector<mlir::Attribute> " << getGenFnName(attrDef)
+       << "(mlir::MLIRContext &ctx);\n";
+  }
+
+  os << "};\n\n";
+}
+
 // Grammar Operation emitters
 // -----------------------------------------------------------------------------
-void emitAbstractOp(raw_ostream &os) {
+void emitAbstractOpClass(raw_ostream &os) {
   os << R"(
 class GrammarOp {
 public:
@@ -323,7 +345,7 @@ public:
   virtual OpAndResType getOperandType(unsigned index) const = 0;
   virtual mlir::Attribute getAttributeType(unsigned index) const = 0;
   virtual std::string getAttributeName(unsigned index) const = 0;
-  virtual std::vector<mlir::Attribute> getAttributes() const = 0;
+  virtual std::vector<mlir::Attribute> genAttributes(mlir::MLIRContext &ctx) const = 0;
   virtual OpAndResType getResultType(unsigned index) const = 0;
 };
 using GrammarOpPtr = std::unique_ptr<GrammarOp>;
@@ -392,7 +414,7 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
     os << "    assert(false && \"Invalid attribute index\");\n";
     os << "  }\n";
 
-    os << "  std::vector<mlir::Attribute> getAttributes() const override {\n";
+    os << "  std::vector<mlir::Attribute> genAttributes(mlir::MLIRContext &ctx) const override {\n";
     os << "    std::vector<mlir::Attribute> attrs;\n";
     for (int i = 0; i < tblgenOp.getNumAttributes(); ++i) {
       auto &attr = tblgenOp.getAttribute(i);
@@ -487,7 +509,8 @@ static bool emitGrammarOpDecls(const RecordKeeper &recordKeeper,
   emitNamespaceStart(os, "grammar");
   emitUsedOpAndResTypesAsEnum(recordKeeper, os);
   // emitUsedAttrTypesAsEnum(recordKeeper, os);
-  emitAbstractOp(os);
+  emitAbstractOpClass(os);
+  emitAttrGenClass(recordKeeper, os);
   emitOpAndResTypeToStringDecl(os);
   // emitAttrTypeToStringDecl(os);
   emitConstructorDecl(os);
@@ -504,12 +527,12 @@ static bool emitGrammarOpDefs(const RecordKeeper &recordKeeper,
   emitSrcIncludes(os);
 
   emitNamespaceStart(os, "grammar");
-  emitConcreteOps(recordKeeper, os);
   emitOpAndResTypeToStringFn(recordKeeper, os);
   // emitAttrTypeToStringFn(recordKeeper, os);
+  emitAttrGen(recordKeeper, os);
+  emitConcreteOps(recordKeeper, os);
   emitConstructorFn(recordKeeper, os);
   emitNamespaceEnd(os, "grammar");
-  emitAttrGen(recordKeeper, os);
 
   return false;
 }
