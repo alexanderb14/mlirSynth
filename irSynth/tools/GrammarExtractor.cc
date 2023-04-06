@@ -426,7 +426,7 @@ public:
   }
 
   os << R"(
-private:
+protected:
   mlir::MLIRContext &ctx;
 };
 using AttributeGeneratorPtr = std::shared_ptr<AttributeGenerator>;
