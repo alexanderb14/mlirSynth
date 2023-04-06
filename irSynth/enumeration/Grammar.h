@@ -106,7 +106,7 @@ public:
   virtual std::vector<bool> genBool();
   virtual std::vector<int64_t> genInt64t();
 
-private:
+protected:
   mlir::MLIRContext &ctx;
 };
 using AttributeGeneratorPtr = std::shared_ptr<AttributeGenerator>;
