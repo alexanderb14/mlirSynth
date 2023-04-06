@@ -11,6 +11,8 @@
 
 using namespace mlir;
 
+// Utility functions
+// -----------------------------------------------------------------------------
 int randomInteger(int min, int max) {
   static std::random_device rd;
   static std::mt19937 gen(rd());
@@ -24,6 +26,19 @@ DenseElementsAttr getDenseElementsAttr(std::vector<Attribute> attrVect) {
   return DenseElementsAttr::get(type.cast<TensorType>(), attrVect);
 }
 
+void printAttributes(
+    std::vector<std::pair<Attribute, grammar::OpAndResType>> &attributes) {
+  llvm::outs() << "Attributes:"
+               << "\n--------\n";
+  for (auto attr : attributes) {
+    attr.first.dump();
+    llvm::outs() << opAndResTypeToString(attr.second) << "\n";
+    llvm::outs() << "---------\n";
+  }
+}
+
+// Attribute generators
+// -----------------------------------------------------------------------------
 std::vector<std::pair<Attribute, grammar::OpAndResType>>
 genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
   std::vector<std::pair<Attribute, grammar::OpAndResType>> attributes;
@@ -87,7 +102,7 @@ genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
 }
 
 std::vector<std::pair<Attribute, grammar::OpAndResType>>
-genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
+genUnaryAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
                     llvm::ArrayRef<int64_t> &targetShape, int maxRank) {
   std::vector<std::pair<Attribute, grammar::OpAndResType>> attributes;
 
@@ -108,6 +123,14 @@ genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
       attributes.emplace_back(attrDense, grammar::OpAndResType::HLO_Tensor);
     }
   }
+
+  return attributes;
+}
+
+std::vector<std::pair<Attribute, grammar::OpAndResType>>
+genMaskAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
+                    llvm::ArrayRef<int64_t> &targetShape, int maxRank) {
+  std::vector<std::pair<Attribute, grammar::OpAndResType>> attributes;
 
   if (targetShape.size() == 2) {
     // Create lower triangular mask containing of i1 values
@@ -140,17 +163,6 @@ genTensorAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
   return attributes;
 }
 
-void printAttributes(
-    std::vector<std::pair<Attribute, grammar::OpAndResType>> &attributes) {
-  llvm::outs() << "Attributes:"
-               << "\n--------\n";
-  for (auto attr : attributes) {
-    attr.first.dump();
-    llvm::outs() << opAndResTypeToString(attr.second) << "\n";
-    llvm::outs() << "---------\n";
-  }
-}
-
 std::vector<std::pair<Attribute, grammar::OpAndResType>>
 genAttributes(MLIRContext &ctx, Region::BlockArgListType &functionArgs,
               llvm::ArrayRef<int64_t> &targetShape, int maxRank) {
@@ -161,16 +173,42 @@ genAttributes(MLIRContext &ctx, Region::BlockArgListType &functionArgs,
   attributes.insert(attributes.end(), shapeAttributes.begin(),
                     shapeAttributes.end());
 
-  auto tensorAttributes =
-      genTensorAttributes(builder, functionArgs, targetShape, maxRank);
-  attributes.insert(attributes.end(), tensorAttributes.begin(),
-                    tensorAttributes.end());
+  auto maskAttributes =
+      genMaskAttributes(builder, functionArgs, targetShape, maxRank);
+  attributes.insert(attributes.end(), maskAttributes.begin(),
+                    maskAttributes.end());
+
+  auto unaryAttributes =
+      genUnaryAttributes(builder, functionArgs, targetShape, maxRank);
+  attributes.insert(attributes.end(), unaryAttributes.begin(),
+                    unaryAttributes.end());
 
   // printAttributes(attributes);
 
   return attributes;
 }
 
+std::vector<mlir::Attribute> CustomAttributeGenerator::genDenseIntElementsAttr() {
+  std::vector<mlir::Attribute> attributes;
+
+  OpBuilder builder(&ctx);
+  auto shapeAttributes = genAttributes(ctx, functionArgs, targetShape, 2);
+  for (auto attr : shapeAttributes) {
+    attributes.push_back(attr.first);
+  }
+
+  return attributes;
+}
+
+std::vector<::llvm::SmallVector<int64_t>>
+CustomAttributeGenerator::genLlvmSmallVectorint64t() {
+  std::vector<::llvm::SmallVector<int64_t>> attributes;
+
+  return attributes;
+}
+
+// Region generators
+// -----------------------------------------------------------------------------
 std::vector<std::shared_ptr<Region>> genRegions(MLIRContext &ctx) {
   OpBuilder builder(&ctx);
   auto unknownLoc = UnknownLoc::get(&ctx);
