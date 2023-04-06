@@ -60,6 +60,7 @@ enum OpAndResType {
 class AttributeGenerator {
 public:
   AttributeGenerator(mlir::MLIRContext &ctx) : ctx(ctx) {}
+  virtual ~AttributeGenerator() = default;
 
   // AttrDef generators. (exhaustively enumerate all combinations)
   std::vector<mlir::Attribute> genChloComparisonDirectionAttr();
@@ -84,26 +85,26 @@ public:
   std::vector<mlir::Attribute> genMhloTypeExtensionsAttr();
 
   // Attr generators. (to be derived and implemented)
-  std::vector<mlir::Attribute> genArrayAttr();
-  std::vector<mlir::Attribute> genBoolAttr();
-  std::vector<mlir::Attribute> genChannelHandleAttr();
-  std::vector<mlir::Attribute> genComparisonTypeAttr();
-  std::vector<mlir::Attribute> genCustomCallApiVersionAttr();
-  std::vector<mlir::Attribute> genDenseElementsAttr();
-  std::vector<mlir::Attribute> genDenseIntElementsAttr();
-  std::vector<mlir::Attribute> genElementsAttr();
-  std::vector<mlir::Attribute> genFlatSymbolRefAttr();
-  std::vector<mlir::Attribute> genFloatAttr();
-  std::vector<mlir::Attribute> genFusionKindAttr();
-  std::vector<mlir::Attribute> genIntegerAttr();
-  std::vector<mlir::Attribute> genStringAttr();
-  std::vector<mlir::Attribute> genTypedAttr();
-  std::vector<mlir::Attribute> genUnitAttr();
+  virtual std::vector<mlir::Attribute> genArrayAttr();
+  virtual std::vector<mlir::Attribute> genBoolAttr();
+  virtual std::vector<mlir::Attribute> genChannelHandleAttr();
+  virtual std::vector<mlir::Attribute> genComparisonTypeAttr();
+  virtual std::vector<mlir::Attribute> genCustomCallApiVersionAttr();
+  virtual std::vector<mlir::Attribute> genDenseElementsAttr();
+  virtual std::vector<mlir::Attribute> genDenseIntElementsAttr();
+  virtual std::vector<mlir::Attribute> genElementsAttr();
+  virtual std::vector<mlir::Attribute> genFlatSymbolRefAttr();
+  virtual std::vector<mlir::Attribute> genFloatAttr();
+  virtual std::vector<mlir::Attribute> genFusionKindAttr();
+  virtual std::vector<mlir::Attribute> genIntegerAttr();
+  virtual std::vector<mlir::Attribute> genStringAttr();
+  virtual std::vector<mlir::Attribute> genTypedAttr();
+  virtual std::vector<mlir::Attribute> genUnitAttr();
 
   // Types used in enums. (to be derived and implemented)
-  std::vector<::llvm::SmallVector<int64_t>> genLlvmSmallVectorint64t();
-  std::vector<bool> genBool();
-  std::vector<int64_t> genInt64t();
+  virtual std::vector<::llvm::SmallVector<int64_t>> genLlvmSmallVectorint64t();
+  virtual std::vector<bool> genBool();
+  virtual std::vector<int64_t> genInt64t();
 
 private:
   mlir::MLIRContext &ctx;
@@ -120,7 +121,7 @@ public:
   virtual OpAndResType getOperandType(unsigned index) const = 0;
   virtual mlir::Attribute getAttributeType(unsigned index) const = 0;
   virtual std::string getAttributeName(unsigned index) const = 0;
-  virtual std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const = 0;
+  virtual std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const = 0;
   virtual OpAndResType getResultType(unsigned index) const = 0;
 };
 using GrammarOpPtr = std::unique_ptr<GrammarOp>;

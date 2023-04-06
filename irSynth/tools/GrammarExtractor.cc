@@ -400,6 +400,7 @@ void emitAttrGenClass(const RecordKeeper &records, raw_ostream &os) {
 class AttributeGenerator {
 public:
   AttributeGenerator(mlir::MLIRContext &ctx) : ctx(ctx) {}
+  virtual ~AttributeGenerator() = default;
 )";
 
   auto attrDefGenFnNames = getAttrDefGenFnNames(records);
@@ -413,15 +414,15 @@ public:
   os << "\n";
   os << "  // Attr generators. (to be derived and implemented)\n";
   for (auto &fnName : attrNonDefsGenFnNames) {
-    os << "  std::vector<mlir::Attribute> " << fnName << "();\n";
+    os << "  virtual std::vector<mlir::Attribute> " << fnName << "();\n";
   }
 
   auto typesUsedInAttrDefs = getTypesUsedInAttrDefs(records);
   os << "\n";
   os << "  // Types used in enums. (to be derived and implemented)\n";
   for (auto &typeName : typesUsedInAttrDefs) {
-    os << "  std::vector<" << typeName << "> " << getAttrGenFnName(typeName)
-       << "();\n";
+    os << "  virtual std::vector<" << typeName << "> "
+       << getAttrGenFnName(typeName) << "();\n";
   }
 
   os << R"(
@@ -446,7 +447,7 @@ public:
   virtual OpAndResType getOperandType(unsigned index) const = 0;
   virtual mlir::Attribute getAttributeType(unsigned index) const = 0;
   virtual std::string getAttributeName(unsigned index) const = 0;
-  virtual std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr &attrGen) const = 0;
+  virtual std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const = 0;
   virtual OpAndResType getResultType(unsigned index) const = 0;
 };
 using GrammarOpPtr = std::unique_ptr<GrammarOp>;
@@ -514,7 +515,7 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
     os << "  }\n";
 
     os << "  std::vector<std::vector<mlir::Attribute>> "
-          "genAttributes(AttributeGeneratorPtr &attrGen) const override {\n";
+          "genAttributes(AttributeGeneratorPtr attrGen) const override {\n";
     os << "    std::vector<std::vector<mlir::Attribute>> attrs;\n";
     for (int i = 0; i < tblgenOp.getNumAttributes(); ++i) {
       auto &attr = tblgenOp.getAttribute(i);
