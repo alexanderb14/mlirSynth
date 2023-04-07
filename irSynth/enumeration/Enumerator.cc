@@ -194,43 +194,6 @@ LogicalResult inferHLOResultTypes(Operation *op) {
 
     return success();
   }
-  if (opNameStr == "stablehlo.dot_general") {
-    // Get the return shapes of the lhs and rhs operands.
-    auto lhsShape =
-        op->getOperand(0).getType().cast<RankedTensorType>().getShape();
-    auto rhsShape =
-        op->getOperand(1).getType().cast<RankedTensorType>().getShape();
-
-    // Get the contraction dimensions.
-    auto dotDimensionNumbersAttr =
-        op->getAttrOfType<stablehlo::DotDimensionNumbersAttr>(
-            "dot_dimension_numbers");
-    auto lhsContractingDimensions =
-        dotDimensionNumbersAttr.getLhsContractingDimensions();
-    auto rhsContractingDimensions =
-        dotDimensionNumbersAttr.getRhsContractingDimensions();
-    assert(lhsContractingDimensions.size() == 1);
-    assert(rhsContractingDimensions.size() == 1);
-    auto lhsContractingDimension = lhsContractingDimensions[0];
-    auto rhsContractingDimension = rhsContractingDimensions[0];
-
-    // The return shape is the concatenation of the lhs and rhs shapes along lhs
-    // and rhs contraction dimensions.
-    SmallVector<int64_t, 4> shape;
-    for (unsigned i = 0; i < lhsContractingDimension; i++) {
-      shape.push_back(lhsShape[i]);
-    }
-    for (unsigned i = rhsContractingDimension + 1; i < rhsShape.size(); i++) {
-      shape.push_back(rhsShape[i]);
-    }
-
-    auto arg0Type = op->getOperand(0).getType();
-    auto newTensorType = RankedTensorType::get(
-        shape, arg0Type.cast<TensorType>().getElementType());
-    op->getResult(0).setType(newTensorType);
-
-    return success();
-  }
 
   return failure();
 }
