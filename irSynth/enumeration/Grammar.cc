@@ -13,17 +13,15 @@
 #include "mlir/IR/TensorEncoding.h"
 #include "stablehlo/dialect/Base.h"
 
-// Include order below matters.
-#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops_enums.h.inc"
-#define GET_ATTRDEF_CLASSES
-#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops_attrs.h.inc"
-#define GET_TYPEDEF_CLASSES
-#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops_typedefs.h.inc"
-
 // Include order matters
 #include "stablehlo/dialect/ChloEnums.h.inc"
 #define GET_ATTRDEF_CLASSES
 #include "stablehlo/dialect/ChloAttrs.h.inc"
+
+// Include order matters
+#include "stablehlo/dialect/StablehloEnums.h.inc"
+#define GET_ATTRDEF_CLASSES
+#include "stablehlo/dialect/StablehloAttrs.h.inc"
 
 #include <cassert>
 #include <memory>
@@ -31,7 +29,6 @@
 
 namespace grammar {
 std::string opAndResTypeToString(OpAndResType type) {
-  if (type == HLO_AsyncBundle) return "HLO_AsyncBundle";
   if (type == HLO_ComplexTensor) return "HLO_ComplexTensor";
   if (type == HLO_DimensionTensor) return "HLO_DimensionTensor";
   if (type == HLO_Fp32Or64Tensor) return "HLO_Fp32Or64Tensor";
@@ -55,41 +52,16 @@ std::string opAndResTypeToString(OpAndResType type) {
   if (type == Index) return "Index";
   if (type == Shape_WitnessType) return "Shape_WitnessType";
   if (type == anonymous_526) return "anonymous_526";
-  if (type == anonymous_632) return "anonymous_632";
-  if (type == anonymous_641) return "anonymous_641";
-  if (type == anonymous_651) return "anonymous_651";
+  if (type == anonymous_610) return "anonymous_610";
+  if (type == anonymous_621) return "anonymous_621";
+  if (type == anonymous_653) return "anonymous_653";
+  if (type == anonymous_655) return "anonymous_655";
+  if (type == anonymous_673) return "anonymous_673";
   if (type == anonymous_686) return "anonymous_686";
   if (type == anonymous_688) return "anonymous_688";
-  if (type == anonymous_713) return "anonymous_713";
-  if (type == anonymous_726) return "anonymous_726";
-  if (type == anonymous_728) return "anonymous_728";
-  if (type == anonymous_734) return "anonymous_734";
-  if (type == anonymous_740) return "anonymous_740";
-  if (type == anonymous_747) return "anonymous_747";
-  if (type == anonymous_754) return "anonymous_754";
+  if (type == anonymous_694) return "anonymous_694";
+  if (type == anonymous_704) return "anonymous_704";
   assert(false && "Invalid OpAndResType");
-}
-
-std::vector<mlir::Attribute> AttributeGenerator::genMhloArgResultAliasAttr() {
-  std::vector<::llvm::SmallVector<int64_t>> argTupleIndicesEnumerants = genLlvmSmallVectorint64t();
-  std::vector<int64_t> resultIndexEnumerants = genInt64t();
-  std::vector<::llvm::SmallVector<int64_t>> resultTupleIndicesEnumerants = genLlvmSmallVectorint64t();
-  std::vector<bool> isMustAliasEnumerants = genBool();
-  std::vector<mlir::Attribute> ret;
-  for (const auto &v0 : argTupleIndicesEnumerants) {
-    for (const auto &v1 : resultIndexEnumerants) {
-      for (const auto &v2 : resultTupleIndicesEnumerants) {
-        for (const auto &v3 : isMustAliasEnumerants) {
-          ret.push_back(::mlir::mhlo::ArgResultAliasAttr::get(&ctx, 
-            v0,
-            v1,
-            v2,
-            v3));
-        }
-      }
-    }
-  }
-  return ret;
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genChloComparisonDirectionAttr() {
@@ -125,13 +97,35 @@ std::vector<mlir::Attribute> AttributeGenerator::genChloComparisonTypeAttr() {
   return ret;
 }
 
-std::vector<mlir::Attribute> AttributeGenerator::genMhloChannelHandleAttr() {
+std::vector<mlir::Attribute> AttributeGenerator::genStablehloArgResultAliasAttr() {
+  std::vector<::llvm::SmallVector<int64_t>> argTupleIndicesEnumerants = genLlvmSmallVectorint64t();
+  std::vector<int64_t> resultIndexEnumerants = genInt64t();
+  std::vector<::llvm::SmallVector<int64_t>> resultTupleIndicesEnumerants = genLlvmSmallVectorint64t();
+  std::vector<bool> isMustAliasEnumerants = genBool();
+  std::vector<mlir::Attribute> ret;
+  for (const auto &v0 : argTupleIndicesEnumerants) {
+    for (const auto &v1 : resultIndexEnumerants) {
+      for (const auto &v2 : resultTupleIndicesEnumerants) {
+        for (const auto &v3 : isMustAliasEnumerants) {
+          ret.push_back(::mlir::stablehlo::ArgResultAliasAttr::get(&ctx, 
+            v0,
+            v1,
+            v2,
+            v3));
+        }
+      }
+    }
+  }
+  return ret;
+}
+
+std::vector<mlir::Attribute> AttributeGenerator::genStablehloChannelHandleAttr() {
   std::vector<int64_t> handleEnumerants = genInt64t();
   std::vector<int64_t> typeEnumerants = genInt64t();
   std::vector<mlir::Attribute> ret;
   for (const auto &v0 : handleEnumerants) {
     for (const auto &v1 : typeEnumerants) {
-      ret.push_back(::mlir::mhlo::ChannelHandleAttr::get(&ctx, 
+      ret.push_back(::mlir::stablehlo::ChannelHandleAttr::get(&ctx, 
         v0,
         v1));
     }
@@ -139,7 +133,40 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloChannelHandleAttr() {
   return ret;
 }
 
-std::vector<mlir::Attribute> AttributeGenerator::genMhloConvDimensionNumbersAttr() {
+std::vector<mlir::Attribute> AttributeGenerator::genStablehloComparisonDirectionAttr() {
+  std::vector<::mlir::stablehlo::ComparisonDirection> valueEnumerants = {
+    ::mlir::stablehlo::ComparisonDirection::EQ,
+    ::mlir::stablehlo::ComparisonDirection::NE,
+    ::mlir::stablehlo::ComparisonDirection::GE,
+    ::mlir::stablehlo::ComparisonDirection::GT,
+    ::mlir::stablehlo::ComparisonDirection::LE,
+    ::mlir::stablehlo::ComparisonDirection::LT,
+  };
+  std::vector<mlir::Attribute> ret;
+  for (const auto &v0 : valueEnumerants) {
+    ret.push_back(::mlir::stablehlo::ComparisonDirectionAttr::get(&ctx, 
+      v0));
+  }
+  return ret;
+}
+
+std::vector<mlir::Attribute> AttributeGenerator::genStablehloComparisonTypeAttr() {
+  std::vector<::mlir::stablehlo::ComparisonType> valueEnumerants = {
+    ::mlir::stablehlo::ComparisonType::NOTYPE,
+    ::mlir::stablehlo::ComparisonType::FLOAT,
+    ::mlir::stablehlo::ComparisonType::TOTALORDER,
+    ::mlir::stablehlo::ComparisonType::SIGNED,
+    ::mlir::stablehlo::ComparisonType::UNSIGNED,
+  };
+  std::vector<mlir::Attribute> ret;
+  for (const auto &v0 : valueEnumerants) {
+    ret.push_back(::mlir::stablehlo::ComparisonTypeAttr::get(&ctx, 
+      v0));
+  }
+  return ret;
+}
+
+std::vector<mlir::Attribute> AttributeGenerator::genStablehloConvDimensionNumbersAttr() {
   std::vector<int64_t> inputBatchDimensionEnumerants = genInt64t();
   std::vector<int64_t> inputFeatureDimensionEnumerants = genInt64t();
   std::vector<::llvm::SmallVector<int64_t>> inputSpatialDimensionsEnumerants = genLlvmSmallVectorint64t();
@@ -159,7 +186,7 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloConvDimensionNumbersAttr
               for (const auto &v6 : outputBatchDimensionEnumerants) {
                 for (const auto &v7 : outputFeatureDimensionEnumerants) {
                   for (const auto &v8 : outputSpatialDimensionsEnumerants) {
-                    ret.push_back(::mlir::mhlo::ConvDimensionNumbersAttr::get(&ctx, 
+                    ret.push_back(::mlir::stablehlo::ConvDimensionNumbersAttr::get(&ctx, 
                       v0,
                       v1,
                       v2,
@@ -181,7 +208,7 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloConvDimensionNumbersAttr
   return ret;
 }
 
-std::vector<mlir::Attribute> AttributeGenerator::genMhloDotDimensionNumbersAttr() {
+std::vector<mlir::Attribute> AttributeGenerator::genStablehloDotDimensionNumbersAttr() {
   std::vector<::llvm::SmallVector<int64_t>> lhsBatchingDimensionsEnumerants = genLlvmSmallVectorint64t();
   std::vector<::llvm::SmallVector<int64_t>> rhsBatchingDimensionsEnumerants = genLlvmSmallVectorint64t();
   std::vector<::llvm::SmallVector<int64_t>> lhsContractingDimensionsEnumerants = genLlvmSmallVectorint64t();
@@ -191,7 +218,7 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloDotDimensionNumbersAttr(
     for (const auto &v1 : rhsBatchingDimensionsEnumerants) {
       for (const auto &v2 : lhsContractingDimensionsEnumerants) {
         for (const auto &v3 : rhsContractingDimensionsEnumerants) {
-          ret.push_back(::mlir::mhlo::DotDimensionNumbersAttr::get(&ctx, 
+          ret.push_back(::mlir::stablehlo::DotDimensionNumbersAttr::get(&ctx, 
             v0,
             v1,
             v2,
@@ -203,7 +230,22 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloDotDimensionNumbersAttr(
   return ret;
 }
 
-std::vector<mlir::Attribute> AttributeGenerator::genMhloGatherDimensionNumbersAttr() {
+std::vector<mlir::Attribute> AttributeGenerator::genStablehloFftTypeAttr() {
+  std::vector<::mlir::stablehlo::FftType> valueEnumerants = {
+    ::mlir::stablehlo::FftType::FFT,
+    ::mlir::stablehlo::FftType::IFFT,
+    ::mlir::stablehlo::FftType::RFFT,
+    ::mlir::stablehlo::FftType::IRFFT,
+  };
+  std::vector<mlir::Attribute> ret;
+  for (const auto &v0 : valueEnumerants) {
+    ret.push_back(::mlir::stablehlo::FftTypeAttr::get(&ctx, 
+      v0));
+  }
+  return ret;
+}
+
+std::vector<mlir::Attribute> AttributeGenerator::genStablehloGatherDimensionNumbersAttr() {
   std::vector<::llvm::SmallVector<int64_t>> offsetDimsEnumerants = genLlvmSmallVectorint64t();
   std::vector<::llvm::SmallVector<int64_t>> collapsedSliceDimsEnumerants = genLlvmSmallVectorint64t();
   std::vector<::llvm::SmallVector<int64_t>> startIndexMapEnumerants = genLlvmSmallVectorint64t();
@@ -213,7 +255,7 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloGatherDimensionNumbersAt
     for (const auto &v1 : collapsedSliceDimsEnumerants) {
       for (const auto &v2 : startIndexMapEnumerants) {
         for (const auto &v3 : indexVectorDimEnumerants) {
-          ret.push_back(::mlir::mhlo::GatherDimensionNumbersAttr::get(&ctx, 
+          ret.push_back(::mlir::stablehlo::GatherDimensionNumbersAttr::get(&ctx, 
             v0,
             v1,
             v2,
@@ -225,169 +267,48 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloGatherDimensionNumbersAt
   return ret;
 }
 
-std::vector<mlir::Attribute> AttributeGenerator::genMhloComparisonDirectionAttr() {
-  std::vector<::mlir::mhlo::ComparisonDirection> valueEnumerants = {
-    ::mlir::mhlo::ComparisonDirection::EQ,
-    ::mlir::mhlo::ComparisonDirection::NE,
-    ::mlir::mhlo::ComparisonDirection::GE,
-    ::mlir::mhlo::ComparisonDirection::GT,
-    ::mlir::mhlo::ComparisonDirection::LE,
-    ::mlir::mhlo::ComparisonDirection::LT,
+std::vector<mlir::Attribute> AttributeGenerator::genStablehloPrecisionAttr() {
+  std::vector<::mlir::stablehlo::Precision> valueEnumerants = {
+    ::mlir::stablehlo::Precision::DEFAULT,
+    ::mlir::stablehlo::Precision::HIGH,
+    ::mlir::stablehlo::Precision::HIGHEST,
   };
   std::vector<mlir::Attribute> ret;
   for (const auto &v0 : valueEnumerants) {
-    ret.push_back(::mlir::mhlo::ComparisonDirectionAttr::get(&ctx, 
+    ret.push_back(::mlir::stablehlo::PrecisionAttr::get(&ctx, 
       v0));
   }
   return ret;
 }
 
-std::vector<mlir::Attribute> AttributeGenerator::genMhloComparisonTypeAttr() {
-  std::vector<::mlir::mhlo::ComparisonType> valueEnumerants = {
-    ::mlir::mhlo::ComparisonType::NOTYPE,
-    ::mlir::mhlo::ComparisonType::FLOAT,
-    ::mlir::mhlo::ComparisonType::TOTALORDER,
-    ::mlir::mhlo::ComparisonType::SIGNED,
-    ::mlir::mhlo::ComparisonType::UNSIGNED,
+std::vector<mlir::Attribute> AttributeGenerator::genStablehloRngAlgorithmAttr() {
+  std::vector<::mlir::stablehlo::RngAlgorithm> valueEnumerants = {
+    ::mlir::stablehlo::RngAlgorithm::DEFAULT,
+    ::mlir::stablehlo::RngAlgorithm::THREE_FRY,
+    ::mlir::stablehlo::RngAlgorithm::PHILOX,
   };
   std::vector<mlir::Attribute> ret;
   for (const auto &v0 : valueEnumerants) {
-    ret.push_back(::mlir::mhlo::ComparisonTypeAttr::get(&ctx, 
+    ret.push_back(::mlir::stablehlo::RngAlgorithmAttr::get(&ctx, 
       v0));
   }
   return ret;
 }
 
-std::vector<mlir::Attribute> AttributeGenerator::genMhloDequantizeModeAttr() {
-  std::vector<::mlir::mhlo::DequantizeMode> valueEnumerants = {
-    ::mlir::mhlo::DequantizeMode::MIN_COMBINED,
+std::vector<mlir::Attribute> AttributeGenerator::genStablehloRngDistributionAttr() {
+  std::vector<::mlir::stablehlo::RngDistribution> valueEnumerants = {
+    ::mlir::stablehlo::RngDistribution::UNIFORM,
+    ::mlir::stablehlo::RngDistribution::NORMAL,
   };
   std::vector<mlir::Attribute> ret;
   for (const auto &v0 : valueEnumerants) {
-    ret.push_back(::mlir::mhlo::DequantizeModeAttr::get(&ctx, 
+    ret.push_back(::mlir::stablehlo::RngDistributionAttr::get(&ctx, 
       v0));
   }
   return ret;
 }
 
-std::vector<mlir::Attribute> AttributeGenerator::genMhloDomainKindAttr() {
-  std::vector<::mlir::mhlo::DomainKind> valueEnumerants = {
-    ::mlir::mhlo::DomainKind::sharding,
-  };
-  std::vector<mlir::Attribute> ret;
-  for (const auto &v0 : valueEnumerants) {
-    ret.push_back(::mlir::mhlo::DomainKindAttr::get(&ctx, 
-      v0));
-  }
-  return ret;
-}
-
-std::vector<mlir::Attribute> AttributeGenerator::genMhloFftTypeAttr() {
-  std::vector<::mlir::mhlo::FftType> valueEnumerants = {
-    ::mlir::mhlo::FftType::FFT,
-    ::mlir::mhlo::FftType::IFFT,
-    ::mlir::mhlo::FftType::RFFT,
-    ::mlir::mhlo::FftType::IRFFT,
-  };
-  std::vector<mlir::Attribute> ret;
-  for (const auto &v0 : valueEnumerants) {
-    ret.push_back(::mlir::mhlo::FftTypeAttr::get(&ctx, 
-      v0));
-  }
-  return ret;
-}
-
-std::vector<mlir::Attribute> AttributeGenerator::genMhloFusionKindAttr() {
-  std::vector<::mlir::mhlo::FusionKind> valueEnumerants = {
-    ::mlir::mhlo::FusionKind::kLoop,
-    ::mlir::mhlo::FusionKind::kInput,
-    ::mlir::mhlo::FusionKind::kOutput,
-    ::mlir::mhlo::FusionKind::kCustom,
-  };
-  std::vector<mlir::Attribute> ret;
-  for (const auto &v0 : valueEnumerants) {
-    ret.push_back(::mlir::mhlo::FusionKindAttr::get(&ctx, 
-      v0));
-  }
-  return ret;
-}
-
-std::vector<mlir::Attribute> AttributeGenerator::genMhloPrecisionAttr() {
-  std::vector<::mlir::mhlo::Precision> valueEnumerants = {
-    ::mlir::mhlo::Precision::DEFAULT,
-    ::mlir::mhlo::Precision::HIGH,
-    ::mlir::mhlo::Precision::HIGHEST,
-    ::mlir::mhlo::Precision::PACKED_NIBBLE,
-  };
-  std::vector<mlir::Attribute> ret;
-  for (const auto &v0 : valueEnumerants) {
-    ret.push_back(::mlir::mhlo::PrecisionAttr::get(&ctx, 
-      v0));
-  }
-  return ret;
-}
-
-std::vector<mlir::Attribute> AttributeGenerator::genMhloRngAlgorithmAttr() {
-  std::vector<::mlir::mhlo::RngAlgorithm> valueEnumerants = {
-    ::mlir::mhlo::RngAlgorithm::DEFAULT,
-    ::mlir::mhlo::RngAlgorithm::THREE_FRY,
-    ::mlir::mhlo::RngAlgorithm::PHILOX,
-  };
-  std::vector<mlir::Attribute> ret;
-  for (const auto &v0 : valueEnumerants) {
-    ret.push_back(::mlir::mhlo::RngAlgorithmAttr::get(&ctx, 
-      v0));
-  }
-  return ret;
-}
-
-std::vector<mlir::Attribute> AttributeGenerator::genMhloRngDistributionAttr() {
-  std::vector<::mlir::mhlo::RngDistribution> valueEnumerants = {
-    ::mlir::mhlo::RngDistribution::UNIFORM,
-    ::mlir::mhlo::RngDistribution::NORMAL,
-  };
-  std::vector<mlir::Attribute> ret;
-  for (const auto &v0 : valueEnumerants) {
-    ret.push_back(::mlir::mhlo::RngDistributionAttr::get(&ctx, 
-      v0));
-  }
-  return ret;
-}
-
-std::vector<mlir::Attribute> AttributeGenerator::genMhloTransposeAttr() {
-  std::vector<::mlir::mhlo::Transpose> valueEnumerants = {
-    ::mlir::mhlo::Transpose::TRANSPOSE_INVALID,
-    ::mlir::mhlo::Transpose::NO_TRANSPOSE,
-    ::mlir::mhlo::Transpose::TRANSPOSE,
-    ::mlir::mhlo::Transpose::ADJOINT,
-  };
-  std::vector<mlir::Attribute> ret;
-  for (const auto &v0 : valueEnumerants) {
-    ret.push_back(::mlir::mhlo::TransposeAttr::get(&ctx, 
-      v0));
-  }
-  return ret;
-}
-
-std::vector<mlir::Attribute> AttributeGenerator::genMhloOutputOperandAliasAttr() {
-  std::vector<::llvm::SmallVector<int64_t>> outputTupleIndicesEnumerants = genLlvmSmallVectorint64t();
-  std::vector<int64_t> operandIndexEnumerants = genInt64t();
-  std::vector<::llvm::SmallVector<int64_t>> operandTupleIndicesEnumerants = genLlvmSmallVectorint64t();
-  std::vector<mlir::Attribute> ret;
-  for (const auto &v0 : outputTupleIndicesEnumerants) {
-    for (const auto &v1 : operandIndexEnumerants) {
-      for (const auto &v2 : operandTupleIndicesEnumerants) {
-        ret.push_back(::mlir::mhlo::OutputOperandAliasAttr::get(&ctx, 
-          v0,
-          v1,
-          v2));
-      }
-    }
-  }
-  return ret;
-}
-
-std::vector<mlir::Attribute> AttributeGenerator::genMhloScatterDimensionNumbersAttr() {
+std::vector<mlir::Attribute> AttributeGenerator::genStablehloScatterDimensionNumbersAttr() {
   std::vector<::llvm::SmallVector<int64_t>> updateWindowDimsEnumerants = genLlvmSmallVectorint64t();
   std::vector<::llvm::SmallVector<int64_t>> insertedWindowDimsEnumerants = genLlvmSmallVectorint64t();
   std::vector<::llvm::SmallVector<int64_t>> scatterDimsToOperandDimsEnumerants = genLlvmSmallVectorint64t();
@@ -397,7 +318,7 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloScatterDimensionNumbersA
     for (const auto &v1 : insertedWindowDimsEnumerants) {
       for (const auto &v2 : scatterDimsToOperandDimsEnumerants) {
         for (const auto &v3 : indexVectorDimEnumerants) {
-          ret.push_back(::mlir::mhlo::ScatterDimensionNumbersAttr::get(&ctx, 
+          ret.push_back(::mlir::stablehlo::ScatterDimensionNumbersAttr::get(&ctx, 
             v0,
             v1,
             v2,
@@ -409,11 +330,26 @@ std::vector<mlir::Attribute> AttributeGenerator::genMhloScatterDimensionNumbersA
   return ret;
 }
 
-std::vector<mlir::Attribute> AttributeGenerator::genMhloTypeExtensionsAttr() {
+std::vector<mlir::Attribute> AttributeGenerator::genStablehloTransposeAttr() {
+  std::vector<::mlir::stablehlo::Transpose> valueEnumerants = {
+    ::mlir::stablehlo::Transpose::TRANSPOSE_INVALID,
+    ::mlir::stablehlo::Transpose::NO_TRANSPOSE,
+    ::mlir::stablehlo::Transpose::TRANSPOSE,
+    ::mlir::stablehlo::Transpose::ADJOINT,
+  };
+  std::vector<mlir::Attribute> ret;
+  for (const auto &v0 : valueEnumerants) {
+    ret.push_back(::mlir::stablehlo::TransposeAttr::get(&ctx, 
+      v0));
+  }
+  return ret;
+}
+
+std::vector<mlir::Attribute> AttributeGenerator::genStablehloTypeExtensionsAttr() {
   std::vector<::llvm::SmallVector<int64_t>> boundsEnumerants = genLlvmSmallVectorint64t();
   std::vector<mlir::Attribute> ret;
   for (const auto &v0 : boundsEnumerants) {
-    ret.push_back(::mlir::mhlo::TypeExtensionsAttr::get(&ctx, 
+    ret.push_back(::mlir::stablehlo::TypeExtensionsAttr::get(&ctx, 
       v0));
   }
   return ret;
@@ -467,20 +403,8 @@ std::vector<mlir::Attribute> AttributeGenerator::genElementsAttr() {
   return ret;
 }
 
-std::vector<mlir::Attribute> AttributeGenerator::genFlatSymbolRefAttr() {
-  llvm::outs() << "WARNING: Not implemented: genFlatSymbolRefAttr\n";
-  std::vector<mlir::Attribute> ret;
-  return ret;
-}
-
 std::vector<mlir::Attribute> AttributeGenerator::genFloatAttr() {
   llvm::outs() << "WARNING: Not implemented: genFloatAttr\n";
-  std::vector<mlir::Attribute> ret;
-  return ret;
-}
-
-std::vector<mlir::Attribute> AttributeGenerator::genFusionKindAttr() {
-  llvm::outs() << "WARNING: Not implemented: genFusionKindAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
@@ -2293,7 +2217,7 @@ public:
   }
 };
 
-class mhlo_abs : public GrammarOp {
+class stablehlo_abs : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2301,7 +2225,7 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_632;
+      case 0: return anonymous_610;
     }
     assert(false && "Invalid operand index");
   }
@@ -2321,48 +2245,13 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_632;
+      case 0: return anonymous_610;
     }
     assert(false && "Invalid result index");
   }
 };
 
-class mhlo_add_dependency : public GrammarOp {
-public:
-  unsigned getNumOperands() const override { return 2; }
-  unsigned getNumAttributes() const override { return 0; }
-  unsigned getNumRegions() const override { return 0; }
-  unsigned getNumResults() const override { return 1; }
-  OpAndResType getOperandType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_TensorOrToken;
-      case 1: return HLO_Token;
-    }
-    assert(false && "Invalid operand index");
-  }
-  mlir::Attribute getAttributeType(unsigned index) const override {
-    switch (index) {
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::string getAttributeName(unsigned index) const override {
-    switch (index) {
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
-    std::vector<std::vector<mlir::Attribute>> attrs;
-    return attrs;
-  }
-  OpAndResType getResultType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_TensorOrToken;
-    }
-    assert(false && "Invalid result index");
-  }
-};
-
-class mhlo_add : public GrammarOp {
+class stablehlo_add : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2397,7 +2286,7 @@ public:
   }
 };
 
-class mhlo_after_all : public GrammarOp {
+class stablehlo_after_all : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2431,7 +2320,7 @@ public:
   }
 };
 
-class mhlo_all_gather : public GrammarOp {
+class stablehlo_all_gather : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 4; }
@@ -2447,7 +2336,7 @@ public:
     switch (index) {
       case 0: return ::mlir::IntegerAttr();
       case 1: return ::mlir::DenseIntElementsAttr();
-      case 2: return ::mlir::mhlo::ChannelHandleAttr();
+      case 2: return ::mlir::stablehlo::ChannelHandleAttr();
       case 3: return ::mlir::UnitAttr();
     }
     assert(false && "Invalid attribute index");
@@ -2477,7 +2366,7 @@ public:
   }
 };
 
-class mhlo_all_reduce : public GrammarOp {
+class stablehlo_all_reduce : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 3; }
@@ -2492,7 +2381,7 @@ public:
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
-      case 1: return ::mlir::mhlo::ChannelHandleAttr();
+      case 1: return ::mlir::stablehlo::ChannelHandleAttr();
       case 2: return ::mlir::UnitAttr();
     }
     assert(false && "Invalid attribute index");
@@ -2520,7 +2409,7 @@ public:
   }
 };
 
-class mhlo_all_to_all : public GrammarOp {
+class stablehlo_all_to_all : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 4; }
@@ -2566,7 +2455,7 @@ public:
   }
 };
 
-class mhlo_and : public GrammarOp {
+class stablehlo_and : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2601,136 +2490,7 @@ public:
   }
 };
 
-class mhlo_async_done : public GrammarOp {
-public:
-  unsigned getNumOperands() const override { return 1; }
-  unsigned getNumAttributes() const override { return 3; }
-  unsigned getNumRegions() const override { return 0; }
-  unsigned getNumResults() const override { return 1; }
-  OpAndResType getOperandType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_AsyncBundle;
-    }
-    assert(false && "Invalid operand index");
-  }
-  mlir::Attribute getAttributeType(unsigned index) const override {
-    switch (index) {
-      case 0: return ::mlir::FlatSymbolRefAttr();
-      case 1: return ::mlir::StringAttr();
-      case 2: return ::mlir::IntegerAttr();
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::string getAttributeName(unsigned index) const override {
-    switch (index) {
-      case 0: return "called_computation";
-      case 1: return "execution_thread";
-      case 2: return "group_id";
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
-    std::vector<std::vector<mlir::Attribute>> attrs;
-    attrs.push_back(attrGen->genFlatSymbolRefAttr());
-    attrs.push_back(attrGen->genStringAttr());
-    // attrs.push_back(attrGen->genIntegerAttr());
-    return attrs;
-  }
-  OpAndResType getResultType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_TensorOrTokenOrTuple;
-    }
-    assert(false && "Invalid result index");
-  }
-};
-
-class mhlo_async_start : public GrammarOp {
-public:
-  unsigned getNumOperands() const override { return 1; }
-  unsigned getNumAttributes() const override { return 3; }
-  unsigned getNumRegions() const override { return 0; }
-  unsigned getNumResults() const override { return 1; }
-  OpAndResType getOperandType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_TensorOrTokenOrTuple;
-    }
-    assert(false && "Invalid operand index");
-  }
-  mlir::Attribute getAttributeType(unsigned index) const override {
-    switch (index) {
-      case 0: return ::mlir::FlatSymbolRefAttr();
-      case 1: return ::mlir::StringAttr();
-      case 2: return ::mlir::IntegerAttr();
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::string getAttributeName(unsigned index) const override {
-    switch (index) {
-      case 0: return "called_computation";
-      case 1: return "execution_thread";
-      case 2: return "group_id";
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
-    std::vector<std::vector<mlir::Attribute>> attrs;
-    attrs.push_back(attrGen->genFlatSymbolRefAttr());
-    attrs.push_back(attrGen->genStringAttr());
-    // attrs.push_back(attrGen->genIntegerAttr());
-    return attrs;
-  }
-  OpAndResType getResultType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_AsyncBundle;
-    }
-    assert(false && "Invalid result index");
-  }
-};
-
-class mhlo_async_update : public GrammarOp {
-public:
-  unsigned getNumOperands() const override { return 1; }
-  unsigned getNumAttributes() const override { return 3; }
-  unsigned getNumRegions() const override { return 0; }
-  unsigned getNumResults() const override { return 1; }
-  OpAndResType getOperandType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_AsyncBundle;
-    }
-    assert(false && "Invalid operand index");
-  }
-  mlir::Attribute getAttributeType(unsigned index) const override {
-    switch (index) {
-      case 0: return ::mlir::FlatSymbolRefAttr();
-      case 1: return ::mlir::StringAttr();
-      case 2: return ::mlir::IntegerAttr();
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::string getAttributeName(unsigned index) const override {
-    switch (index) {
-      case 0: return "called_computation";
-      case 1: return "execution_thread";
-      case 2: return "group_id";
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
-    std::vector<std::vector<mlir::Attribute>> attrs;
-    attrs.push_back(attrGen->genFlatSymbolRefAttr());
-    attrs.push_back(attrGen->genStringAttr());
-    // attrs.push_back(attrGen->genIntegerAttr());
-    return attrs;
-  }
-  OpAndResType getResultType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_AsyncBundle;
-    }
-    assert(false && "Invalid result index");
-  }
-};
-
-class mhlo_atan2 : public GrammarOp {
+class stablehlo_atan2 : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2765,7 +2525,7 @@ public:
   }
 };
 
-class mhlo_batch_norm_grad : public GrammarOp {
+class stablehlo_batch_norm_grad : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 5; }
   unsigned getNumAttributes() const override { return 2; }
@@ -2773,11 +2533,11 @@ public:
   unsigned getNumResults() const override { return 3; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_686;
-      case 1: return anonymous_688;
-      case 2: return anonymous_688;
-      case 3: return anonymous_688;
-      case 4: return anonymous_686;
+      case 0: return anonymous_653;
+      case 1: return anonymous_655;
+      case 2: return anonymous_655;
+      case 3: return anonymous_655;
+      case 4: return anonymous_653;
     }
     assert(false && "Invalid operand index");
   }
@@ -2803,15 +2563,15 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_686;
-      case 1: return anonymous_688;
-      case 2: return anonymous_688;
+      case 0: return anonymous_653;
+      case 1: return anonymous_655;
+      case 2: return anonymous_655;
     }
     assert(false && "Invalid result index");
   }
 };
 
-class mhlo_batch_norm_inference : public GrammarOp {
+class stablehlo_batch_norm_inference : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 5; }
   unsigned getNumAttributes() const override { return 2; }
@@ -2819,11 +2579,11 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_686;
-      case 1: return anonymous_688;
-      case 2: return anonymous_688;
-      case 3: return anonymous_688;
-      case 4: return anonymous_688;
+      case 0: return anonymous_653;
+      case 1: return anonymous_655;
+      case 2: return anonymous_655;
+      case 3: return anonymous_655;
+      case 4: return anonymous_655;
     }
     assert(false && "Invalid operand index");
   }
@@ -2849,13 +2609,13 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_686;
+      case 0: return anonymous_653;
     }
     assert(false && "Invalid result index");
   }
 };
 
-class mhlo_batch_norm_training : public GrammarOp {
+class stablehlo_batch_norm_training : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 2; }
@@ -2863,9 +2623,9 @@ public:
   unsigned getNumResults() const override { return 3; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_686;
-      case 1: return anonymous_688;
-      case 2: return anonymous_688;
+      case 0: return anonymous_653;
+      case 1: return anonymous_655;
+      case 2: return anonymous_655;
     }
     assert(false && "Invalid operand index");
   }
@@ -2891,15 +2651,15 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_686;
-      case 1: return anonymous_688;
-      case 2: return anonymous_688;
+      case 0: return anonymous_653;
+      case 1: return anonymous_655;
+      case 2: return anonymous_655;
     }
     assert(false && "Invalid result index");
   }
 };
 
-class mhlo_bitcast_convert : public GrammarOp {
+class stablehlo_bitcast_convert : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -2933,41 +2693,7 @@ public:
   }
 };
 
-class mhlo_bitcast : public GrammarOp {
-public:
-  unsigned getNumOperands() const override { return 1; }
-  unsigned getNumAttributes() const override { return 0; }
-  unsigned getNumRegions() const override { return 0; }
-  unsigned getNumResults() const override { return 1; }
-  OpAndResType getOperandType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_Tensor;
-    }
-    assert(false && "Invalid operand index");
-  }
-  mlir::Attribute getAttributeType(unsigned index) const override {
-    switch (index) {
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::string getAttributeName(unsigned index) const override {
-    switch (index) {
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
-    std::vector<std::vector<mlir::Attribute>> attrs;
-    return attrs;
-  }
-  OpAndResType getResultType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_Tensor;
-    }
-    assert(false && "Invalid result index");
-  }
-};
-
-class mhlo_broadcast_in_dim : public GrammarOp {
+class stablehlo_broadcast_in_dim : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -3004,7 +2730,7 @@ public:
   }
 };
 
-class mhlo_broadcast : public GrammarOp {
+class stablehlo_broadcast : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -3041,7 +2767,7 @@ public:
   }
 };
 
-class mhlo_case : public GrammarOp {
+class stablehlo_case : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3075,7 +2801,7 @@ public:
   }
 };
 
-class mhlo_cbrt : public GrammarOp {
+class stablehlo_cbrt : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3109,7 +2835,7 @@ public:
   }
 };
 
-class mhlo_ceil : public GrammarOp {
+class stablehlo_ceil : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3143,7 +2869,7 @@ public:
   }
 };
 
-class mhlo_cholesky : public GrammarOp {
+class stablehlo_cholesky : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -3180,7 +2906,7 @@ public:
   }
 };
 
-class mhlo_clamp : public GrammarOp {
+class stablehlo_clamp : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3216,7 +2942,7 @@ public:
   }
 };
 
-class mhlo_count_leading_zeros : public GrammarOp {
+class stablehlo_count_leading_zeros : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3250,7 +2976,7 @@ public:
   }
 };
 
-class mhlo_collective_permute : public GrammarOp {
+class stablehlo_collective_permute : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
@@ -3265,7 +2991,7 @@ public:
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
-      case 1: return ::mlir::mhlo::ChannelHandleAttr();
+      case 1: return ::mlir::stablehlo::ChannelHandleAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3290,7 +3016,7 @@ public:
   }
 };
 
-class mhlo_compare : public GrammarOp {
+class stablehlo_compare : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 2; }
@@ -3305,8 +3031,8 @@ public:
   }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return ::mlir::mhlo::ComparisonDirectionAttr();
-      case 1: return ::mlir::mhlo::ComparisonTypeAttr();
+      case 0: return ::mlir::stablehlo::ComparisonDirectionAttr();
+      case 1: return ::mlir::stablehlo::ComparisonTypeAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3319,7 +3045,7 @@ public:
   }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
-    attrs.push_back(attrGen->genMhloComparisonDirectionAttr());
+    attrs.push_back(attrGen->genStablehloComparisonDirectionAttr());
     // attrs.push_back(attrGen->genComparisonTypeAttr());
     return attrs;
   }
@@ -3331,7 +3057,7 @@ public:
   }
 };
 
-class mhlo_complex : public GrammarOp {
+class stablehlo_complex : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3366,7 +3092,7 @@ public:
   }
 };
 
-class mhlo_compute_reshape_shape : public GrammarOp {
+class stablehlo_compute_reshape_shape : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3375,7 +3101,7 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return Index;
-      case 1: return anonymous_754;
+      case 1: return anonymous_704;
     }
     assert(false && "Invalid operand index");
   }
@@ -3395,13 +3121,13 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_754;
+      case 0: return anonymous_704;
     }
     assert(false && "Invalid result index");
   }
 };
 
-class mhlo_concatenate : public GrammarOp {
+class stablehlo_concatenate : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -3438,7 +3164,7 @@ public:
   }
 };
 
-class mhlo_constant : public GrammarOp {
+class stablehlo_constant : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 1; }
@@ -3474,7 +3200,7 @@ public:
   }
 };
 
-class mhlo_convert : public GrammarOp {
+class stablehlo_convert : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3508,7 +3234,7 @@ public:
   }
 };
 
-class mhlo_convolution : public GrammarOp {
+class stablehlo_convolution : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 9; }
@@ -3528,7 +3254,7 @@ public:
       case 2: return ::mlir::DenseIntElementsAttr();
       case 3: return ::mlir::DenseIntElementsAttr();
       case 4: return ::mlir::DenseElementsAttr();
-      case 5: return ::mlir::mhlo::ConvDimensionNumbersAttr();
+      case 5: return ::mlir::stablehlo::ConvDimensionNumbersAttr();
       case 6: return ::mlir::IntegerAttr();
       case 7: return ::mlir::IntegerAttr();
       case 8: return ::mlir::ArrayAttr();
@@ -3556,7 +3282,7 @@ public:
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
     // attrs.push_back(attrGen->genDenseElementsAttr());
-    attrs.push_back(attrGen->genMhloConvDimensionNumbersAttr());
+    attrs.push_back(attrGen->genStablehloConvDimensionNumbersAttr());
     attrs.push_back(attrGen->genIntegerAttr());
     attrs.push_back(attrGen->genIntegerAttr());
     // attrs.push_back(attrGen->genArrayAttr());
@@ -3570,44 +3296,7 @@ public:
   }
 };
 
-class mhlo_copy : public GrammarOp {
-public:
-  unsigned getNumOperands() const override { return 1; }
-  unsigned getNumAttributes() const override { return 1; }
-  unsigned getNumRegions() const override { return 0; }
-  unsigned getNumResults() const override { return 1; }
-  OpAndResType getOperandType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_Tensor;
-    }
-    assert(false && "Invalid operand index");
-  }
-  mlir::Attribute getAttributeType(unsigned index) const override {
-    switch (index) {
-      case 0: return ::mlir::UnitAttr();
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::string getAttributeName(unsigned index) const override {
-    switch (index) {
-      case 0: return "is_cross_program_prefetch";
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
-    std::vector<std::vector<mlir::Attribute>> attrs;
-    // attrs.push_back(attrGen->genUnitAttr());
-    return attrs;
-  }
-  OpAndResType getResultType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_Tensor;
-    }
-    assert(false && "Invalid result index");
-  }
-};
-
-class mhlo_cosine : public GrammarOp {
+class stablehlo_cosine : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3641,7 +3330,7 @@ public:
   }
 };
 
-class mhlo_create_token : public GrammarOp {
+class stablehlo_create_token : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3674,7 +3363,7 @@ public:
   }
 };
 
-class mhlo_cross_replica_sum : public GrammarOp {
+class stablehlo_cross_replica_sum : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -3711,7 +3400,7 @@ public:
   }
 };
 
-class mhlo_cstr_reshapable : public GrammarOp {
+class stablehlo_cstr_reshapable : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3720,7 +3409,7 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return Index;
-      case 1: return anonymous_754;
+      case 1: return anonymous_704;
     }
     assert(false && "Invalid operand index");
   }
@@ -3746,10 +3435,10 @@ public:
   }
 };
 
-class mhlo_custom_call : public GrammarOp {
+class stablehlo_custom_call : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
-  unsigned getNumAttributes() const override { return 8; }
+  unsigned getNumAttributes() const override { return 7; }
   unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
@@ -3763,11 +3452,10 @@ public:
       case 0: return ::mlir::StringAttr();
       case 1: return ::mlir::BoolAttr();
       case 2: return ::mlir::StringAttr();
-      case 3: return ::mlir::mhlo::CustomCallApiVersionAttr();
+      case 3: return ::mlir::stablehlo::CustomCallApiVersionAttr();
       case 4: return ::mlir::ArrayAttr();
       case 5: return ::mlir::ArrayAttr();
       case 6: return ::mlir::ArrayAttr();
-      case 7: return ::mlir::ArrayAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -3780,7 +3468,6 @@ public:
       case 4: return "called_computations";
       case 5: return "operand_layouts";
       case 6: return "result_layouts";
-      case 7: return "output_operand_aliases";
     }
     assert(false && "Invalid attribute index");
   }
@@ -3788,9 +3475,8 @@ public:
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genStringAttr());
     // attrs.push_back(attrGen->genBoolAttr());
-    // attrs.push_back(attrGen->genStringAttr());
+    attrs.push_back(attrGen->genStringAttr());
     // attrs.push_back(attrGen->genCustomCallApiVersionAttr());
-    // attrs.push_back(attrGen->genArrayAttr());
     // attrs.push_back(attrGen->genArrayAttr());
     // attrs.push_back(attrGen->genArrayAttr());
     // attrs.push_back(attrGen->genArrayAttr());
@@ -3804,7 +3490,7 @@ public:
   }
 };
 
-class mhlo_divide : public GrammarOp {
+class stablehlo_divide : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -3839,50 +3525,7 @@ public:
   }
 };
 
-class mhlo_domain : public GrammarOp {
-public:
-  unsigned getNumOperands() const override { return 1; }
-  unsigned getNumAttributes() const override { return 3; }
-  unsigned getNumRegions() const override { return 0; }
-  unsigned getNumResults() const override { return 1; }
-  OpAndResType getOperandType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_TensorOrToken;
-    }
-    assert(false && "Invalid operand index");
-  }
-  mlir::Attribute getAttributeType(unsigned index) const override {
-    switch (index) {
-      case 0: return ::mlir::mhlo::DomainKindAttr();
-      case 1: return ::mlir::StringAttr();
-      case 2: return ::mlir::StringAttr();
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::string getAttributeName(unsigned index) const override {
-    switch (index) {
-      case 0: return "kind";
-      case 1: return "entry_metadata";
-      case 2: return "exit_metadata";
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
-    std::vector<std::vector<mlir::Attribute>> attrs;
-    attrs.push_back(attrGen->genMhloDomainKindAttr());
-    attrs.push_back(attrGen->genStringAttr());
-    attrs.push_back(attrGen->genStringAttr());
-    return attrs;
-  }
-  OpAndResType getResultType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_TensorOrToken;
-    }
-    assert(false && "Invalid result index");
-  }
-};
-
-class mhlo_dot_general : public GrammarOp {
+class stablehlo_dot_general : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 2; }
@@ -3897,7 +3540,7 @@ public:
   }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return ::mlir::mhlo::DotDimensionNumbersAttr();
+      case 0: return ::mlir::stablehlo::DotDimensionNumbersAttr();
       case 1: return ::mlir::ArrayAttr();
     }
     assert(false && "Invalid attribute index");
@@ -3911,7 +3554,7 @@ public:
   }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
-    attrs.push_back(attrGen->genMhloDotDimensionNumbersAttr());
+    attrs.push_back(attrGen->genStablehloDotDimensionNumbersAttr());
     // attrs.push_back(attrGen->genArrayAttr());
     return attrs;
   }
@@ -3923,7 +3566,7 @@ public:
   }
 };
 
-class mhlo_dot : public GrammarOp {
+class stablehlo_dot : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -3961,7 +3604,7 @@ public:
   }
 };
 
-class mhlo_dynamic_broadcast_in_dim : public GrammarOp {
+class stablehlo_dynamic_broadcast_in_dim : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 3; }
@@ -4005,7 +3648,7 @@ public:
   }
 };
 
-class mhlo_dynamic_conv : public GrammarOp {
+class stablehlo_dynamic_conv : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 9; }
@@ -4026,7 +3669,7 @@ public:
       case 2: return ::mlir::DenseIntElementsAttr();
       case 3: return ::mlir::DenseIntElementsAttr();
       case 4: return ::mlir::DenseElementsAttr();
-      case 5: return ::mlir::mhlo::ConvDimensionNumbersAttr();
+      case 5: return ::mlir::stablehlo::ConvDimensionNumbersAttr();
       case 6: return ::mlir::IntegerAttr();
       case 7: return ::mlir::IntegerAttr();
       case 8: return ::mlir::ArrayAttr();
@@ -4054,7 +3697,7 @@ public:
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
     // attrs.push_back(attrGen->genDenseElementsAttr());
-    attrs.push_back(attrGen->genMhloConvDimensionNumbersAttr());
+    attrs.push_back(attrGen->genStablehloConvDimensionNumbersAttr());
     attrs.push_back(attrGen->genIntegerAttr());
     attrs.push_back(attrGen->genIntegerAttr());
     // attrs.push_back(attrGen->genArrayAttr());
@@ -4068,7 +3711,7 @@ public:
   }
 };
 
-class mhlo_dynamic_gather : public GrammarOp {
+class stablehlo_dynamic_gather : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 2; }
@@ -4084,7 +3727,7 @@ public:
   }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return ::mlir::mhlo::GatherDimensionNumbersAttr();
+      case 0: return ::mlir::stablehlo::GatherDimensionNumbersAttr();
       case 1: return ::mlir::BoolAttr();
     }
     assert(false && "Invalid attribute index");
@@ -4098,7 +3741,7 @@ public:
   }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
-    attrs.push_back(attrGen->genMhloGatherDimensionNumbersAttr());
+    attrs.push_back(attrGen->genStablehloGatherDimensionNumbersAttr());
     // attrs.push_back(attrGen->genBoolAttr());
     return attrs;
   }
@@ -4110,7 +3753,7 @@ public:
   }
 };
 
-class mhlo_dynamic_iota : public GrammarOp {
+class stablehlo_dynamic_iota : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -4147,7 +3790,7 @@ public:
   }
 };
 
-class mhlo_dynamic_pad : public GrammarOp {
+class stablehlo_dynamic_pad : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 5; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4185,7 +3828,7 @@ public:
   }
 };
 
-class mhlo_dynamic_reshape : public GrammarOp {
+class stablehlo_dynamic_reshape : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4220,7 +3863,7 @@ public:
   }
 };
 
-class mhlo_dynamic_slice : public GrammarOp {
+class stablehlo_dynamic_slice : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -4258,7 +3901,7 @@ public:
   }
 };
 
-class mhlo_dynamic_update_slice : public GrammarOp {
+class stablehlo_dynamic_update_slice : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4294,7 +3937,7 @@ public:
   }
 };
 
-class mhlo_einsum : public GrammarOp {
+class stablehlo_einsum : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -4332,7 +3975,7 @@ public:
   }
 };
 
-class mhlo_exponential : public GrammarOp {
+class stablehlo_exponential : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4366,7 +4009,7 @@ public:
   }
 };
 
-class mhlo_exponential_minus_one : public GrammarOp {
+class stablehlo_exponential_minus_one : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4400,7 +4043,7 @@ public:
   }
 };
 
-class mhlo_fft : public GrammarOp {
+class stablehlo_fft : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
@@ -4414,7 +4057,7 @@ public:
   }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return ::mlir::mhlo::FftTypeAttr();
+      case 0: return ::mlir::stablehlo::FftTypeAttr();
       case 1: return ::mlir::DenseIntElementsAttr();
     }
     assert(false && "Invalid attribute index");
@@ -4428,7 +4071,7 @@ public:
   }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
-    attrs.push_back(attrGen->genMhloFftTypeAttr());
+    attrs.push_back(attrGen->genStablehloFftTypeAttr());
     attrs.push_back(attrGen->genDenseIntElementsAttr());
     return attrs;
   }
@@ -4440,7 +4083,7 @@ public:
   }
 };
 
-class mhlo_floor : public GrammarOp {
+class stablehlo_floor : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4474,44 +4117,7 @@ public:
   }
 };
 
-class mhlo_fusion : public GrammarOp {
-public:
-  unsigned getNumOperands() const override { return 1; }
-  unsigned getNumAttributes() const override { return 1; }
-  unsigned getNumRegions() const override { return 1; }
-  unsigned getNumResults() const override { return 1; }
-  OpAndResType getOperandType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_TensorOrToken;
-    }
-    assert(false && "Invalid operand index");
-  }
-  mlir::Attribute getAttributeType(unsigned index) const override {
-    switch (index) {
-      case 0: return ::mlir::mhlo::FusionKindAttr();
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::string getAttributeName(unsigned index) const override {
-    switch (index) {
-      case 0: return "fusion_kind";
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
-    std::vector<std::vector<mlir::Attribute>> attrs;
-    // attrs.push_back(attrGen->genFusionKindAttr());
-    return attrs;
-  }
-  OpAndResType getResultType(unsigned index) const override {
-    switch (index) {
-      case 0: return anonymous_747;
-    }
-    assert(false && "Invalid result index");
-  }
-};
-
-class mhlo_gather : public GrammarOp {
+class stablehlo_gather : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 3; }
@@ -4526,7 +4132,7 @@ public:
   }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return ::mlir::mhlo::GatherDimensionNumbersAttr();
+      case 0: return ::mlir::stablehlo::GatherDimensionNumbersAttr();
       case 1: return ::mlir::DenseIntElementsAttr();
       case 2: return ::mlir::BoolAttr();
     }
@@ -4542,7 +4148,7 @@ public:
   }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
-    attrs.push_back(attrGen->genMhloGatherDimensionNumbersAttr());
+    attrs.push_back(attrGen->genStablehloGatherDimensionNumbersAttr());
     attrs.push_back(attrGen->genDenseIntElementsAttr());
     // attrs.push_back(attrGen->genBoolAttr());
     return attrs;
@@ -4555,7 +4161,7 @@ public:
   }
 };
 
-class mhlo_get_dimension_size : public GrammarOp {
+class stablehlo_get_dimension_size : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -4592,7 +4198,7 @@ public:
   }
 };
 
-class mhlo_get_tuple_element : public GrammarOp {
+class stablehlo_get_tuple_element : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -4629,7 +4235,7 @@ public:
   }
 };
 
-class mhlo_if : public GrammarOp {
+class stablehlo_if : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4663,7 +4269,7 @@ public:
   }
 };
 
-class mhlo_imag : public GrammarOp {
+class stablehlo_imag : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4697,7 +4303,7 @@ public:
   }
 };
 
-class mhlo_infeed : public GrammarOp {
+class stablehlo_infeed : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
@@ -4737,7 +4343,7 @@ public:
   }
 };
 
-class mhlo_iota : public GrammarOp {
+class stablehlo_iota : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 1; }
@@ -4773,7 +4379,7 @@ public:
   }
 };
 
-class mhlo_is_finite : public GrammarOp {
+class stablehlo_is_finite : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4807,7 +4413,7 @@ public:
   }
 };
 
-class mhlo_log_plus_one : public GrammarOp {
+class stablehlo_log_plus_one : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4841,7 +4447,7 @@ public:
   }
 };
 
-class mhlo_log : public GrammarOp {
+class stablehlo_log : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4875,7 +4481,7 @@ public:
   }
 };
 
-class mhlo_logistic : public GrammarOp {
+class stablehlo_logistic : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4909,7 +4515,7 @@ public:
   }
 };
 
-class mhlo_map : public GrammarOp {
+class stablehlo_map : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -4946,7 +4552,7 @@ public:
   }
 };
 
-class mhlo_maximum : public GrammarOp {
+class stablehlo_maximum : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -4981,7 +4587,7 @@ public:
   }
 };
 
-class mhlo_minimum : public GrammarOp {
+class stablehlo_minimum : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5016,7 +4622,7 @@ public:
   }
 };
 
-class mhlo_multiply : public GrammarOp {
+class stablehlo_multiply : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5051,7 +4657,7 @@ public:
   }
 };
 
-class mhlo_negate : public GrammarOp {
+class stablehlo_negate : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5085,7 +4691,7 @@ public:
   }
 };
 
-class mhlo_not : public GrammarOp {
+class stablehlo_not : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5119,7 +4725,7 @@ public:
   }
 };
 
-class mhlo_optimization_barrier : public GrammarOp {
+class stablehlo_optimization_barrier : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5153,7 +4759,7 @@ public:
   }
 };
 
-class mhlo_or : public GrammarOp {
+class stablehlo_or : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5188,7 +4794,7 @@ public:
   }
 };
 
-class mhlo_outfeed : public GrammarOp {
+class stablehlo_outfeed : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -5226,7 +4832,7 @@ public:
   }
 };
 
-class mhlo_pad : public GrammarOp {
+class stablehlo_pad : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 3; }
@@ -5270,40 +4876,7 @@ public:
   }
 };
 
-class mhlo_partition_id : public GrammarOp {
-public:
-  unsigned getNumOperands() const override { return 0; }
-  unsigned getNumAttributes() const override { return 0; }
-  unsigned getNumRegions() const override { return 0; }
-  unsigned getNumResults() const override { return 1; }
-  OpAndResType getOperandType(unsigned index) const override {
-    switch (index) {
-    }
-    assert(false && "Invalid operand index");
-  }
-  mlir::Attribute getAttributeType(unsigned index) const override {
-    switch (index) {
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::string getAttributeName(unsigned index) const override {
-    switch (index) {
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
-    std::vector<std::vector<mlir::Attribute>> attrs;
-    return attrs;
-  }
-  OpAndResType getResultType(unsigned index) const override {
-    switch (index) {
-      case 0: return anonymous_651;
-    }
-    assert(false && "Invalid result index");
-  }
-};
-
-class mhlo_popcnt : public GrammarOp {
+class stablehlo_popcnt : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5337,7 +4910,7 @@ public:
   }
 };
 
-class mhlo_power : public GrammarOp {
+class stablehlo_power : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5372,7 +4945,7 @@ public:
   }
 };
 
-class mhlo_real_dynamic_slice : public GrammarOp {
+class stablehlo_real_dynamic_slice : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 4; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5409,7 +4982,7 @@ public:
   }
 };
 
-class mhlo_real : public GrammarOp {
+class stablehlo_real : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5443,7 +5016,7 @@ public:
   }
 };
 
-class mhlo_recv : public GrammarOp {
+class stablehlo_recv : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
@@ -5457,7 +5030,7 @@ public:
   }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return ::mlir::mhlo::ChannelHandleAttr();
+      case 0: return ::mlir::stablehlo::ChannelHandleAttr();
       case 1: return ::mlir::BoolAttr();
     }
     assert(false && "Invalid attribute index");
@@ -5471,7 +5044,7 @@ public:
   }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
-    attrs.push_back(attrGen->genMhloChannelHandleAttr());
+    attrs.push_back(attrGen->genStablehloChannelHandleAttr());
     // attrs.push_back(attrGen->genBoolAttr());
     return attrs;
   }
@@ -5483,7 +5056,7 @@ public:
   }
 };
 
-class mhlo_reduce : public GrammarOp {
+class stablehlo_reduce : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -5521,7 +5094,7 @@ public:
   }
 };
 
-class mhlo_reduce_precision : public GrammarOp {
+class stablehlo_reduce_precision : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
@@ -5561,7 +5134,7 @@ public:
   }
 };
 
-class mhlo_reduce_scatter : public GrammarOp {
+class stablehlo_reduce_scatter : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 4; }
@@ -5577,7 +5150,7 @@ public:
     switch (index) {
       case 0: return ::mlir::IntegerAttr();
       case 1: return ::mlir::DenseIntElementsAttr();
-      case 2: return ::mlir::mhlo::ChannelHandleAttr();
+      case 2: return ::mlir::stablehlo::ChannelHandleAttr();
       case 3: return ::mlir::UnitAttr();
     }
     assert(false && "Invalid attribute index");
@@ -5607,7 +5180,7 @@ public:
   }
 };
 
-class mhlo_reduce_window : public GrammarOp {
+class stablehlo_reduce_window : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 5; }
@@ -5657,7 +5230,7 @@ public:
   }
 };
 
-class mhlo_remainder : public GrammarOp {
+class stablehlo_remainder : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5692,7 +5265,7 @@ public:
   }
 };
 
-class mhlo_replica_id : public GrammarOp {
+class stablehlo_replica_id : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 0; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5719,13 +5292,13 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_651;
+      case 0: return anonymous_621;
     }
     assert(false && "Invalid result index");
   }
 };
 
-class mhlo_reshape : public GrammarOp {
+class stablehlo_reshape : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5759,7 +5332,7 @@ public:
   }
 };
 
-class mhlo_return : public GrammarOp {
+class stablehlo_return : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5792,7 +5365,7 @@ public:
   }
 };
 
-class mhlo_reverse : public GrammarOp {
+class stablehlo_reverse : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -5829,7 +5402,7 @@ public:
   }
 };
 
-class mhlo_rng_bit_generator : public GrammarOp {
+class stablehlo_rng_bit_generator : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -5843,7 +5416,7 @@ public:
   }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return ::mlir::mhlo::RngAlgorithmAttr();
+      case 0: return ::mlir::stablehlo::RngAlgorithmAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -5855,7 +5428,7 @@ public:
   }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
-    attrs.push_back(attrGen->genMhloRngAlgorithmAttr());
+    attrs.push_back(attrGen->genStablehloRngAlgorithmAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5867,7 +5440,7 @@ public:
   }
 };
 
-class mhlo_rng : public GrammarOp {
+class stablehlo_rng : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 1; }
@@ -5875,15 +5448,15 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_726;
-      case 1: return anonymous_726;
+      case 0: return anonymous_686;
+      case 1: return anonymous_686;
       case 2: return HLO_DimensionTensor;
     }
     assert(false && "Invalid operand index");
   }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return ::mlir::mhlo::RngDistributionAttr();
+      case 0: return ::mlir::stablehlo::RngDistributionAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -5895,7 +5468,7 @@ public:
   }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
-    attrs.push_back(attrGen->genMhloRngDistributionAttr());
+    attrs.push_back(attrGen->genStablehloRngDistributionAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -5906,7 +5479,7 @@ public:
   }
 };
 
-class mhlo_round_nearest_even : public GrammarOp {
+class stablehlo_round_nearest_even : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5940,7 +5513,7 @@ public:
   }
 };
 
-class mhlo_round_nearest_afz : public GrammarOp {
+class stablehlo_round_nearest_afz : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -5974,7 +5547,7 @@ public:
   }
 };
 
-class mhlo_rsqrt : public GrammarOp {
+class stablehlo_rsqrt : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -6008,7 +5581,7 @@ public:
   }
 };
 
-class mhlo_scatter : public GrammarOp {
+class stablehlo_scatter : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 3; }
@@ -6017,14 +5590,14 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
-      case 1: return anonymous_713;
+      case 1: return anonymous_673;
       case 2: return HLO_Tensor;
     }
     assert(false && "Invalid operand index");
   }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return ::mlir::mhlo::ScatterDimensionNumbersAttr();
+      case 0: return ::mlir::stablehlo::ScatterDimensionNumbersAttr();
       case 1: return ::mlir::BoolAttr();
       case 2: return ::mlir::BoolAttr();
     }
@@ -6040,7 +5613,7 @@ public:
   }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
-    attrs.push_back(attrGen->genMhloScatterDimensionNumbersAttr());
+    attrs.push_back(attrGen->genStablehloScatterDimensionNumbersAttr());
     // attrs.push_back(attrGen->genBoolAttr());
     // attrs.push_back(attrGen->genBoolAttr());
     return attrs;
@@ -6053,7 +5626,7 @@ public:
   }
 };
 
-class mhlo_select_and_scatter : public GrammarOp {
+class stablehlo_select_and_scatter : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 3; }
@@ -6098,7 +5671,7 @@ public:
   }
 };
 
-class mhlo_select : public GrammarOp {
+class stablehlo_select : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 0; }
@@ -6134,7 +5707,7 @@ public:
   }
 };
 
-class mhlo_send : public GrammarOp {
+class stablehlo_send : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 2; }
@@ -6149,7 +5722,7 @@ public:
   }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
-      case 0: return ::mlir::mhlo::ChannelHandleAttr();
+      case 0: return ::mlir::stablehlo::ChannelHandleAttr();
       case 1: return ::mlir::BoolAttr();
     }
     assert(false && "Invalid attribute index");
@@ -6163,7 +5736,7 @@ public:
   }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
-    attrs.push_back(attrGen->genMhloChannelHandleAttr());
+    attrs.push_back(attrGen->genStablehloChannelHandleAttr());
     // attrs.push_back(attrGen->genBoolAttr());
     return attrs;
   }
@@ -6175,7 +5748,7 @@ public:
   }
 };
 
-class mhlo_set_dimension_size : public GrammarOp {
+class stablehlo_set_dimension_size : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 1; }
@@ -6213,7 +5786,7 @@ public:
   }
 };
 
-class mhlo_shift_left : public GrammarOp {
+class stablehlo_shift_left : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -6248,7 +5821,7 @@ public:
   }
 };
 
-class mhlo_shift_right_arithmetic : public GrammarOp {
+class stablehlo_shift_right_arithmetic : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -6283,7 +5856,7 @@ public:
   }
 };
 
-class mhlo_shift_right_logical : public GrammarOp {
+class stablehlo_shift_right_logical : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -6318,7 +5891,7 @@ public:
   }
 };
 
-class mhlo_sign : public GrammarOp {
+class stablehlo_sign : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -6326,7 +5899,7 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_632;
+      case 0: return anonymous_610;
     }
     assert(false && "Invalid operand index");
   }
@@ -6346,13 +5919,13 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_632;
+      case 0: return anonymous_610;
     }
     assert(false && "Invalid result index");
   }
 };
 
-class mhlo_sine : public GrammarOp {
+class stablehlo_sine : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -6386,7 +5959,7 @@ public:
   }
 };
 
-class mhlo_slice : public GrammarOp {
+class stablehlo_slice : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 3; }
@@ -6429,7 +6002,7 @@ public:
   }
 };
 
-class mhlo_sort : public GrammarOp {
+class stablehlo_sort : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 2; }
@@ -6469,7 +6042,7 @@ public:
   }
 };
 
-class mhlo_sqrt : public GrammarOp {
+class stablehlo_sqrt : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -6503,42 +6076,7 @@ public:
   }
 };
 
-class mhlo_stochastic_convert : public GrammarOp {
-public:
-  unsigned getNumOperands() const override { return 2; }
-  unsigned getNumAttributes() const override { return 0; }
-  unsigned getNumRegions() const override { return 0; }
-  unsigned getNumResults() const override { return 1; }
-  OpAndResType getOperandType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_FpTensor;
-      case 1: return anonymous_641;
-    }
-    assert(false && "Invalid operand index");
-  }
-  mlir::Attribute getAttributeType(unsigned index) const override {
-    switch (index) {
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::string getAttributeName(unsigned index) const override {
-    switch (index) {
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
-    std::vector<std::vector<mlir::Attribute>> attrs;
-    return attrs;
-  }
-  OpAndResType getResultType(unsigned index) const override {
-    switch (index) {
-      case 0: return HLO_Tensor;
-    }
-    assert(false && "Invalid result index");
-  }
-};
-
-class mhlo_subtract : public GrammarOp {
+class stablehlo_subtract : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -6573,7 +6111,7 @@ public:
   }
 };
 
-class mhlo_tanh : public GrammarOp {
+class stablehlo_tanh : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -6607,7 +6145,7 @@ public:
   }
 };
 
-class mhlo_torch_index_select : public GrammarOp {
+class stablehlo_torch_index_select : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 2; }
@@ -6648,7 +6186,7 @@ public:
   }
 };
 
-class mhlo_trace : public GrammarOp {
+class stablehlo_trace : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -6684,7 +6222,7 @@ public:
   }
 };
 
-class mhlo_transpose : public GrammarOp {
+class stablehlo_transpose : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -6721,7 +6259,7 @@ public:
   }
 };
 
-class mhlo_triangular_solve : public GrammarOp {
+class stablehlo_triangular_solve : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 4; }
@@ -6739,7 +6277,7 @@ public:
       case 0: return ::mlir::BoolAttr();
       case 1: return ::mlir::BoolAttr();
       case 2: return ::mlir::BoolAttr();
-      case 3: return ::mlir::mhlo::TransposeAttr();
+      case 3: return ::mlir::stablehlo::TransposeAttr();
     }
     assert(false && "Invalid attribute index");
   }
@@ -6757,7 +6295,7 @@ public:
     attrs.push_back(attrGen->genBoolAttr());
     attrs.push_back(attrGen->genBoolAttr());
     attrs.push_back(attrGen->genBoolAttr());
-    attrs.push_back(attrGen->genMhloTransposeAttr());
+    attrs.push_back(attrGen->genStablehloTransposeAttr());
     return attrs;
   }
   OpAndResType getResultType(unsigned index) const override {
@@ -6768,7 +6306,7 @@ public:
   }
 };
 
-class mhlo_tuple : public GrammarOp {
+class stablehlo_tuple : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -6802,7 +6340,7 @@ public:
   }
 };
 
-class mhlo_unary_einsum : public GrammarOp {
+class stablehlo_unary_einsum : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 1; }
@@ -6839,7 +6377,7 @@ public:
   }
 };
 
-class mhlo_uniform_dequantize : public GrammarOp {
+class stablehlo_uniform_dequantize : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -6867,13 +6405,13 @@ public:
   }
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_740;
+      case 0: return anonymous_694;
     }
     assert(false && "Invalid result index");
   }
 };
 
-class mhlo_uniform_quantize : public GrammarOp {
+class stablehlo_uniform_quantize : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -6881,7 +6419,7 @@ public:
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
-      case 0: return anonymous_734;
+      case 0: return anonymous_688;
     }
     assert(false && "Invalid operand index");
   }
@@ -6907,7 +6445,7 @@ public:
   }
 };
 
-class mhlo_while : public GrammarOp {
+class stablehlo_while : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 1; }
   unsigned getNumAttributes() const override { return 0; }
@@ -6941,43 +6479,7 @@ public:
   }
 };
 
-class mhlo_xla_rng_get_and_update_state : public GrammarOp {
-public:
-  unsigned getNumOperands() const override { return 0; }
-  unsigned getNumAttributes() const override { return 1; }
-  unsigned getNumRegions() const override { return 0; }
-  unsigned getNumResults() const override { return 1; }
-  OpAndResType getOperandType(unsigned index) const override {
-    switch (index) {
-    }
-    assert(false && "Invalid operand index");
-  }
-  mlir::Attribute getAttributeType(unsigned index) const override {
-    switch (index) {
-      case 0: return ::mlir::IntegerAttr();
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::string getAttributeName(unsigned index) const override {
-    switch (index) {
-      case 0: return "delta";
-    }
-    assert(false && "Invalid attribute index");
-  }
-  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
-    std::vector<std::vector<mlir::Attribute>> attrs;
-    attrs.push_back(attrGen->genIntegerAttr());
-    return attrs;
-  }
-  OpAndResType getResultType(unsigned index) const override {
-    switch (index) {
-      case 0: return anonymous_728;
-    }
-    assert(false && "Invalid result index");
-  }
-};
-
-class mhlo_xor : public GrammarOp {
+class stablehlo_xor : public GrammarOp {
 public:
   unsigned getNumOperands() const override { return 2; }
   unsigned getNumAttributes() const override { return 0; }
@@ -7111,256 +6613,234 @@ GrammarOpPtr createGrammarOp(std::string name) {
     return std::make_unique<chlo_top_k>();
   if (name == "chlo.zeta")
     return std::make_unique<chlo_zeta>();
-  if (name == "mhlo.abs")
-    return std::make_unique<mhlo_abs>();
-  if (name == "mhlo.add_dependency")
-    return std::make_unique<mhlo_add_dependency>();
-  if (name == "mhlo.add")
-    return std::make_unique<mhlo_add>();
-  if (name == "mhlo.after_all")
-    return std::make_unique<mhlo_after_all>();
-  if (name == "mhlo.all_gather")
-    return std::make_unique<mhlo_all_gather>();
-  if (name == "mhlo.all_reduce")
-    return std::make_unique<mhlo_all_reduce>();
-  if (name == "mhlo.all_to_all")
-    return std::make_unique<mhlo_all_to_all>();
-  if (name == "mhlo.and")
-    return std::make_unique<mhlo_and>();
-  if (name == "mhlo.async_done")
-    return std::make_unique<mhlo_async_done>();
-  if (name == "mhlo.async_start")
-    return std::make_unique<mhlo_async_start>();
-  if (name == "mhlo.async_update")
-    return std::make_unique<mhlo_async_update>();
-  if (name == "mhlo.atan2")
-    return std::make_unique<mhlo_atan2>();
-  if (name == "mhlo.batch_norm_grad")
-    return std::make_unique<mhlo_batch_norm_grad>();
-  if (name == "mhlo.batch_norm_inference")
-    return std::make_unique<mhlo_batch_norm_inference>();
-  if (name == "mhlo.batch_norm_training")
-    return std::make_unique<mhlo_batch_norm_training>();
-  if (name == "mhlo.bitcast_convert")
-    return std::make_unique<mhlo_bitcast_convert>();
-  if (name == "mhlo.bitcast")
-    return std::make_unique<mhlo_bitcast>();
-  if (name == "mhlo.broadcast_in_dim")
-    return std::make_unique<mhlo_broadcast_in_dim>();
-  if (name == "mhlo.broadcast")
-    return std::make_unique<mhlo_broadcast>();
-  if (name == "mhlo.case")
-    return std::make_unique<mhlo_case>();
-  if (name == "mhlo.cbrt")
-    return std::make_unique<mhlo_cbrt>();
-  if (name == "mhlo.ceil")
-    return std::make_unique<mhlo_ceil>();
-  if (name == "mhlo.cholesky")
-    return std::make_unique<mhlo_cholesky>();
-  if (name == "mhlo.clamp")
-    return std::make_unique<mhlo_clamp>();
-  if (name == "mhlo.count_leading_zeros")
-    return std::make_unique<mhlo_count_leading_zeros>();
-  if (name == "mhlo.collective_permute")
-    return std::make_unique<mhlo_collective_permute>();
-  if (name == "mhlo.compare")
-    return std::make_unique<mhlo_compare>();
-  if (name == "mhlo.complex")
-    return std::make_unique<mhlo_complex>();
-  if (name == "mhlo.compute_reshape_shape")
-    return std::make_unique<mhlo_compute_reshape_shape>();
-  if (name == "mhlo.concatenate")
-    return std::make_unique<mhlo_concatenate>();
-  if (name == "mhlo.constant")
-    return std::make_unique<mhlo_constant>();
-  if (name == "mhlo.convert")
-    return std::make_unique<mhlo_convert>();
-  if (name == "mhlo.convolution")
-    return std::make_unique<mhlo_convolution>();
-  if (name == "mhlo.copy")
-    return std::make_unique<mhlo_copy>();
-  if (name == "mhlo.cosine")
-    return std::make_unique<mhlo_cosine>();
-  if (name == "mhlo.create_token")
-    return std::make_unique<mhlo_create_token>();
-  if (name == "mhlo.cross-replica-sum")
-    return std::make_unique<mhlo_cross_replica_sum>();
-  if (name == "mhlo.cstr_reshapable")
-    return std::make_unique<mhlo_cstr_reshapable>();
-  if (name == "mhlo.custom_call")
-    return std::make_unique<mhlo_custom_call>();
-  if (name == "mhlo.divide")
-    return std::make_unique<mhlo_divide>();
-  if (name == "mhlo.domain")
-    return std::make_unique<mhlo_domain>();
-  if (name == "mhlo.dot_general")
-    return std::make_unique<mhlo_dot_general>();
-  if (name == "mhlo.dot")
-    return std::make_unique<mhlo_dot>();
-  if (name == "mhlo.dynamic_broadcast_in_dim")
-    return std::make_unique<mhlo_dynamic_broadcast_in_dim>();
-  if (name == "mhlo.dynamic_conv")
-    return std::make_unique<mhlo_dynamic_conv>();
-  if (name == "mhlo.dynamic_gather")
-    return std::make_unique<mhlo_dynamic_gather>();
-  if (name == "mhlo.dynamic_iota")
-    return std::make_unique<mhlo_dynamic_iota>();
-  if (name == "mhlo.dynamic_pad")
-    return std::make_unique<mhlo_dynamic_pad>();
-  if (name == "mhlo.dynamic_reshape")
-    return std::make_unique<mhlo_dynamic_reshape>();
-  if (name == "mhlo.dynamic_slice")
-    return std::make_unique<mhlo_dynamic_slice>();
-  if (name == "mhlo.dynamic_update_slice")
-    return std::make_unique<mhlo_dynamic_update_slice>();
-  if (name == "mhlo.einsum")
-    return std::make_unique<mhlo_einsum>();
-  if (name == "mhlo.exponential")
-    return std::make_unique<mhlo_exponential>();
-  if (name == "mhlo.exponential_minus_one")
-    return std::make_unique<mhlo_exponential_minus_one>();
-  if (name == "mhlo.fft")
-    return std::make_unique<mhlo_fft>();
-  if (name == "mhlo.floor")
-    return std::make_unique<mhlo_floor>();
-  if (name == "mhlo.fusion")
-    return std::make_unique<mhlo_fusion>();
-  if (name == "mhlo.gather")
-    return std::make_unique<mhlo_gather>();
-  if (name == "mhlo.get_dimension_size")
-    return std::make_unique<mhlo_get_dimension_size>();
-  if (name == "mhlo.get_tuple_element")
-    return std::make_unique<mhlo_get_tuple_element>();
-  if (name == "mhlo.if")
-    return std::make_unique<mhlo_if>();
-  if (name == "mhlo.imag")
-    return std::make_unique<mhlo_imag>();
-  if (name == "mhlo.infeed")
-    return std::make_unique<mhlo_infeed>();
-  if (name == "mhlo.iota")
-    return std::make_unique<mhlo_iota>();
-  if (name == "mhlo.is_finite")
-    return std::make_unique<mhlo_is_finite>();
-  if (name == "mhlo.log_plus_one")
-    return std::make_unique<mhlo_log_plus_one>();
-  if (name == "mhlo.log")
-    return std::make_unique<mhlo_log>();
-  if (name == "mhlo.logistic")
-    return std::make_unique<mhlo_logistic>();
-  if (name == "mhlo.map")
-    return std::make_unique<mhlo_map>();
-  if (name == "mhlo.maximum")
-    return std::make_unique<mhlo_maximum>();
-  if (name == "mhlo.minimum")
-    return std::make_unique<mhlo_minimum>();
-  if (name == "mhlo.multiply")
-    return std::make_unique<mhlo_multiply>();
-  if (name == "mhlo.negate")
-    return std::make_unique<mhlo_negate>();
-  if (name == "mhlo.not")
-    return std::make_unique<mhlo_not>();
-  if (name == "mhlo.optimization_barrier")
-    return std::make_unique<mhlo_optimization_barrier>();
-  if (name == "mhlo.or")
-    return std::make_unique<mhlo_or>();
-  if (name == "mhlo.outfeed")
-    return std::make_unique<mhlo_outfeed>();
-  if (name == "mhlo.pad")
-    return std::make_unique<mhlo_pad>();
-  if (name == "mhlo.partition_id")
-    return std::make_unique<mhlo_partition_id>();
-  if (name == "mhlo.popcnt")
-    return std::make_unique<mhlo_popcnt>();
-  if (name == "mhlo.power")
-    return std::make_unique<mhlo_power>();
-  if (name == "mhlo.real_dynamic_slice")
-    return std::make_unique<mhlo_real_dynamic_slice>();
-  if (name == "mhlo.real")
-    return std::make_unique<mhlo_real>();
-  if (name == "mhlo.recv")
-    return std::make_unique<mhlo_recv>();
-  if (name == "mhlo.reduce")
-    return std::make_unique<mhlo_reduce>();
-  if (name == "mhlo.reduce_precision")
-    return std::make_unique<mhlo_reduce_precision>();
-  if (name == "mhlo.reduce_scatter")
-    return std::make_unique<mhlo_reduce_scatter>();
-  if (name == "mhlo.reduce_window")
-    return std::make_unique<mhlo_reduce_window>();
-  if (name == "mhlo.remainder")
-    return std::make_unique<mhlo_remainder>();
-  if (name == "mhlo.replica_id")
-    return std::make_unique<mhlo_replica_id>();
-  if (name == "mhlo.reshape")
-    return std::make_unique<mhlo_reshape>();
-  if (name == "mhlo.return")
-    return std::make_unique<mhlo_return>();
-  if (name == "mhlo.reverse")
-    return std::make_unique<mhlo_reverse>();
-  if (name == "mhlo.rng_bit_generator")
-    return std::make_unique<mhlo_rng_bit_generator>();
-  if (name == "mhlo.rng")
-    return std::make_unique<mhlo_rng>();
-  if (name == "mhlo.round_nearest_even")
-    return std::make_unique<mhlo_round_nearest_even>();
-  if (name == "mhlo.round_nearest_afz")
-    return std::make_unique<mhlo_round_nearest_afz>();
-  if (name == "mhlo.rsqrt")
-    return std::make_unique<mhlo_rsqrt>();
-  if (name == "mhlo.scatter")
-    return std::make_unique<mhlo_scatter>();
-  if (name == "mhlo.select_and_scatter")
-    return std::make_unique<mhlo_select_and_scatter>();
-  if (name == "mhlo.select")
-    return std::make_unique<mhlo_select>();
-  if (name == "mhlo.send")
-    return std::make_unique<mhlo_send>();
-  if (name == "mhlo.set_dimension_size")
-    return std::make_unique<mhlo_set_dimension_size>();
-  if (name == "mhlo.shift_left")
-    return std::make_unique<mhlo_shift_left>();
-  if (name == "mhlo.shift_right_arithmetic")
-    return std::make_unique<mhlo_shift_right_arithmetic>();
-  if (name == "mhlo.shift_right_logical")
-    return std::make_unique<mhlo_shift_right_logical>();
-  if (name == "mhlo.sign")
-    return std::make_unique<mhlo_sign>();
-  if (name == "mhlo.sine")
-    return std::make_unique<mhlo_sine>();
-  if (name == "mhlo.slice")
-    return std::make_unique<mhlo_slice>();
-  if (name == "mhlo.sort")
-    return std::make_unique<mhlo_sort>();
-  if (name == "mhlo.sqrt")
-    return std::make_unique<mhlo_sqrt>();
-  if (name == "mhlo.stochastic_convert")
-    return std::make_unique<mhlo_stochastic_convert>();
-  if (name == "mhlo.subtract")
-    return std::make_unique<mhlo_subtract>();
-  if (name == "mhlo.tanh")
-    return std::make_unique<mhlo_tanh>();
-  if (name == "mhlo.torch_index_select")
-    return std::make_unique<mhlo_torch_index_select>();
-  if (name == "mhlo.trace")
-    return std::make_unique<mhlo_trace>();
-  if (name == "mhlo.transpose")
-    return std::make_unique<mhlo_transpose>();
-  if (name == "mhlo.triangular_solve")
-    return std::make_unique<mhlo_triangular_solve>();
-  if (name == "mhlo.tuple")
-    return std::make_unique<mhlo_tuple>();
-  if (name == "mhlo.unary_einsum")
-    return std::make_unique<mhlo_unary_einsum>();
-  if (name == "mhlo.uniform_dequantize")
-    return std::make_unique<mhlo_uniform_dequantize>();
-  if (name == "mhlo.uniform_quantize")
-    return std::make_unique<mhlo_uniform_quantize>();
-  if (name == "mhlo.while")
-    return std::make_unique<mhlo_while>();
-  if (name == "mhlo.xla.rng_get_and_update_state")
-    return std::make_unique<mhlo_xla_rng_get_and_update_state>();
-  if (name == "mhlo.xor")
-    return std::make_unique<mhlo_xor>();
+  if (name == "stablehlo.abs")
+    return std::make_unique<stablehlo_abs>();
+  if (name == "stablehlo.add")
+    return std::make_unique<stablehlo_add>();
+  if (name == "stablehlo.after_all")
+    return std::make_unique<stablehlo_after_all>();
+  if (name == "stablehlo.all_gather")
+    return std::make_unique<stablehlo_all_gather>();
+  if (name == "stablehlo.all_reduce")
+    return std::make_unique<stablehlo_all_reduce>();
+  if (name == "stablehlo.all_to_all")
+    return std::make_unique<stablehlo_all_to_all>();
+  if (name == "stablehlo.and")
+    return std::make_unique<stablehlo_and>();
+  if (name == "stablehlo.atan2")
+    return std::make_unique<stablehlo_atan2>();
+  if (name == "stablehlo.batch_norm_grad")
+    return std::make_unique<stablehlo_batch_norm_grad>();
+  if (name == "stablehlo.batch_norm_inference")
+    return std::make_unique<stablehlo_batch_norm_inference>();
+  if (name == "stablehlo.batch_norm_training")
+    return std::make_unique<stablehlo_batch_norm_training>();
+  if (name == "stablehlo.bitcast_convert")
+    return std::make_unique<stablehlo_bitcast_convert>();
+  if (name == "stablehlo.broadcast_in_dim")
+    return std::make_unique<stablehlo_broadcast_in_dim>();
+  if (name == "stablehlo.broadcast")
+    return std::make_unique<stablehlo_broadcast>();
+  if (name == "stablehlo.case")
+    return std::make_unique<stablehlo_case>();
+  if (name == "stablehlo.cbrt")
+    return std::make_unique<stablehlo_cbrt>();
+  if (name == "stablehlo.ceil")
+    return std::make_unique<stablehlo_ceil>();
+  if (name == "stablehlo.cholesky")
+    return std::make_unique<stablehlo_cholesky>();
+  if (name == "stablehlo.clamp")
+    return std::make_unique<stablehlo_clamp>();
+  if (name == "stablehlo.count_leading_zeros")
+    return std::make_unique<stablehlo_count_leading_zeros>();
+  if (name == "stablehlo.collective_permute")
+    return std::make_unique<stablehlo_collective_permute>();
+  if (name == "stablehlo.compare")
+    return std::make_unique<stablehlo_compare>();
+  if (name == "stablehlo.complex")
+    return std::make_unique<stablehlo_complex>();
+  if (name == "stablehlo.compute_reshape_shape")
+    return std::make_unique<stablehlo_compute_reshape_shape>();
+  if (name == "stablehlo.concatenate")
+    return std::make_unique<stablehlo_concatenate>();
+  if (name == "stablehlo.constant")
+    return std::make_unique<stablehlo_constant>();
+  if (name == "stablehlo.convert")
+    return std::make_unique<stablehlo_convert>();
+  if (name == "stablehlo.convolution")
+    return std::make_unique<stablehlo_convolution>();
+  if (name == "stablehlo.cosine")
+    return std::make_unique<stablehlo_cosine>();
+  if (name == "stablehlo.create_token")
+    return std::make_unique<stablehlo_create_token>();
+  if (name == "stablehlo.cross-replica-sum")
+    return std::make_unique<stablehlo_cross_replica_sum>();
+  if (name == "stablehlo.cstr_reshapable")
+    return std::make_unique<stablehlo_cstr_reshapable>();
+  if (name == "stablehlo.custom_call")
+    return std::make_unique<stablehlo_custom_call>();
+  if (name == "stablehlo.divide")
+    return std::make_unique<stablehlo_divide>();
+  if (name == "stablehlo.dot_general")
+    return std::make_unique<stablehlo_dot_general>();
+  if (name == "stablehlo.dot")
+    return std::make_unique<stablehlo_dot>();
+  if (name == "stablehlo.dynamic_broadcast_in_dim")
+    return std::make_unique<stablehlo_dynamic_broadcast_in_dim>();
+  if (name == "stablehlo.dynamic_conv")
+    return std::make_unique<stablehlo_dynamic_conv>();
+  if (name == "stablehlo.dynamic_gather")
+    return std::make_unique<stablehlo_dynamic_gather>();
+  if (name == "stablehlo.dynamic_iota")
+    return std::make_unique<stablehlo_dynamic_iota>();
+  if (name == "stablehlo.dynamic_pad")
+    return std::make_unique<stablehlo_dynamic_pad>();
+  if (name == "stablehlo.dynamic_reshape")
+    return std::make_unique<stablehlo_dynamic_reshape>();
+  if (name == "stablehlo.dynamic_slice")
+    return std::make_unique<stablehlo_dynamic_slice>();
+  if (name == "stablehlo.dynamic_update_slice")
+    return std::make_unique<stablehlo_dynamic_update_slice>();
+  if (name == "stablehlo.einsum")
+    return std::make_unique<stablehlo_einsum>();
+  if (name == "stablehlo.exponential")
+    return std::make_unique<stablehlo_exponential>();
+  if (name == "stablehlo.exponential_minus_one")
+    return std::make_unique<stablehlo_exponential_minus_one>();
+  if (name == "stablehlo.fft")
+    return std::make_unique<stablehlo_fft>();
+  if (name == "stablehlo.floor")
+    return std::make_unique<stablehlo_floor>();
+  if (name == "stablehlo.gather")
+    return std::make_unique<stablehlo_gather>();
+  if (name == "stablehlo.get_dimension_size")
+    return std::make_unique<stablehlo_get_dimension_size>();
+  if (name == "stablehlo.get_tuple_element")
+    return std::make_unique<stablehlo_get_tuple_element>();
+  if (name == "stablehlo.if")
+    return std::make_unique<stablehlo_if>();
+  if (name == "stablehlo.imag")
+    return std::make_unique<stablehlo_imag>();
+  if (name == "stablehlo.infeed")
+    return std::make_unique<stablehlo_infeed>();
+  if (name == "stablehlo.iota")
+    return std::make_unique<stablehlo_iota>();
+  if (name == "stablehlo.is_finite")
+    return std::make_unique<stablehlo_is_finite>();
+  if (name == "stablehlo.log_plus_one")
+    return std::make_unique<stablehlo_log_plus_one>();
+  if (name == "stablehlo.log")
+    return std::make_unique<stablehlo_log>();
+  if (name == "stablehlo.logistic")
+    return std::make_unique<stablehlo_logistic>();
+  if (name == "stablehlo.map")
+    return std::make_unique<stablehlo_map>();
+  if (name == "stablehlo.maximum")
+    return std::make_unique<stablehlo_maximum>();
+  if (name == "stablehlo.minimum")
+    return std::make_unique<stablehlo_minimum>();
+  if (name == "stablehlo.multiply")
+    return std::make_unique<stablehlo_multiply>();
+  if (name == "stablehlo.negate")
+    return std::make_unique<stablehlo_negate>();
+  if (name == "stablehlo.not")
+    return std::make_unique<stablehlo_not>();
+  if (name == "stablehlo.optimization_barrier")
+    return std::make_unique<stablehlo_optimization_barrier>();
+  if (name == "stablehlo.or")
+    return std::make_unique<stablehlo_or>();
+  if (name == "stablehlo.outfeed")
+    return std::make_unique<stablehlo_outfeed>();
+  if (name == "stablehlo.pad")
+    return std::make_unique<stablehlo_pad>();
+  if (name == "stablehlo.popcnt")
+    return std::make_unique<stablehlo_popcnt>();
+  if (name == "stablehlo.power")
+    return std::make_unique<stablehlo_power>();
+  if (name == "stablehlo.real_dynamic_slice")
+    return std::make_unique<stablehlo_real_dynamic_slice>();
+  if (name == "stablehlo.real")
+    return std::make_unique<stablehlo_real>();
+  if (name == "stablehlo.recv")
+    return std::make_unique<stablehlo_recv>();
+  if (name == "stablehlo.reduce")
+    return std::make_unique<stablehlo_reduce>();
+  if (name == "stablehlo.reduce_precision")
+    return std::make_unique<stablehlo_reduce_precision>();
+  if (name == "stablehlo.reduce_scatter")
+    return std::make_unique<stablehlo_reduce_scatter>();
+  if (name == "stablehlo.reduce_window")
+    return std::make_unique<stablehlo_reduce_window>();
+  if (name == "stablehlo.remainder")
+    return std::make_unique<stablehlo_remainder>();
+  if (name == "stablehlo.replica_id")
+    return std::make_unique<stablehlo_replica_id>();
+  if (name == "stablehlo.reshape")
+    return std::make_unique<stablehlo_reshape>();
+  if (name == "stablehlo.return")
+    return std::make_unique<stablehlo_return>();
+  if (name == "stablehlo.reverse")
+    return std::make_unique<stablehlo_reverse>();
+  if (name == "stablehlo.rng_bit_generator")
+    return std::make_unique<stablehlo_rng_bit_generator>();
+  if (name == "stablehlo.rng")
+    return std::make_unique<stablehlo_rng>();
+  if (name == "stablehlo.round_nearest_even")
+    return std::make_unique<stablehlo_round_nearest_even>();
+  if (name == "stablehlo.round_nearest_afz")
+    return std::make_unique<stablehlo_round_nearest_afz>();
+  if (name == "stablehlo.rsqrt")
+    return std::make_unique<stablehlo_rsqrt>();
+  if (name == "stablehlo.scatter")
+    return std::make_unique<stablehlo_scatter>();
+  if (name == "stablehlo.select_and_scatter")
+    return std::make_unique<stablehlo_select_and_scatter>();
+  if (name == "stablehlo.select")
+    return std::make_unique<stablehlo_select>();
+  if (name == "stablehlo.send")
+    return std::make_unique<stablehlo_send>();
+  if (name == "stablehlo.set_dimension_size")
+    return std::make_unique<stablehlo_set_dimension_size>();
+  if (name == "stablehlo.shift_left")
+    return std::make_unique<stablehlo_shift_left>();
+  if (name == "stablehlo.shift_right_arithmetic")
+    return std::make_unique<stablehlo_shift_right_arithmetic>();
+  if (name == "stablehlo.shift_right_logical")
+    return std::make_unique<stablehlo_shift_right_logical>();
+  if (name == "stablehlo.sign")
+    return std::make_unique<stablehlo_sign>();
+  if (name == "stablehlo.sine")
+    return std::make_unique<stablehlo_sine>();
+  if (name == "stablehlo.slice")
+    return std::make_unique<stablehlo_slice>();
+  if (name == "stablehlo.sort")
+    return std::make_unique<stablehlo_sort>();
+  if (name == "stablehlo.sqrt")
+    return std::make_unique<stablehlo_sqrt>();
+  if (name == "stablehlo.subtract")
+    return std::make_unique<stablehlo_subtract>();
+  if (name == "stablehlo.tanh")
+    return std::make_unique<stablehlo_tanh>();
+  if (name == "stablehlo.torch_index_select")
+    return std::make_unique<stablehlo_torch_index_select>();
+  if (name == "stablehlo.trace")
+    return std::make_unique<stablehlo_trace>();
+  if (name == "stablehlo.transpose")
+    return std::make_unique<stablehlo_transpose>();
+  if (name == "stablehlo.triangular_solve")
+    return std::make_unique<stablehlo_triangular_solve>();
+  if (name == "stablehlo.tuple")
+    return std::make_unique<stablehlo_tuple>();
+  if (name == "stablehlo.unary_einsum")
+    return std::make_unique<stablehlo_unary_einsum>();
+  if (name == "stablehlo.uniform_dequantize")
+    return std::make_unique<stablehlo_uniform_dequantize>();
+  if (name == "stablehlo.uniform_quantize")
+    return std::make_unique<stablehlo_uniform_quantize>();
+  if (name == "stablehlo.while")
+    return std::make_unique<stablehlo_while>();
+  if (name == "stablehlo.xor")
+    return std::make_unique<stablehlo_xor>();
   assert(false && "Invalid op name");
 }
 

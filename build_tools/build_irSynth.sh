@@ -32,7 +32,7 @@ pushd build
 cmake --build . --target grammar-extractor
 popd
 TD_FILES="mlir-hlo/stablehlo/stablehlo/dialect/ChloOps.td \
-mlir-hlo/include/mlir-hlo/Dialect/mhlo/IR/hlo_ops.td"
+mlir-hlo/stablehlo/stablehlo/dialect/StablehloOps.td"
 GEN_COMMON="-Imlir-hlo \
 -Imlir-hlo/include \
 -Imlir-hlo/include/mlir-hlo/Dialect/mhlo/IR \

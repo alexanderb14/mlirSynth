@@ -1,11 +1,11 @@
 #include "Generators.h"
 
 #include "enumeration/Grammar.h"
-#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/IR/BuiltinAttributes.h"
 #include "mlir/IR/BuiltinTypeInterfaces.h"
 #include "mlir/IR/Location.h"
+#include "stablehlo/dialect/StablehloOps.h"
 
 #include <llvm-14/llvm/ADT/ArrayRef.h>
 #include <random>
@@ -220,13 +220,13 @@ std::vector<std::shared_ptr<Region>> genRegions(MLIRContext &ctx) {
   block->addArgument(tensorType, unknownLoc);
 
   // Create a add operation with the two arguments.
-  auto addOp = builder.create<mhlo::AddOp>(unknownLoc, block->getArgument(0),
+  auto addOp = builder.create<stablehlo::AddOp>(unknownLoc, block->getArgument(0),
                                            block->getArgument(1));
   block->push_back(addOp);
 
-  // Create a mhlo return operation with the result of the add operation.
+  // Create a stablehlo return operation with the result of the add operation.
   auto returnOp =
-      builder.create<mhlo::ReturnOp>(unknownLoc, block->back().getResults());
+      builder.create<stablehlo::ReturnOp>(unknownLoc, block->back().getResults());
   block->push_back(returnOp);
 
   std::vector<std::shared_ptr<Region>> regions;

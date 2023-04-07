@@ -16,30 +16,30 @@ Benchmark = collections.namedtuple(
 
 benchmarks = [
     Benchmark('benchmarks/covariance.mlir', 'covariance',
-              ['mhlo.dot_general', 'mhlo.transpose', 'chlo.broadcast_divide', 'chlo.broadcast_subtract', 'mhlo.reduce'], False, 3),
+              ['stablehlo.dot_general', 'stablehlo.transpose', 'chlo.broadcast_divide', 'chlo.broadcast_subtract', 'stablehlo.reduce'], False, 3),
     Benchmark('benchmarks/doitgen.mlir', 'doitgen',
-              ['mhlo.dot_general'], False, 3),
+              ['stablehlo.dot_general'], False, 3),
     Benchmark('testfiles/correlation_1.mlir', 'correlation_1',
-              ['chlo.broadcast_divide', 'mhlo.reduce'], False, 3),
+              ['chlo.broadcast_divide', 'stablehlo.reduce'], False, 3),
     Benchmark('benchmarks/atax.mlir', 'atax',
-              ['mhlo.dot', 'chlo.broadcast_add', 'chlo.broadcast_subtract'], True, 3),
-    Benchmark('benchmarks/3mm.mlir', '3mm', ['mhlo.dot'], False, 3),
+              ['stablehlo.dot', 'chlo.broadcast_add', 'chlo.broadcast_subtract'], True, 3),
+    Benchmark('benchmarks/3mm.mlir', '3mm', ['stablehlo.dot'], False, 3),
     Benchmark('benchmarks/mvt.mlir', 'mvt',
-              ['mhlo.dot', 'chlo.broadcast_add'], False, 3),
+              ['stablehlo.dot', 'chlo.broadcast_add'], False, 3),
     Benchmark('benchmarks/bicg.mlir', 'bicg',
-              ['mhlo.dot', 'chlo.broadcast_subtract'], True, 3),
+              ['stablehlo.dot', 'chlo.broadcast_subtract'], True, 3),
     Benchmark('benchmarks/2mm.mlir', '2mm',
-              ['mhlo.dot', 'chlo.broadcast_multiply', 'chlo.broadcast_add'], False, 3),
+              ['stablehlo.dot', 'chlo.broadcast_multiply', 'chlo.broadcast_add'], False, 3),
     Benchmark('benchmarks/gemm.mlir', 'gemm',
-              ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply'], True, 3),
+              ['chlo.broadcast_add', 'stablehlo.dot', 'chlo.broadcast_multiply'], True, 3),
     Benchmark('benchmarks/gesummv.mlir', 'gesummv',
-              ['chlo.broadcast_add', 'mhlo.dot', 'chlo.broadcast_multiply'], True, 3),
+              ['chlo.broadcast_add', 'stablehlo.dot', 'chlo.broadcast_multiply'], True, 3),
     Benchmark('benchmarks/symm.mlir', 'symm',
-              ['mhlo.transpose', 'mhlo.dot', 'chlo.broadcast_multiply', 'mhlo.add', 'mhlo.select'], False, 5),
+              ['stablehlo.transpose', 'stablehlo.dot', 'chlo.broadcast_multiply', 'stablehlo.add', 'stablehlo.select'], False, 5),
     Benchmark('benchmarks/syrk.mlir', 'syrk',
-              ['mhlo.transpose', 'mhlo.dot', 'chlo.broadcast_multiply', 'mhlo.add', 'mhlo.select'], True, 5),
+              ['stablehlo.transpose', 'stablehlo.dot', 'chlo.broadcast_multiply', 'stablehlo.add', 'stablehlo.select'], True, 5),
     Benchmark('benchmarks/syr2k.mlir', 'syr2k',
-              ['mhlo.transpose', 'mhlo.dot', 'chlo.broadcast_multiply', 'mhlo.add', 'mhlo.select'], True, 5),
+              ['stablehlo.transpose', 'stablehlo.dot', 'chlo.broadcast_multiply', 'stablehlo.add', 'stablehlo.select'], True, 5),
 ]
 
 timeout = 600
@@ -95,12 +95,14 @@ def run_benchmark(benchmark, prune_equivalent_candidates, ops, distribute, max_n
     stats['status'] = returncode
 
     if returncode == 0:
+        print('\033[1;42mSynthesis success\033[0m')
+
         statsStr = out.split('JSON: ')[1].split('\n')[0]
         stats.update(json.loads(statsStr))
 
         stats['synth_time'] = synth_time
     else:
-        print('Synthesis failed')
+        print('\033[1;41mSynthesis failed\033[0m')
 
         # Timeout
         if returncode == 124:

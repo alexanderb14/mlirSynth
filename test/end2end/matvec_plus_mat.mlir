@@ -1,7 +1,7 @@
-// RUN: synthesizer %s --num-threads=32 --ignore-equivalent-candidates --ops=mhlo.dynamic_reshape,mhlo.dot | FileCheck %s
+// RUN: synthesizer %s --num-threads=32 --ignore-equivalent-candidates --ops=stablehlo.dynamic_reshape,stablehlo.dot | FileCheck %s
 
-// CHECK:     mhlo.dynamic_reshape
-// CHECK:     "mhlo.dot
+// CHECK:     stablehlo.dynamic_reshape
+// CHECK:     stablehlo.dot
 module {
   func.func @kernel_gemver(%arg3: memref<2000x2000xf64>, %arg4: memref<2000xf64>, %arg5: memref<2000xf64>) {
     affine.for %arg12 = 0 to 2000 {

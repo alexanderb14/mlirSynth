@@ -1,6 +1,6 @@
-// RUN: synthesizer %s --num-threads=32 --ignore-equivalent-candidates --ops=chlo.broadcast_add,mhlo.select | FileCheck %s
+// RUN: synthesizer %s --num-threads=32 --ignore-equivalent-candidates --ops=chlo.broadcast_add,stablehlo.select | FileCheck %s
 
-// CHECK:     mhlo.select
+// CHECK:     stablehlo.select
 #map = affine_map<(d0) -> (d0 + 1)>
 module {
   func.func @foo(%arg6 : memref<4x4xf64>, %arg9: memref<4x4xf64>) -> memref<4x4xf64> attributes { llvm.emit_c_interface} {

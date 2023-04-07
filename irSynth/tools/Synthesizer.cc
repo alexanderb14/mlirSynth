@@ -38,6 +38,7 @@
 #include "llvm/Support/Threading.h"
 
 #include <iterator>
+#include <stablehlo/dialect/StablehloOps.h>
 
 using namespace llvm;
 using namespace mlir;
@@ -177,9 +178,10 @@ int main(int argc, char **argv) {
       std::make_shared<ContextManager>(printErrors);
   auto *ctx = contextManager->createContext();
 
+  Dialect *stablehloDialect = ctx->getOrLoadDialect<stablehlo::StablehloDialect>();
   Dialect *hloDialect = ctx->getOrLoadDialect<mhlo::MhloDialect>();
   Dialect *chloDialect = ctx->getOrLoadDialect<chlo::ChloDialect>();
-  std::vector<Dialect *> dialects = {hloDialect, chloDialect};
+  std::vector<Dialect *> dialects = {stablehloDialect, hloDialect, chloDialect};
 
   // Parse the input file.
   std::string errorMessage;
@@ -231,12 +233,12 @@ int main(int argc, char **argv) {
                                            "chlo.broadcast_add",
                                            "chlo.broadcast_subtract",
                                            "chlo.broadcast_multiply",
-                                           "mhlo.dot",
-                                           "mhlo.reduce",
-                                           "mhlo.dynamic_reshape",
-                                           "mhlo.dot_general"
-                                           "mhlo.transpose",
-                                           "mhlo.select"};
+                                           "stablehlo.dot",
+                                           "stablehlo.reduce",
+                                           "stablehlo.dynamic_reshape",
+                                           "stablehlo.dot_general"
+                                           "stablehlo.transpose",
+                                           "stablehlo.select"};
   llvm::DenseMap<func::FuncOp, OwningOpRef<ModuleOp>> originalToSynthesizedFns;
   llvm::DenseMap<func::FuncOp, std::vector<unsigned>>
       originalToSynthesizedArgIds;

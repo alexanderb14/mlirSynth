@@ -177,7 +177,7 @@ void outlineTargets(ModuleOp &module, func::FuncOp &origFunc, std::string target
 void TargetOutlinePass::runOnOperation() {
   auto operation = getOperation();
   for (auto func : operation.getOps<func::FuncOp>())
-    outlineTargets(operation, func, "mhlo");
+    outlineTargets(operation, func, "stablehlo");
 }
 
 std::unique_ptr<OperationPass<ModuleOp>> createTargetOutlinePass() {

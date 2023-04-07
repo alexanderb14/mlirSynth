@@ -10,7 +10,6 @@
 #include "execution/ArgUtils.h"
 #include "execution/ArrayUtils.h"
 
-#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/ExecutionEngine/ExecutionEngine.h"
 #include "mlir/IR/BuiltinOps.h"
@@ -21,6 +20,7 @@
 #include "mlir/IR/Verifier.h"
 #include "mlir/Parser/Parser.h"
 #include "mlir/Support/LogicalResult.h"
+#include "stablehlo/dialect/StablehloOps.h"
 #include "llvm/ADT/ArrayRef.h"
 
 #include <chrono>
@@ -167,12 +167,12 @@ LogicalResult inferHLOResultTypes(Operation *op) {
   // Not all operations have the infer return types function.
   // Therefore, we implement some manually.
   auto opNameStr = op->getName().getStringRef().str();
-  if (opNameStr == "mhlo.dynamic_reshape") {
+  if (opNameStr == "stablehlo.dynamic_reshape") {
     // Construct a tensor type with the shape values of the second operand.
     SmallVector<int64_t, 4> shape;
     auto *argOp = op->getOperand(1).getDefiningOp();
     if (argOp) {
-      auto constantOp = dyn_cast<mhlo::ConstantOp>(argOp);
+      auto constantOp = dyn_cast<stablehlo::ConstantOp>(argOp);
       if (constantOp) {
         auto denseAttr = constantOp.getValue().dyn_cast<DenseElementsAttr>();
         if (denseAttr) {
@@ -194,7 +194,7 @@ LogicalResult inferHLOResultTypes(Operation *op) {
 
     return success();
   }
-  if (opNameStr == "mhlo.dot_general") {
+  if (opNameStr == "stablehlo.dot_general") {
     // Get the return shapes of the lhs and rhs operands.
     auto lhsShape =
         op->getOperand(0).getType().cast<RankedTensorType>().getShape();
@@ -203,7 +203,7 @@ LogicalResult inferHLOResultTypes(Operation *op) {
 
     // Get the contraction dimensions.
     auto dotDimensionNumbersAttr =
-        op->getAttrOfType<mhlo::DotDimensionNumbersAttr>(
+        op->getAttrOfType<stablehlo::DotDimensionNumbersAttr>(
             "dot_dimension_numbers");
     auto lhsContractingDimensions =
         dotDimensionNumbersAttr.getLhsContractingDimensions();
@@ -236,7 +236,7 @@ LogicalResult inferHLOResultTypes(Operation *op) {
 }
 
 LogicalResult verifyOp(Operation *op, RegisteredOperationName &opName) {
-  std::vector<std::string> verifyTraitsOnlyOps = {"mhlo.dot"};
+  std::vector<std::string> verifyTraitsOnlyOps = {"stablehlo.dot"};
   std::string opname = op->getName().getStringRef().str();
   bool verifyTraitsOnly =
       std::find(verifyTraitsOnlyOps.begin(), verifyTraitsOnlyOps.end(),
@@ -298,7 +298,7 @@ void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
 
     CandidatePtr candidate(new Candidate({}, type));
     candidate->addOperation(
-        ctx, builder.create<mhlo::ConstantOp>(UnknownLoc::get(&ctx), attr),
+        ctx, builder.create<stablehlo::ConstantOp>(UnknownLoc::get(&ctx), attr),
         false);
     candidateStore->addCandidate(candidate);
   }
@@ -424,7 +424,7 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
       // First element of rhsOpShape is the dimension to be contracted
       int64_t rhsContracting = 0;
 
-      auto dotDimensionNumbers = mhlo::DotDimensionNumbersAttr::get(
+      auto dotDimensionNumbers = stablehlo::DotDimensionNumbersAttr::get(
           &ctx, {}, {}, {lhsContracting}, {rhsContracting});
       attributes.push_back(builder.getNamedAttr(attrName, dotDimensionNumbers));
     }

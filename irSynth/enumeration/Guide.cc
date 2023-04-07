@@ -131,26 +131,26 @@ std::vector<std::string> predictOps(std::vector<std::string> &supportedOps,
     ops.emplace_back("chlo.broadcast_multiply");
 
   if (countNumOps<math::SqrtOp>(op) > 0)
-    ops.emplace_back("mhlo.sqrt");
+    ops.emplace_back("stablehlo.sqrt");
   if (countNumOps<arith::SelectOp>(op) > 0) {
-    ops.emplace_back("mhlo.select");
+    ops.emplace_back("stablehlo.select");
   }
   if (countNumOps<arith::CmpFOp>(op) > 0) {
-    ops.emplace_back("mhlo.compare");
+    ops.emplace_back("stablehlo.compare");
   }
 
   // Transpose heuristics
   if (countNumMultipliedMismatchingMemrefAccesses(op) > 0)
-    ops.emplace_back("mhlo.transpose");
+    ops.emplace_back("stablehlo.transpose");
 
   // Select heuristics
   if (countNumLoopBoundMaps(op) > 0)
-    ops.emplace_back("mhlo.select");
+    ops.emplace_back("stablehlo.select");
 
   // Reduction heuristics
   if (computeNumCyclesWithSelfEdges(g) > 0) {
-    ops.emplace_back("mhlo.dot_general");
-    ops.emplace_back("mhlo.reduce");
+    ops.emplace_back("stablehlo.dot_general");
+    ops.emplace_back("stablehlo.reduce");
   }
 
   // If we didn't match any ops, add all of them.

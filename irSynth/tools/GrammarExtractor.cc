@@ -164,17 +164,15 @@ void emitSrcIncludes(raw_ostream &os) {
 #include "mlir/IR/TensorEncoding.h"
 #include "stablehlo/dialect/Base.h"
 
-// Include order below matters.
-#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops_enums.h.inc"
-#define GET_ATTRDEF_CLASSES
-#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops_attrs.h.inc"
-#define GET_TYPEDEF_CLASSES
-#include "mlir-hlo/Dialect/mhlo/IR/hlo_ops_typedefs.h.inc"
-
 // Include order matters
 #include "stablehlo/dialect/ChloEnums.h.inc"
 #define GET_ATTRDEF_CLASSES
 #include "stablehlo/dialect/ChloAttrs.h.inc"
+
+// Include order matters
+#include "stablehlo/dialect/StablehloEnums.h.inc"
+#define GET_ATTRDEF_CLASSES
+#include "stablehlo/dialect/StablehloAttrs.h.inc"
 
 #include <cassert>
 #include <memory>

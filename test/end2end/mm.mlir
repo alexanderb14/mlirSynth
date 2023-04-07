@@ -1,6 +1,6 @@
 // RUN: synthesizer %s --num-threads=32 --ignore-equivalent-candidates | FileCheck %s
 
-// CHECK: %0 = "mhlo.dot"
+// CHECK: %0 = stablehlo.dot
 module {
   func.func @foo(%arg6 : memref<3x4xf64>, %arg9: memref<4x6xf64>) -> memref<3x6xf64> attributes { llvm.emit_c_interface} {
     %arg10 = memref.alloc() : memref<3x6xf64>

@@ -181,8 +181,8 @@ void changeTypeSizes(func::FuncOp &func, SizeMap &newSizes) {
 
 void changeConstantValues(func::FuncOp &func, SizeMap &newSizes) {
   func->walk([&](Operation *op) {
-    // Check if op is a mhlo.constant
-    if (op->getName().getStringRef() == "mhlo.constant") {
+    // Check if op is a stablehlo.constant
+    if (op->getName().getStringRef() == "stablehlo.constant") {
       // Get the value of the constant.
       auto value = op->getAttrOfType<DenseElementsAttr>("value");
       // Get the type of the constant.

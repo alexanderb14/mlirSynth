@@ -55,6 +55,7 @@
 using namespace mlir;
 
 void addCHLOToLLVMPasses(std::shared_ptr<mlir::PassManager> pm) {
+  pm->addPass(mhlo::createStablehloLegalizeToHloPass());
   pm->addNestedPass<func::FuncOp>(mhlo::createChloLegalizeToHloPass());
 
   // Note: The below MHLO -> LLVM lowering pipeline has been copied from:

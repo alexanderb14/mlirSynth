@@ -19,7 +19,6 @@
 
 namespace grammar {
 enum OpAndResType {
-  HLO_AsyncBundle,
   HLO_ComplexTensor,
   HLO_DimensionTensor,
   HLO_Fp32Or64Tensor,
@@ -43,18 +42,15 @@ enum OpAndResType {
   Index,
   Shape_WitnessType,
   anonymous_526,
-  anonymous_632,
-  anonymous_641,
-  anonymous_651,
+  anonymous_610,
+  anonymous_621,
+  anonymous_653,
+  anonymous_655,
+  anonymous_673,
   anonymous_686,
   anonymous_688,
-  anonymous_713,
-  anonymous_726,
-  anonymous_728,
-  anonymous_734,
-  anonymous_740,
-  anonymous_747,
-  anonymous_754
+  anonymous_694,
+  anonymous_704
 };
 
 class AttributeGenerator {
@@ -65,24 +61,20 @@ public:
   // AttrDef generators. (exhaustively enumerate all combinations)
   std::vector<mlir::Attribute> genChloComparisonDirectionAttr();
   std::vector<mlir::Attribute> genChloComparisonTypeAttr();
-  std::vector<mlir::Attribute> genMhloArgResultAliasAttr();
-  std::vector<mlir::Attribute> genMhloChannelHandleAttr();
-  std::vector<mlir::Attribute> genMhloComparisonDirectionAttr();
-  std::vector<mlir::Attribute> genMhloComparisonTypeAttr();
-  std::vector<mlir::Attribute> genMhloConvDimensionNumbersAttr();
-  std::vector<mlir::Attribute> genMhloDequantizeModeAttr();
-  std::vector<mlir::Attribute> genMhloDomainKindAttr();
-  std::vector<mlir::Attribute> genMhloDotDimensionNumbersAttr();
-  std::vector<mlir::Attribute> genMhloFftTypeAttr();
-  std::vector<mlir::Attribute> genMhloFusionKindAttr();
-  std::vector<mlir::Attribute> genMhloGatherDimensionNumbersAttr();
-  std::vector<mlir::Attribute> genMhloOutputOperandAliasAttr();
-  std::vector<mlir::Attribute> genMhloPrecisionAttr();
-  std::vector<mlir::Attribute> genMhloRngAlgorithmAttr();
-  std::vector<mlir::Attribute> genMhloRngDistributionAttr();
-  std::vector<mlir::Attribute> genMhloScatterDimensionNumbersAttr();
-  std::vector<mlir::Attribute> genMhloTransposeAttr();
-  std::vector<mlir::Attribute> genMhloTypeExtensionsAttr();
+  std::vector<mlir::Attribute> genStablehloArgResultAliasAttr();
+  std::vector<mlir::Attribute> genStablehloChannelHandleAttr();
+  std::vector<mlir::Attribute> genStablehloComparisonDirectionAttr();
+  std::vector<mlir::Attribute> genStablehloComparisonTypeAttr();
+  std::vector<mlir::Attribute> genStablehloConvDimensionNumbersAttr();
+  std::vector<mlir::Attribute> genStablehloDotDimensionNumbersAttr();
+  std::vector<mlir::Attribute> genStablehloFftTypeAttr();
+  std::vector<mlir::Attribute> genStablehloGatherDimensionNumbersAttr();
+  std::vector<mlir::Attribute> genStablehloPrecisionAttr();
+  std::vector<mlir::Attribute> genStablehloRngAlgorithmAttr();
+  std::vector<mlir::Attribute> genStablehloRngDistributionAttr();
+  std::vector<mlir::Attribute> genStablehloScatterDimensionNumbersAttr();
+  std::vector<mlir::Attribute> genStablehloTransposeAttr();
+  std::vector<mlir::Attribute> genStablehloTypeExtensionsAttr();
 
   // Attr generators. (to be derived and implemented)
   virtual std::vector<mlir::Attribute> genArrayAttr();
@@ -93,9 +85,7 @@ public:
   virtual std::vector<mlir::Attribute> genDenseElementsAttr();
   virtual std::vector<mlir::Attribute> genDenseIntElementsAttr();
   virtual std::vector<mlir::Attribute> genElementsAttr();
-  virtual std::vector<mlir::Attribute> genFlatSymbolRefAttr();
   virtual std::vector<mlir::Attribute> genFloatAttr();
-  virtual std::vector<mlir::Attribute> genFusionKindAttr();
   virtual std::vector<mlir::Attribute> genIntegerAttr();
   virtual std::vector<mlir::Attribute> genStringAttr();
   virtual std::vector<mlir::Attribute> genTypedAttr();
