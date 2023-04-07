@@ -7,7 +7,9 @@
 #include "mlir/IR/BuiltinTypeInterfaces.h"
 #include "mlir/IR/Location.h"
 
+#include <llvm-14/llvm/ADT/ArrayRef.h>
 #include <random>
+#include <set>
 
 using namespace mlir;
 
@@ -18,12 +20,6 @@ int randomInteger(int min, int max) {
   static std::mt19937 gen(rd());
   std::uniform_int_distribution<> dis(min, max);
   return dis(gen);
-}
-
-DenseElementsAttr getDenseElementsAttr(std::vector<Attribute> attrVect) {
-  Type type = RankedTensorType::get({static_cast<long>(attrVect.size())},
-                                    attrVect[0].cast<TypedAttr>().getType());
-  return DenseElementsAttr::get(type.cast<TensorType>(), attrVect);
 }
 
 void printAttributes(
@@ -39,9 +35,9 @@ void printAttributes(
 
 // Attribute generators
 // -----------------------------------------------------------------------------
-std::vector<std::pair<Attribute, grammar::OpAndResType>>
-genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
-  std::vector<std::pair<Attribute, grammar::OpAndResType>> attributes;
+std::vector<::llvm::SmallVector<int64_t>>
+genShapes(Region::BlockArgListType &functionArgs) {
+  std::vector<::llvm::SmallVector<int64_t>> ret;
 
   for (auto arg : functionArgs) {
     if (!arg.getType().isa<ShapedType>())
@@ -50,78 +46,79 @@ genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs) {
     auto shape = arg.getType().cast<ShapedType>().getShape();
 
     // Same shape as the argument: E.g. [3, 5, 7] -> [3, 5, 7]
-    auto attrVect = std::vector<Attribute>();
-    for (auto dim : shape) {
-      attrVect.push_back(builder.getI64IntegerAttr(dim));
-    }
-    attributes.emplace_back(getDenseElementsAttr(attrVect),
-                            grammar::OpAndResType::HLO_DimensionTensor);
+    ret.emplace_back(shape.begin(), shape.end());
 
     // Dimension at previous last inserted: E.g. [3, 5, 7] -> [3, 5, 1, 7]
-    attrVect = std::vector<Attribute>();
-    unsigned dimIdx = 0;
-    for (auto dim : shape) {
-      attrVect.push_back(builder.getI64IntegerAttr(dim));
-      if (dimIdx == shape.size() - 2) {
-        attrVect.push_back(builder.getI64IntegerAttr(1));
-      }
-      dimIdx++;
-    }
-    attributes.emplace_back(getDenseElementsAttr(attrVect),
-                            grammar::OpAndResType::HLO_DimensionTensor);
+    ::llvm::SmallVector<int64_t> shapeWithOne(shape.begin(), shape.end());
+    shapeWithOne.insert(shapeWithOne.end() - 1, 1);
+    ret.emplace_back(shapeWithOne);
 
     // Leading dimension inserted: E.g. [5] -> [1, 5] or [3, 5] -> [1, 3, 5]
-    attrVect = std::vector<Attribute>();
-    attrVect.push_back(builder.getI64IntegerAttr(1));
-    for (auto dim : shape) {
-      attrVect.push_back(builder.getI64IntegerAttr(dim));
-    }
-    attributes.emplace_back(getDenseElementsAttr(attrVect),
-                            grammar::OpAndResType::HLO_DimensionTensor);
+    ::llvm::SmallVector<int64_t> shapeWithOneLeading(shape.begin(),
+                                                     shape.end());
+    shapeWithOneLeading.insert(shapeWithOneLeading.begin(), 1);
+    ret.emplace_back(shapeWithOneLeading);
 
     // Trailing dimension inserted: E.g. [5] -> [5, 1] or [3, 5] -> [3, 5, 1]
-    attrVect = std::vector<Attribute>();
-    for (auto dim : shape) {
-      attrVect.push_back(builder.getI64IntegerAttr(dim));
-    }
-    attrVect.push_back(builder.getI64IntegerAttr(1));
-    attributes.emplace_back(getDenseElementsAttr(attrVect),
-                            grammar::OpAndResType::HLO_DimensionTensor);
+    ::llvm::SmallVector<int64_t> shapeWithOneTrailing(shape.begin(),
+                                                      shape.end());
+    shapeWithOneTrailing.insert(shapeWithOneTrailing.end(), 1);
+    ret.emplace_back(shapeWithOneTrailing);
 
     // Transpose: E.g. [3, 5] -> [5, 3]
-    attrVect = std::vector<Attribute>();
-    for (unsigned i = 0; i < shape.size(); i++) {
-      attrVect.push_back(builder.getI64IntegerAttr(i));
+    ::llvm::SmallVector<int64_t> shapeTransposed(shape.begin(), shape.end());
+    std::reverse(shapeTransposed.begin(), shapeTransposed.end());
+    ret.emplace_back(shapeTransposed);
+
+    // Reverse: E.g. when rank 1, [1, 0] or rank 2, [2, 1, 0]
+    llvm::SmallVector<int64_t> sequenceReverse;
+    for (int i = shape.size() - 1; i >= 0; i--) {
+      sequenceReverse.push_back(i);
     }
-    std::reverse(attrVect.begin(), attrVect.end());
-    attributes.emplace_back(getDenseElementsAttr(attrVect),
+    ret.emplace_back(sequenceReverse);
+  }
+
+  return ret;
+}
+
+std::vector<std::pair<Attribute, grammar::OpAndResType>>
+genShapeAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
+                   llvm::ArrayRef<int64_t> &targetShape) {
+  std::vector<std::pair<Attribute, grammar::OpAndResType>> attributes;
+
+  auto shapes = genShapes(functionArgs);
+  for (auto &shape : shapes) {
+    attributes.emplace_back(builder.getI64TensorAttr(shape),
                             grammar::OpAndResType::HLO_DimensionTensor);
   }
 
   return attributes;
 }
 
+std::vector<int64_t> genUnaries(Region::BlockArgListType &functionArgs,
+                                llvm::ArrayRef<int64_t> &targetShape) {
+  std::set<int64_t> scalars;
+
+  // Add 0 and 1.
+  scalars.insert(0);
+  scalars.insert(1);
+
+  return std::vector<int64_t>(scalars.begin(), scalars.end());
+}
+
 std::vector<std::pair<Attribute, grammar::OpAndResType>>
 genUnaryAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
-                    llvm::ArrayRef<int64_t> &targetShape, int maxRank) {
+                   llvm::ArrayRef<int64_t> &targetShape) {
   std::vector<std::pair<Attribute, grammar::OpAndResType>> attributes;
 
-  if (maxRank >= 0) {
-    // Create scalars.
-    std::vector<Attribute> attrs = {
-        //        builder.getBoolAttr(true),    builder.getBoolAttr(false),
-        builder.getF64FloatAttr(0.0),
-        builder.getF64FloatAttr(1.0),
-        //        builder.getI64IntegerAttr(0), builder.getI64IntegerAttr(1),
-        IntegerAttr::get(
-            IntegerType::get(builder.getContext(), 64, IntegerType::Signless),
-            APInt(64, 0, false)),
-    };
-    for (auto attr : attrs) {
-      Type type = RankedTensorType::get({}, attr.cast<TypedAttr>().getType());
-      auto attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attr);
-      attributes.emplace_back(attrDense, grammar::OpAndResType::HLO_Tensor);
-    }
+  auto unaries = genUnaries(functionArgs, targetShape);
+  for (auto &unary : unaries) {
+    Attribute unaryAttr = builder.getF64FloatAttr((double)unary);
+    Type type =
+        RankedTensorType::get({}, unaryAttr.cast<TypedAttr>().getType());
+    auto attrDense = DenseElementsAttr::get(type.cast<TensorType>(), unary);
+
+    attributes.emplace_back(attrDense, grammar::OpAndResType::HLO_Tensor);
   }
 
   return attributes;
@@ -129,7 +126,7 @@ genUnaryAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
 
 std::vector<std::pair<Attribute, grammar::OpAndResType>>
 genMaskAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
-                    llvm::ArrayRef<int64_t> &targetShape, int maxRank) {
+                  llvm::ArrayRef<int64_t> &targetShape) {
   std::vector<std::pair<Attribute, grammar::OpAndResType>> attributes;
 
   if (targetShape.size() == 2) {
@@ -165,21 +162,19 @@ genMaskAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
 
 std::vector<std::pair<Attribute, grammar::OpAndResType>>
 genAttributes(MLIRContext &ctx, Region::BlockArgListType &functionArgs,
-              llvm::ArrayRef<int64_t> &targetShape, int maxRank) {
+              llvm::ArrayRef<int64_t> &targetShape) {
   std::vector<std::pair<Attribute, grammar::OpAndResType>> attributes;
   OpBuilder builder(&ctx);
 
-  auto shapeAttributes = genShapeAttributes(builder, functionArgs);
+  auto shapeAttributes = genShapeAttributes(builder, functionArgs, targetShape);
   attributes.insert(attributes.end(), shapeAttributes.begin(),
                     shapeAttributes.end());
 
-  auto maskAttributes =
-      genMaskAttributes(builder, functionArgs, targetShape, maxRank);
+  auto maskAttributes = genMaskAttributes(builder, functionArgs, targetShape);
   attributes.insert(attributes.end(), maskAttributes.begin(),
                     maskAttributes.end());
 
-  auto unaryAttributes =
-      genUnaryAttributes(builder, functionArgs, targetShape, maxRank);
+  auto unaryAttributes = genUnaryAttributes(builder, functionArgs, targetShape);
   attributes.insert(attributes.end(), unaryAttributes.begin(),
                     unaryAttributes.end());
 
@@ -188,11 +183,12 @@ genAttributes(MLIRContext &ctx, Region::BlockArgListType &functionArgs,
   return attributes;
 }
 
-std::vector<mlir::Attribute> CustomAttributeGenerator::genDenseIntElementsAttr() {
+std::vector<mlir::Attribute>
+CustomAttributeGenerator::genDenseIntElementsAttr() {
   std::vector<mlir::Attribute> attributes;
 
   OpBuilder builder(&ctx);
-  auto shapeAttributes = genAttributes(ctx, functionArgs, targetShape, 2);
+  auto shapeAttributes = genAttributes(ctx, functionArgs, targetShape);
   for (auto attr : shapeAttributes) {
     attributes.push_back(attr.first);
   }

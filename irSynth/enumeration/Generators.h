@@ -11,7 +11,7 @@
 std::vector<std::pair<mlir::Attribute, grammar::OpAndResType>>
 genAttributes(mlir::MLIRContext &ctx,
               mlir::Region::BlockArgListType &functionArgs,
-              llvm::ArrayRef<int64_t> &targetShape, int maxRank);
+              llvm::ArrayRef<int64_t> &targetShape);
 
 std::vector<std::shared_ptr<mlir::Region>> genRegions(mlir::MLIRContext &ctx);
 

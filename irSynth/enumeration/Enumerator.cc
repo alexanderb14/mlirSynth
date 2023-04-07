@@ -292,7 +292,7 @@ void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
   OpBuilder builder(&ctx);
 
   // Constant candidates.
-  for (auto &attributePair : genAttributes(ctx, functionArgs, targetShape, 0)) {
+  for (auto &attributePair : genAttributes(ctx, functionArgs, targetShape)) {
     auto &attr = attributePair.first;
     auto &type = attributePair.second;
 
@@ -636,9 +636,9 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
       }
 
       // - Attributes.
+      //std::vector<std::vector<mlir::Attribute>> attributesOrig;
       auto attributePairs =
-          genAttributes(ctx, inputFunctionArgs, targetShape, 2);
-
+          genAttributes(ctx, inputFunctionArgs, targetShape);
       for (unsigned i = 0; i < opInfo->getNumAttributes(); i++) {
         std::vector<mlir::Attribute> attributeCandidates;
         for (auto &attributePair : attributePairs) {
@@ -651,8 +651,15 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
         }
       }
 
-      // - Regions.
-      auto regionsGenereated = genRegions(ctx);
+      //auto abc = std::make_shared<CustomAttributeGenerator>(
+      //    ctx, inputFunctionArgs, targetShape);
+      //attributes = opInfo->genAttributes(abc);
+      //llvm::outs() << "Attrs " << opName << "Orig: " << attributesOrig.size()
+      //             << ", New: " << attributes.size()
+      //             << "\n";
+
+          // - Regions.
+          auto regionsGenereated = genRegions(ctx);
       for (unsigned i = 0; i < opInfo->getNumRegions(); i++) {
         regions.push_back(regionsGenereated);
       }
