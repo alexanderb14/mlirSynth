@@ -111,6 +111,7 @@ public:
   virtual OpAndResType getOperandType(unsigned index) const = 0;
   virtual mlir::Attribute getAttributeType(unsigned index) const = 0;
   virtual std::string getAttributeName(unsigned index) const = 0;
+  virtual bool isAttributeRequired(unsigned index) const = 0;
   virtual std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const = 0;
   virtual OpAndResType getResultType(unsigned index) const = 0;
 };

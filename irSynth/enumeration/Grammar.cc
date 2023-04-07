@@ -473,6 +473,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -503,6 +508,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -541,6 +551,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -571,6 +586,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -609,6 +629,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -643,6 +668,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -673,6 +703,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -714,6 +749,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -752,6 +793,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -787,6 +834,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
     }
     assert(false && "Invalid attribute index");
   }
@@ -832,6 +885,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return true;
+      case 2: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -869,6 +930,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
     }
     assert(false && "Invalid attribute index");
   }
@@ -910,6 +977,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -945,6 +1018,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
     }
     assert(false && "Invalid attribute index");
   }
@@ -986,6 +1065,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -1021,6 +1106,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
     }
     assert(false && "Invalid attribute index");
   }
@@ -1062,6 +1153,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -1097,6 +1194,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
     }
     assert(false && "Invalid attribute index");
   }
@@ -1138,6 +1241,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -1173,6 +1282,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
     }
     assert(false && "Invalid attribute index");
   }
@@ -1214,6 +1329,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -1247,6 +1368,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1288,6 +1414,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -1323,6 +1455,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
     }
     assert(false && "Invalid attribute index");
   }
@@ -1364,6 +1502,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -1399,6 +1543,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "broadcast_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
     }
     assert(false && "Invalid attribute index");
   }
@@ -1440,6 +1590,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -1478,6 +1634,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -1509,6 +1671,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1549,6 +1716,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genTypedAttr());
@@ -1582,6 +1755,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "value";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
     }
     assert(false && "Invalid attribute index");
   }
@@ -1620,6 +1799,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -1650,6 +1834,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1689,6 +1878,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -1719,6 +1913,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1757,6 +1956,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -1787,6 +1991,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1825,6 +2034,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -1855,6 +2069,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1893,6 +2112,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -1923,6 +2147,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -1962,6 +2191,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -1993,6 +2227,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2031,6 +2270,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -2061,6 +2305,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2098,6 +2347,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -2128,6 +2382,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2168,6 +2427,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genIntegerAttr());
@@ -2205,6 +2470,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -2235,6 +2505,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2274,6 +2549,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -2304,6 +2584,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2350,6 +2635,15 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return true;
+      case 2: return false;
+      case 3: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genIntegerAttr());
@@ -2391,6 +2685,14 @@ public:
       case 0: return "replica_groups";
       case 1: return "channel_handle";
       case 2: return "use_global_device_ids";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return false;
+      case 2: return false;
     }
     assert(false && "Invalid attribute index");
   }
@@ -2439,6 +2741,15 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return true;
+      case 2: return true;
+      case 3: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genIntegerAttr());
@@ -2478,6 +2789,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -2509,6 +2825,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2552,6 +2873,13 @@ public:
     switch (index) {
       case 0: return "epsilon";
       case 1: return "feature_index";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return true;
     }
     assert(false && "Invalid attribute index");
   }
@@ -2601,6 +2929,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genFloatAttr());
@@ -2643,6 +2978,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genFloatAttr());
@@ -2677,6 +3019,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2717,6 +3064,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -2751,6 +3104,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "broadcast_sizes";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
     }
     assert(false && "Invalid attribute index");
   }
@@ -2789,6 +3148,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -2823,6 +3187,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -2853,6 +3222,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2893,6 +3267,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genBoolAttr());
@@ -2930,6 +3310,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -2960,6 +3345,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -2999,6 +3389,13 @@ public:
     switch (index) {
       case 0: return "source_target_pairs";
       case 1: return "channel_handle";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return false;
     }
     assert(false && "Invalid attribute index");
   }
@@ -3043,6 +3440,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genStablehloComparisonDirectionAttr());
@@ -3080,6 +3484,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -3111,6 +3520,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3151,6 +3565,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genIntegerAttr());
@@ -3187,6 +3607,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genElementsAttr());
@@ -3218,6 +3644,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3275,6 +3706,20 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+      case 2: return false;
+      case 3: return false;
+      case 4: return false;
+      case 5: return true;
+      case 6: return true;
+      case 7: return true;
+      case 8: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -3318,6 +3763,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -3347,6 +3797,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3387,6 +3842,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -3419,6 +3880,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3471,6 +3937,18 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return false;
+      case 2: return true;
+      case 3: return false;
+      case 4: return false;
+      case 5: return false;
+      case 6: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genStringAttr());
@@ -3509,6 +3987,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3552,6 +4035,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genStablehloDotDimensionNumbersAttr());
@@ -3588,6 +4078,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "precision_config";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
     }
     assert(false && "Invalid attribute index");
   }
@@ -3630,6 +4126,14 @@ public:
       case 0: return "broadcast_dimensions";
       case 1: return "known_expanding_dimensions";
       case 2: return "known_nonexpanding_dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return false;
+      case 2: return false;
     }
     assert(false && "Invalid attribute index");
   }
@@ -3690,6 +4194,20 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+      case 2: return false;
+      case 3: return false;
+      case 4: return false;
+      case 5: return true;
+      case 6: return true;
+      case 7: return true;
+      case 8: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -3739,6 +4257,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genStablehloGatherDimensionNumbersAttr());
@@ -3774,6 +4299,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "iota_dimension";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
     }
     assert(false && "Invalid attribute index");
   }
@@ -3816,6 +4347,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -3847,6 +4383,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3888,6 +4429,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -3921,6 +4468,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -3962,6 +4514,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genStringAttr());
@@ -3997,6 +4555,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -4027,6 +4590,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4069,6 +4637,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genStablehloFftTypeAttr());
@@ -4101,6 +4676,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4146,6 +4726,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return true;
+      case 2: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genStablehloGatherDimensionNumbersAttr());
@@ -4182,6 +4770,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "dimension";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
     }
     assert(false && "Invalid attribute index");
   }
@@ -4222,6 +4816,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genIntegerAttr());
@@ -4257,6 +4857,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -4287,6 +4892,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4329,6 +4939,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genStringAttr());
@@ -4363,6 +4980,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "iota_dimension";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
     }
     assert(false && "Invalid attribute index");
   }
@@ -4401,6 +5024,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -4431,6 +5059,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4469,6 +5102,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -4499,6 +5137,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4539,6 +5182,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -4571,6 +5220,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4610,6 +5264,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -4641,6 +5300,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4679,6 +5343,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -4713,6 +5382,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -4743,6 +5417,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4782,6 +5461,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -4816,6 +5500,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "outfeed_config";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
     }
     assert(false && "Invalid attribute index");
   }
@@ -4861,6 +5551,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return true;
+      case 2: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -4898,6 +5596,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -4929,6 +5632,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -4970,6 +5678,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -5000,6 +5713,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5042,6 +5760,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genStablehloChannelHandleAttr());
@@ -5081,6 +5806,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -5117,6 +5848,13 @@ public:
     switch (index) {
       case 0: return "exponent_bits";
       case 1: return "mantissa_bits";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return true;
     }
     assert(false && "Invalid attribute index");
   }
@@ -5161,6 +5899,15 @@ public:
       case 1: return "replica_groups";
       case 2: return "channel_handle";
       case 3: return "use_global_device_ids";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return true;
+      case 2: return false;
+      case 3: return false;
     }
     assert(false && "Invalid attribute index");
   }
@@ -5213,6 +5960,16 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return false;
+      case 2: return false;
+      case 3: return false;
+      case 4: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -5253,6 +6010,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -5282,6 +6044,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5320,6 +6087,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -5350,6 +6122,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5389,6 +6166,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -5423,6 +6206,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "rng_algorithm";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
     }
     assert(false && "Invalid attribute index");
   }
@@ -5466,6 +6255,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genStablehloRngDistributionAttr());
@@ -5497,6 +6292,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5535,6 +6335,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -5565,6 +6370,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5608,6 +6418,14 @@ public:
       case 0: return "scatter_dimension_numbers";
       case 1: return "indices_are_sorted";
       case 2: return "unique_indices";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return false;
+      case 2: return false;
     }
     assert(false && "Invalid attribute index");
   }
@@ -5656,6 +6474,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+      case 2: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -5691,6 +6517,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5734,6 +6565,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genStablehloChannelHandleAttr());
@@ -5773,6 +6611,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genIntegerAttr());
@@ -5805,6 +6649,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5844,6 +6693,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -5875,6 +6729,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5913,6 +6772,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -5943,6 +6807,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -5987,6 +6856,14 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return true;
+      case 2: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genDenseIntElementsAttr());
@@ -6028,6 +6905,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     // attrs.push_back(attrGen->genIntegerAttr());
@@ -6060,6 +6944,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -6099,6 +6988,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -6129,6 +7023,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -6172,6 +7071,13 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genIntegerAttr());
@@ -6210,6 +7116,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genStringAttr());
@@ -6243,6 +7155,12 @@ public:
   std::string getAttributeName(unsigned index) const override {
     switch (index) {
       case 0: return "permutation";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
     }
     assert(false && "Invalid attribute index");
   }
@@ -6290,6 +7208,15 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return true;
+      case 2: return true;
+      case 3: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genBoolAttr());
@@ -6324,6 +7251,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -6364,6 +7296,12 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     attrs.push_back(attrGen->genStringAttr());
@@ -6395,6 +7333,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -6433,6 +7376,11 @@ public:
     }
     assert(false && "Invalid attribute index");
   }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
   std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
     std::vector<std::vector<mlir::Attribute>> attrs;
     return attrs;
@@ -6463,6 +7411,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");
@@ -6498,6 +7451,11 @@ public:
     assert(false && "Invalid attribute index");
   }
   std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid attribute index");

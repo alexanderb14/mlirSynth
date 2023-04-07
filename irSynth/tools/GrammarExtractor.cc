@@ -445,6 +445,7 @@ public:
   virtual OpAndResType getOperandType(unsigned index) const = 0;
   virtual mlir::Attribute getAttributeType(unsigned index) const = 0;
   virtual std::string getAttributeName(unsigned index) const = 0;
+  virtual bool isAttributeRequired(unsigned index) const = 0;
   virtual std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const = 0;
   virtual OpAndResType getResultType(unsigned index) const = 0;
 };
@@ -507,6 +508,17 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
     for (int i = 0; i < tblgenOp.getNumAttributes(); ++i) {
       auto &attr = tblgenOp.getAttribute(i);
       os << "      case " << i << ": return \"" << attr.name.str() << "\";\n";
+    }
+    os << "    }\n";
+    os << "    assert(false && \"Invalid attribute index\");\n";
+    os << "  }\n";
+
+    os << "  bool isAttributeRequired(unsigned index) const override {\n";
+    os << "    switch (index) {\n";
+    for (int i = 0; i < tblgenOp.getNumAttributes(); ++i) {
+      auto &attr = tblgenOp.getAttribute(i);
+      std::string isRequired = attr.attr.isOptional() ? "false": "true";
+      os << "      case " << i << ": return " << isRequired << ";\n";
     }
     os << "    }\n";
     os << "    assert(false && \"Invalid attribute index\");\n";
