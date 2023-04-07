@@ -163,57 +163,24 @@ OwningOpRef<ModuleOp> createModule(MLIRContext &ctx, Region *region) {
   return module;
 }
 
-LogicalResult inferHLOResultTypes(Operation *op) {
-  // Not all operations have the infer return types function.
-  // Therefore, we implement some manually.
-  auto opNameStr = op->getName().getStringRef().str();
-  if (opNameStr == "stablehlo.dynamic_reshape") {
-    // Construct a tensor type with the shape values of the second operand.
-    SmallVector<int64_t, 4> shape;
-    auto *argOp = op->getOperand(1).getDefiningOp();
-    if (argOp) {
-      auto constantOp = dyn_cast<stablehlo::ConstantOp>(argOp);
-      if (constantOp) {
-        auto denseAttr = constantOp.getValue().dyn_cast<DenseElementsAttr>();
-        if (denseAttr) {
-          // Check if the dense attribute is a vector.
-          if (denseAttr.getType().getRank() == 1) {
-            // Get the shape values and add them to the shape vector.
-            for (auto value : denseAttr.getValues<IntegerAttr>()) {
-              shape.push_back(value.getValue().getSExtValue());
-            }
-          }
-        }
-      }
-    }
-
-    auto arg0Type = op->getOperand(0).getType();
-    auto newTensorType = RankedTensorType::get(
-        shape, arg0Type.cast<TensorType>().getElementType());
-    op->getResult(0).setType(newTensorType);
-
-    return success();
-  }
-
-  return failure();
-}
-
 LogicalResult verifyOp(Operation *op, RegisteredOperationName &opName) {
-  std::vector<std::string> verifyTraitsOnlyOps = {"stablehlo.dot"};
-  std::string opname = op->getName().getStringRef().str();
-  bool verifyTraitsOnly =
-      std::find(verifyTraitsOnlyOps.begin(), verifyTraitsOnlyOps.end(),
-                opname) != verifyTraitsOnlyOps.end();
-
-  if (verifyTraitsOnly) {
-    if (failed(opName.verifyTraits(op))) {
-      return failure();
-    }
-  } else {
-    if (failed(opName.verifyInvariants(op))) {
-      return failure();
-    }
+  if (failed(opName.verifyTraits(op))) {
+    return failure();
   }
+  //bool verifyTraitsOnly = false;
+  //if (op->getName().getStringRef().str() == "stablehlo.dot") {
+  //  verifyTraitsOnly = true;
+  //}
+
+  //if (verifyTraitsOnly) {
+  //  if (failed(opName.verifyTraits(op))) {
+  //    return failure();
+  //  }
+  //} else {
+  //  if (failed(opName.verifyInvariants(op))) {
+  //    return failure();
+  //  }
+  //}
   return success();
 }
 
@@ -386,16 +353,14 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
   }
 
   // Infer the operation result type.
-  if (failed(inferHLOResultTypes(op))) {
-    if (failed(verifyOp(op, opName))) {
-      return reject_isNotVerifiable;
-    }
+  if (failed(verifyOp(op, opName))) {
+    return reject_isNotVerifiable;
+  }
 
-    if (failed(inferResultTypes(ctx, op))) {
-      if (options.printInvalidCandidates)
-        createModule(ctx, newCandidate->getRegion())->dump();
-      return reject_isNotResultTypeInferrable;
-    }
+  if (failed(inferResultTypes(ctx, op))) {
+    if (options.printInvalidCandidates)
+      createModule(ctx, newCandidate->getRegion())->dump();
+    return reject_isNotResultTypeInferrable;
   }
 
   // Check if the operation result shape rank is supported.
@@ -562,29 +527,11 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
       }
 
       // - Attributes.
-      ////std::vector<std::vector<mlir::Attribute>> attributesOrig;
-      //auto attributePairs =
-      //    genAttributes(ctx, inputFunctionArgs, targetShape);
-      //for (unsigned i = 0; i < opInfo->getNumAttributes(); i++) {
-      //  std::vector<mlir::Attribute> attributeCandidates;
-      //  for (auto &attributePair : attributePairs) {
-      //    auto &attr = attributePair.first;
-      //    attributeCandidates.push_back(attr);
-      //  }
-
-      //  if (isAttributeNameRelevant(opInfo->getAttributeName(i))) {
-      //    attributes.push_back(attributeCandidates);
-      //  }
-      //}
-
-      auto abc = std::make_shared<CustomAttributeGenerator>(
+      auto attrGen = std::make_shared<CustomAttributeGenerator>(
           ctx, inputFunctionArgs, targetShape);
-      attributes = opInfo->genAttributes(abc);
-      //llvm::outs() << "Attrs " << opName << "Orig: " << attributesOrig.size()
-      //             << ", New: " << attributes.size()
-      //             << "\n";
+      attributes = opInfo->genAttributes(attrGen);
 
-          // - Regions.
+      // - Regions.
       auto regionsGenereated = genRegions(ctx);
       for (unsigned i = 0; i < opInfo->getNumRegions(); i++) {
         regions.push_back(regionsGenereated);

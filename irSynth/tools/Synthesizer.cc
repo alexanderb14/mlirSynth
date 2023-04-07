@@ -235,7 +235,6 @@ int main(int argc, char **argv) {
                                            "chlo.broadcast_multiply",
                                            "stablehlo.dot",
                                            "stablehlo.reduce",
-                                           "stablehlo.dynamic_reshape",
                                            "stablehlo.dot_general"
                                            "stablehlo.transpose",
                                            "stablehlo.select"};
