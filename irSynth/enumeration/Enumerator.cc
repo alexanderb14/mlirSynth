@@ -325,23 +325,6 @@ bool hasRankedAndKnownShape(Operation *op) {
   return shapedType.hasStaticShape();
 }
 
-bool isAttributeNameRelevant(std::string attrName) {
-  return !(attrName == "precision_config" ||
-           attrName == "broadcast_dimensions" ||
-           attrName == "dot_dimension_numbers");
-}
-
-std::vector<std::string>
-getRelevantAttributeNames(grammar::GrammarOpPtr &opInfo) {
-  std::vector<std::string> attrNames;
-  for (unsigned i = 0; i < opInfo->getNumAttributes(); i++) {
-    std::string attrName = opInfo->getAttributeName(i);
-    if (isAttributeNameRelevant(attrName))
-      attrNames.push_back(attrName);
-  }
-  return attrNames;
-}
-
 ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
                          RegisteredOperationName &opName,
                          grammar::GrammarOpPtr &opInfo, IExecutorPtr &executor,
@@ -363,34 +346,14 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
       newCandidate->merge(ctx, operandArgTuple.operands);
 
   // Set up attributes.
-  auto attrNames = getRelevantAttributeNames(opInfo);
-  auto attrValues = operandArgTuple.attributes;
-  if (attrNames.size() != attrValues.size()) {
-    llvm::outs() << "attrNames.size() = " << attrNames.size()
-                 << ", attrValues.size() = " << attrValues.size() << "\n";
-    assert(false);
-  }
-
   SmallVector<NamedAttribute> attributes = {};
-  for (unsigned i = 0; i < attrNames.size(); i++) {
-    std::string attrName = attrNames[i];
-    mlir::Attribute value = attrValues[i];
+  for (unsigned i = 0; i < opInfo->getNumAttributes(); i++) {
+    if (!opInfo->isAttributeRequired(i))
+      continue;
+
+    std::string attrName = opInfo->getAttributeName(i);
+    mlir::Attribute value = operandArgTuple.attributes[i];
     attributes.push_back(builder.getNamedAttr(attrName, value));
-  }
-
-  auto unfilteredAttrNames = opName.getAttributeNames();
-  for (auto attrName : unfilteredAttrNames) {
-    if (attrName.str() == "dot_dimension_numbers") {
-      // Last element of lhsOpShape is the dimension to be contracted
-      auto lhsOpShape = operands[0].getType().cast<ShapedType>().getShape();
-      int64_t lhsContracting = lhsOpShape.size() - 1;
-      // First element of rhsOpShape is the dimension to be contracted
-      int64_t rhsContracting = 0;
-
-      auto dotDimensionNumbers = stablehlo::DotDimensionNumbersAttr::get(
-          &ctx, {}, {}, {lhsContracting}, {rhsContracting});
-      attributes.push_back(builder.getNamedAttr(attrName, dotDimensionNumbers));
-    }
   }
 
   // Set up regions.
@@ -599,30 +562,30 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
       }
 
       // - Attributes.
-      //std::vector<std::vector<mlir::Attribute>> attributesOrig;
-      auto attributePairs =
-          genAttributes(ctx, inputFunctionArgs, targetShape);
-      for (unsigned i = 0; i < opInfo->getNumAttributes(); i++) {
-        std::vector<mlir::Attribute> attributeCandidates;
-        for (auto &attributePair : attributePairs) {
-          auto &attr = attributePair.first;
-          attributeCandidates.push_back(attr);
-        }
+      ////std::vector<std::vector<mlir::Attribute>> attributesOrig;
+      //auto attributePairs =
+      //    genAttributes(ctx, inputFunctionArgs, targetShape);
+      //for (unsigned i = 0; i < opInfo->getNumAttributes(); i++) {
+      //  std::vector<mlir::Attribute> attributeCandidates;
+      //  for (auto &attributePair : attributePairs) {
+      //    auto &attr = attributePair.first;
+      //    attributeCandidates.push_back(attr);
+      //  }
 
-        if (isAttributeNameRelevant(opInfo->getAttributeName(i))) {
-          attributes.push_back(attributeCandidates);
-        }
-      }
+      //  if (isAttributeNameRelevant(opInfo->getAttributeName(i))) {
+      //    attributes.push_back(attributeCandidates);
+      //  }
+      //}
 
-      //auto abc = std::make_shared<CustomAttributeGenerator>(
-      //    ctx, inputFunctionArgs, targetShape);
-      //attributes = opInfo->genAttributes(abc);
+      auto abc = std::make_shared<CustomAttributeGenerator>(
+          ctx, inputFunctionArgs, targetShape);
+      attributes = opInfo->genAttributes(abc);
       //llvm::outs() << "Attrs " << opName << "Orig: " << attributesOrig.size()
       //             << ", New: " << attributes.size()
       //             << "\n";
 
           // - Regions.
-          auto regionsGenereated = genRegions(ctx);
+      auto regionsGenereated = genRegions(ctx);
       for (unsigned i = 0; i < opInfo->getNumRegions(); i++) {
         regions.push_back(regionsGenereated);
       }

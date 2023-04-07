@@ -103,6 +103,16 @@ std::vector<int64_t> genUnaries(Region::BlockArgListType &functionArgs,
   scalars.insert(0);
   scalars.insert(1);
 
+  for (auto arg : functionArgs) {
+    if (!arg.getType().isa<ShapedType>())
+      continue;
+    auto shape = arg.getType().cast<ShapedType>().getShape();
+
+    for (unsigned i = 0; i < shape.size(); i++) {
+      scalars.insert(i);
+    }
+  }
+
   return std::vector<int64_t>(scalars.begin(), scalars.end());
 }
 
@@ -199,6 +209,14 @@ CustomAttributeGenerator::genDenseIntElementsAttr() {
 std::vector<::llvm::SmallVector<int64_t>>
 CustomAttributeGenerator::genLlvmSmallVectorint64t() {
   std::vector<::llvm::SmallVector<int64_t>> attributes;
+
+  attributes.emplace_back();
+
+  auto unaries = genUnaries(functionArgs, targetShape);
+  for (auto &unary : unaries) {
+    ::llvm::SmallVector<int64_t> unaryAttr = {unary};
+    attributes.push_back(unaryAttr);
+  }
 
   return attributes;
 }
