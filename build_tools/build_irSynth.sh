@@ -31,19 +31,22 @@ popd
 pushd build
 cmake --build . --target grammar-extractor
 popd
-TD_FILES="mlir-hlo/stablehlo/stablehlo/dialect/ChloOps.td \
-mlir-hlo/stablehlo/stablehlo/dialect/StablehloOps.td"
-GEN_COMMON="-Imlir-hlo \
+TD_OPS="mlir-hlo/stablehlo/stablehlo/dialect/ChloOps.td \
+mlir-hlo/stablehlo/stablehlo/dialect/StablehloOps.td \
+mlir-hlo/llvm-project/mlir/include/mlir/Dialect/Linalg/IR/LinalgOps.td \
+mlir-hlo/llvm-project/mlir/include/mlir/Dialect/Linalg/IR/LinalgStructuredOps.td"
+TD_INCLUDES="-Imlir-hlo \
 -Imlir-hlo/include \
 -Imlir-hlo/include/mlir-hlo/Dialect/mhlo/IR \
 -Imlir-hlo/stablehlo \
 -Imlir-hlo/llvm-project/llvm/include \
 -Imlir-hlo/llvm-project/mlir/include \
 -Imlir-hlo/llvm-build/include \
--Imlir-hlo/llvm-build/tools/mlir/include"
-cat $TD_FILES | ./build/bin/grammar-extractor $GEN_COMMON \
+-Imlir-hlo/llvm-build/tools/mlir/include \
+-Imlir-hlo/llvm-project/mlir/include/mlir/Dialect/Linalg/IR"
+cat $TD_OPS | ./build/bin/grammar-extractor $TD_INCLUDES \
   -gen-grammar-decls -o irSynth/enumeration/Grammar.h
-cat $TD_FILES | ./build/bin/grammar-extractor $GEN_COMMON \
+cat $TD_OPS | ./build/bin/grammar-extractor $TD_INCLUDES \
   -gen-grammar-defs -o irSynth/enumeration/Grammar.cc
 
 # Build irSynth.

@@ -19,6 +19,10 @@
 
 namespace grammar {
 enum OpAndResType {
+  AnyRankedTensor,
+  AnyShaped,
+  AnyTensor,
+  AnyType,
   HLO_ComplexTensor,
   HLO_DimensionTensor,
   HLO_Fp32Or64Tensor,
@@ -41,6 +45,7 @@ enum OpAndResType {
   I32Tensor,
   Index,
   Shape_WitnessType,
+  TensorOrMemref,
   anonymous_526,
   anonymous_610,
   anonymous_621,
@@ -61,6 +66,9 @@ public:
   // AttrDef generators. (exhaustively enumerate all combinations)
   std::vector<mlir::Attribute> genChloComparisonDirectionAttr();
   std::vector<mlir::Attribute> genChloComparisonTypeAttr();
+  std::vector<mlir::Attribute> genLinalgBinaryFnAttr();
+  std::vector<mlir::Attribute> genLinalgTypeFnAttr();
+  std::vector<mlir::Attribute> genLinalgUnaryFnAttr();
   std::vector<mlir::Attribute> genStablehloArgResultAliasAttr();
   std::vector<mlir::Attribute> genStablehloChannelHandleAttr();
   std::vector<mlir::Attribute> genStablehloComparisonDirectionAttr();
@@ -78,17 +86,21 @@ public:
 
   // Attr generators. (to be derived and implemented)
   virtual std::vector<mlir::Attribute> genArrayAttr();
+  virtual std::vector<mlir::Attribute> genBinaryFnAttr();
   virtual std::vector<mlir::Attribute> genBoolAttr();
   virtual std::vector<mlir::Attribute> genChannelHandleAttr();
   virtual std::vector<mlir::Attribute> genComparisonTypeAttr();
   virtual std::vector<mlir::Attribute> genCustomCallApiVersionAttr();
   virtual std::vector<mlir::Attribute> genDenseElementsAttr();
+  virtual std::vector<mlir::Attribute> genDenseI64ArrayAttr();
   virtual std::vector<mlir::Attribute> genDenseIntElementsAttr();
   virtual std::vector<mlir::Attribute> genElementsAttr();
   virtual std::vector<mlir::Attribute> genFloatAttr();
   virtual std::vector<mlir::Attribute> genIntegerAttr();
   virtual std::vector<mlir::Attribute> genStringAttr();
+  virtual std::vector<mlir::Attribute> genTypeFnAttr();
   virtual std::vector<mlir::Attribute> genTypedAttr();
+  virtual std::vector<mlir::Attribute> genUnaryFnAttr();
   virtual std::vector<mlir::Attribute> genUnitAttr();
 
   // Types used in enums. (to be derived and implemented)

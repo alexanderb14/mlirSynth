@@ -23,12 +23,18 @@
 #define GET_ATTRDEF_CLASSES
 #include "stablehlo/dialect/StablehloAttrs.h.inc"
 
+#include "mlir/Dialect/Linalg/IR/Linalg.h"
+
 #include <cassert>
 #include <memory>
 #include <string>
 
 namespace grammar {
 std::string opAndResTypeToString(OpAndResType type) {
+  if (type == AnyRankedTensor) return "AnyRankedTensor";
+  if (type == AnyShaped) return "AnyShaped";
+  if (type == AnyTensor) return "AnyTensor";
+  if (type == AnyType) return "AnyType";
   if (type == HLO_ComplexTensor) return "HLO_ComplexTensor";
   if (type == HLO_DimensionTensor) return "HLO_DimensionTensor";
   if (type == HLO_Fp32Or64Tensor) return "HLO_Fp32Or64Tensor";
@@ -51,6 +57,7 @@ std::string opAndResTypeToString(OpAndResType type) {
   if (type == I32Tensor) return "I32Tensor";
   if (type == Index) return "Index";
   if (type == Shape_WitnessType) return "Shape_WitnessType";
+  if (type == TensorOrMemref) return "TensorOrMemref";
   if (type == anonymous_526) return "anonymous_526";
   if (type == anonymous_610) return "anonymous_610";
   if (type == anonymous_621) return "anonymous_621";
@@ -62,6 +69,24 @@ std::string opAndResTypeToString(OpAndResType type) {
   if (type == anonymous_694) return "anonymous_694";
   if (type == anonymous_704) return "anonymous_704";
   assert(false && "Invalid OpAndResType");
+}
+
+std::vector<mlir::Attribute> AttributeGenerator::genLinalgBinaryFnAttr() {
+  std::vector<::mlir::linalg::BinaryFn> valueEnumerants = {
+    ::mlir::linalg::BinaryFn::add,
+    ::mlir::linalg::BinaryFn::sub,
+    ::mlir::linalg::BinaryFn::mul,
+    ::mlir::linalg::BinaryFn::max_signed,
+    ::mlir::linalg::BinaryFn::min_signed,
+    ::mlir::linalg::BinaryFn::max_unsigned,
+    ::mlir::linalg::BinaryFn::min_unsigned,
+  };
+  std::vector<mlir::Attribute> ret;
+  for (const auto &v0 : valueEnumerants) {
+    ret.push_back(::mlir::linalg::BinaryFnAttr::get(&ctx, 
+      v0));
+  }
+  return ret;
 }
 
 std::vector<mlir::Attribute> AttributeGenerator::genChloComparisonDirectionAttr() {
@@ -355,8 +380,44 @@ std::vector<mlir::Attribute> AttributeGenerator::genStablehloTypeExtensionsAttr(
   return ret;
 }
 
+std::vector<mlir::Attribute> AttributeGenerator::genLinalgTypeFnAttr() {
+  std::vector<::mlir::linalg::TypeFn> valueEnumerants = {
+    ::mlir::linalg::TypeFn::cast_signed,
+    ::mlir::linalg::TypeFn::cast_unsigned,
+  };
+  std::vector<mlir::Attribute> ret;
+  for (const auto &v0 : valueEnumerants) {
+    ret.push_back(::mlir::linalg::TypeFnAttr::get(&ctx, 
+      v0));
+  }
+  return ret;
+}
+
+std::vector<mlir::Attribute> AttributeGenerator::genLinalgUnaryFnAttr() {
+  std::vector<::mlir::linalg::UnaryFn> valueEnumerants = {
+    ::mlir::linalg::UnaryFn::exp,
+    ::mlir::linalg::UnaryFn::log,
+    ::mlir::linalg::UnaryFn::abs,
+    ::mlir::linalg::UnaryFn::ceil,
+    ::mlir::linalg::UnaryFn::floor,
+    ::mlir::linalg::UnaryFn::negf,
+  };
+  std::vector<mlir::Attribute> ret;
+  for (const auto &v0 : valueEnumerants) {
+    ret.push_back(::mlir::linalg::UnaryFnAttr::get(&ctx, 
+      v0));
+  }
+  return ret;
+}
+
 std::vector<mlir::Attribute> AttributeGenerator::genArrayAttr() {
   llvm::outs() << "WARNING: Not implemented: genArrayAttr\n";
+  std::vector<mlir::Attribute> ret;
+  return ret;
+}
+
+std::vector<mlir::Attribute> AttributeGenerator::genBinaryFnAttr() {
+  llvm::outs() << "WARNING: Not implemented: genBinaryFnAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
@@ -391,6 +452,12 @@ std::vector<mlir::Attribute> AttributeGenerator::genDenseElementsAttr() {
   return ret;
 }
 
+std::vector<mlir::Attribute> AttributeGenerator::genDenseI64ArrayAttr() {
+  llvm::outs() << "WARNING: Not implemented: genDenseI64ArrayAttr\n";
+  std::vector<mlir::Attribute> ret;
+  return ret;
+}
+
 std::vector<mlir::Attribute> AttributeGenerator::genDenseIntElementsAttr() {
   llvm::outs() << "WARNING: Not implemented: genDenseIntElementsAttr\n";
   std::vector<mlir::Attribute> ret;
@@ -421,8 +488,20 @@ std::vector<mlir::Attribute> AttributeGenerator::genStringAttr() {
   return ret;
 }
 
+std::vector<mlir::Attribute> AttributeGenerator::genTypeFnAttr() {
+  llvm::outs() << "WARNING: Not implemented: genTypeFnAttr\n";
+  std::vector<mlir::Attribute> ret;
+  return ret;
+}
+
 std::vector<mlir::Attribute> AttributeGenerator::genTypedAttr() {
   llvm::outs() << "WARNING: Not implemented: genTypedAttr\n";
+  std::vector<mlir::Attribute> ret;
+  return ret;
+}
+
+std::vector<mlir::Attribute> AttributeGenerator::genUnaryFnAttr() {
+  llvm::outs() << "WARNING: Not implemented: genUnaryFnAttr\n";
   std::vector<mlir::Attribute> ret;
   return ret;
 }
@@ -450,6 +529,126 @@ std::vector<int64_t> AttributeGenerator::genInt64t() {
   std::vector<int64_t> ret;
   return ret;
 }
+
+class linalg_batch_matmul : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_batch_matvec : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_batch_reduce_matmul : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
 
 class chlo_acos : public GrammarOp {
 public:
@@ -2482,6 +2681,2146 @@ public:
   OpAndResType getResultType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_conv_1d_ncw_fcw : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_conv_1d_nwc_wcf : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_conv_1d : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_conv_2d_nchw_fchw : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_conv_2d_ngchw_fgchw : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_conv_2d_nhwc_fhwc : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_conv_2d_nhwc_hwcf : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_conv_2d_nhwc_hwcf_q : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_conv_2d : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_conv_3d_ndhwc_dhwcf : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_conv_3d : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_copy : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::linalg::TypeFnAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "cast";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genTypeFnAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_depthwise_conv_1d_nwc_wc : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_depthwise_conv_1d_nwc_wcm : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_depthwise_conv_2d_nchw_chw : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_depthwise_conv_2d_nhwc_hwc : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_depthwise_conv_2d_nhwc_hwc_q : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_depthwise_conv_2d_nhwc_hwcm : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_depthwise_conv_2d_nhwc_hwcm_q : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_depthwise_conv_3d_ndhwc_dhwc : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_depthwise_conv_3d_ndhwc_dhwcm : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_dot : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_elemwise_binary : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::linalg::BinaryFnAttr();
+      case 1: return ::mlir::linalg::TypeFnAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "fun";
+      case 1: return "cast";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genBinaryFnAttr());
+    // attrs.push_back(attrGen->genTypeFnAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_elemwise_unary : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::linalg::UnaryFnAttr();
+      case 1: return ::mlir::linalg::TypeFnAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "fun";
+      case 1: return "cast";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genUnaryFnAttr());
+    // attrs.push_back(attrGen->genTypeFnAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_fill : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_fill_rng_2d : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_generic : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 4; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::ArrayAttr();
+      case 1: return ::mlir::ArrayAttr();
+      case 2: return ::mlir::StringAttr();
+      case 3: return ::mlir::StringAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "indexing_maps";
+      case 1: return "iterator_types";
+      case 2: return "doc";
+      case 3: return "library_call";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+      case 1: return true;
+      case 2: return false;
+      case 3: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genArrayAttr());
+    attrs.push_back(attrGen->genArrayAttr());
+    // attrs.push_back(attrGen->genStringAttr());
+    // attrs.push_back(attrGen->genStringAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_index : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 0; }
+  unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 0; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::IntegerAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "dim";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genIntegerAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return Index;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_yield : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 1; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 0; }
+  unsigned getNumResults() const override { return 0; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_map : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return TensorOrMemref;
+      case 1: return TensorOrMemref;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_matmul : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::linalg::TypeFnAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "cast";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genTypeFnAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_matmul_unsigned : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_matvec : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_mmt4d : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_pooling_nchw_max : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_pooling_nchw_sum : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_pooling_ndhwc_max : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_pooling_ndhwc_min : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_pooling_ndhwc_sum : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_pooling_nhwc_max : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_pooling_nhwc_max_unsigned : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_pooling_nhwc_min : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_pooling_nhwc_min_unsigned : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_pooling_nhwc_sum : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 2; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseIntElementsAttr();
+      case 1: return ::mlir::DenseIntElementsAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "strides";
+      case 1: return "dilations";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return false;
+      case 1: return false;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    // attrs.push_back(attrGen->genDenseIntElementsAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_quantized_batch_matmul : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_quantized_matmul : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_reduce : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return TensorOrMemref;
+      case 1: return TensorOrMemref;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseI64ArrayAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "dimensions";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genDenseI64ArrayAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyTensor;
     }
     assert(false && "Invalid result index");
   }
@@ -7472,7 +9811,97 @@ public:
   }
 };
 
+class linalg_transpose : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 1; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return TensorOrMemref;
+      case 1: return TensorOrMemref;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+      case 0: return ::mlir::DenseI64ArrayAttr();
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+      case 0: return "permutation";
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+      case 0: return true;
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    attrs.push_back(attrGen->genDenseI64ArrayAttr());
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
+class linalg_vecmat : public GrammarOp {
+public:
+  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumAttributes() const override { return 0; }
+  unsigned getNumRegions() const override { return 1; }
+  unsigned getNumResults() const override { return 1; }
+  OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyType;
+      case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  mlir::Attribute getAttributeType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::string getAttributeName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  bool isAttributeRequired(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid attribute index");
+  }
+  std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const override {
+    std::vector<std::vector<mlir::Attribute>> attrs;
+    return attrs;
+  }
+  OpAndResType getResultType(unsigned index) const override {
+    switch (index) {
+      case 0: return AnyRankedTensor;
+    }
+    assert(false && "Invalid result index");
+  }
+};
+
 GrammarOpPtr createGrammarOp(std::string name) {
+  if (name == "linalg.batch_matmul")
+    return std::make_unique<linalg_batch_matmul>();
+  if (name == "linalg.batch_matvec")
+    return std::make_unique<linalg_batch_matvec>();
+  if (name == "linalg.batch_reduce_matmul")
+    return std::make_unique<linalg_batch_reduce_matmul>();
   if (name == "chlo.acos")
     return std::make_unique<chlo_acos>();
   if (name == "chlo.acosh")
@@ -7571,6 +10000,100 @@ GrammarOpPtr createGrammarOp(std::string name) {
     return std::make_unique<chlo_top_k>();
   if (name == "chlo.zeta")
     return std::make_unique<chlo_zeta>();
+  if (name == "linalg.conv_1d_ncw_fcw")
+    return std::make_unique<linalg_conv_1d_ncw_fcw>();
+  if (name == "linalg.conv_1d_nwc_wcf")
+    return std::make_unique<linalg_conv_1d_nwc_wcf>();
+  if (name == "linalg.conv_1d")
+    return std::make_unique<linalg_conv_1d>();
+  if (name == "linalg.conv_2d_nchw_fchw")
+    return std::make_unique<linalg_conv_2d_nchw_fchw>();
+  if (name == "linalg.conv_2d_ngchw_fgchw")
+    return std::make_unique<linalg_conv_2d_ngchw_fgchw>();
+  if (name == "linalg.conv_2d_nhwc_fhwc")
+    return std::make_unique<linalg_conv_2d_nhwc_fhwc>();
+  if (name == "linalg.conv_2d_nhwc_hwcf")
+    return std::make_unique<linalg_conv_2d_nhwc_hwcf>();
+  if (name == "linalg.conv_2d_nhwc_hwcf_q")
+    return std::make_unique<linalg_conv_2d_nhwc_hwcf_q>();
+  if (name == "linalg.conv_2d")
+    return std::make_unique<linalg_conv_2d>();
+  if (name == "linalg.conv_3d_ndhwc_dhwcf")
+    return std::make_unique<linalg_conv_3d_ndhwc_dhwcf>();
+  if (name == "linalg.conv_3d")
+    return std::make_unique<linalg_conv_3d>();
+  if (name == "linalg.copy")
+    return std::make_unique<linalg_copy>();
+  if (name == "linalg.depthwise_conv_1d_nwc_wc")
+    return std::make_unique<linalg_depthwise_conv_1d_nwc_wc>();
+  if (name == "linalg.depthwise_conv_1d_nwc_wcm")
+    return std::make_unique<linalg_depthwise_conv_1d_nwc_wcm>();
+  if (name == "linalg.depthwise_conv_2d_nchw_chw")
+    return std::make_unique<linalg_depthwise_conv_2d_nchw_chw>();
+  if (name == "linalg.depthwise_conv_2d_nhwc_hwc")
+    return std::make_unique<linalg_depthwise_conv_2d_nhwc_hwc>();
+  if (name == "linalg.depthwise_conv_2d_nhwc_hwc_q")
+    return std::make_unique<linalg_depthwise_conv_2d_nhwc_hwc_q>();
+  if (name == "linalg.depthwise_conv_2d_nhwc_hwcm")
+    return std::make_unique<linalg_depthwise_conv_2d_nhwc_hwcm>();
+  if (name == "linalg.depthwise_conv_2d_nhwc_hwcm_q")
+    return std::make_unique<linalg_depthwise_conv_2d_nhwc_hwcm_q>();
+  if (name == "linalg.depthwise_conv_3d_ndhwc_dhwc")
+    return std::make_unique<linalg_depthwise_conv_3d_ndhwc_dhwc>();
+  if (name == "linalg.depthwise_conv_3d_ndhwc_dhwcm")
+    return std::make_unique<linalg_depthwise_conv_3d_ndhwc_dhwcm>();
+  if (name == "linalg.dot")
+    return std::make_unique<linalg_dot>();
+  if (name == "linalg.elemwise_binary")
+    return std::make_unique<linalg_elemwise_binary>();
+  if (name == "linalg.elemwise_unary")
+    return std::make_unique<linalg_elemwise_unary>();
+  if (name == "linalg.fill")
+    return std::make_unique<linalg_fill>();
+  if (name == "linalg.fill_rng_2d")
+    return std::make_unique<linalg_fill_rng_2d>();
+  if (name == "linalg.generic")
+    return std::make_unique<linalg_generic>();
+  if (name == "linalg.index")
+    return std::make_unique<linalg_index>();
+  if (name == "linalg.yield")
+    return std::make_unique<linalg_yield>();
+  if (name == "linalg.map")
+    return std::make_unique<linalg_map>();
+  if (name == "linalg.matmul")
+    return std::make_unique<linalg_matmul>();
+  if (name == "linalg.matmul_unsigned")
+    return std::make_unique<linalg_matmul_unsigned>();
+  if (name == "linalg.matvec")
+    return std::make_unique<linalg_matvec>();
+  if (name == "linalg.mmt4d")
+    return std::make_unique<linalg_mmt4d>();
+  if (name == "linalg.pooling_nchw_max")
+    return std::make_unique<linalg_pooling_nchw_max>();
+  if (name == "linalg.pooling_nchw_sum")
+    return std::make_unique<linalg_pooling_nchw_sum>();
+  if (name == "linalg.pooling_ndhwc_max")
+    return std::make_unique<linalg_pooling_ndhwc_max>();
+  if (name == "linalg.pooling_ndhwc_min")
+    return std::make_unique<linalg_pooling_ndhwc_min>();
+  if (name == "linalg.pooling_ndhwc_sum")
+    return std::make_unique<linalg_pooling_ndhwc_sum>();
+  if (name == "linalg.pooling_nhwc_max")
+    return std::make_unique<linalg_pooling_nhwc_max>();
+  if (name == "linalg.pooling_nhwc_max_unsigned")
+    return std::make_unique<linalg_pooling_nhwc_max_unsigned>();
+  if (name == "linalg.pooling_nhwc_min")
+    return std::make_unique<linalg_pooling_nhwc_min>();
+  if (name == "linalg.pooling_nhwc_min_unsigned")
+    return std::make_unique<linalg_pooling_nhwc_min_unsigned>();
+  if (name == "linalg.pooling_nhwc_sum")
+    return std::make_unique<linalg_pooling_nhwc_sum>();
+  if (name == "linalg.quantized_batch_matmul")
+    return std::make_unique<linalg_quantized_batch_matmul>();
+  if (name == "linalg.quantized_matmul")
+    return std::make_unique<linalg_quantized_matmul>();
+  if (name == "linalg.reduce")
+    return std::make_unique<linalg_reduce>();
   if (name == "stablehlo.abs")
     return std::make_unique<stablehlo_abs>();
   if (name == "stablehlo.add")
@@ -7799,6 +10322,10 @@ GrammarOpPtr createGrammarOp(std::string name) {
     return std::make_unique<stablehlo_while>();
   if (name == "stablehlo.xor")
     return std::make_unique<stablehlo_xor>();
+  if (name == "linalg.transpose")
+    return std::make_unique<linalg_transpose>();
+  if (name == "linalg.vecmat")
+    return std::make_unique<linalg_vecmat>();
   assert(false && "Invalid op name");
 }
 

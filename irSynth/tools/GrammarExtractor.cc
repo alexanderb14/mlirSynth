@@ -174,6 +174,8 @@ void emitSrcIncludes(raw_ostream &os) {
 #define GET_ATTRDEF_CLASSES
 #include "stablehlo/dialect/StablehloAttrs.h.inc"
 
+#include "mlir/Dialect/Linalg/IR/Linalg.h"
+
 #include <cassert>
 #include <memory>
 #include <string>
