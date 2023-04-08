@@ -125,8 +125,8 @@ genUnaryAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
   for (auto &unary : unaries) {
     Attribute unaryAttr = builder.getF64FloatAttr((double)unary);
     Type type =
-        RankedTensorType::get({}, unaryAttr.cast<TypedAttr>().getType());
-    auto attrDense = DenseElementsAttr::get(type.cast<TensorType>(), unary);
+        RankedTensorType::get({}, builder.getF64Type());
+    auto attrDense = DenseElementsAttr::get(type, {unaryAttr});
 
     attributes.emplace_back(attrDense, grammar::OpAndResType::HLO_Tensor);
   }
