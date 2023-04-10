@@ -543,6 +543,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -580,6 +587,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -623,6 +637,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -659,6 +680,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -701,6 +728,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -737,6 +770,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -779,6 +818,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -815,6 +860,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -857,6 +908,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -893,6 +950,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -933,6 +996,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -980,6 +1050,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -1024,6 +1101,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -1065,6 +1149,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -1120,6 +1211,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -1161,6 +1259,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -1208,6 +1313,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -1249,6 +1361,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -1296,6 +1415,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -1337,6 +1463,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -1384,6 +1517,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -1425,6 +1565,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -1472,6 +1619,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -1513,6 +1667,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -1561,6 +1722,14 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "pred";
+      case 1: return "on_true";
+      case 2: return "on_false";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -1598,6 +1767,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -1645,6 +1821,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -1686,6 +1869,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -1733,6 +1923,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -1774,6 +1971,13 @@ public:
     switch (index) {
       case 0: return HLO_PredOrIntTensor;
       case 1: return HLO_PredOrIntTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -1821,6 +2025,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -1864,6 +2075,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -1900,6 +2117,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -1941,6 +2164,11 @@ public:
   unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid operand index");
@@ -1988,6 +2216,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -2024,6 +2258,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -2067,6 +2307,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+      case 1: return "output_shape";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -2103,6 +2350,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -2145,6 +2398,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -2181,6 +2440,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -2223,6 +2488,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -2259,6 +2530,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -2301,6 +2578,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -2337,6 +2620,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return anonymous_526;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "shapes";
     }
     assert(false && "Invalid operand index");
   }
@@ -2380,6 +2669,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "x";
+      case 1: return "y";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -2417,6 +2713,13 @@ public:
     switch (index) {
       case 0: return HLO_FpTensor;
       case 1: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "n";
+      case 1: return "x";
     }
     assert(false && "Invalid operand index");
   }
@@ -2459,6 +2762,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operands";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -2498,6 +2807,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "results";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -2533,6 +2848,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -2575,6 +2896,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -2611,6 +2938,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -2659,6 +2992,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "x";
+      case 1: return "q";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -2696,6 +3036,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -2747,6 +3094,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -2795,6 +3149,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -2832,6 +3193,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -2883,6 +3251,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -2928,6 +3303,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -2979,6 +3361,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -3024,6 +3413,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -3075,6 +3471,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -3112,6 +3515,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -3163,6 +3573,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -3200,6 +3617,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -3244,6 +3668,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -3295,6 +3726,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -3340,6 +3778,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -3391,6 +3836,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -3436,6 +3888,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -3487,6 +3946,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -3532,6 +3998,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -3583,6 +4056,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -3628,6 +4108,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -3679,6 +4166,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -3716,6 +4210,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -3767,6 +4268,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::linalg::UnaryFnAttr();
@@ -3815,6 +4323,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -3855,6 +4370,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -3892,6 +4414,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -3949,6 +4478,11 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::IntegerAttr();
@@ -3992,6 +4526,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "values";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -4028,6 +4568,13 @@ public:
     switch (index) {
       case 0: return TensorOrMemref;
       case 1: return TensorOrMemref;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "init";
     }
     assert(false && "Invalid operand index");
   }
@@ -4068,6 +4615,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -4115,6 +4669,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -4152,6 +4713,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -4195,6 +4763,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -4232,6 +4807,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -4283,6 +4865,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -4328,6 +4917,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -4379,6 +4975,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -4424,6 +5027,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -4475,6 +5085,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -4520,6 +5137,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -4571,6 +5195,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -4616,6 +5247,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -4667,6 +5305,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -4715,6 +5360,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -4755,6 +5407,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -4792,6 +5451,13 @@ public:
     switch (index) {
       case 0: return TensorOrMemref;
       case 1: return TensorOrMemref;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "inits";
     }
     assert(false && "Invalid operand index");
   }
@@ -4838,6 +5504,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -4875,6 +5547,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -4917,6 +5596,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -4953,6 +5638,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -5011,6 +5702,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -5059,6 +5756,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -5118,6 +5821,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -5155,6 +5865,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -5198,6 +5915,16 @@ public:
       case 2: return anonymous_655;
       case 3: return anonymous_655;
       case 4: return anonymous_653;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+      case 1: return "scale";
+      case 2: return "mean";
+      case 3: return "variance";
+      case 4: return "grad_output";
     }
     assert(false && "Invalid operand index");
   }
@@ -5254,6 +5981,16 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+      case 1: return "scale";
+      case 2: return "offset";
+      case 3: return "mean";
+      case 4: return "variance";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::FloatAttr();
@@ -5300,6 +6037,14 @@ public:
       case 0: return anonymous_653;
       case 1: return anonymous_655;
       case 2: return anonymous_655;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+      case 1: return "scale";
+      case 2: return "offset";
     }
     assert(false && "Invalid operand index");
   }
@@ -5352,6 +6097,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -5388,6 +6139,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -5434,6 +6191,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -5477,6 +6240,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "index";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -5513,6 +6282,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -5555,6 +6330,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -5591,6 +6372,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "a";
     }
     assert(false && "Invalid operand index");
   }
@@ -5639,6 +6426,14 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "min";
+      case 1: return "operand";
+      case 2: return "max";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -5678,6 +6473,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -5714,6 +6515,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -5765,6 +6572,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::stablehlo::ComparisonDirectionAttr();
@@ -5813,6 +6627,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -5850,6 +6671,13 @@ public:
     switch (index) {
       case 0: return Index;
       case 1: return anonymous_704;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "num_elements";
+      case 1: return "dynamic_shape";
     }
     assert(false && "Invalid operand index");
   }
@@ -5892,6 +6720,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::IntegerAttr();
@@ -5930,6 +6764,11 @@ public:
   unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid operand index");
@@ -5977,6 +6816,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -6014,6 +6859,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -6092,6 +6944,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -6126,6 +6984,11 @@ public:
   unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid operand index");
@@ -6166,6 +7029,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -6213,6 +7082,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "num_elements";
+      case 1: return "dynamic_shape";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -6249,6 +7125,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrTokenOrTuple;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -6320,6 +7202,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -6357,6 +7246,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -6408,6 +7304,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::ArrayAttr();
@@ -6449,6 +7352,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_DimensionTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+      case 1: return "output_dimensions";
     }
     assert(false && "Invalid operand index");
   }
@@ -6502,6 +7412,14 @@ public:
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
       case 2: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+      case 2: return "d_padding";
     }
     assert(false && "Invalid operand index");
   }
@@ -6582,6 +7500,14 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+      case 1: return "start_indices";
+      case 2: return "slice_sizes";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::stablehlo::GatherDimensionNumbersAttr();
@@ -6626,6 +7552,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_DimensionTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "output_shape";
     }
     assert(false && "Invalid operand index");
   }
@@ -6676,6 +7608,16 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+      case 1: return "padding_value";
+      case 2: return "edge_padding_low";
+      case 3: return "edge_padding_high";
+      case 4: return "interior_padding";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -6716,6 +7658,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+      case 1: return "output_shape";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -6753,6 +7702,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_ScalarIntTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+      case 1: return "start_indices";
     }
     assert(false && "Invalid operand index");
   }
@@ -6801,6 +7757,14 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+      case 1: return "update";
+      case 2: return "start_indices";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -6838,6 +7802,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -6884,6 +7855,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -6923,6 +7900,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -6959,6 +7942,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -7009,6 +7998,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -7046,6 +8041,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_IntTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+      case 1: return "start_indices";
     }
     assert(false && "Invalid operand index");
   }
@@ -7100,6 +8102,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::IntegerAttr();
@@ -7140,6 +8148,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tuple;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -7186,6 +8200,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "pred";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -7225,6 +8245,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -7261,6 +8287,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Token;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "token";
     }
     assert(false && "Invalid operand index");
   }
@@ -7310,6 +8342,11 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::IntegerAttr();
@@ -7353,6 +8390,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "x";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -7389,6 +8432,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -7431,6 +8480,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -7470,6 +8525,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -7506,6 +8567,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
     }
     assert(false && "Invalid operand index");
   }
@@ -7553,6 +8620,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -7590,6 +8664,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -7633,6 +8714,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -7669,6 +8757,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_IntFpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -7711,6 +8805,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -7747,6 +8847,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrToken;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -7790,6 +8896,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -7827,6 +8940,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Token;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "token";
     }
     assert(false && "Invalid operand index");
   }
@@ -7871,6 +8991,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+      case 1: return "padding_value";
     }
     assert(false && "Invalid operand index");
   }
@@ -7925,6 +9052,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -7962,6 +9095,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -8007,6 +9147,15 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+      case 1: return "start_indices";
+      case 2: return "limit_indices";
+      case 3: return "strides";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -8046,6 +9195,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -8082,6 +9237,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Token;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "token";
     }
     assert(false && "Invalid operand index");
   }
@@ -8133,6 +9294,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "init_values";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -8173,6 +9341,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -8220,6 +9394,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -8276,6 +9456,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "init_values";
     }
     assert(false && "Invalid operand index");
   }
@@ -8339,6 +9526,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -8373,6 +9567,11 @@ public:
   unsigned getNumRegions() const override { return 0; }
   unsigned getNumResults() const override { return 1; }
   OpAndResType getOperandType(unsigned index) const override {
+    switch (index) {
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
     switch (index) {
     }
     assert(false && "Invalid operand index");
@@ -8416,6 +9615,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -8455,6 +9660,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "results";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -8490,6 +9701,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -8533,6 +9750,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_IntOrFpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "initial_state";
     }
     assert(false && "Invalid operand index");
   }
@@ -8582,6 +9805,14 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "a";
+      case 1: return "b";
+      case 2: return "shape";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::stablehlo::RngDistributionAttr();
@@ -8625,6 +9856,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -8661,6 +9898,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_FpTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -8703,6 +9946,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -8741,6 +9990,14 @@ public:
       case 0: return HLO_Tensor;
       case 1: return anonymous_673;
       case 2: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "scatter_indices";
+      case 2: return "updates";
     }
     assert(false && "Invalid operand index");
   }
@@ -8797,6 +10054,14 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+      case 1: return "source";
+      case 2: return "init_value";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::DenseIntElementsAttr();
@@ -8850,6 +10115,14 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "pred";
+      case 1: return "on_true";
+      case 2: return "on_false";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -8887,6 +10160,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Token;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "token";
     }
     assert(false && "Invalid operand index");
   }
@@ -8938,6 +10218,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+      case 1: return "size";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::IntegerAttr();
@@ -8982,6 +10269,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -9019,6 +10313,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -9062,6 +10363,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -9098,6 +10406,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return anonymous_610;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -9140,6 +10454,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -9176,6 +10496,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -9230,6 +10556,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::IntegerAttr();
@@ -9277,6 +10609,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -9314,6 +10652,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
     }
     assert(false && "Invalid operand index");
   }
@@ -9356,6 +10701,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -9393,6 +10744,13 @@ public:
     switch (index) {
       case 0: return HLO_Tensor;
       case 1: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+      case 1: return "index";
     }
     assert(false && "Invalid operand index");
   }
@@ -9443,6 +10801,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
       case 0: return ::mlir::StringAttr();
@@ -9482,6 +10846,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -9526,6 +10896,13 @@ public:
     switch (index) {
       case 0: return HLO_FpOrComplexTensor;
       case 1: return HLO_FpOrComplexTensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "a";
+      case 1: return "b";
     }
     assert(false && "Invalid operand index");
   }
@@ -9584,6 +10961,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "val";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -9620,6 +11003,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_Tensor;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -9666,6 +11055,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -9705,6 +11100,12 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -9741,6 +11142,12 @@ public:
   OpAndResType getOperandType(unsigned index) const override {
     switch (index) {
       case 0: return HLO_TensorOrToken;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "operand";
     }
     assert(false && "Invalid operand index");
   }
@@ -9784,6 +11191,13 @@ public:
     }
     assert(false && "Invalid operand index");
   }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "lhs";
+      case 1: return "rhs";
+    }
+    assert(false && "Invalid operand index");
+  }
   mlir::Attribute getAttributeType(unsigned index) const override {
     switch (index) {
     }
@@ -9821,6 +11235,13 @@ public:
     switch (index) {
       case 0: return TensorOrMemref;
       case 1: return TensorOrMemref;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "input";
+      case 1: return "init";
     }
     assert(false && "Invalid operand index");
   }
@@ -9865,6 +11286,13 @@ public:
     switch (index) {
       case 0: return AnyType;
       case 1: return AnyShaped;
+    }
+    assert(false && "Invalid operand index");
+  }
+  std::string getOperandName(unsigned index) const override {
+    switch (index) {
+      case 0: return "inputs";
+      case 1: return "outputs";
     }
     assert(false && "Invalid operand index");
   }

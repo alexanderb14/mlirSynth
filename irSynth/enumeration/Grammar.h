@@ -121,6 +121,7 @@ public:
   virtual unsigned getNumRegions() const = 0;
   virtual unsigned getNumResults() const = 0;
   virtual OpAndResType getOperandType(unsigned index) const = 0;
+  virtual std::string getOperandName(unsigned index) const = 0;
   virtual mlir::Attribute getAttributeType(unsigned index) const = 0;
   virtual std::string getAttributeName(unsigned index) const = 0;
   virtual bool isAttributeRequired(unsigned index) const = 0;

@@ -445,6 +445,7 @@ public:
   virtual unsigned getNumRegions() const = 0;
   virtual unsigned getNumResults() const = 0;
   virtual OpAndResType getOperandType(unsigned index) const = 0;
+  virtual std::string getOperandName(unsigned index) const = 0;
   virtual mlir::Attribute getAttributeType(unsigned index) const = 0;
   virtual std::string getAttributeName(unsigned index) const = 0;
   virtual bool isAttributeRequired(unsigned index) const = 0;
@@ -486,6 +487,16 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
       auto &operand = tblgenOp.getOperand(i);
       os << "      case " << i << ": return " << operand.constraint.getDefName()
          << ";\n";
+    }
+    os << "    }\n";
+    os << "    assert(false && \"Invalid operand index\");\n";
+    os << "  }\n";
+
+    os << "  std::string getOperandName(unsigned index) const override {\n";
+    os << "    switch (index) {\n";
+    for (int i = 0; i < tblgenOp.getNumOperands(); ++i) {
+      auto &operand = tblgenOp.getOperand(i);
+      os << "      case " << i << ": return \"" << operand.name << "\";\n";
     }
     os << "    }\n";
     os << "    assert(false && \"Invalid operand index\");\n";
