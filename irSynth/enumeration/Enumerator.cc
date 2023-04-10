@@ -216,18 +216,6 @@ LogicalResult inferResultTypes(MLIRContext &ctx, Operation *op) {
   return success();
 }
 
-void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
-                          Region::BlockArgListType functionArgs,
-                          llvm::ArrayRef<int64_t> targetShape) {
-  auto initialCandidateGen =
-      std::make_shared<InitialCandidateGenerator>(ctx, functionArgs, targetShape);
-  auto candidates = initialCandidateGen->gen();
-
-  for (auto &candidate : candidates) {
-    candidateStore->addCandidate(candidate);
-  }
-}
-
 bool verifyDefsAreUsed(Block *block) {
   mlir::DenseMap<mlir::Value, bool> values;
 
@@ -430,6 +418,7 @@ float getElapsedTimeSince(
 EnumerationResultPtr
 enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                     func::FuncOp inputFunction,
+                    InitialCandidateGeneratorPtr initialCandidateGen,
                     CandidateStorePtr &candidateStore,
                     std::vector<RegisteredOperationName> &avaliableOps,
                     EnumerationOptions &options, EnumerationStats &stats) {
@@ -458,8 +447,11 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   convertScalarToMemrefArgs(args);
 
   // Synthesize.
-  // - Initialize candidate store with constant and argument candidates.
-  initializeCandidates(ctx, candidateStore, inputFunctionArgs, targetShape);
+  // - Initialize candidate store.
+  auto candidates = initialCandidateGen->gen(inputFunctionArgs, targetShape);
+  for (auto &candidate : candidates)
+    candidateStore->addCandidate(candidate);
+
   // - Print them.
   for (auto &candidate : candidateStore->getCandidates()) {
     auto module = createModule(ctx, candidate->getRegion());

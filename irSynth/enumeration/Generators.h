@@ -12,19 +12,28 @@
 // Initial candidate generators
 class InitialCandidateGenerator {
 public:
-  InitialCandidateGenerator(mlir::MLIRContext &ctx,
-                            mlir::Region::BlockArgListType functionArgs,
-                            llvm::ArrayRef<int64_t> targetShape)
-      : ctx(ctx), functionArgs(functionArgs), targetShape(targetShape) {}
+  InitialCandidateGenerator(mlir::MLIRContext &ctx) : ctx(ctx) {}
+  virtual ~InitialCandidateGenerator() = default;
 
-  std::vector<CandidatePtr> gen();
+  virtual std::vector<CandidatePtr>
+  gen(mlir::Region::BlockArgListType functionArgs,
+      llvm::ArrayRef<int64_t> targetShape) = 0;
 
-private:
+protected:
   mlir::MLIRContext &ctx;
-  mlir::Region::BlockArgListType functionArgs;
-  llvm::ArrayRef<int64_t> targetShape;
 };
-using InitialCandidateGeneratorPtr = std::unique_ptr<InitialCandidateGenerator>;
+using InitialCandidateGeneratorPtr = std::shared_ptr<InitialCandidateGenerator>;
+
+class HLOInitialCandidateGenerator : public InitialCandidateGenerator {
+public:
+  HLOInitialCandidateGenerator(mlir::MLIRContext &ctx)
+      : InitialCandidateGenerator(ctx) {}
+
+  std::vector<CandidatePtr> gen(mlir::Region::BlockArgListType functionArgs,
+                                llvm::ArrayRef<int64_t> targetShape) override;
+};
+using HLOInitialCandidateGeneratorPtr =
+    std::shared_ptr<HLOInitialCandidateGenerator>;
 
 // Attribute generators
 std::vector<std::pair<mlir::Attribute, grammar::OpAndResType>>

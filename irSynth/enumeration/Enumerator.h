@@ -2,6 +2,7 @@
 #define IRSYNTH_ENUMERATOR_H
 
 #include "enumeration/CandidateStore.h"
+#include "enumeration/Generators.h"
 #include "enumeration/Stats.h"
 #include "execution/Executor.h"
 
@@ -39,6 +40,7 @@ mlir::OwningOpRef<mlir::ModuleOp> createModule(mlir::MLIRContext &ctx,
 EnumerationResultPtr
 enumerateCandidates(mlir::MLIRContext &ctx, IExecutorPtr executor,
                     mlir::func::FuncOp inputFunction,
+                    InitialCandidateGeneratorPtr initialCandidateGenerator,
                     CandidateStorePtr &candidateStore,
                     std::vector<mlir::RegisteredOperationName> &avaliableOps,
                     EnumerationOptions &options, EnumerationStats &stats);

@@ -273,10 +273,14 @@ int main(int argc, char **argv) {
       inputFunc.print(llvm::outs());
     }
 
+    InitialCandidateGeneratorPtr initialCandidateGen =
+        std::make_shared<HLOInitialCandidateGenerator>(*ctx);
+
     CandidateStorePtr candidateStore = std::make_shared<CandidateStore>();
 
-    auto result = enumerateCandidates(*ctx, executor, inputFunc, candidateStore,
-                                      availableOps, options, stats);
+    auto result =
+        enumerateCandidates(*ctx, executor, inputFunc, initialCandidateGen,
+                            candidateStore, availableOps, options, stats);
 
     if (result) {
       if (printSynthesisSteps) {
