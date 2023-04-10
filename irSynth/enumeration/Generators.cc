@@ -172,8 +172,7 @@ genUnaryAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
   auto unaries = genUnaries(functionArgs, targetShape);
   for (auto &unary : unaries) {
     Attribute unaryAttr = builder.getF64FloatAttr((double)unary);
-    Type type =
-        RankedTensorType::get({}, builder.getF64Type());
+    Type type = RankedTensorType::get({}, builder.getF64Type());
     auto attrDense = DenseElementsAttr::get(type, {unaryAttr});
 
     attributes.emplace_back(attrDense, grammar::OpAndResType::HLO_Tensor);
@@ -286,13 +285,13 @@ std::vector<std::shared_ptr<Region>> genRegions(MLIRContext &ctx) {
   block->addArgument(tensorType, unknownLoc);
 
   // Create a add operation with the two arguments.
-  auto addOp = builder.create<stablehlo::AddOp>(unknownLoc, block->getArgument(0),
-                                           block->getArgument(1));
+  auto addOp = builder.create<stablehlo::AddOp>(
+      unknownLoc, block->getArgument(0), block->getArgument(1));
   block->push_back(addOp);
 
   // Create a stablehlo return operation with the result of the add operation.
-  auto returnOp =
-      builder.create<stablehlo::ReturnOp>(unknownLoc, block->back().getResults());
+  auto returnOp = builder.create<stablehlo::ReturnOp>(
+      unknownLoc, block->back().getResults());
   block->push_back(returnOp);
 
   std::vector<std::shared_ptr<Region>> regions;
