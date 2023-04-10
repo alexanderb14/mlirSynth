@@ -219,40 +219,8 @@ LogicalResult inferResultTypes(MLIRContext &ctx, Operation *op) {
 void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
                           Region::BlockArgListType functionArgs,
                           llvm::ArrayRef<int64_t> targetShape) {
-  OpBuilder builder(&ctx);
-
-  // Constant candidates.
-  for (auto &attributePair : genAttributes(ctx, functionArgs, targetShape)) {
-    auto &attr = attributePair.first;
-    auto &type = attributePair.second;
-
-    CandidatePtr candidate(new Candidate({}, type));
-    candidate->addOperation(
-        ctx, builder.create<stablehlo::ConstantOp>(UnknownLoc::get(&ctx), attr),
-        false);
-    candidateStore->addCandidate(candidate);
-  }
-
-  // Argument candidates.
-  std::vector<mlir::Type> inputs;
-  for (auto arg : functionArgs) {
-    if (arg.getType().isa<ShapedType>()) {
-      auto shapedType = arg.getType().cast<ShapedType>();
-      inputs.push_back(RankedTensorType::get(shapedType.getShape(),
-                                             shapedType.getElementType()));
-    } else if (arg.getType().isa<FloatType>()) {
-      inputs.push_back(RankedTensorType::get({}, arg.getType()));
-    } else {
-      llvm::outs() << "Type: " << arg.getType() << "\n";
-      assert(false && "Unsupported type");
-    }
-  }
-
-  unsigned argId = 0;
-  for (auto &input : inputs) {
-    CandidatePtr candidate(
-        new Candidate({}, grammar::OpAndResType::HLO_Tensor));
-    candidate->addArgument(ctx, input, argId++);
+  auto candidates = genInitialCandidates(ctx, functionArgs, targetShape);
+  for (auto &candidate : candidates) {
     candidateStore->addCandidate(candidate);
   }
 }
