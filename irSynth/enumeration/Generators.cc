@@ -35,10 +35,7 @@ void printAttributes(
 
 // Initial candidate generators
 // -----------------------------------------------------------------------------
-std::vector<CandidatePtr>
-genInitialCandidates(mlir::MLIRContext &ctx,
-                     mlir::Region::BlockArgListType functionArgs,
-                     llvm::ArrayRef<int64_t> targetShape) {
+std::vector<CandidatePtr> InitialCandidateGenerator::gen() {
   std::vector<CandidatePtr> candidates;
 
   OpBuilder builder(&ctx);

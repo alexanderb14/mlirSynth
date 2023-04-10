@@ -219,7 +219,10 @@ LogicalResult inferResultTypes(MLIRContext &ctx, Operation *op) {
 void initializeCandidates(MLIRContext &ctx, CandidateStorePtr &candidateStore,
                           Region::BlockArgListType functionArgs,
                           llvm::ArrayRef<int64_t> targetShape) {
-  auto candidates = genInitialCandidates(ctx, functionArgs, targetShape);
+  auto initialCandidateGen =
+      std::make_shared<InitialCandidateGenerator>(ctx, functionArgs, targetShape);
+  auto candidates = initialCandidateGen->gen();
+
   for (auto &candidate : candidates) {
     candidateStore->addCandidate(candidate);
   }

@@ -10,10 +10,21 @@
 #include "mlir/IR/Region.h"
 
 // Initial candidate generators
-std::vector<CandidatePtr>
-genInitialCandidates(mlir::MLIRContext &ctx,
-                     mlir::Region::BlockArgListType functionArgs,
-                     llvm::ArrayRef<int64_t> targetShape);
+class InitialCandidateGenerator {
+public:
+  InitialCandidateGenerator(mlir::MLIRContext &ctx,
+                            mlir::Region::BlockArgListType functionArgs,
+                            llvm::ArrayRef<int64_t> targetShape)
+      : ctx(ctx), functionArgs(functionArgs), targetShape(targetShape) {}
+
+  std::vector<CandidatePtr> gen();
+
+private:
+  mlir::MLIRContext &ctx;
+  mlir::Region::BlockArgListType functionArgs;
+  llvm::ArrayRef<int64_t> targetShape;
+};
+using InitialCandidateGeneratorPtr = std::unique_ptr<InitialCandidateGenerator>;
 
 // Attribute generators
 std::vector<std::pair<mlir::Attribute, grammar::OpAndResType>>
