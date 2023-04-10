@@ -21,12 +21,12 @@ genAttributes(mlir::MLIRContext &ctx,
               mlir::Region::BlockArgListType &functionArgs,
               llvm::ArrayRef<int64_t> &targetShape);
 
-class CustomAttributeGenerator : public grammar::AttributeGenerator {
+class AttributeGenerator : public grammar::AttributeGeneratorBase {
 public:
-  CustomAttributeGenerator(mlir::MLIRContext &ctx,
-                           mlir::Region::BlockArgListType &functionArgs,
-                           llvm::ArrayRef<int64_t> &targetShape)
-      : AttributeGenerator(ctx), functionArgs(functionArgs),
+  AttributeGenerator(mlir::MLIRContext &ctx,
+                     mlir::Region::BlockArgListType &functionArgs,
+                     llvm::ArrayRef<int64_t> &targetShape)
+      : grammar::AttributeGeneratorBase(ctx), functionArgs(functionArgs),
         targetShape(targetShape) {}
 
   std::vector<mlir::Attribute> genDenseIntElementsAttr() override;
@@ -36,10 +36,9 @@ private:
   mlir::Region::BlockArgListType &functionArgs;
   llvm::ArrayRef<int64_t> &targetShape;
 };
-using CustomAttributeGeneratorPtr = std::shared_ptr<CustomAttributeGenerator>;
+using AttributeGeneratorPtr = std::shared_ptr<AttributeGenerator>;
 
 // Region generators
 std::vector<std::shared_ptr<mlir::Region>> genRegions(mlir::MLIRContext &ctx);
-
 
 #endif // IRSYNTH_ATTRIBUTEGEN_H

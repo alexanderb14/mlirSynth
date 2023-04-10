@@ -240,8 +240,7 @@ genAttributes(MLIRContext &ctx, Region::BlockArgListType &functionArgs,
   return attributes;
 }
 
-std::vector<mlir::Attribute>
-CustomAttributeGenerator::genDenseIntElementsAttr() {
+std::vector<mlir::Attribute> AttributeGenerator::genDenseIntElementsAttr() {
   std::vector<mlir::Attribute> attributes;
 
   OpBuilder builder(&ctx);
@@ -254,7 +253,7 @@ CustomAttributeGenerator::genDenseIntElementsAttr() {
 }
 
 std::vector<::llvm::SmallVector<int64_t>>
-CustomAttributeGenerator::genLlvmSmallVectorint64t() {
+AttributeGenerator::genLlvmSmallVectorint64t() {
   std::vector<::llvm::SmallVector<int64_t>> attributes;
 
   attributes.emplace_back();

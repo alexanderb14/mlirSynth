@@ -58,10 +58,10 @@ enum OpAndResType {
   anonymous_704
 };
 
-class AttributeGenerator {
+class AttributeGeneratorBase {
 public:
-  AttributeGenerator(mlir::MLIRContext &ctx) : ctx(ctx) {}
-  virtual ~AttributeGenerator() = default;
+  AttributeGeneratorBase(mlir::MLIRContext &ctx) : ctx(ctx) {}
+  virtual ~AttributeGeneratorBase() = default;
 
   // AttrDef generators. (exhaustively enumerate all combinations)
   std::vector<mlir::Attribute> genChloComparisonDirectionAttr();
@@ -111,7 +111,7 @@ public:
 protected:
   mlir::MLIRContext &ctx;
 };
-using AttributeGeneratorPtr = std::shared_ptr<AttributeGenerator>;
+using AttributeGeneratorBasePtr = std::shared_ptr<AttributeGeneratorBase>;
 
 class GrammarOp {
 public:
@@ -125,7 +125,7 @@ public:
   virtual mlir::Attribute getAttributeType(unsigned index) const = 0;
   virtual std::string getAttributeName(unsigned index) const = 0;
   virtual bool isAttributeRequired(unsigned index) const = 0;
-  virtual std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const = 0;
+  virtual std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorBasePtr attrGen) const = 0;
   virtual OpAndResType getResultType(unsigned index) const = 0;
 };
 using GrammarOpPtr = std::unique_ptr<GrammarOp>;

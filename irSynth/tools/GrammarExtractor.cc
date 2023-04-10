@@ -23,7 +23,8 @@ using namespace mlir::tblgen;
 
 // Utility functions
 // -----------------------------------------------------------------------------
-std::string replaceSpecialChars(const std::string& str, const std::string& replaceWith = "") {
+std::string replaceSpecialChars(const std::string &str,
+                                const std::string &replaceWith = "") {
   return std::regex_replace(str, std::regex("[^a-zA-Z0-9]"), replaceWith);
 }
 
@@ -318,7 +319,7 @@ void emitAttrGenFns(const RecordKeeper &records, raw_ostream &os) {
 
     // Emit function declaration.
     os << "std::vector<mlir::Attribute> "
-       << "AttributeGenerator::" << getAttrGenFnName(attrDef) << "() {\n";
+       << "AttributeGeneratorBase::" << getAttrGenFnName(attrDef) << "() {\n";
 
     // Emit enumerants.
     for (auto param : attrDef.getParameters()) {
@@ -373,8 +374,9 @@ void emitAttrGenFns(const RecordKeeper &records, raw_ostream &os) {
   auto attrNonDefsGenFnNames = getAttrNonDefGenFnNames(records);
   for (auto &fnName : attrNonDefsGenFnNames) {
     os << "std::vector<mlir::Attribute> "
-       << "AttributeGenerator::" << fnName << "() {\n";
-    os << "  llvm::outs() << \"" << notImplementedWarning << ": " << fnName << "\\n\";\n";
+       << "AttributeGeneratorBase::" << fnName << "() {\n";
+    os << "  llvm::outs() << \"" << notImplementedWarning << ": " << fnName
+       << "\\n\";\n";
     os << "  std::vector<mlir::Attribute> ret;\n";
     os << "  return ret;\n";
     os << "}\n\n";
@@ -385,8 +387,9 @@ void emitAttrGenFns(const RecordKeeper &records, raw_ostream &os) {
     std::string fnName = getAttrGenFnName(type);
 
     os << "std::vector<" << type << "> "
-       << "AttributeGenerator::" << fnName << "() {\n";
-    os << "  llvm::outs() << \"" << notImplementedWarning << ": " << fnName << "\\n\";\n";
+       << "AttributeGeneratorBase::" << fnName << "() {\n";
+    os << "  llvm::outs() << \"" << notImplementedWarning << ": " << fnName
+       << "\\n\";\n";
     os << "  std::vector<" << type << "> ret;\n";
     os << "  return ret;\n";
     os << "}\n\n";
@@ -397,10 +400,10 @@ void emitAttrGenClass(const RecordKeeper &records, raw_ostream &os) {
   auto enumAttrDefs = getEnumAttrDefs(records);
 
   os << R"(
-class AttributeGenerator {
+class AttributeGeneratorBase {
 public:
-  AttributeGenerator(mlir::MLIRContext &ctx) : ctx(ctx) {}
-  virtual ~AttributeGenerator() = default;
+  AttributeGeneratorBase(mlir::MLIRContext &ctx) : ctx(ctx) {}
+  virtual ~AttributeGeneratorBase() = default;
 )";
 
   auto attrDefGenFnNames = getAttrDefGenFnNames(records);
@@ -429,7 +432,7 @@ public:
 protected:
   mlir::MLIRContext &ctx;
 };
-using AttributeGeneratorPtr = std::shared_ptr<AttributeGenerator>;
+using AttributeGeneratorBasePtr = std::shared_ptr<AttributeGeneratorBase>;
 )";
 }
 
@@ -449,7 +452,7 @@ public:
   virtual mlir::Attribute getAttributeType(unsigned index) const = 0;
   virtual std::string getAttributeName(unsigned index) const = 0;
   virtual bool isAttributeRequired(unsigned index) const = 0;
-  virtual std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorPtr attrGen) const = 0;
+  virtual std::vector<std::vector<mlir::Attribute>> genAttributes(AttributeGeneratorBasePtr attrGen) const = 0;
   virtual OpAndResType getResultType(unsigned index) const = 0;
 };
 using GrammarOpPtr = std::unique_ptr<GrammarOp>;
@@ -530,7 +533,7 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
     os << "    switch (index) {\n";
     for (int i = 0; i < tblgenOp.getNumAttributes(); ++i) {
       auto &attr = tblgenOp.getAttribute(i);
-      std::string isRequired = attr.attr.isOptional() ? "false": "true";
+      std::string isRequired = attr.attr.isOptional() ? "false" : "true";
       os << "      case " << i << ": return " << isRequired << ";\n";
     }
     os << "    }\n";
@@ -538,7 +541,7 @@ void emitConcreteOps(const RecordKeeper &records, raw_ostream &os) {
     os << "  }\n";
 
     os << "  std::vector<std::vector<mlir::Attribute>> "
-          "genAttributes(AttributeGeneratorPtr attrGen) const override {\n";
+          "genAttributes(AttributeGeneratorBasePtr attrGen) const override {\n";
     os << "    std::vector<std::vector<mlir::Attribute>> attrs;\n";
     for (int i = 0; i < tblgenOp.getNumAttributes(); ++i) {
       auto &attr = tblgenOp.getAttribute(i);

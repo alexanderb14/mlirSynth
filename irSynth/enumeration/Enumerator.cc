@@ -495,7 +495,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
       }
 
       // - Attributes.
-      auto attrGen = std::make_shared<CustomAttributeGenerator>(
+      auto attrGen = std::make_shared<AttributeGenerator>(
           ctx, inputFunctionArgs, targetShape);
       attributes = opInfo->genAttributes(attrGen);
 
