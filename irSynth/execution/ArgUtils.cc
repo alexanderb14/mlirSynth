@@ -215,6 +215,71 @@ void randomlyInitializeArgs(func::FuncOp function,
   }
 }
 
+std::vector<ReturnAndArgType> copyArgs(std::vector<ReturnAndArgType> &src) {
+  std::vector<ReturnAndArgType> newArgs;
+
+  for (unsigned i = 0; i < src.size(); i++) {
+    if (auto *srcMemRef = std::get_if<OwningMemRef0DPtr>(&src[i])) {
+      double *d = new double;
+      *d = (**srcMemRef)[{}];
+      newArgs.emplace_back(d);
+    } else if (auto *srcMemRef = std::get_if<OwningMemRef1DPtr>(&src[i])) {
+      auto *shape = (**srcMemRef)->sizes;
+      auto memRef = getOwningMemRefForShape({shape[0]});
+      auto *memRef1D = std::get<OwningMemRef1DPtr>(memRef);
+      for (int j = 0; j < shape[0]; j++) {
+        (*memRef1D)[{j}] = (**srcMemRef)[{j}];
+      }
+      newArgs.emplace_back(memRef);
+    } else if (auto *srcMemRef = std::get_if<OwningMemRef2DPtr>(&src[i])) {
+      auto *shape = (**srcMemRef)->sizes;
+      auto memRef = getOwningMemRefForShape({shape[0], shape[1]});
+      auto *memRef2D = std::get<OwningMemRef2DPtr>(memRef);
+      for (int j = 0; j < shape[0]; j++) {
+        for (int k = 0; k < shape[1]; k++) {
+          (*memRef2D)[{j, k}] = (**srcMemRef)[{j, k}];
+        }
+      }
+      newArgs.emplace_back(memRef);
+    } else if (auto *srcMemRef = std::get_if<OwningMemRef3DPtr>(&src[i])) {
+      auto *shape = (**srcMemRef)->sizes;
+      auto memRef = getOwningMemRefForShape({shape[0], shape[1], shape[2]});
+      auto *memRef3D = std::get<OwningMemRef3DPtr>(memRef);
+      for (int j = 0; j < shape[0]; j++) {
+        for (int k = 0; k < shape[1]; k++) {
+          for (int l = 0; l < shape[2]; l++) {
+            (*memRef3D)[{j, k, l}] = (**srcMemRef)[{j, k, l}];
+          }
+        }
+      }
+      newArgs.emplace_back(memRef);
+    } else if (auto *srcMemRef = std::get_if<OwningMemRef4DPtr>(&src[i])) {
+      auto *shape = (**srcMemRef)->sizes;
+      auto memRef =
+          getOwningMemRefForShape({shape[0], shape[1], shape[2], shape[3]});
+      auto *memRef4D = std::get<OwningMemRef4DPtr>(memRef);
+      for (int j = 0; j < shape[0]; j++) {
+        for (int k = 0; k < shape[1]; k++) {
+          for (int l = 0; l < shape[2]; l++) {
+            for (int m = 0; m < shape[3]; m++) {
+              (*memRef4D)[{j, k, l, m}] = (**srcMemRef)[{j, k, l, m}];
+            }
+          }
+        }
+      }
+      newArgs.emplace_back(memRef);
+    } else if (auto *srcVal = std::get_if<DoublePtr>(&src[i])) {
+      double *d = new double;
+      *d = **srcVal;
+      newArgs.emplace_back(d);
+    } else {
+      assert(false && "Unsupported type");
+    }
+  }
+
+  return newArgs;
+}
+
 void printArgs(std::vector<ReturnAndArgType> args, llvm::raw_ostream &os) {
   std::string space = " ";
   std::string tab = "    ";

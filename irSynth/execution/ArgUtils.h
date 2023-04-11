@@ -36,6 +36,7 @@ std::vector<ReturnAndArgType> createArgs(mlir::func::FuncOp function);
 double *getReturnDataPtr(ReturnAndArgType &returnAndArgs);
 void randomlyInitializeArgs(mlir::func::FuncOp function,
                             std::vector<ReturnAndArgType> args);
+std::vector<ReturnAndArgType> copyArgs(std::vector<ReturnAndArgType> &src);
 void printArgs(std::vector<ReturnAndArgType> args, llvm::raw_ostream &os);
 void printArgsAndResultsInPython(std::vector<ReturnAndArgType> &args,
                                  double *refOut,
