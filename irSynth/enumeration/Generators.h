@@ -9,7 +9,36 @@
 #include "mlir/IR/MLIRContext.h"
 #include "mlir/IR/Region.h"
 
+// Attribute generators
+// -----------------------------------------------------------------------------
+std::vector<std::pair<mlir::Attribute, grammar::OpAndResType>>
+genAttributes(mlir::MLIRContext &ctx,
+              mlir::Region::BlockArgListType &functionArgs,
+              llvm::ArrayRef<int64_t> &targetShape);
+
+class AttributeGenerator : public grammar::AttributeGeneratorBase {
+public:
+  AttributeGenerator(mlir::MLIRContext &ctx,
+                     mlir::Region::BlockArgListType &functionArgs,
+                     llvm::ArrayRef<int64_t> &targetShape)
+      : grammar::AttributeGeneratorBase(ctx), functionArgs(functionArgs),
+        targetShape(targetShape) {}
+
+  std::vector<mlir::Attribute> genDenseIntElementsAttr() override;
+  std::vector<::llvm::SmallVector<int64_t>> genLlvmSmallVectorint64t() override;
+
+private:
+  mlir::Region::BlockArgListType &functionArgs;
+  llvm::ArrayRef<int64_t> &targetShape;
+};
+using AttributeGeneratorPtr = std::shared_ptr<AttributeGenerator>;
+
+// Region generators
+// -----------------------------------------------------------------------------
+std::vector<std::shared_ptr<mlir::Region>> genRegions(mlir::MLIRContext &ctx);
+
 // Initial candidate generators
+// -----------------------------------------------------------------------------
 class InitialCandidateGenerator {
 public:
   InitialCandidateGenerator(mlir::MLIRContext &ctx) : ctx(ctx) {}
@@ -35,30 +64,13 @@ public:
 using HLOInitialCandidateGeneratorPtr =
     std::shared_ptr<HLOInitialCandidateGenerator>;
 
-// Attribute generators
-std::vector<std::pair<mlir::Attribute, grammar::OpAndResType>>
-genAttributes(mlir::MLIRContext &ctx,
-              mlir::Region::BlockArgListType &functionArgs,
-              llvm::ArrayRef<int64_t> &targetShape);
-
-class AttributeGenerator : public grammar::AttributeGeneratorBase {
+class LinalgInitialCandidateGenerator : public InitialCandidateGenerator {
 public:
-  AttributeGenerator(mlir::MLIRContext &ctx,
-                     mlir::Region::BlockArgListType &functionArgs,
-                     llvm::ArrayRef<int64_t> &targetShape)
-      : grammar::AttributeGeneratorBase(ctx), functionArgs(functionArgs),
-        targetShape(targetShape) {}
+  LinalgInitialCandidateGenerator(mlir::MLIRContext &ctx)
+      : InitialCandidateGenerator(ctx) {}
 
-  std::vector<mlir::Attribute> genDenseIntElementsAttr() override;
-  std::vector<::llvm::SmallVector<int64_t>> genLlvmSmallVectorint64t() override;
-
-private:
-  mlir::Region::BlockArgListType &functionArgs;
-  llvm::ArrayRef<int64_t> &targetShape;
+  std::vector<CandidatePtr> gen(mlir::Region::BlockArgListType functionArgs,
+                                llvm::ArrayRef<int64_t> targetShape) override;
 };
-using AttributeGeneratorPtr = std::shared_ptr<AttributeGenerator>;
-
-// Region generators
-std::vector<std::shared_ptr<mlir::Region>> genRegions(mlir::MLIRContext &ctx);
 
 #endif // IRSYNTH_ATTRIBUTEGEN_H

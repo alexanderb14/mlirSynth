@@ -21,6 +21,9 @@ struct EnumerationOptions {
   int maxNumOps;
   int timeoutPerFunction;
   bool ignoreEquivalentCandidates;
+  bool ignoreTypes;
+  bool skipTypeInference;
+  bool withCopyArgs;
 };
 
 struct EnumerationResult {

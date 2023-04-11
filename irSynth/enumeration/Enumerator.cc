@@ -11,6 +11,7 @@
 #include "execution/ArrayUtils.h"
 
 #include "mlir/Dialect/Func/IR/FuncOps.h"
+#include "mlir/Dialect/Linalg/IR/Linalg.h"
 #include "mlir/ExecutionEngine/ExecutionEngine.h"
 #include "mlir/IR/BuiltinOps.h"
 #include "mlir/IR/BuiltinTypes.h"
@@ -46,7 +47,12 @@ void printCandidate(ProcessingStatus status,
   }
 
   // Build and print the status string.
-  int candidateId = localCandidateStore->getCandidateId(result->candidate);
+  int candidateId;
+  if (result) {
+    candidateId = localCandidateStore->getCandidateId(result->candidate);
+  } else {
+    candidateId = -1;
+  }
 
   std::string statusStr;
   bool printStatus = options.printStatusNames || options.printStatusTiles ||
@@ -82,7 +88,7 @@ void printCandidate(ProcessingStatus status,
       (!(status == accept_as_candidate) && options.printInvalidCandidates) ||
       options.printStatusNames) {
     llvm::outs() << statusStr << "\n";
-    if (status > reject_hasUnsupportedShapeRank) {
+    if (result->module && status > reject_hasUnsupportedShapeRank) {
       result->module->print(llvm::outs());
     }
   }
@@ -219,19 +225,17 @@ LogicalResult inferResultTypes(MLIRContext &ctx, Operation *op) {
 bool verifyDefsAreUsed(Block *block) {
   mlir::DenseMap<mlir::Value, bool> values;
 
-  block->walk([&](Block *block) {
-    for (auto &arg : block->getArguments()) {
-      values[arg] = false;
+  for (auto &arg : block->getArguments()) {
+    values[arg] = false;
+  }
+  for (auto &op : block->getOperations()) {
+    for (auto result : op.getResults()) {
+      values[result] = false;
     }
-    for (auto &op : block->getOperations()) {
-      for (auto result : op.getResults()) {
-        values[result] = false;
-      }
-      for (auto operand : op.getOperands()) {
-        values[operand] = true;
-      }
+    for (auto operand : op.getOperands()) {
+      values[operand] = true;
     }
-  });
+  }
 
   for (auto &value : values) {
     if (!value.second) {
@@ -267,6 +271,9 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
       operandArgTuple.operands, grammar::OpAndResType::HLO_Tensor);
   auto builder = OpBuilder(&ctx);
 
+  processingResult = std::make_shared<EnumerationResult>();
+  processingResult->candidate = newCandidate;
+
   // Set up operands.
   SmallVector<mlir::Value> operands =
       newCandidate->merge(ctx, operandArgTuple.operands);
@@ -301,9 +308,17 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
   }
 
   // Create operation.
-  Operation *op =
-      builder.create(UnknownLoc::get(&ctx), opName.getIdentifier(), operands,
-                     resultTypes, attributes, {}, regions);
+  Operation* op;
+  if (opName.getIdentifier() == "linalg.matmul") {
+    ValueRange ins = {operands[0], operands[1]};
+    ValueRange outs = {operands[2]};
+    op = builder.create<linalg::MatmulOp>(UnknownLoc::get(&ctx), ins, outs);
+  } else {
+    op =
+        builder.create(UnknownLoc::get(&ctx), opName.getIdentifier(), operands,
+                       resultTypes, attributes, {}, regions);
+  }
+
   newCandidate->addOperation(ctx, op);
 
   // Check length.
@@ -311,15 +326,19 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
     return reject_hasTooManyOps;
   }
 
+  // createModule(ctx, newCandidate->getRegion())->print(llvm::outs());
+
   // Infer the operation result type.
   if (failed(verifyOp(op, opName))) {
     return reject_isNotVerifiable;
   }
 
-  if (failed(inferResultTypes(ctx, op))) {
-    if (options.printInvalidCandidates)
-      createModule(ctx, newCandidate->getRegion())->dump();
-    return reject_isNotResultTypeInferrable;
+  if (!options.skipTypeInference) {
+    if (failed(inferResultTypes(ctx, op))) {
+      if (options.printInvalidCandidates)
+        createModule(ctx, newCandidate->getRegion())->print(llvm::outs());
+      return reject_isNotResultTypeInferrable;
+    }
   }
 
   // Check if the operation result shape rank is supported.
@@ -364,6 +383,8 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
 
   // Create args array.
   auto argsCand = selectArgs(args, newCandidate->getArgIds());
+  if (options.withCopyArgs)
+    argsCand = copyArgs(argsCand);
   auto returnShapeCand = getReturnShape(func);
   auto retCand = getOwningMemRefForShape(returnShapeCand);
 
@@ -374,6 +395,8 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
 
   double *out = getReturnDataPtr(retCand);
   // printArray(out, returnShape, llvm::outs());
+  if (options.printArgsAndResults)
+    printArgsAndResultsInPython(args, out, targetShape);
 
   // Hash and add to store if hash doesn't exist yet.
   double hash = hashArray(out, returnShape);
@@ -396,15 +419,11 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
       candidateStore->merge(localCandidateStore);
       stats.numOps = newCandidate->getNumOps();
 
-      processingResult = std::make_shared<EnumerationResult>();
-      processingResult->candidate = newCandidate;
       processingResult->module = module.release();
       return accept_as_solution;
     }
   }
 
-  processingResult = std::make_shared<EnumerationResult>();
-  processingResult->candidate = newCandidate;
   processingResult->module = module.release();
   return accept_as_candidate;
 }
@@ -440,7 +459,6 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   assert(succeeded(jitAndInvoke(inputModule, args, ret, false)));
 
   double *refOut = getReturnDataPtr(ret);
-  // printArray(refOut, targetShape, llvm::outs());
   if (options.printArgsAndResults)
     printArgsAndResultsInPython(args, refOut, targetShape);
 
@@ -484,8 +502,13 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
       // - Operands.
       auto opInfo = grammar::createGrammarOp(opName.getStringRef().str());
       for (unsigned i = 0; i < opInfo->getNumOperands(); i++) {
-        auto operandCandidates =
-            candidateStore->getCandidates(numOps, opInfo->getOperandType(i));
+        std::vector<CandidatePtr> operandCandidates;
+        if (options.ignoreTypes) {
+          operandCandidates = candidateStore->getCandidates(numOps);
+        } else {
+          operandCandidates =
+              candidateStore->getCandidates(numOps, opInfo->getOperandType(i));
+        }
         operands.push_back(operandCandidates);
       }
 
@@ -520,9 +543,8 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
             stats.merge(processingStats);
 
             // Print candidate.
-            if (processingResult)
-              printCandidate(status, localCandidateStore, candidateStore,
-                             options, processingResult);
+            printCandidate(status, localCandidateStore, candidateStore, options,
+                           processingResult);
 
             if (status == accept_as_solution) {
               result = processingResult;

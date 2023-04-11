@@ -4607,7 +4607,7 @@ public:
 
 class linalg_matmul : public GrammarOp {
 public:
-  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 1; }
   unsigned getNumRegions() const override { return 1; }
   unsigned getNumResults() const override { return 1; }

@@ -104,6 +104,9 @@ int main(int argc, char **argv) {
   cl::opt<std::string> inputFilename(cl::Positional, cl::desc("<input file>"),
                                      cl::init("-"));
 
+  cl::opt<std::string> targetDialect(
+      "target-dialect", cl::desc("Target dialect"), cl::init("hlo"));
+
   cl::opt<bool> printStatusNames(
       "print-status-names", cl::desc("Print status names"), cl::init(false));
   cl::opt<bool> printStatusTiles(
@@ -146,6 +149,18 @@ int main(int argc, char **argv) {
       "ignore-equivalent-candidates",
       cl::desc("Ignore computationally equivalent candidates"),
       cl::init(false));
+  cl::opt<bool> ignoreTypes(
+      "ignore-types",
+      cl::desc("Ignore operand types when generating candidates"),
+      cl::init(false));
+  cl::opt<bool> skipTypeInference(
+      "skip-type-inference",
+      cl::desc("Skip type inference when generating candidates"),
+      cl::init(false));
+  cl::opt<bool> withCopyArgs("with-copy-args",
+                             cl::desc("Add copy args to candidates"),
+                             cl::init(false));
+
   cl::opt<bool> guide("guide", cl::desc("Use guide to select allowed ops"),
                       cl::init(false));
   cl::opt<bool> distribute(
@@ -166,6 +181,9 @@ int main(int argc, char **argv) {
   options.maxNumOps = maxNumOps;
   options.timeoutPerFunction = timeoutPerFunction;
   options.ignoreEquivalentCandidates = ignoreEquivalentCandidates;
+  options.ignoreTypes = ignoreTypes;
+  options.skipTypeInference = skipTypeInference;
+  options.withCopyArgs = withCopyArgs;
 
   // Initialize LLVM.
   llvm::InitLLVM y(argc, argv);
@@ -181,7 +199,7 @@ int main(int argc, char **argv) {
   Dialect *stablehloDialect = ctx->getOrLoadDialect<stablehlo::StablehloDialect>();
   Dialect *hloDialect = ctx->getOrLoadDialect<mhlo::MhloDialect>();
   Dialect *chloDialect = ctx->getOrLoadDialect<chlo::ChloDialect>();
-  std::vector<Dialect *> dialects = {stablehloDialect, hloDialect, chloDialect};
+  Dialect *linalgDialect = ctx->getOrLoadDialect<linalg::LinalgDialect>();
 
   // Parse the input file.
   std::string errorMessage;
@@ -228,16 +246,34 @@ int main(int argc, char **argv) {
     executor = std::make_shared<ThreadedExecutor>(contextManager, numThreads);
   }
 
+  // Target dialect specific.
+  std::vector<Dialect *> dialects;
+  std::vector<std::string> supportedOps;
+  InitialCandidateGeneratorPtr initialCandidateGen;
+
+  if (targetDialect == "hlo") {
+    dialects = {stablehloDialect, hloDialect, chloDialect};
+    supportedOps = {"chlo.broadcast_divide",
+                    "chlo.broadcast_add",
+                    "chlo.broadcast_subtract",
+                    "chlo.broadcast_multiply",
+                    "stablehlo.dot",
+                    "stablehlo.reduce",
+                    "stablehlo.dot_general"
+                    "stablehlo.transpose",
+                    "stablehlo.select"};
+    initialCandidateGen = std::make_shared<HLOInitialCandidateGenerator>(*ctx);
+  } else if (targetDialect == "linalg") {
+    dialects = {linalgDialect};
+    supportedOps = {"linalg.matmul"};
+    initialCandidateGen =
+        std::make_shared<LinalgInitialCandidateGenerator>(*ctx);
+  } else {
+    llvm::errs() << "Target dialect not supported\n";
+    return 1;
+  }
+
   // Synthesize functions.
-  std::vector<std::string> supportedOps = {"chlo.broadcast_divide",
-                                           "chlo.broadcast_add",
-                                           "chlo.broadcast_subtract",
-                                           "chlo.broadcast_multiply",
-                                           "stablehlo.dot",
-                                           "stablehlo.reduce",
-                                           "stablehlo.dot_general"
-                                           "stablehlo.transpose",
-                                           "stablehlo.select"};
   llvm::DenseMap<func::FuncOp, OwningOpRef<ModuleOp>> originalToSynthesizedFns;
   llvm::DenseMap<func::FuncOp, std::vector<unsigned>>
       originalToSynthesizedArgIds;
@@ -272,9 +308,6 @@ int main(int argc, char **argv) {
         << "--------------------------\n";
       inputFunc.print(llvm::outs());
     }
-
-    InitialCandidateGeneratorPtr initialCandidateGen =
-        std::make_shared<HLOInitialCandidateGenerator>(*ctx);
 
     CandidateStorePtr candidateStore = std::make_shared<CandidateStore>();
 

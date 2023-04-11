@@ -1,7 +1,10 @@
 #include "Generators.h"
 
 #include "enumeration/Grammar.h"
+#include "mlir/Dialect/Arith/IR/Arith.h"
 #include "mlir/Dialect/Func/IR/FuncOps.h"
+#include "mlir/Dialect/Linalg/IR/Linalg.h"
+#include "mlir/Dialect/Tensor/IR/Tensor.h"
 #include "mlir/IR/BuiltinAttributes.h"
 #include "mlir/IR/BuiltinTypeInterfaces.h"
 #include "mlir/IR/Location.h"
@@ -31,53 +34,6 @@ void printAttributes(
     llvm::outs() << opAndResTypeToString(attr.second) << "\n";
     llvm::outs() << "---------\n";
   }
-}
-
-// Initial candidate generators
-// -----------------------------------------------------------------------------
-std::vector<CandidatePtr>
-HLOInitialCandidateGenerator::gen(mlir::Region::BlockArgListType functionArgs,
-                                  llvm::ArrayRef<int64_t> targetShape) {
-  std::vector<CandidatePtr> candidates;
-
-  OpBuilder builder(&ctx);
-
-  // Constant candidates.
-  for (auto &attributePair : genAttributes(ctx, functionArgs, targetShape)) {
-    auto &attr = attributePair.first;
-    auto &type = attributePair.second;
-
-    CandidatePtr candidate(new Candidate({}, type));
-    candidate->addOperation(
-        ctx, builder.create<stablehlo::ConstantOp>(UnknownLoc::get(&ctx), attr),
-        false);
-    candidates.push_back(candidate);
-  }
-
-  // Argument candidates.
-  std::vector<mlir::Type> inputs;
-  for (auto arg : functionArgs) {
-    if (arg.getType().isa<ShapedType>()) {
-      auto shapedType = arg.getType().cast<ShapedType>();
-      inputs.push_back(RankedTensorType::get(shapedType.getShape(),
-                                             shapedType.getElementType()));
-    } else if (arg.getType().isa<FloatType>()) {
-      inputs.push_back(RankedTensorType::get({}, arg.getType()));
-    } else {
-      llvm::outs() << "Type: " << arg.getType() << "\n";
-      assert(false && "Unsupported type");
-    }
-  }
-
-  unsigned argId = 0;
-  for (auto &input : inputs) {
-    CandidatePtr candidate(
-        new Candidate({}, grammar::OpAndResType::HLO_Tensor));
-    candidate->addArgument(ctx, input, argId++);
-    candidates.push_back(candidate);
-  }
-
-  return candidates;
 }
 
 // Attribute generators
@@ -296,4 +252,109 @@ std::vector<std::shared_ptr<Region>> genRegions(MLIRContext &ctx) {
   regions.push_back(region);
 
   return regions;
+}
+
+// Initial candidate generators
+// -----------------------------------------------------------------------------
+std::vector<CandidatePtr>
+HLOInitialCandidateGenerator::gen(mlir::Region::BlockArgListType functionArgs,
+                                  llvm::ArrayRef<int64_t> targetShape) {
+  std::vector<CandidatePtr> candidates;
+
+  OpBuilder builder(&ctx);
+
+  // Constant candidates.
+  for (auto &attributePair : genAttributes(ctx, functionArgs, targetShape)) {
+    auto &attr = attributePair.first;
+    auto &type = attributePair.second;
+
+    CandidatePtr candidate(new Candidate({}, type));
+    candidate->addOperation(
+        ctx, builder.create<stablehlo::ConstantOp>(UnknownLoc::get(&ctx), attr),
+        false);
+    candidates.push_back(candidate);
+  }
+
+  // Argument candidates.
+  std::vector<mlir::Type> inputs;
+  for (auto arg : functionArgs) {
+    if (arg.getType().isa<ShapedType>()) {
+      auto shapedType = arg.getType().cast<ShapedType>();
+      inputs.push_back(RankedTensorType::get(shapedType.getShape(),
+                                             shapedType.getElementType()));
+    } else if (arg.getType().isa<FloatType>()) {
+      inputs.push_back(RankedTensorType::get({}, arg.getType()));
+    } else {
+      llvm::outs() << "Type: " << arg.getType() << "\n";
+      assert(false && "Unsupported type");
+    }
+  }
+
+  unsigned argId = 0;
+  for (auto &input : inputs) {
+    CandidatePtr candidate(
+        new Candidate({}, grammar::OpAndResType::HLO_Tensor));
+    candidate->addArgument(ctx, input, argId++);
+    candidates.push_back(candidate);
+  }
+
+  return candidates;
+}
+
+CandidatePtr createTensorInit(mlir::MLIRContext &ctx,
+                              llvm::ArrayRef<int64_t> shape, float value) {
+  OpBuilder builder(&ctx);
+  auto type = grammar::OpAndResType::AnyType;
+  CandidatePtr candidate(new Candidate({}, type));
+
+  auto op1 = builder.create<tensor::EmptyOp>(UnknownLoc::get(&ctx), shape,
+                                             FloatType::getF64(&ctx));
+  candidate->addOperation(ctx, op1, false);
+
+  auto op2 = builder.create<arith::ConstantOp>(
+      UnknownLoc::get(&ctx), FloatAttr::get(FloatType::getF64(&ctx), value));
+  candidate->addOperation(ctx, op2, false);
+
+  auto op3 = builder.create<linalg::FillOp>(
+          UnknownLoc::get(&ctx), op2.getResult(), op1.getResult());
+  candidate->addOperation(ctx, op3, false);
+
+  return candidate;
+}
+
+std::vector<CandidatePtr>
+LinalgInitialCandidateGenerator::gen(mlir::Region::BlockArgListType functionArgs,
+                                  llvm::ArrayRef<int64_t> targetShape) {
+  // Constant candidates.
+  std::vector<CandidatePtr> candidates;
+  auto shapes = genShapes(functionArgs);
+  for (auto &shape : shapes) {
+    candidates.push_back(createTensorInit(ctx, shape, 0.0));
+    candidates.push_back(createTensorInit(ctx, shape, 1.0));
+  }
+
+  // Argument candidates.
+  std::vector<mlir::Type> inputs;
+  for (auto arg : functionArgs) {
+    if (arg.getType().isa<ShapedType>()) {
+      auto shapedType = arg.getType().cast<ShapedType>();
+      inputs.push_back(RankedTensorType::get(shapedType.getShape(),
+                                             shapedType.getElementType()));
+    } else if (arg.getType().isa<FloatType>()) {
+      inputs.push_back(RankedTensorType::get({}, arg.getType()));
+    } else {
+      llvm::outs() << "Type: " << arg.getType() << "\n";
+      assert(false && "Unsupported type");
+    }
+  }
+
+  unsigned argId = 0;
+  for (auto &input : inputs) {
+    CandidatePtr candidate(
+        new Candidate({}, grammar::OpAndResType::AnyType));
+    candidate->addArgument(ctx, input, argId++);
+    candidates.push_back(candidate);
+  }
+
+  return candidates;
 }
