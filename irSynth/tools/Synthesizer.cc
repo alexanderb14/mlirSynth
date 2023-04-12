@@ -268,6 +268,10 @@ int main(int argc, char **argv) {
     supportedOps = {"linalg.matmul"};
     initialCandidateGen =
         std::make_shared<LinalgInitialCandidateGenerator>(*ctx);
+
+    options.ignoreTypes = true;
+    options.skipTypeInference = true;
+    options.withCopyArgs = true;
   } else {
     llvm::errs() << "Target dialect not supported\n";
     return 1;
