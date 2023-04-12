@@ -151,6 +151,7 @@ std::vector<std::string> predictOps(std::vector<std::string> &supportedOps,
   if (computeNumCyclesWithSelfEdges(g) > 0) {
     ops.emplace_back("stablehlo.dot_general");
     ops.emplace_back("stablehlo.reduce");
+    ops.emplace_back("linalg.matmul");
   }
 
   // If we didn't match any ops, add all of them.
