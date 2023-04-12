@@ -4705,7 +4705,7 @@ public:
 
 class linalg_matvec : public GrammarOp {
 public:
-  unsigned getNumOperands() const override { return 2; }
+  unsigned getNumOperands() const override { return 3; }
   unsigned getNumAttributes() const override { return 0; }
   unsigned getNumRegions() const override { return 1; }
   unsigned getNumResults() const override { return 1; }

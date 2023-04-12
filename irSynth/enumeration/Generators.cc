@@ -81,6 +81,30 @@ genShapes(Region::BlockArgListType &functionArgs) {
     ret.emplace_back(sequenceReverse);
   }
 
+  // Filter all 1 element shapes
+  ret.erase(std::remove_if(ret.begin(), ret.end(),
+                           [](const ::llvm::SmallVector<int64_t> &shape) {
+                             return shape.size() == 1;
+                           }),
+            ret.end());
+
+  return ret;
+}
+
+std::vector<::llvm::SmallVector<int64_t>>
+genArgShapes(Region::BlockArgListType &functionArgs) {
+  std::vector<::llvm::SmallVector<int64_t>> ret;
+
+  for (auto arg : functionArgs) {
+    if (!arg.getType().isa<ShapedType>())
+      continue;
+
+    auto shape = arg.getType().cast<ShapedType>().getShape();
+
+    // Same shape as the argument: E.g. [3, 5, 7] -> [3, 5, 7]
+    ret.emplace_back(shape.begin(), shape.end());
+  }
+
   return ret;
 }
 
@@ -327,7 +351,7 @@ LinalgInitialCandidateGenerator::gen(mlir::Region::BlockArgListType functionArgs
                                   llvm::ArrayRef<int64_t> targetShape) {
   // Constant candidates.
   std::vector<CandidatePtr> candidates;
-  auto shapes = genShapes(functionArgs);
+  auto shapes = genArgShapes(functionArgs);
   for (auto &shape : shapes) {
     candidates.push_back(createTensorInit(ctx, shape, 0.0));
     candidates.push_back(createTensorInit(ctx, shape, 1.0));

@@ -313,6 +313,10 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
     ValueRange ins = {operands[0], operands[1]};
     ValueRange outs = {operands[2]};
     op = builder.create<linalg::MatmulOp>(UnknownLoc::get(&ctx), ins, outs);
+  } else if (opName.getIdentifier() == "linalg.matvec") {
+    ValueRange ins = {operands[0], operands[1]};
+    ValueRange outs = {operands[2]};
+    op = builder.create<linalg::MatvecOp>(UnknownLoc::get(&ctx), ins, outs);
   } else {
     op =
         builder.create(UnknownLoc::get(&ctx), opName.getIdentifier(), operands,

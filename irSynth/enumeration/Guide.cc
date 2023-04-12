@@ -152,6 +152,7 @@ std::vector<std::string> predictOps(std::vector<std::string> &supportedOps,
     ops.emplace_back("stablehlo.dot_general");
     ops.emplace_back("stablehlo.reduce");
     ops.emplace_back("linalg.matmul");
+    ops.emplace_back("linalg.matvec");
   }
 
   // If we didn't match any ops, add all of them.
