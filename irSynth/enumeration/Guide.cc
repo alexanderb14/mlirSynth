@@ -105,6 +105,11 @@ int countNumMultipliedMismatchingMemrefAccesses(Operation *op) {
     for (auto memrefShape : memrefShapes) {
       bool hasMatchingDimension = false;
       for (auto memrefShapeOther : memrefShapes) {
+        if (memrefShape.size() != memrefShapeOther.size())
+          continue;
+        if (memrefShape.empty() || memrefShapeOther.empty())
+          continue;
+
         if (memrefShape[0] == memrefShapeOther.back() ||
             memrefShape.back() == memrefShapeOther[0]) {
           hasMatchingDimension = true;
