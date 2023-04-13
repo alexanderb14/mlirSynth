@@ -202,3 +202,48 @@ bool areArraysEqual(double *arr1, double *arr2, ArrayRef<int64_t> shape) {
   }
   assert(false && "Unsupported shape");
 }
+
+double getDelta(double *arr1, double *arr2, ArrayRef<int64_t> shape) {
+  double delta = 0;
+  if (shape.size() == 1) {
+    for (int i = 0; i < shape[0]; i++) {
+      delta += fabs(arr1[i] - arr2[i]);
+    }
+  }
+  else if (shape.size() == 2) {
+    for (int i = 0; i < shape[0]; i++) {
+      for (int j = 0; j < shape[1]; j++) {
+        delta += fabs(arr1[i * shape[1] + j] - arr2[i * shape[1] + j]);
+      }
+    }
+  }
+  else if (shape.size() == 3) {
+    for (int i = 0; i < shape[0]; i++) {
+      for (int j = 0; j < shape[1]; j++) {
+        for (int k = 0; k < shape[2]; k++) {
+          delta += fabs(arr1[i * shape[1] * shape[2] + j * shape[2] + k] -
+                        arr2[i * shape[1] * shape[2] + j * shape[2] + k]);
+        }
+      }
+    }
+  }
+  else if (shape.size() == 4) {
+    for (int i = 0; i < shape[0]; i++) {
+      for (int j = 0; j < shape[1]; j++) {
+        for (int k = 0; k < shape[2]; k++) {
+          for (int l = 0; l < shape[3]; l++) {
+            delta += fabs(arr1[i * shape[1] * shape[2] * shape[3] +
+                               j * shape[2] * shape[3] + k * shape[3] + l] -
+                          arr2[i * shape[1] * shape[2] * shape[3] +
+                               j * shape[2] * shape[3] + k * shape[3] + l]);
+          }
+        }
+      }
+    }
+  }
+  else {
+    assert(false && "Unsupported shape");
+  }
+
+  return delta;
+}
