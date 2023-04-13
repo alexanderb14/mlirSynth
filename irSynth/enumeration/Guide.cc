@@ -75,6 +75,23 @@ getUsedMemrefShapes(Operation *op) {
   return memrefShapes;
 }
 
+int getMaxArgDim(Operation *op) {
+  auto funcOp = dyn_cast<func::FuncOp>(op);
+  auto funcType = funcOp.getFunctionType();
+  auto funcArgs = funcType.getInputs();
+
+  // Get the maximum dimension of the arguments
+  int maxArgDim = 0;
+  for (auto arg : funcArgs) {
+    if (auto memrefType = arg.dyn_cast<MemRefType>()) {
+      auto memrefShape = memrefType.getShape();
+      maxArgDim = std::max(maxArgDim, (int)memrefShape.size());
+    }
+  }
+
+  return maxArgDim;
+}
+
 int countNumMultipliedMismatchingMemrefAccesses(Operation *op) {
   int numMultipliedMismatchingMemrefs = 0;
 
@@ -149,7 +166,12 @@ std::vector<std::string> predictOps(std::vector<std::string> &supportedOps,
 
   // Reduction heuristics
   if (computeNumCyclesWithSelfEdges(g) > 0) {
-    ops.emplace_back("stablehlo.dot_general");
+    if (getMaxArgDim(op) > 2) {
+      ops.emplace_back("stablehlo.dot_general");
+    } else {
+      ops.emplace_back("stablehlo.dot");
+    }
+
     ops.emplace_back("stablehlo.reduce");
     ops.emplace_back("linalg.matmul");
     ops.emplace_back("linalg.matvec");
