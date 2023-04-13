@@ -265,7 +265,7 @@ int main(int argc, char **argv) {
     initialCandidateGen = std::make_shared<HLOInitialCandidateGenerator>(*ctx);
   } else if (targetDialect == "linalg") {
     dialects = {linalgDialect};
-    supportedOps = {"linalg.matmul"};
+    supportedOps = {"linalg.matmul", "linalg.matvec"};
     initialCandidateGen =
         std::make_shared<LinalgInitialCandidateGenerator>(*ctx);
 
