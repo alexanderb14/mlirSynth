@@ -15,10 +15,6 @@ Benchmark = collections.namedtuple(
     'Benchmark', ['file', 'name', 'ops', 'distribute', 'max_num_ops'])
 
 benchmarks_hlo = [
-    Benchmark('benchmarks/covariance.mlir', 'covariance',
-              ['stablehlo.dot_general', 'stablehlo.transpose', 'chlo.broadcast_divide', 'chlo.broadcast_subtract', 'stablehlo.reduce'], False, 3),
-    Benchmark('benchmarks/correlation.mlir', 'correlation',
-              ['stablehlo.dot_general', 'chlo.broadcast_divide', 'chlo.broadcast_subtract'], False, 3),
     Benchmark('benchmarks/doitgen.mlir', 'doitgen',
               ['stablehlo.dot_general'], False, 3),
     Benchmark('benchmarks/atax.mlir', 'atax',
@@ -36,6 +32,10 @@ benchmarks_hlo = [
               ['chlo.broadcast_add', 'stablehlo.dot', 'chlo.broadcast_multiply'], True, 3),
     Benchmark('benchmarks/symm.mlir', 'symm',
               ['stablehlo.transpose', 'stablehlo.dot', 'chlo.broadcast_multiply', 'stablehlo.add', 'stablehlo.select'], False, 5),
+    Benchmark('benchmarks/correlation.mlir', 'correlation',
+              ['stablehlo.dot_general', 'chlo.broadcast_divide', 'chlo.broadcast_subtract'], False, 3),
+    Benchmark('benchmarks/covariance.mlir', 'covariance',
+              ['stablehlo.dot_general', 'stablehlo.transpose', 'chlo.broadcast_divide', 'chlo.broadcast_subtract', 'stablehlo.reduce'], False, 3),
     Benchmark('benchmarks/syrk.mlir', 'syrk',
               ['stablehlo.transpose', 'stablehlo.dot', 'chlo.broadcast_multiply', 'stablehlo.add', 'stablehlo.select'], True, 5),
     Benchmark('benchmarks/syr2k.mlir', 'syr2k',
@@ -59,7 +59,7 @@ benchmarks_linalg = [
               ['linalg.matvec'], True, 1),
 ]
 
-timeout = 600
+timeout = 60 * 60
 script_dir = os.path.dirname(os.path.realpath(__file__))
 res_dir = '/tmp/exp_results'
 cpu_count = multiprocessing.cpu_count()
@@ -144,10 +144,9 @@ def run_benchmarks_all(benchmarks, dialect, prune_eq_configs=[True, False],
     stats_all = []
     for config in tqdm.tqdm(configs):
         stats = run_benchmark(*config)
+
         print(stats)
-
         stats_all.append(stats)
-
         with open('/tmp/stats.json', 'w') as f:
             json.dump(stats_all, f, indent=2)
 
@@ -158,13 +157,38 @@ def run_benchmarks_best(benchmarks, dialect):
         stats = run_benchmark(benchmark=benchmark,
                               dialect=dialect,
                               prune_equivalent_candidates=True,
-                              ops='ground_truth',
+                              ops="ground_truth",
                               distribute=benchmark.distribute,
                               max_num_ops=benchmark.max_num_ops)
         print(stats)
-
         stats_all.append(stats)
+        with open('/tmp/stats.json', 'w') as f:
+            json.dump(stats_all, f, indent=2)
 
+
+def run_benchmarks_naive_heuristic(benchmarks, dialect):
+    stats_all = []
+    for benchmark in tqdm.tqdm(benchmarks):
+        stats = run_benchmark(benchmark=benchmark,
+                              dialect=dialect,
+                              prune_equivalent_candidates=True,
+                              ops="heuristic",
+                              distribute=benchmark.distribute,
+                              max_num_ops=5)
+        print(stats)
+        stats_all.append(stats)
+        with open('/tmp/stats.json', 'w') as f:
+            json.dump(stats_all, f, indent=2)
+
+    for benchmark in tqdm.tqdm(benchmarks):
+        stats = run_benchmark(benchmark=benchmark,
+                              dialect=dialect,
+                              prune_equivalent_candidates=True,
+                              ops="all",
+                              distribute=benchmark.distribute,
+                              max_num_ops=5)
+        print(stats)
+        stats_all.append(stats)
         with open('/tmp/stats.json', 'w') as f:
             json.dump(stats_all, f, indent=2)
 
@@ -188,6 +212,8 @@ def main():
                         default=False, help='Run all experiments')
     parser.add_argument('--exp_best', action='store_true',
                         default=False, help='Run experiments in their best configuration')
+    parser.add_argument('--exp_naive_heuristic', action='store_true',
+                        default=False, help='Run experiments with naive and heuristic')
     parser.add_argument('--dialect', type=str, help='Dialect to use')
     args = parser.parse_args()
 
@@ -207,6 +233,8 @@ def main():
         run_benchmarks_all(benchmarks, args.dialect)
     elif args.exp_best:
         run_benchmarks_best(benchmarks, args.dialect)
+    elif args.exp_naive_heuristic:
+        run_benchmarks_naive_heuristic(benchmarks, args.dialect)
 
     # Plot results.
     plot_results()

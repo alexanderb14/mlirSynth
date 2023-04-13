@@ -27,6 +27,8 @@ module attributes {dlti.dl_spec = #dlti.dl_spec<#dlti.dl_entry<"dlti.endianness"
         %11 = arith.addf %10, %9 : f64
         affine.store %11, %arg6[%arg7] : memref<1200xf64>
       }
+    }
+    affine.for %arg7 = 0 to 1200 {
       %1 = affine.load %arg6[%arg7] : memref<1200xf64>
       %2 = arith.divf %1, %arg2 : f64
       %3 = math.sqrt %2 : f64
@@ -34,36 +36,36 @@ module attributes {dlti.dl_spec = #dlti.dl_spec<#dlti.dl_entry<"dlti.endianness"
       %5 = arith.select %4, %cst, %3 : f64
       affine.store %5, %arg6[%arg7] : memref<1200xf64>
     }
-    %0 = math.sqrt %arg2 : f64
-    affine.for %arg7 = 0 to 1400 {
-      affine.for %arg8 = 0 to 1200 {
-        %1 = affine.load %arg5[%arg8] : memref<1200xf64>
-        %2 = affine.load %arg3[%arg7, %arg8] : memref<1400x1200xf64>
-        %3 = arith.subf %2, %1 : f64
-        affine.store %3, %arg3[%arg7, %arg8] : memref<1400x1200xf64>
-        %4 = affine.load %arg6[%arg8] : memref<1200xf64>
-        %5 = arith.mulf %0, %4 : f64
-        %6 = arith.divf %3, %5 : f64
-        affine.store %6, %arg3[%arg7, %arg8] : memref<1400x1200xf64>
-      }
-    }
-    affine.for %arg7 = 0 to 1199 {
-      affine.store %cst, %arg4[%arg7, %arg7] : memref<1200x1200xf64>
-      affine.for %arg8 = #map(%arg7) to 1200 {
-        affine.store %cst_0, %arg4[%arg7, %arg8] : memref<1200x1200xf64>
-        affine.for %arg9 = 0 to 1400 {
-          %2 = affine.load %arg3[%arg9, %arg7] : memref<1400x1200xf64>
-          %3 = affine.load %arg3[%arg9, %arg8] : memref<1400x1200xf64>
-          %4 = arith.mulf %2, %3 : f64
-          %5 = affine.load %arg4[%arg7, %arg8] : memref<1200x1200xf64>
-          %6 = arith.addf %5, %4 : f64
-          affine.store %6, %arg4[%arg7, %arg8] : memref<1200x1200xf64>
-        }
-        %1 = affine.load %arg4[%arg7, %arg8] : memref<1200x1200xf64>
-        affine.store %1, %arg4[%arg8, %arg7] : memref<1200x1200xf64>
-      }
-    }
-    affine.store %cst, %arg4[1199, 1199] : memref<1200x1200xf64>
+    //affine.for %arg7 = 0 to 1400 {
+    //  affine.for %arg8 = 0 to 1200 {
+    //    %1 = affine.load %arg5[%arg8] : memref<1200xf64>
+    //    %2 = affine.load %arg3[%arg7, %arg8] : memref<1400x1200xf64>
+    //    %3 = arith.subf %2, %1 : f64
+    //    affine.store %3, %arg3[%arg7, %arg8] : memref<1400x1200xf64>
+    //    %4 = affine.load %arg6[%arg8] : memref<1200xf64>
+    //    %0 = math.sqrt %arg2 : f64
+    //    %5 = arith.mulf %0, %4 : f64
+    //    %6 = arith.divf %3, %5 : f64
+    //    affine.store %6, %arg3[%arg7, %arg8] : memref<1400x1200xf64>
+    //  }
+    //}
+    //affine.for %arg7 = 0 to 1199 {
+    //  affine.store %cst, %arg4[%arg7, %arg7] : memref<1200x1200xf64>
+    //  affine.for %arg8 = #map(%arg7) to 1200 {
+    //    affine.store %cst_0, %arg4[%arg7, %arg8] : memref<1200x1200xf64>
+    //    affine.for %arg9 = 0 to 1400 {
+    //      %2 = affine.load %arg3[%arg9, %arg7] : memref<1400x1200xf64>
+    //      %3 = affine.load %arg3[%arg9, %arg8] : memref<1400x1200xf64>
+    //      %4 = arith.mulf %2, %3 : f64
+    //      %5 = affine.load %arg4[%arg7, %arg8] : memref<1200x1200xf64>
+    //      %6 = arith.addf %5, %4 : f64
+    //      affine.store %6, %arg4[%arg7, %arg8] : memref<1200x1200xf64>
+    //    }
+    //    %1 = affine.load %arg4[%arg7, %arg8] : memref<1200x1200xf64>
+    //    affine.store %1, %arg4[%arg8, %arg7] : memref<1200x1200xf64>
+    //  }
+    //}
+    //affine.store %cst, %arg4[1199, 1199] : memref<1200x1200xf64>
     return
   }
 }
