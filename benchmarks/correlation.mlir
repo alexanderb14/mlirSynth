@@ -28,14 +28,14 @@ module attributes {dlti.dl_spec = #dlti.dl_spec<#dlti.dl_entry<"dlti.endianness"
         affine.store %11, %arg6[%arg7] : memref<1200xf64>
       }
     }
-    affine.for %arg7 = 0 to 1200 {
-      %1 = affine.load %arg6[%arg7] : memref<1200xf64>
-      %2 = arith.divf %1, %arg2 : f64
-      %3 = math.sqrt %2 : f64
-      %4 = arith.cmpf ole, %3, %cst_1 : f64
-      %5 = arith.select %4, %cst, %3 : f64
-      affine.store %5, %arg6[%arg7] : memref<1200xf64>
-    }
+    //affine.for %arg7 = 0 to 1200 {
+    //  %1 = affine.load %arg6[%arg7] : memref<1200xf64>
+    //  %2 = arith.divf %1, %arg2 : f64
+    //  %3 = math.sqrt %2 : f64
+    //  %4 = arith.cmpf ole, %3, %cst_1 : f64
+    //  %5 = arith.select %4, %cst, %3 : f64
+    //  affine.store %5, %arg6[%arg7] : memref<1200xf64>
+    //}
     //affine.for %arg7 = 0 to 1400 {
     //  affine.for %arg8 = 0 to 1200 {
     //    %1 = affine.load %arg5[%arg8] : memref<1200xf64>

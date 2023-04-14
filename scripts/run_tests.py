@@ -215,6 +215,7 @@ def main():
     parser.add_argument('--exp_naive_heuristic', action='store_true',
                         default=False, help='Run experiments with naive and heuristic')
     parser.add_argument('--dialect', type=str, help='Dialect to use')
+    parser.add_argument('--benchmarks', type=str, nargs='+', help='Benchmarks to run')
     args = parser.parse_args()
 
     if os.path.exists(res_dir):
@@ -228,6 +229,9 @@ def main():
         benchmarks = benchmarks_linalg
     else:
         raise Exception('Unknown dialect')
+
+    if args.benchmarks:
+        benchmarks = [b for b in benchmarks if b.name in args.benchmarks]
 
     if args.exp_all:
         run_benchmarks_all(benchmarks, args.dialect)
