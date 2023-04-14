@@ -7,7 +7,10 @@ def main():
         stats_all = json.load(f)
 
     df_rows = []
-    for stats in stats_all:
+
+
+    # Iterate stats_all, sorted by benchmark name.
+    for stats in sorted(stats_all, key=lambda x: x['benchmark']):
         if stats['operations'] != 'heuristic':
             continue
 
@@ -23,7 +26,7 @@ def main():
         # Add row to dataframe with benchmark name and stats.
         df_rows.append({'Benchmark': stats['benchmark'],
                         'Enumerated': stats['numEnumerated'],
-                        'Type filtered': num_failed_static_checks,
+                        'Static filtered': num_failed_static_checks,
                         'Evaluated': stats['numExecuted'],
                         'Equivalence filtered': stats['processingStatusCounts']['reject_hashNotUnique'],
                         'Synthesis time (in s)': synth_time})
