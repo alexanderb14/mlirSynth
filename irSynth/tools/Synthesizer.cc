@@ -259,7 +259,7 @@ int main(int argc, char **argv) {
                     "chlo.broadcast_multiply",
                     "stablehlo.dot",
                     "stablehlo.reduce",
-                    "stablehlo.dot_general"
+                    "stablehlo.dot_general",
                     "stablehlo.transpose",
                     "stablehlo.select"};
     initialCandidateGen = std::make_shared<HLOInitialCandidateGenerator>(*ctx);
