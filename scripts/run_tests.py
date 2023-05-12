@@ -15,6 +15,10 @@ Benchmark = collections.namedtuple(
     'Benchmark', ['file', 'name', 'ops', 'distribute', 'max_num_ops'])
 
 benchmarks_hlo = [
+    Benchmark('benchmarks/trmm.mlir', 'trmm',
+              ['stablehlo.dot'], False, 3),
+    Benchmark('benchmarks/gemver.mlir', 'gemver',
+              ['stablehlo.dot', 'chlo.broadcast_add', 'chlo.broadcast_multiply'], False, 3),
     Benchmark('benchmarks/doitgen.mlir', 'doitgen',
               ['stablehlo.dot_general'], False, 3),
     Benchmark('benchmarks/atax.mlir', 'atax',
