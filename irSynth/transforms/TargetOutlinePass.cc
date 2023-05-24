@@ -50,7 +50,8 @@ detectMaximumChains(func::FuncOp func, std::string &targetDialect) {
       seen[op] = true;
 
       // If the operation is in the target dialect, add it to the current chain.
-      if (op->getDialect()->getNamespace() == targetDialect) {
+      if (op->getDialect()->getNamespace() == targetDialect ||
+          op->getDialect()->getNamespace() == "shape") {
         currentChain.push_back(op);
       }
 
@@ -69,10 +70,11 @@ detectMaximumChains(func::FuncOp func, std::string &targetDialect) {
     }
   }
 
-  // Reverse each chain so that the operations are in the order they appear in
-  // the function.
+  // Order operations in each chain by their position in the function.
   for (auto &chain : chains) {
-    std::reverse(chain.begin(), chain.end());
+    std::sort(chain.begin(), chain.end(), [&](Operation *a, Operation *b) {
+      return a->isBeforeInBlock(b);
+    });
   }
 
   if (debug) {
