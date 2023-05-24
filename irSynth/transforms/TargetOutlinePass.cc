@@ -20,51 +20,53 @@ detectMaximumChains(func::FuncOp func, std::string &targetDialect) {
     llvm::outs() << "------------\n";
   }
 
-  // Find the maximum of subsequent use-def chained operations of a given target
-  // dialect with a linear scan.
   llvm::SmallVector<llvm::SmallVector<Operation *>> chains;
 
   llvm::SmallVector<Operation *> currentChain;
   llvm::DenseMap<Operation *, bool> seen;
 
-  // BFS. Init worklist with all operations in the function.
-  llvm::SmallVector<Operation *> worklist;
-  for (auto &op : func.getBlocks().front()) {
-    worklist.push_back(&op);
+  // Get ops from the function in reverse order.
+  llvm::SmallVector<Operation *> opsReverse;
+  for (auto &opp : func.getBlocks().front()) {
+    opsReverse.push_back(&opp);
   }
+  std::reverse(opsReverse.begin(), opsReverse.end());
 
-  while (!worklist.empty()) {
-    auto *op = worklist.pop_back_val();
+  // Starting from each operation in the function, find the maximum chain of
+  // operations in the target dialect by traversing the reverse DAG
+  // using BFS.
+  for (auto *opp : opsReverse) {
+    // BFS. Init worklist with all operations in the function.
+    llvm::SmallVector<Operation *> worklist;
+    worklist.push_back(opp);
 
-    // Skip if we've already seen this operation.
-    if (seen.count(op)) {
-      continue;
+    while (!worklist.empty()) {
+      auto *op = worklist.pop_back_val();
+
+      // Skip if we've already seen this operation.
+      if (seen.count(op)) {
+        continue;
+      }
+      seen[op] = true;
+
+      // If the operation is in the target dialect, add it to the current chain.
+      if (op->getDialect()->getNamespace() == targetDialect) {
+        currentChain.push_back(op);
+      }
+
+      // Add all of the operation's users to the worklist.
+      for (auto operand: op->getOperands()) {
+        if (isa<BlockArgument>(operand))
+          continue;
+        worklist.push_back(operand.getDefiningOp());
+      }
     }
-    seen[op] = true;
 
-    // If the operation is in the target dialect, add it to the current chain.
-    if (op->getDialect()->getNamespace() == targetDialect) {
-      currentChain.push_back(op);
-    }
-
-    // If the operation is not in the target dialect, and the current chain is
-    // non-empty, add the current chain to the list of chains and reset the
-    // current chain.
-    if (op->getDialect()->getNamespace() != targetDialect &&
-        !currentChain.empty()) {
+    // If the current chain is non-empty, add it to the list of chains.
+    if (!currentChain.empty()) {
       chains.push_back(currentChain);
       currentChain.clear();
     }
-
-    // Add all of the operation's users to the worklist.
-    for (auto *user : op->getUsers()) {
-      worklist.push_back(user);
-    }
-  }
-
-  // If the current chain is non-empty, add it to the list of chains.
-  if (!currentChain.empty()) {
-    chains.push_back(currentChain);
   }
 
   // Reverse each chain so that the operations are in the order they appear in
