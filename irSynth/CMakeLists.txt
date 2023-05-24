@@ -66,6 +66,7 @@ add_library(transform
   transforms/ChangeSizesPass.cc
   transforms/CleanupPass.cc
   transforms/CopyModifiedMemrefsPass.cc
+  transforms/FoldToTensorToMemrefPairPass.cc
   transforms/LoopDistributionPass.cc
   transforms/LoopOutlinePass.cc
   transforms/PrepareTargetPass.cc

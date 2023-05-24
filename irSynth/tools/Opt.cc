@@ -1,9 +1,10 @@
 #include "analysis/PolyhedralAnalysis.h"
+#include "transforms/ChangeSizesPass.h"
 #include "transforms/CleanupPass.h"
 #include "transforms/CopyModifiedMemrefsPass.h"
+#include "transforms/FoldToTensorToMemrefPairPass.h"
 #include "transforms/LoopDistributionPass.h"
 #include "transforms/LoopOutlinePass.h"
-#include "transforms/ChangeSizesPass.h"
 #include "transforms/PrepareTargetPass.h"
 #include "transforms/TargetOutlinePass.h"
 
@@ -43,6 +44,7 @@ int main(int argc, char **argv) {
   registerChangeSizesPass();
   registerCleanupPass();
   registerCopyModifiedMemrefsPass();
+  registerFoldToTensorToMemrefPairPass();
   registerLoopDistributionPass();
   registerLoopOutlinePass();
   registerPrepareTargetPass();
