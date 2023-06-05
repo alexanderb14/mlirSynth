@@ -56,7 +56,7 @@ detectMaximumChains(func::FuncOp func, std::string &targetDialect) {
       }
 
       // Add all of the operation's users to the worklist.
-      for (auto operand: op->getOperands()) {
+      for (auto operand : op->getOperands()) {
         if (isa<BlockArgument>(operand))
           continue;
         worklist.push_back(operand.getDefiningOp());
@@ -91,23 +91,24 @@ detectMaximumChains(func::FuncOp func, std::string &targetDialect) {
   return chains;
 }
 
-llvm::SmallVector<Value> createFunction(OpBuilder &builder, std::string functionName, SmallVector<Operation *> &chain) {
+llvm::SmallVector<Value> createFunction(OpBuilder &builder,
+                                        std::string functionName,
+                                        SmallVector<Operation *> &chain) {
   auto unknownLoc = UnknownLoc::get(builder.getContext());
 
   // Create a new function.
-  auto func = builder.create<func::FuncOp>(
-      unknownLoc, functionName,
-      builder.getFunctionType({}, {}));
+  auto func = builder.create<func::FuncOp>(unknownLoc, functionName,
+                                           builder.getFunctionType({}, {}));
   func->setAttr("irsynth.target", builder.getUnitAttr());
   auto &bodyBlock = *func.addEntryBlock();
   builder.setInsertionPoint(&bodyBlock, bodyBlock.begin());
 
-  // - Move the operations defined in the chain into the new function.
+  // Move the operations defined in the chain into the new function.
   for (auto *op : chain) {
     op->moveBefore(&bodyBlock, bodyBlock.end());
   }
 
-  // - Add arguments to the new function.
+  // Add arguments to the new function.
   BlockAndValueMapping argMapper;
 
   auto undefinedValues = getOutOfBlockDefValues(&bodyBlock);
@@ -117,24 +118,27 @@ llvm::SmallVector<Value> createFunction(OpBuilder &builder, std::string function
     argMapper.map(value, newArg);
   }
 
-  // - Remap the uses of undefined values to the new arguments.
-  for (auto value : undefinedValues) {
-    for (auto *user : value.getUsers()) {
-      user->replaceUsesOfWith(value, argMapper.lookup(value));
+  // Remap the uses of undefined values to the new arguments. TODO: Do this
+  // until fixpoint.
+  for (int i = 0; i < 5; i++) {
+    for (auto value : undefinedValues) {
+      for (auto *user : value.getUsers()) {
+        user->replaceUsesOfWith(value, argMapper.lookup(value));
+      }
     }
   }
 
-  // - Add return.
-  auto returnOp =
-      builder.create<func::ReturnOp>(unknownLoc);
+  // Add return.
+  auto returnOp = builder.create<func::ReturnOp>(unknownLoc);
   returnOp->setOperands(chain.back()->getResults());
-  func.setFunctionType(
-      builder.getFunctionType(bodyBlock.getArgumentTypes(), {chain.back()->getResult(0).getType()}));
+  func.setFunctionType(builder.getFunctionType(
+      bodyBlock.getArgumentTypes(), {chain.back()->getResult(0).getType()}));
 
   return undefinedValues;
 }
 
-void outlineTargets(ModuleOp &module, func::FuncOp &origFunc, std::string targetDialect) {
+void outlineTargets(ModuleOp &module, func::FuncOp &origFunc,
+                    std::string targetDialect) {
   auto unknownLoc = UnknownLoc::get(module.getContext());
 
   // Detect maximum chains of consecutive operations in the target dialect.
@@ -159,8 +163,8 @@ void outlineTargets(ModuleOp &module, func::FuncOp &origFunc, std::string target
     }
 
     builder.setInsertionPoint(callInsertionPoint);
-    auto callOp = builder.create<func::CallOp>(
-       unknownLoc, functionName, resultTypes, args);
+    auto callOp = builder.create<func::CallOp>(unknownLoc, functionName,
+                                               resultTypes, args);
 
     BlockAndValueMapping fnResultMapper;
     for (auto &result : llvm::enumerate(chain.back()->getResults())) {
