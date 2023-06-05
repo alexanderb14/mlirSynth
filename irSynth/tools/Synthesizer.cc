@@ -100,20 +100,20 @@ getDialectOps(MLIRContext *ctx, std::vector<Dialect *> &dialects,
   return opNames;
 }
 
-LogicalResult preprocess(Operation* inputOp, MLIRContext *ctx,
-                         EnumerationOptions options) {
-  mlir::PassManager prePm(ctx);
+LogicalResult preprocess(Operation *op, MLIRContext *ctx,
+                         EnumerationOptions &options) {
+  mlir::PassManager pm(ctx);
   if (options.distribute)
-    prePm.addPass(createLoopDistributionPass());
-  prePm.addPass(createChangeSizesPass());
-  prePm.addPass(createLoopOutlinePass());
-  prePm.addPass(createCopyModifiedMemrefsPass());
-  if (failed(prePm.run(inputOp))) {
+    pm.addPass(createLoopDistributionPass());
+  pm.addPass(createChangeSizesPass());
+  pm.addPass(createLoopOutlinePass());
+  pm.addPass(createCopyModifiedMemrefsPass());
+  if (failed(pm.run(op))) {
     llvm::errs() << "Failed to run preprocessing passes\n";
     return failure();
   }
   LLVM_DEBUG(llvm::dbgs() << "After preprocessing:\n");
-  LLVM_DEBUG(inputOp->print(llvm::dbgs()));
+  LLVM_DEBUG(op->print(llvm::dbgs()));
 
   return success();
 }
