@@ -9,6 +9,7 @@
 #include "mlir/IR/BuiltinTypes.h"
 #include "mlir/IR/Location.h"
 #include "mlir/IR/Verifier.h"
+#include "mlir/Support/LogicalResult.h"
 #include "transforms/ChangeSizesPass.h"
 #include "transforms/CopyModifiedMemrefsPass.h"
 #include "transforms/LoopDistributionPass.h"
@@ -99,6 +100,24 @@ getDialectOps(MLIRContext *ctx, std::vector<Dialect *> &dialects,
   return opNames;
 }
 
+LogicalResult preprocess(Operation* inputOp, MLIRContext *ctx,
+                         EnumerationOptions options) {
+  mlir::PassManager prePm(ctx);
+  if (options.distribute)
+    prePm.addPass(createLoopDistributionPass());
+  prePm.addPass(createChangeSizesPass());
+  prePm.addPass(createLoopOutlinePass());
+  prePm.addPass(createCopyModifiedMemrefsPass());
+  if (failed(prePm.run(inputOp))) {
+    llvm::errs() << "Failed to run preprocessing passes\n";
+    return failure();
+  }
+  LLVM_DEBUG(llvm::dbgs() << "After preprocessing:\n");
+  LLVM_DEBUG(inputOp->print(llvm::dbgs()));
+
+  return success();
+}
+
 int main(int argc, char **argv) {
   // Parse command line arguments.
   cl::opt<std::string> inputFilename(cl::Positional, cl::desc("<input file>"),
@@ -185,6 +204,9 @@ int main(int argc, char **argv) {
   options.skipTypeInference = skipTypeInference;
   options.withCopyArgs = withCopyArgs;
 
+  options.guide = guide;
+  options.distribute = distribute;
+
   // Initialize LLVM.
   llvm::InitLLVM y(argc, argv);
   llvm::InitializeNativeTarget();
@@ -218,19 +240,10 @@ int main(int argc, char **argv) {
       parseSourceFileForTool(sourceMgr, config, /*insertImplicitModule*/ false);
   assert(inputOp && "Failed to parse input file");
 
-  // Preprocessing to prepare program for synthesis.
-  mlir::PassManager prePm(ctx);
-  if (distribute)
-    prePm.addPass(createLoopDistributionPass());
-  prePm.addPass(createChangeSizesPass());
-  prePm.addPass(createLoopOutlinePass());
-  prePm.addPass(createCopyModifiedMemrefsPass());
-  if (failed(prePm.run(inputOp.get()))) {
-    llvm::errs() << "Failed to run preprocessing passes\n";
+  // Preprocessing passes.
+  if (preprocess(inputOp.get(), ctx, options).failed()) {
     return 1;
   }
-  LLVM_DEBUG(llvm::dbgs() << "After preprocessing:\n");
-  LLVM_DEBUG(inputOp.get()->print(llvm::dbgs()));
 
   // Parse the funcion ops.
   std::vector<func::FuncOp> functions =

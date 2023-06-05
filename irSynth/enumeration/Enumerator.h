@@ -24,6 +24,8 @@ struct EnumerationOptions {
   bool ignoreTypes;
   bool skipTypeInference;
   bool withCopyArgs;
+  bool guide;
+  bool distribute;
 };
 
 struct EnumerationResult {
