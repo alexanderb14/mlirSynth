@@ -11,7 +11,9 @@
 #include "mlir/IR/Verifier.h"
 #include "mlir/Support/LogicalResult.h"
 #include "transforms/ChangeSizesPass.h"
+#include "transforms/CleanupPass.h"
 #include "transforms/CopyModifiedMemrefsPass.h"
+#include "transforms/FoldToTensorToMemrefPairPass.h"
 #include "transforms/LoopDistributionPass.h"
 #include "transforms/LoopOutlinePass.h"
 
@@ -31,6 +33,7 @@
 #include "stablehlo/dialect/ChloOps.h"
 #include "stablehlo/dialect/Register.h"
 #include "thlo/transforms/passes.h"
+#include "transforms/TargetOutlinePass.h"
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/InitLLVM.h"
 #include "llvm/Support/SourceMgr.h"
@@ -103,13 +106,35 @@ getDialectOps(MLIRContext *ctx, std::vector<Dialect *> &dialects,
 LogicalResult preprocess(Operation *op, MLIRContext *ctx,
                          EnumerationOptions &options) {
   mlir::PassManager pm(ctx);
+
   if (options.distribute)
     pm.addPass(createLoopDistributionPass());
   pm.addPass(createChangeSizesPass());
   pm.addPass(createLoopOutlinePass());
   pm.addPass(createCopyModifiedMemrefsPass());
+
   if (failed(pm.run(op))) {
     llvm::errs() << "Failed to run preprocessing passes\n";
+    return failure();
+  }
+  LLVM_DEBUG(llvm::dbgs() << "After preprocessing:\n");
+  LLVM_DEBUG(op->print(llvm::dbgs()));
+
+  return success();
+}
+
+LogicalResult postprocess(Operation* op, MLIRContext *ctx,
+                          EnumerationOptions &options) {
+  mlir::PassManager pm(ctx);
+  pm.addNestedPass<func::FuncOp>(mhlo::createChloLegalizeToHloPass());
+  pm.addPass(mhlo::createHloLegalizeToStablehloPass());
+  pm.addPass(createInlinerPass());
+  pm.addPass(createFoldToTensorToMemrefPairPass());
+  pm.addPass(createCleanupPass());
+  pm.addPass(createTargetOutlinePass());
+
+  if (failed(pm.run(op))) {
+    llvm::errs() << "Failed to run postprocessing passes\n";
     return failure();
   }
   LLVM_DEBUG(llvm::dbgs() << "After preprocessing:\n");
@@ -240,7 +265,7 @@ int main(int argc, char **argv) {
       parseSourceFileForTool(sourceMgr, config, /*insertImplicitModule*/ false);
   assert(inputOp && "Failed to parse input file");
 
-  // Preprocessing passes.
+  // Preprocess.
   if (preprocess(inputOp.get(), ctx, options).failed()) {
     return 1;
   }
@@ -459,6 +484,11 @@ int main(int argc, char **argv) {
         callRes.replaceAllUsesExcept(toMemrefOp.getResult(), toMemrefOp);
       }
     }
+  }
+
+  // Postprocess.
+  if (postprocess(inputOp.get(), ctx, options).failed()) {
+    return 1;
   }
 
   // Print.
