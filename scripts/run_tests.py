@@ -15,10 +15,6 @@ Benchmark = collections.namedtuple(
     'Benchmark', ['file', 'name', 'ops', 'distribute', 'max_num_ops'])
 
 benchmarks_hlo = [
-    Benchmark('benchmarks/trmm.mlir', 'trmm',
-              ['stablehlo.dot'], False, 3),
-    Benchmark('benchmarks/gemver.mlir', 'gemver',
-              ['stablehlo.dot', 'chlo.broadcast_add', 'chlo.broadcast_multiply'], False, 3),
     Benchmark('benchmarks/doitgen.mlir', 'doitgen',
               ['stablehlo.dot_general'], False, 3),
     Benchmark('benchmarks/atax.mlir', 'atax',
@@ -34,6 +30,8 @@ benchmarks_hlo = [
               ['chlo.broadcast_add', 'stablehlo.dot', 'chlo.broadcast_multiply'], True, 3),
     Benchmark('benchmarks/gesummv.mlir', 'gesummv',
               ['chlo.broadcast_add', 'stablehlo.dot', 'chlo.broadcast_multiply'], True, 3),
+    Benchmark('benchmarks/gemver.mlir', 'gemver',
+              ['stablehlo.dot', 'chlo.broadcast_add', 'chlo.broadcast_multiply'], False, 3),
     Benchmark('benchmarks/symm.mlir', 'symm',
               ['stablehlo.transpose', 'stablehlo.dot', 'chlo.broadcast_multiply', 'stablehlo.add', 'stablehlo.select'], False, 5),
     Benchmark('benchmarks/correlation.mlir', 'correlation',
@@ -44,6 +42,8 @@ benchmarks_hlo = [
               ['stablehlo.transpose', 'stablehlo.dot', 'chlo.broadcast_multiply', 'stablehlo.add', 'stablehlo.select'], True, 5),
     Benchmark('benchmarks/syr2k.mlir', 'syr2k',
               ['stablehlo.transpose', 'stablehlo.dot', 'chlo.broadcast_multiply', 'stablehlo.add', 'stablehlo.select'], True, 5),
+    Benchmark('benchmarks/trmm.mlir', 'trmm',
+              ['stablehlo.dot'], False, 3),
 ]
 
 benchmarks_linalg = [
