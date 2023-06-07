@@ -63,17 +63,18 @@ benchmarks_linalg = [
               ['linalg.matvec'], True, 1),
 ]
 
-timeout = 60 * 60
-script_dir = os.path.dirname(os.path.realpath(__file__))
-res_dir = '/tmp/exp_results'
-cpu_count = multiprocessing.cpu_count()
-program = os.path.join(script_dir, '../build/bin/synthesizer')
+TIMEOUT = 60 * 60
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+RES_DIR = '/tmp/exp_results'
+CPU_COUNT = multiprocessing.cpu_count()
+SYNTHESIZER_PROGRAM = os.path.join(SCRIPT_DIR, '../build/bin/synthesizer')
+FILECHECK_PROGRAM = os.path.join(SCRIPT_DIR, '../mlir-hlo/llvm-build/bin/FileCheck')
 
 
-def run_program(x):
+def run_program(cmd, stdin=None):
     start = time.time()
-    print(' '.join(x))
-    p = subprocess.run(x, stdout=subprocess.PIPE,
+    print(' '.join(cmd))
+    p = subprocess.run(cmd, stdout=subprocess.PIPE, input=stdin,
                        stderr=subprocess.PIPE)
     end = time.time()
     return p.stdout.decode('utf-8'), end-start, p.returncode
@@ -82,9 +83,9 @@ def run_program(x):
 def run_benchmark(dialect, benchmark, prune_equivalent_candidates, ops, distribute, max_num_ops):
     print('Running benchmark: ' + benchmark.file)
 
-    filename = os.path.join(script_dir, '../' + benchmark.file)
+    filename = os.path.join(SCRIPT_DIR, '../' + benchmark.file)
     args = ['--target-dialect=%s' % dialect,
-            '--num-threads=%d' % cpu_count,
+            '--num-threads=%d' % CPU_COUNT,
             '--max-num-ops=%d' % max_num_ops,
             '--print-stats']
     if prune_equivalent_candidates:
@@ -99,11 +100,16 @@ def run_benchmark(dialect, benchmark, prune_equivalent_candidates, ops, distribu
         args += ['--distribute']
 
     # Run
-    out, synth_time, returncode = run_program(
-        ['timeout', str(timeout)] + [program, filename] + args)
+    synth_out, synth_time, synth_returncode = run_program(
+        ['timeout', str(TIMEOUT)] + [SYNTHESIZER_PROGRAM, filename] + args)
 
-    with open(os.path.join(res_dir, benchmark.name + '.stdout'), 'w') as f:
-        f.write(out)
+    with open(os.path.join(RES_DIR, benchmark.name + '.stdout'), 'w') as f:
+        f.write(synth_out)
+
+    # Check
+    # check_out, check_time, check_returncode = run_program(
+    #     [FILECHECK_PROGRAM, filename], stdin=synth_out.encode('utf-8'))
+    check_returncode = 0
 
     # Record stats
     stats = {}
@@ -112,22 +118,24 @@ def run_benchmark(dialect, benchmark, prune_equivalent_candidates, ops, distribu
     stats['prune_equivalent_candidates'] = prune_equivalent_candidates
     stats['operations'] = ops
     stats['distribute'] = distribute
-    stats['cmd'] = ' '.join([program, filename] + args)
+    stats['cmd'] = ' '.join([SYNTHESIZER_PROGRAM, filename] + args)
 
-    stats['status'] = returncode
+    stats['status'] = synth_returncode
 
-    if returncode == 0:
+    if synth_returncode == 0 and check_returncode == 0:
         print('\033[1;42mSynthesis success\033[0m')
 
-        statsStr = out.split('JSON: ')[1].split('\n')[0]
+        statsStr = synth_out.split('JSON: ')[1].split('\n')[0]
         stats.update(json.loads(statsStr))
 
         stats['synth_time'] = synth_time
     else:
-        print('\033[1;41mSynthesis failed\033[0m')
+        print('\033[1;41mSynthesis failed\033[0m ' +
+              'synth_returncode: %d, check_returncode: %d' %
+              (synth_returncode, check_returncode))
 
         # Timeout
-        if returncode == 124:
+        if synth_returncode == 124:
             stats['synth_time'] = synth_time
 
     return stats
@@ -206,7 +214,7 @@ def plot_results():
 
     # Call RScript on plotting script.
     subprocess.run(['Rscript', os.path.join(
-        script_dir, 'plot.r'), '/tmp/stats.csv', 'plot_white'])
+        SCRIPT_DIR, 'plot.r'), '/tmp/stats.csv', 'plot_white'])
 
 
 def main():
@@ -222,9 +230,9 @@ def main():
     parser.add_argument('--benchmarks', type=str, nargs='+', help='Benchmarks to run')
     args = parser.parse_args()
 
-    if os.path.exists(res_dir):
-        shutil.rmtree(res_dir)
-    os.mkdir(res_dir)
+    if os.path.exists(RES_DIR):
+        shutil.rmtree(RES_DIR)
+    os.mkdir(RES_DIR)
 
     benchmarks = None
     if args.dialect == 'hlo':
