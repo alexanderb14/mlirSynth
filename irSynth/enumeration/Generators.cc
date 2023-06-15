@@ -10,7 +10,6 @@
 #include "mlir/IR/Location.h"
 #include "stablehlo/dialect/StablehloOps.h"
 
-#include <llvm-14/llvm/ADT/ArrayRef.h>
 #include <random>
 #include <set>
 
