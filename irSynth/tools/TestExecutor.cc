@@ -117,7 +117,7 @@ int main(int argc, char **argv) {
   assert(succeeded(executor->lowerAffineToLLVMDialect(originalModule)) &&
          "Failed to lower affine to LLVM dialect");
   auto refRet = getOwningMemRefForShape(targetShape);
-  assert(succeeded(jitAndInvoke(originalModule, args, refRet, false)));
+  assert(succeeded(jitAndInvoke(originalModule, args, refRet)));
   double *refOut = getReturnDataPtr(refRet);
 
   if (printArgsAndResults)
@@ -139,7 +139,7 @@ int main(int argc, char **argv) {
            "Failed to lower chlo to LLVM dialect");
     auto hloRet = getOwningMemRefForShape(targetShape);
     convertScalarToMemrefArgs(args);
-    assert(succeeded(jitAndInvoke(hloModule, args, hloRet, false)));
+    assert(succeeded(jitAndInvoke(hloModule, args, hloRet)));
     double *hloOut = getReturnDataPtr(hloRet);
 
     // Print the results.

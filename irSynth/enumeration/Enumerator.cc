@@ -393,7 +393,7 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
   auto retCand = getOwningMemRefForShape(returnShapeCand);
 
   // Compile and run.
-  if (failed(jitAndInvoke(moduleCopy, argsCand, retCand, true)))
+  if (failed(jitAndInvoke(moduleCopy, argsCand, retCand)))
     return reject_isNotExecutable;
   stats.numExecuted++;
 
@@ -432,12 +432,6 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
   return accept_as_candidate;
 }
 
-float getElapsedTimeSince(
-    std::chrono::time_point<std::chrono::high_resolution_clock> start) {
-  auto now = std::chrono::high_resolution_clock::now();
-  return std::chrono::duration_cast<std::chrono::seconds>(now - start).count();
-}
-
 EnumerationResultPtr
 enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                     func::FuncOp inputFunction,
@@ -460,7 +454,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   auto inputModuleRef = createModule(ctx, &inputFunction);
   auto inputModule = inputModuleRef.release();
   assert(succeeded(executor->lowerAffineToLLVMDialect(inputModule)));
-  assert(succeeded(jitAndInvoke(inputModule, args, ret, false)));
+  assert(succeeded(jitAndInvoke(inputModule, args, ret)));
 
   double *refOut = getReturnDataPtr(ret);
   if (options.printArgsAndResults)
@@ -533,8 +527,12 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
       // Enumerate cartesian product.
       auto status = failableParallelForEach(
           &ctx, operandArgTuples, [&](auto &operandArgTuple) {
+            auto endTime = std::chrono::high_resolution_clock::now();
+            auto elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(
+                               endTime - startTime)
+                               .count();
             if (options.timeoutPerFunction &&
-                getElapsedTimeSince(startTime) > options.timeoutPerFunction)
+                elapsedTime > options.timeoutPerFunction)
               return failure();
 
             EnumerationResultPtr processingResult;

@@ -16,9 +16,10 @@
 
 mlir::ModuleOp copyModuleToCtx(mlir::MLIRContext *ctx, mlir::ModuleOp module);
 
-mlir::LogicalResult jitAndInvoke(mlir::OwningOpRef<mlir::ModuleOp> module,
-                                 std::vector<ReturnAndArgType> &args,
-                                 ReturnAndArgType &ret, bool hlo);
+mlir::LogicalResult
+jitAndInvoke(mlir::OwningOpRef<mlir::ModuleOp> module,
+             std::vector<ReturnAndArgType> &args, ReturnAndArgType &ret,
+             std::chrono::nanoseconds *elapsedTime = nullptr);
 
 class IExecutor {
 public:

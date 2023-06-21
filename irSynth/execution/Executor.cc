@@ -12,6 +12,7 @@
 #include "mlir/IR/BuiltinOps.h"
 #include "mlir/Support/LLVM.h"
 #include "llvm/Support/JSON.h"
+#include <chrono>
 
 using namespace mlir;
 
@@ -37,9 +38,39 @@ ModuleOp copyModuleToCtx(MLIRContext *ctx, ModuleOp module) {
   return newModule;
 }
 
+llvm::Error invokePacked(std::unique_ptr<ExecutionEngine> jit, StringRef name,
+                         MutableArrayRef<void *> args) {
+  return jit->invokePacked(name, args);
+}
+
+llvm::Error invokePacked(std::unique_ptr<ExecutionEngine> jit, StringRef name,
+                         MutableArrayRef<void *> args,
+                         std::chrono::nanoseconds *elapsedTime,
+                         int numRuns = 10) {
+  std::vector<std::chrono::nanoseconds> elapsedTimes;
+
+  for (int i = 0; i < numRuns; ++i) {
+    auto startTime = std::chrono::high_resolution_clock::now();
+    llvm::Error error = jit->invokePacked(name, args);
+    if (error)
+      return error;
+    auto endTime = std::chrono::high_resolution_clock::now();
+    auto singleElapsedTime = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                           endTime - startTime);
+    elapsedTimes.push_back(singleElapsedTime);
+  }
+
+  // Get median.
+  std::sort(elapsedTimes.begin(), elapsedTimes.end());
+  *elapsedTime = elapsedTimes[elapsedTimes.size() / 2];
+
+  return llvm::Error::success();
+}
+
 LogicalResult jitAndInvoke(OwningOpRef<ModuleOp> module,
                            std::vector<ReturnAndArgType> &args,
-                           ReturnAndArgType &ret, bool hlo) {
+                           ReturnAndArgType &ret,
+                           std::chrono::nanoseconds *elapsedTime) {
   // JIT.
   auto jitOrError = ExecutionEngine::create(*module);
   if (!jitOrError) {
@@ -107,11 +138,22 @@ LogicalResult jitAndInvoke(OwningOpRef<ModuleOp> module,
 
   // Invoke.
   const std::string adapterName = std::string("_mlir_ciface_") + "foo";
-  llvm::Error error = jit->invokePacked(adapterName, argsArray);
 
-  if (error) {
-    llvm::errs() << "Error invoking function: " << error << "\n";
-    return failure();
+  if (elapsedTime) {
+    llvm::Error error = invokePacked(std::move(jit), adapterName, argsArray, elapsedTime);
+    llvm::outs() << "Elapsed time: " << elapsedTime->count() << " nanoseconds\n";
+
+    if (error) {
+      llvm::errs() << "Error invoking function: " << error << "\n";
+      return failure();
+    }
+  } else {
+    llvm::Error error = invokePacked(std::move(jit), adapterName, argsArray);
+
+    if (error) {
+      llvm::errs() << "Error invoking function: " << error << "\n";
+      return failure();
+    }
   }
 
   return success();
