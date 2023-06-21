@@ -1,10 +1,10 @@
 #include "analysis/PolyhedralAnalysis.h"
-#include "enumeration/Enumerator.h"
 #include "execution/ArgUtils.h"
 #include "execution/ArrayUtils.h"
 #include "execution/Executor.h"
 #include "mlir/Target/LLVMIR/Dialect/LLVMIR/LLVMToLLVMIRTranslation.h"
 #include "mlir/Tools/ParseUtilities.h"
+#include "synthesis/Enumerator.h"
 #include "transforms/ChangeSizesPass.h"
 #include "transforms/CleanupPass.h"
 #include "transforms/CopyModifiedMemrefsPass.h"
@@ -122,7 +122,6 @@ int main(int argc, char **argv) {
 
   if (printArgsAndResults)
     printArgsAndResultsInPython(args, refOut, targetShape);
-
 
   // Load HLO function module(s).
   auto hloFunctions = getFunctions(inputOp.get(), "irsynth.raised");

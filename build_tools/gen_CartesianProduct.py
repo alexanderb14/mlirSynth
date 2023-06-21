@@ -10,7 +10,7 @@ header = """/*===- Cartesian Product Generators -----------------------------*- 
 
 #include "CartesianProduct.h"
 
-#include "enumeration/Generators.h"
+#include "synthesis/Generators.h"
 
 #include <range/v3/all.hpp>
 #include <range/v3/view/cartesian_product.hpp>

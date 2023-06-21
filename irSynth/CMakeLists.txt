@@ -30,25 +30,25 @@ llvm_update_compile_flags(analysis)
 target_compile_options(analysis
   PRIVATE -Wno-missing-field-initializers)
 
-# Lib: Enumeration
+# Lib: Synthesis
 add_library(cartesian_product
-  enumeration/CartesianProduct.cc)
+  synthesis/CartesianProduct.cc)
 target_include_directories(cartesian_product
   PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 
-add_library(enumeration
-  enumeration/Generators.cc
-  enumeration/Candidate.cc
-  enumeration/CandidateStore.cc
-  enumeration/Enumerator.cc
-  enumeration/Guide.cc
-  enumeration/Grammar.cc
-  enumeration/ProcessingStatus.cc
-  enumeration/Stats.cc)
-target_include_directories(enumeration
+add_library(synthesis
+  synthesis/Generators.cc
+  synthesis/Candidate.cc
+  synthesis/CandidateStore.cc
+  synthesis/Enumerator.cc
+  synthesis/Guide.cc
+  synthesis/Grammar.cc
+  synthesis/ProcessingStatus.cc
+  synthesis/Stats.cc)
+target_include_directories(synthesis
   PRIVATE ${CMAKE_CURRENT_LIST_DIR}
           ${MHLO_INCLUDE_DIRS})
-target_link_libraries(enumeration
+target_link_libraries(synthesis
   PRIVATE cartesian_product
           analysis)
 
@@ -99,7 +99,7 @@ target_link_libraries(synthesizer
   PRIVATE ${SYNTH_LIBS}
           ${MHLO_EXPORTED_TARGETS}
           analysis
-          enumeration
+          synthesis
           execution
           transform)
 llvm_update_compile_flags(synthesizer)
@@ -114,7 +114,7 @@ target_link_libraries(test-executor
   PRIVATE ${SYNTH_LIBS}
           ${MHLO_EXPORTED_TARGETS}
           analysis
-          enumeration
+          synthesis
           execution
           transform)
 llvm_update_compile_flags(test-executor)

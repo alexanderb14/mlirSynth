@@ -12,8 +12,8 @@ python3 build_tools/gen_CartesianProduct.py \
   --max_operands 3 \
   --max_attributes 2 \
   --max_regions 2 \
-  --output irSynth/enumeration/CartesianProduct.cc
-clang-format -i irSynth/enumeration/CartesianProduct.cc --style=file
+  --output irSynth/synthesis/CartesianProduct.cc
+clang-format -i irSynth/synthesis/CartesianProduct.cc --style=file
 
 # Configure irSynth build.
 mkdir build
@@ -45,9 +45,9 @@ TD_INCLUDES="-Imlir-hlo \
 -Imlir-hlo/llvm-build/tools/mlir/include \
 -Imlir-hlo/llvm-project/mlir/include/mlir/Dialect/Linalg/IR"
 cat $TD_OPS | ./build/bin/grammar-extractor $TD_INCLUDES \
-  -gen-grammar-decls -o irSynth/enumeration/Grammar.h
+  -gen-grammar-decls -o irSynth/synthesis/Grammar.h
 cat $TD_OPS | ./build/bin/grammar-extractor $TD_INCLUDES \
-  -gen-grammar-defs -o irSynth/enumeration/Grammar.cc
+  -gen-grammar-defs -o irSynth/synthesis/Grammar.cc
 
 # Build irSynth.
 pushd build
