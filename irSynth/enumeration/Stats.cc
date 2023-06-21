@@ -4,7 +4,7 @@
 
 EnumerationStats::EnumerationStats() {
   // Initialize all the processing status counts with 0.
-  for (int i = 0; i < 13; i++) {
+  for (int i = 0; i < static_cast<int>(ProcessingStatus::ENUM_SIZE); i++) {
     processingStatusCounts.insert({(ProcessingStatus)i, 0});
   }
 }

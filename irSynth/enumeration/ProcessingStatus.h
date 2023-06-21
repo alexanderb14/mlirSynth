@@ -18,6 +18,7 @@ enum ProcessingStatus {
   reject_hashNotUnique,
   accept_as_candidate,
   accept_as_solution,
+  ENUM_SIZE,
 };
 
 std::string processingStatusToStr(ProcessingStatus &status);
