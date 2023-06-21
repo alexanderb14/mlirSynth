@@ -262,7 +262,7 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
                          CandidateStorePtr &candidateStore,
                          CandidateStorePtr &localCandidateStore, double *refOut,
                          EnumerationOptions &options, ArgTuple operandArgTuple,
-                         EnumerationResultPtr &processingResult,
+                         EnumerationResultPtr &enumerationResult,
                          ArrayRef<int64_t> &targetShape) {
   stats.numEnumerated++;
 
@@ -271,8 +271,8 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
       operandArgTuple.operands, grammar::OpAndResType::HLO_Tensor);
   auto builder = OpBuilder(&ctx);
 
-  processingResult = std::make_shared<EnumerationResult>();
-  processingResult->candidate = newCandidate;
+  enumerationResult = std::make_shared<EnumerationResult>();
+  enumerationResult->candidate = newCandidate;
 
   // Set up operands.
   SmallVector<mlir::Value> operands =
@@ -423,12 +423,12 @@ ProcessingStatus process(MLIRContext &ctx, EnumerationStats &stats,
       candidateStore->merge(localCandidateStore);
       stats.numOps = newCandidate->getNumOps();
 
-      processingResult->module = module.release();
+      enumerationResult->module = module.release();
       return accept_as_solution;
     }
   }
 
-  processingResult->module = module.release();
+  enumerationResult->module = module.release();
   return accept_as_candidate;
 }
 
@@ -472,12 +472,12 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   for (auto &candidate : candidateStore->getCandidates()) {
     auto module = createModule(ctx, candidate->getRegion());
 
-    EnumerationResultPtr processingResult =
+    EnumerationResultPtr enumerationResult =
         std::make_shared<EnumerationResult>();
-    processingResult->candidate = candidate;
-    processingResult->module = module.release();
+    enumerationResult->candidate = candidate;
+    enumerationResult->module = module.release();
     printCandidate(ProcessingStatus::accept_as_candidate, candidateStore,
-                   candidateStore, options, processingResult);
+                   candidateStore, options, enumerationResult);
   }
 
   CartesianProduct cartesianProduct(options.maxNumOps);
@@ -535,21 +535,22 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                 elapsedTime > options.timeoutPerFunction)
               return failure();
 
-            EnumerationResultPtr processingResult;
-            EnumerationStats processingStats;
+            EnumerationResultPtr enumerationResult;
+            EnumerationStats enumerationStats;
+
             ProcessingStatus status =
-                process(ctx, processingStats, opName, opInfo, executor, args,
+                process(ctx, enumerationStats, opName, opInfo, executor, args,
                         candidateStore, localCandidateStore, refOut, options,
-                        operandArgTuple, processingResult, targetShape);
-            processingStats.addProcessingStatus(status);
-            stats.merge(processingStats);
+                        operandArgTuple, enumerationResult, targetShape);
+            enumerationStats.addProcessingStatus(status);
+            stats.merge(enumerationStats);
 
             // Print candidate.
             printCandidate(status, localCandidateStore, candidateStore, options,
-                           processingResult);
+                           enumerationResult);
 
             if (status == accept_as_solution) {
-              result = processingResult;
+              result = enumerationResult;
               finalizeFunction(
                   result->module->lookupSymbol<func::FuncOp>("foo"),
                   inputFunctionName);
