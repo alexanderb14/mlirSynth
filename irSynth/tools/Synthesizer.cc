@@ -104,7 +104,7 @@ getDialectOps(MLIRContext *ctx, std::vector<Dialect *> &dialects,
 }
 
 LogicalResult preprocess(Operation *op, MLIRContext *ctx,
-                         EnumerationOptions &options) {
+                         SynthesisOptions &options) {
   mlir::PassManager pm(ctx);
 
   if (options.distribute)
@@ -124,7 +124,7 @@ LogicalResult preprocess(Operation *op, MLIRContext *ctx,
 }
 
 LogicalResult postprocess(Operation* op, MLIRContext *ctx,
-                          EnumerationOptions &options) {
+                          SynthesisOptions &options) {
   mlir::PassManager pm(ctx);
   pm.addNestedPass<func::FuncOp>(mhlo::createChloLegalizeToHloPass());
   pm.addPass(mhlo::createHloLegalizeToStablehloPass());
@@ -184,7 +184,7 @@ int main(int argc, char **argv) {
                          cl::init(3));
   cl::opt<int> timeoutPerFunction(
       "timeout-per-function",
-      cl::desc("Enumeration timeout per function in seconds"), cl::init(0));
+      cl::desc("Synthesis timeout per function in seconds"), cl::init(0));
 
   cl::opt<int> numThreads("num-threads", cl::desc("Number of threads"),
                           cl::init(1));
@@ -215,7 +215,7 @@ int main(int argc, char **argv) {
   cl::ParseCommandLineOptions(argc, argv, "MLIR enumerator\n");
 
   // Parse options.
-  EnumerationOptions options;
+  SynthesisOptions options;
   options.printStatusNames = printStatusNames;
   options.printStatusTiles = printStatusTiles;
   options.printValidCandidates = printValidCandidates;
@@ -322,7 +322,7 @@ int main(int argc, char **argv) {
 
   bool failedAtLeastOnce = false;
 
-  EnumerationStats stats;
+  SynthesisStats stats;
   for (auto inputFuncOrig : functions) {
     auto inputFunc = inputFuncOrig.clone();
     // Get ops.
