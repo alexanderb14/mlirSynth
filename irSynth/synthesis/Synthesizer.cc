@@ -1,4 +1,4 @@
-#include "Enumerator.h"
+#include "Synthesizer.h"
 
 #include "Common.h"
 #include "execution/ArgUtils.h"
@@ -262,17 +262,17 @@ ProcessingStatus process(MLIRContext &ctx, SynthesisStats &stats,
                          CandidateStorePtr &candidateStore,
                          CandidateStorePtr &localCandidateStore, double *refOut,
                          SynthesisOptions &options, ArgTuple operandArgTuple,
-                         SynthesisResultPtr &enumerationResult,
+                         SynthesisResultPtr &synthesisResult,
                          ArrayRef<int64_t> &targetShape) {
-  stats.numEnumerated++;
+  stats.numSynthesized++;
 
   // Create candidate.
   CandidatePtr newCandidate = std::make_shared<Candidate>(
       operandArgTuple.operands, grammar::OpAndResType::HLO_Tensor);
   auto builder = OpBuilder(&ctx);
 
-  enumerationResult = std::make_shared<SynthesisResult>();
-  enumerationResult->candidate = newCandidate;
+  synthesisResult = std::make_shared<SynthesisResult>();
+  synthesisResult->candidate = newCandidate;
 
   // Set up operands.
   SmallVector<mlir::Value> operands =
@@ -422,17 +422,17 @@ ProcessingStatus process(MLIRContext &ctx, SynthesisStats &stats,
       candidateStore->merge(localCandidateStore);
       stats.numOps = newCandidate->getNumOps();
 
-      enumerationResult->module = module.release();
+      synthesisResult->module = module.release();
       return accept_as_solution;
     }
   }
 
-  enumerationResult->module = module.release();
+  synthesisResult->module = module.release();
   return accept_as_candidate;
 }
 
 SynthesisResultPtr
-enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
+synthesizeCandidates(MLIRContext &ctx, IExecutorPtr executor,
                     func::FuncOp inputFunction,
                     InitialCandidateGeneratorPtr initialCandidateGen,
                     CandidateStorePtr &candidateStore,
@@ -471,12 +471,12 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
   for (auto &candidate : candidateStore->getCandidates()) {
     auto module = createModule(ctx, candidate->getRegion());
 
-    SynthesisResultPtr enumerationResult =
+    SynthesisResultPtr synthesisResult =
         std::make_shared<SynthesisResult>();
-    enumerationResult->candidate = candidate;
-    enumerationResult->module = module.release();
+    synthesisResult->candidate = candidate;
+    synthesisResult->module = module.release();
     printCandidate(ProcessingStatus::accept_as_candidate, candidateStore,
-                   candidateStore, options, enumerationResult);
+                   candidateStore, options, synthesisResult);
   }
 
   CartesianProduct cartesianProduct(options.maxNumOps);
@@ -486,7 +486,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
 
   SynthesisResultPtr result;
 
-  // - Enumerate candidates.
+  // - Synthesize candidates.
   for (int numOps = 0; numOps <= options.maxNumOps; numOps++) {
     CandidateStorePtr localCandidateStore = std::make_shared<CandidateStore>();
 
@@ -523,7 +523,7 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
       auto operandArgTuples =
           cartesianProduct.generate(operands, attributes, regions);
 
-      // Enumerate cartesian product.
+      // Synthesize cartesian product.
       auto status = failableParallelForEach(
           &ctx, operandArgTuples, [&](auto &operandArgTuple) {
             auto endTime = std::chrono::high_resolution_clock::now();
@@ -534,22 +534,22 @@ enumerateCandidates(MLIRContext &ctx, IExecutorPtr executor,
                 elapsedTime > options.timeoutPerFunction)
               return failure();
 
-            SynthesisResultPtr enumerationResult;
-            SynthesisStats enumerationStats;
+            SynthesisResultPtr synthesisResult;
+            SynthesisStats synthesisStats;
 
             ProcessingStatus status =
-                process(ctx, enumerationStats, opName, opInfo, executor, args,
+                process(ctx, synthesisStats, opName, opInfo, executor, args,
                         candidateStore, localCandidateStore, refOut, options,
-                        operandArgTuple, enumerationResult, targetShape);
-            enumerationStats.addProcessingStatus(status);
-            stats.merge(enumerationStats);
+                        operandArgTuple, synthesisResult, targetShape);
+            synthesisStats.addProcessingStatus(status);
+            stats.merge(synthesisStats);
 
             // Print candidate.
             printCandidate(status, localCandidateStore, candidateStore, options,
-                           enumerationResult);
+                           synthesisResult);
 
             if (status == accept_as_solution) {
-              result = enumerationResult;
+              result = synthesisResult;
               finalizeFunction(
                   result->module->lookupSymbol<func::FuncOp>("foo"),
                   inputFunctionName);

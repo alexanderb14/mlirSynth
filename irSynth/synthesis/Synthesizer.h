@@ -43,7 +43,7 @@ mlir::OwningOpRef<mlir::ModuleOp> createModule(mlir::MLIRContext &ctx,
                                                mlir::func::FuncOp *function);
 
 SynthesisResultPtr
-enumerateCandidates(mlir::MLIRContext &ctx, IExecutorPtr executor,
+synthesizeCandidates(mlir::MLIRContext &ctx, IExecutorPtr executor,
                     mlir::func::FuncOp inputFunction,
                     InitialCandidateGeneratorPtr initialCandidateGenerator,
                     CandidateStorePtr &candidateStore,

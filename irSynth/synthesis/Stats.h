@@ -16,7 +16,7 @@ public:
   void dump();
 
 public:
-  unsigned numEnumerated = 0;
+  unsigned numSynthesized = 0;
   unsigned numValid = 0;
   unsigned numExecuted = 0;
   unsigned numIgnored = 0;

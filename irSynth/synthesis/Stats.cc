@@ -16,7 +16,7 @@ void SynthesisStats::addProcessingStatus(ProcessingStatus status) {
 void SynthesisStats::merge(SynthesisStats &other) {
   std::lock_guard<std::mutex> lock(mutex);
 
-  numEnumerated += other.numEnumerated;
+  numSynthesized += other.numSynthesized;
   numValid += other.numValid;
   numExecuted += other.numExecuted;
   numIgnored += other.numIgnored;
@@ -30,18 +30,18 @@ void SynthesisStats::merge(SynthesisStats &other) {
 void SynthesisStats::dump() {
   llvm::outs() << "Synthesis Stats"
                << "\n--------\n";
-  llvm::outs() << "Number of enumerated candidates:             "
-               << numEnumerated << "\n";
+  llvm::outs() << "Number of synthesized candidates:             "
+               << numSynthesized << "\n";
 
   llvm::outs() << "Number of valid candidates:                  " << numValid
                << "\n";
   llvm::outs() << "Percentage of valid candidates:              "
-               << (numValid * 100.0) / numEnumerated << "%\n";
+               << (numValid * 100.0) / numSynthesized << "%\n";
 
   llvm::outs() << "Number of executed candidates:               " << numExecuted
                << "\n";
   llvm::outs() << "Percentage of executed candidates:           "
-               << (numExecuted * 100.0) / numEnumerated << "%\n";
+               << (numExecuted * 100.0) / numSynthesized << "%\n";
 
   llvm::outs() << "Number of ignored equivalent candidates:     " << numIgnored
                << "\n";
@@ -58,7 +58,7 @@ void SynthesisStats::dump() {
 
   llvm::outs() << "JSON: {";
 
-  llvm::outs() << "\"numEnumerated\":" << numEnumerated << ","
+  llvm::outs() << "\"numSynthesized\":" << numSynthesized << ","
                << "\"numValid\":" << numValid << ","
                << "\"numExecuted\":" << numExecuted << ","
                << "\"numIgnored\":" << numIgnored << ","

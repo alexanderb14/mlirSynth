@@ -40,7 +40,7 @@ add_library(synthesis
   synthesis/Generators.cc
   synthesis/Candidate.cc
   synthesis/CandidateStore.cc
-  synthesis/Enumerator.cc
+  synthesis/Synthesizer.cc
   synthesis/Guide.cc
   synthesis/Grammar.cc
   synthesis/ProcessingStatus.cc

@@ -63,7 +63,7 @@ public:
   AttributeGeneratorBase(mlir::MLIRContext &ctx) : ctx(ctx) {}
   virtual ~AttributeGeneratorBase() = default;
 
-  // AttrDef generators. (exhaustively enumerate all combinations)
+  // AttrDef generators. (exhaustively synthesize all combinations)
   std::vector<mlir::Attribute> genChloComparisonDirectionAttr();
   std::vector<mlir::Attribute> genChloComparisonTypeAttr();
   std::vector<mlir::Attribute> genLinalgBinaryFnAttr();

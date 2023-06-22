@@ -408,7 +408,7 @@ public:
 
   auto attrDefGenFnNames = getAttrDefGenFnNames(records);
   os << "\n";
-  os << "  // AttrDef generators. (exhaustively enumerate all combinations)\n";
+  os << "  // AttrDef generators. (exhaustively synthesize all combinations)\n";
   for (auto &fnName : attrDefGenFnNames) {
     os << "  std::vector<mlir::Attribute> " << fnName << "();\n";
   }

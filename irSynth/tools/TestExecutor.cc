@@ -4,7 +4,7 @@
 #include "execution/Executor.h"
 #include "mlir/Target/LLVMIR/Dialect/LLVMIR/LLVMToLLVMIRTranslation.h"
 #include "mlir/Tools/ParseUtilities.h"
-#include "synthesis/Enumerator.h"
+#include "synthesis/Synthesizer.h"
 #include "transforms/ChangeSizesPass.h"
 #include "transforms/CleanupPass.h"
 #include "transforms/CopyModifiedMemrefsPass.h"
@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
                                     cl::init(false));
   cl::opt<bool> printResults("print-results", cl::desc("Print results"),
                              cl::init(false));
-  cl::ParseCommandLineOptions(argc, argv, "MLIR enumerator\n");
+  cl::ParseCommandLineOptions(argc, argv, "Test Executor\n");
 
   // Initialize LLVM.
   llvm::InitLLVM y(argc, argv);

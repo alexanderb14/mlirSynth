@@ -3,7 +3,7 @@
 #include "Common.h"
 #include "synthesis/Candidate.h"
 #include "synthesis/CartesianProduct.h"
-#include "synthesis/Enumerator.h"
+#include "synthesis/Synthesizer.h"
 #include "synthesis/Guide.h"
 #include "execution/Executor.h"
 #include "mlir/IR/BuiltinTypes.h"
@@ -212,7 +212,7 @@ int main(int argc, char **argv) {
       cl::desc("Distribute loops to split synthesis into smaller subproblems"),
       cl::init(false));
 
-  cl::ParseCommandLineOptions(argc, argv, "MLIR enumerator\n");
+  cl::ParseCommandLineOptions(argc, argv, "Synthsizer\n");
 
   // Parse options.
   SynthesisOptions options;
@@ -354,7 +354,7 @@ int main(int argc, char **argv) {
     CandidateStorePtr candidateStore = std::make_shared<CandidateStore>();
 
     auto result =
-        enumerateCandidates(*ctx, executor, inputFunc, initialCandidateGen,
+        synthesizeCandidates(*ctx, executor, inputFunc, initialCandidateGen,
                             candidateStore, availableOps, options, stats);
 
     if (result) {
