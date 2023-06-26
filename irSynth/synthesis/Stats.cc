@@ -49,6 +49,12 @@ void SynthesisStats::dump() {
   llvm::outs() << "Number of operations in solution candidate:  " << numOps
                << "\n";
 
+  llvm::outs() << "Number of operations per function:           ";
+  for (unsigned numOps : numOpsPerFunction) {
+    llvm::outs() << numOps << " ";
+  }
+  llvm::outs() << "\n";
+
   llvm::outs() << "Processing Statuses:\n";
   for (auto &kv : processingStatusCounts) {
     ProcessingStatus status = kv.first;
@@ -63,6 +69,17 @@ void SynthesisStats::dump() {
                << "\"numExecuted\":" << numExecuted << ","
                << "\"numIgnored\":" << numIgnored << ","
                << "\"numOps\":" << numOps << ",";
+
+  llvm::outs() << "\"numOpsPerFunction\":[";
+  bool first2 = true;
+  for (unsigned numOps : numOpsPerFunction) {
+    if (!first2) {
+      llvm::outs() << ",";
+    }
+    first2 = false;
+    llvm::outs() << numOps;
+  }
+  llvm::outs() << "],";
 
   llvm::outs() << "\"processingStatusCounts\":{";
   bool first = true;

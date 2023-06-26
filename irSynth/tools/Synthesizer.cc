@@ -355,6 +355,7 @@ int main(int argc, char **argv) {
 
     auto result = synthesize(*ctx, executor, inputFunc, initialCandidateGen,
                              candidateStore, availableOps, options, stats);
+    stats.numOpsPerFunction.push_back(result->candidate->getNumOps());
 
     if (result) {
       if (printSynthesisSteps) {

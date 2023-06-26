@@ -5,6 +5,7 @@
 
 #include <mutex>
 #include <unordered_map>
+#include <vector>
 
 class SynthesisStats {
 public:
@@ -21,6 +22,7 @@ public:
   unsigned numExecuted = 0;
   unsigned numIgnored = 0;
   unsigned numOps = 0;
+  std::vector<unsigned> numOpsPerFunction;
 
 private:
   std::mutex mutex;
