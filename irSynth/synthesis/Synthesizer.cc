@@ -101,7 +101,7 @@ void prepareInputFunction(func::FuncOp &inputFunction) {
   inputFunction.setName("foo");
 }
 
-void finalizeFunction(func::FuncOp func, std::string &funcName) {
+void finalizeFunction(func::FuncOp func, std::string funcName) {
   func.setName(funcName);
   func->removeAttr("llvm.emit_c_interface");
   func->setAttr("irsynth.raised", UnitAttr::get(func->getContext()));
@@ -260,13 +260,13 @@ ProcessingStatus processCandidate(
     MLIRContext &ctx, SynthesisStats &stats, RegisteredOperationName &opName,
     grammar::GrammarOpPtr &opInfo, IExecutorPtr &executor, SpecPtr &spec,
     CandidateStorePtr &candidateStore, CandidateStorePtr &localCandidateStore,
-    SynthesisOptions &options, ArgTuple operandArgTuple,
+    SynthesisOptions &options, ArgTuple candidateTuple,
     SynthesisResultPtr &synthesisResult, ArrayRef<int64_t> &targetShape) {
   stats.numSynthesized++;
 
   // Create candidate.
   CandidatePtr newCandidate = std::make_shared<Candidate>(
-      operandArgTuple.operands, grammar::OpAndResType::HLO_Tensor);
+      candidateTuple.operands, grammar::OpAndResType::HLO_Tensor);
   auto builder = OpBuilder(&ctx);
 
   synthesisResult = std::make_shared<SynthesisResult>();
@@ -274,7 +274,7 @@ ProcessingStatus processCandidate(
 
   // Set up operands.
   SmallVector<mlir::Value> operands =
-      newCandidate->merge(ctx, operandArgTuple.operands);
+      newCandidate->merge(ctx, candidateTuple.operands);
 
   // Set up attributes.
   SmallVector<NamedAttribute> attributes = {};
@@ -283,13 +283,13 @@ ProcessingStatus processCandidate(
       continue;
 
     std::string attrName = opInfo->getAttributeName(i);
-    mlir::Attribute value = operandArgTuple.attributes[i];
+    mlir::Attribute value = candidateTuple.attributes[i];
     attributes.push_back(builder.getNamedAttr(attrName, value));
   }
 
   // Set up regions.
   SmallVector<std::unique_ptr<Region>> regions = {};
-  for (auto &regionCandidate : operandArgTuple.regions) {
+  for (auto &regionCandidate : candidateTuple.regions) {
     std::unique_ptr<Region> region = std::make_unique<Region>();
     BlockAndValueMapping mapping;
     regionCandidate->cloneInto(region.get(), mapping);
@@ -459,46 +459,29 @@ synthesize(MLIRContext &ctx, IExecutorPtr executor, func::FuncOp inputFunction,
            CandidateStorePtr &candidateStore,
            std::vector<RegisteredOperationName> &avaliableOps,
            SynthesisOptions &options, SynthesisStats &stats) {
-  auto inputFunctionName = inputFunction.getName().str();
   auto inputFunctionArgs = inputFunction.getArguments();
   auto targetShape = getReturnShape(inputFunction);
-  prepareInputFunction(inputFunction);
 
   // Generate spec.
   auto spec = generateSpec(ctx, executor, inputFunction);
   if (options.printArgsAndResults)
     spec->dumpAsPython();
 
-  // Synthesize.
-  // - Initialize candidate store.
+  // Init candidate store.
   auto candidates = initialCandidateGen->gen(inputFunctionArgs, targetShape);
   for (auto &candidate : candidates)
     candidateStore->addCandidate(candidate);
 
-  // - Print them.
-  for (auto &candidate : candidateStore->getCandidates()) {
-    auto module = createModule(ctx, candidate->getRegion());
 
-    SynthesisResultPtr synthesisResult = std::make_shared<SynthesisResult>();
-    synthesisResult->candidate = candidate;
-    synthesisResult->module = module.release();
-    printCandidate(ProcessingStatus::accept_as_candidate, candidateStore,
-                   candidateStore, options, synthesisResult);
-  }
-
-  CartesianProduct cartesianProduct(options.maxNumOps);
-
-  // Get the current time.
-  auto startTime = std::chrono::high_resolution_clock::now();
-
+  // Synthesize.
   SynthesisResultPtr result;
+  auto synthStart = std::chrono::high_resolution_clock::now();
 
-  // - Synthesize candidates.
   for (int numOps = 0; numOps <= options.maxNumOps; numOps++) {
     CandidateStorePtr localCandidateStore = std::make_shared<CandidateStore>();
 
     for (auto opName : avaliableOps) {
-      // Build cartesian product of candidates.
+      // Build cartesian product of operation operands, attributes and regions.
       std::vector<std::vector<CandidatePtr>> operands;
       std::vector<std::vector<mlir::Attribute>> attributes;
       std::vector<std::vector<RegionPtr>> regions;
@@ -506,13 +489,9 @@ synthesize(MLIRContext &ctx, IExecutorPtr executor, func::FuncOp inputFunction,
       // - Operands.
       auto opInfo = grammar::createGrammarOp(opName.getStringRef().str());
       for (unsigned i = 0; i < opInfo->getNumOperands(); i++) {
-        std::vector<CandidatePtr> operandCandidates;
-        if (options.ignoreTypes) {
-          operandCandidates = candidateStore->getCandidates(numOps);
-        } else {
-          operandCandidates =
-              candidateStore->getCandidates(numOps, opInfo->getOperandType(i));
-        }
+        std::vector<CandidatePtr> operandCandidates = options.ignoreTypes
+            ? candidateStore->getCandidates(numOps)
+            : candidateStore->getCandidates(numOps, opInfo->getOperandType(i));
         operands.push_back(operandCandidates);
       }
 
@@ -527,26 +506,28 @@ synthesize(MLIRContext &ctx, IExecutorPtr executor, func::FuncOp inputFunction,
         regions.push_back(regionsGenereated);
       }
 
-      auto operandArgTuples =
+      CartesianProduct cartesianProduct(options.maxNumOps);
+      auto candidateTuples =
           cartesianProduct.generate(operands, attributes, regions);
 
-      // Synthesize cartesian product.
+      // Check each candidate in the cartesian product.
       auto status = failableParallelForEach(
-          &ctx, operandArgTuples, [&](auto &operandArgTuple) {
-            auto endTime = std::chrono::high_resolution_clock::now();
-            auto elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(
-                                   endTime - startTime)
+          &ctx, candidateTuples, [&](auto &candidateTuple) {
+            // Check if timeout.
+            auto synthEnd = std::chrono::high_resolution_clock::now();
+            auto synthDuration = std::chrono::duration_cast<std::chrono::seconds>(
+                                   synthEnd - synthStart)
                                    .count();
             if (options.timeoutPerFunction &&
-                elapsedTime > options.timeoutPerFunction)
+                synthDuration > options.timeoutPerFunction)
               return failure();
 
+            // Process candidate.
             SynthesisResultPtr synthesisResult;
             SynthesisStats synthesisStats;
-
             ProcessingStatus status = processCandidate(
                 ctx, synthesisStats, opName, opInfo, executor, spec,
-                candidateStore, localCandidateStore, options, operandArgTuple,
+                candidateStore, localCandidateStore, options, candidateTuple,
                 synthesisResult, targetShape);
             synthesisStats.addProcessingStatus(status);
             stats.merge(synthesisStats);
@@ -555,11 +536,12 @@ synthesize(MLIRContext &ctx, IExecutorPtr executor, func::FuncOp inputFunction,
             printCandidate(status, localCandidateStore, candidateStore, options,
                            synthesisResult);
 
+            // Check if solution.
             if (status == accept_as_solution) {
               result = synthesisResult;
               finalizeFunction(
                   result->module->lookupSymbol<func::FuncOp>("foo"),
-                  inputFunctionName);
+                  inputFunction.getName().str());
 
               return failure();
             }
