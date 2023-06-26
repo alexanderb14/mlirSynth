@@ -256,14 +256,12 @@ bool hasRankedAndKnownShape(Operation *op) {
   return shapedType.hasStaticShape();
 }
 
-ProcessingStatus process(MLIRContext &ctx, SynthesisStats &stats,
-                         RegisteredOperationName &opName,
-                         grammar::GrammarOpPtr &opInfo, IExecutorPtr &executor,
-                         SpecPtr &spec, CandidateStorePtr &candidateStore,
-                         CandidateStorePtr &localCandidateStore,
-                         SynthesisOptions &options, ArgTuple operandArgTuple,
-                         SynthesisResultPtr &synthesisResult,
-                         ArrayRef<int64_t> &targetShape) {
+ProcessingStatus processCandidate(
+    MLIRContext &ctx, SynthesisStats &stats, RegisteredOperationName &opName,
+    grammar::GrammarOpPtr &opInfo, IExecutorPtr &executor, SpecPtr &spec,
+    CandidateStorePtr &candidateStore, CandidateStorePtr &localCandidateStore,
+    SynthesisOptions &options, ArgTuple operandArgTuple,
+    SynthesisResultPtr &synthesisResult, ArrayRef<int64_t> &targetShape) {
   stats.numSynthesized++;
 
   // Create candidate.
@@ -546,10 +544,10 @@ synthesize(MLIRContext &ctx, IExecutorPtr executor, func::FuncOp inputFunction,
             SynthesisResultPtr synthesisResult;
             SynthesisStats synthesisStats;
 
-            ProcessingStatus status =
-                process(ctx, synthesisStats, opName, opInfo, executor, spec,
-                        candidateStore, localCandidateStore, options,
-                        operandArgTuple, synthesisResult, targetShape);
+            ProcessingStatus status = processCandidate(
+                ctx, synthesisStats, opName, opInfo, executor, spec,
+                candidateStore, localCandidateStore, options, operandArgTuple,
+                synthesisResult, targetShape);
             synthesisStats.addProcessingStatus(status);
             stats.merge(synthesisStats);
 
