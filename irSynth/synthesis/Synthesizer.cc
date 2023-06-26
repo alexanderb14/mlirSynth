@@ -35,6 +35,10 @@
 using namespace llvm;
 using namespace mlir;
 
+using operandsSetTy = std::vector<std::vector<CandidatePtr>>;
+using attributesSetTy = std::vector<std::vector<mlir::Attribute>>;
+using regionsSetTy = std::vector<std::vector<RegionPtr>>;
+
 unsigned maxShapeRank = 4;
 
 void printCandidate(ProcessingStatus status,
@@ -453,6 +457,41 @@ SpecPtr generateSpec(MLIRContext &ctx, IExecutorPtr &executor,
   return std::make_shared<Spec>(args, ret);
 }
 
+std::tuple<operandsSetTy, attributesSetTy, regionsSetTy>
+getOperandsAttributesRegions(MLIRContext &ctx,
+                             CandidateStorePtr &candidateStore,
+                             RegisteredOperationName opName,
+                             SynthesisOptions &options,
+                             mlir::Region::BlockArgListType &inputFunctionArgs,
+                             llvm::ArrayRef<int64_t> targetShape, int numOps) {
+  operandsSetTy operands;
+  attributesSetTy attributes;
+  regionsSetTy regions;
+
+  // - Operands.
+  auto opInfo = grammar::createGrammarOp(opName.getStringRef().str());
+  for (unsigned i = 0; i < opInfo->getNumOperands(); i++) {
+    std::vector<CandidatePtr> operandCandidates =
+        options.ignoreTypes
+            ? candidateStore->getCandidates(numOps)
+            : candidateStore->getCandidates(numOps, opInfo->getOperandType(i));
+    operands.push_back(operandCandidates);
+  }
+
+  // - Attributes.
+  auto attrGen =
+      std::make_shared<AttributeGenerator>(ctx, inputFunctionArgs, targetShape);
+  attributes = opInfo->genAttributes(attrGen);
+
+  // - Regions.
+  auto regionsGenereated = genRegions(ctx);
+  for (unsigned i = 0; i < opInfo->getNumRegions(); i++) {
+    regions.push_back(regionsGenereated);
+  }
+
+  return std::make_tuple(operands, attributes, regions);
+}
+
 SynthesisResultPtr
 synthesize(MLIRContext &ctx, IExecutorPtr executor, func::FuncOp inputFunction,
            InitialCandidateGeneratorPtr initialCandidateGen,
@@ -472,7 +511,6 @@ synthesize(MLIRContext &ctx, IExecutorPtr executor, func::FuncOp inputFunction,
   for (auto &candidate : candidates)
     candidateStore->addCandidate(candidate);
 
-
   // Synthesize.
   SynthesisResultPtr result;
   auto synthStart = std::chrono::high_resolution_clock::now();
@@ -481,31 +519,12 @@ synthesize(MLIRContext &ctx, IExecutorPtr executor, func::FuncOp inputFunction,
     CandidateStorePtr localCandidateStore = std::make_shared<CandidateStore>();
 
     for (auto opName : avaliableOps) {
-      // Build cartesian product of operation operands, attributes and regions.
-      std::vector<std::vector<CandidatePtr>> operands;
-      std::vector<std::vector<mlir::Attribute>> attributes;
-      std::vector<std::vector<RegionPtr>> regions;
-
-      // - Operands.
       auto opInfo = grammar::createGrammarOp(opName.getStringRef().str());
-      for (unsigned i = 0; i < opInfo->getNumOperands(); i++) {
-        std::vector<CandidatePtr> operandCandidates = options.ignoreTypes
-            ? candidateStore->getCandidates(numOps)
-            : candidateStore->getCandidates(numOps, opInfo->getOperandType(i));
-        operands.push_back(operandCandidates);
-      }
 
-      // - Attributes.
-      auto attrGen = std::make_shared<AttributeGenerator>(
-          ctx, inputFunctionArgs, targetShape);
-      attributes = opInfo->genAttributes(attrGen);
-
-      // - Regions.
-      auto regionsGenereated = genRegions(ctx);
-      for (unsigned i = 0; i < opInfo->getNumRegions(); i++) {
-        regions.push_back(regionsGenereated);
-      }
-
+      // Build cartesian product of operation operands, attributes and regions.
+      auto [operands, attributes, regions] =
+          getOperandsAttributesRegions(ctx, candidateStore, opName, options,
+                                       inputFunctionArgs, targetShape, numOps);
       CartesianProduct cartesianProduct(options.maxNumOps);
       auto candidateTuples =
           cartesianProduct.generate(operands, attributes, regions);
