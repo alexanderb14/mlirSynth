@@ -43,11 +43,11 @@ mlir::OwningOpRef<mlir::ModuleOp> createModule(mlir::MLIRContext &ctx,
                                                mlir::func::FuncOp *function);
 
 SynthesisResultPtr
-synthesizeCandidates(mlir::MLIRContext &ctx, IExecutorPtr executor,
-                    mlir::func::FuncOp inputFunction,
-                    InitialCandidateGeneratorPtr initialCandidateGenerator,
-                    CandidateStorePtr &candidateStore,
-                    std::vector<mlir::RegisteredOperationName> &avaliableOps,
-                    SynthesisOptions &options, SynthesisStats &stats);
+synthesize(mlir::MLIRContext &ctx, IExecutorPtr executor,
+           mlir::func::FuncOp inputFunction,
+           InitialCandidateGeneratorPtr initialCandidateGenerator,
+           CandidateStorePtr &candidateStore,
+           std::vector<mlir::RegisteredOperationName> &avaliableOps,
+           SynthesisOptions &options, SynthesisStats &stats);
 
 #endif // IRSYNTH_SYNTHESIZER_H

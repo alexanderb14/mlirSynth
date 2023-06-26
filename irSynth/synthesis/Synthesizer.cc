@@ -259,8 +259,7 @@ bool hasRankedAndKnownShape(Operation *op) {
 ProcessingStatus process(MLIRContext &ctx, SynthesisStats &stats,
                          RegisteredOperationName &opName,
                          grammar::GrammarOpPtr &opInfo, IExecutorPtr &executor,
-                         SpecPtr &spec,
-                         CandidateStorePtr &candidateStore,
+                         SpecPtr &spec, CandidateStorePtr &candidateStore,
                          CandidateStorePtr &localCandidateStore,
                          SynthesisOptions &options, ArgTuple operandArgTuple,
                          SynthesisResultPtr &synthesisResult,
@@ -399,8 +398,8 @@ ProcessingStatus process(MLIRContext &ctx, SynthesisStats &stats,
 
   double *out = getReturnDataPtr(retCand);
   // printArray(out, returnShape, llvm::outs());
-//  if (options.printArgsAndResults)
-//    printArgsAndResultsInPython(args, out, targetShape);
+  //  if (options.printArgsAndResults)
+  //    printArgsAndResultsInPython(args, out, targetShape);
 
   // Hash and add to store if hash doesn't exist yet.
   double hash = hashArray(out, returnShape);
@@ -433,7 +432,8 @@ ProcessingStatus process(MLIRContext &ctx, SynthesisStats &stats,
   return accept_as_candidate;
 }
 
-SpecPtr generateSpec(MLIRContext &ctx, IExecutorPtr& executor, func::FuncOp inputFunction) {
+SpecPtr generateSpec(MLIRContext &ctx, IExecutorPtr &executor,
+                     func::FuncOp inputFunction) {
   auto inputFunctionName = inputFunction.getName().str();
   auto targetShape = getReturnShape(inputFunction);
   prepareInputFunction(inputFunction);
@@ -456,12 +456,11 @@ SpecPtr generateSpec(MLIRContext &ctx, IExecutorPtr& executor, func::FuncOp inpu
 }
 
 SynthesisResultPtr
-synthesizeCandidates(MLIRContext &ctx, IExecutorPtr executor,
-                    func::FuncOp inputFunction,
-                    InitialCandidateGeneratorPtr initialCandidateGen,
-                    CandidateStorePtr &candidateStore,
-                    std::vector<RegisteredOperationName> &avaliableOps,
-                    SynthesisOptions &options, SynthesisStats &stats) {
+synthesize(MLIRContext &ctx, IExecutorPtr executor, func::FuncOp inputFunction,
+           InitialCandidateGeneratorPtr initialCandidateGen,
+           CandidateStorePtr &candidateStore,
+           std::vector<RegisteredOperationName> &avaliableOps,
+           SynthesisOptions &options, SynthesisStats &stats) {
   auto inputFunctionName = inputFunction.getName().str();
   auto inputFunctionArgs = inputFunction.getArguments();
   auto targetShape = getReturnShape(inputFunction);
@@ -482,8 +481,7 @@ synthesizeCandidates(MLIRContext &ctx, IExecutorPtr executor,
   for (auto &candidate : candidateStore->getCandidates()) {
     auto module = createModule(ctx, candidate->getRegion());
 
-    SynthesisResultPtr synthesisResult =
-        std::make_shared<SynthesisResult>();
+    SynthesisResultPtr synthesisResult = std::make_shared<SynthesisResult>();
     synthesisResult->candidate = candidate;
     synthesisResult->module = module.release();
     printCandidate(ProcessingStatus::accept_as_candidate, candidateStore,

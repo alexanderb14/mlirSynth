@@ -353,9 +353,8 @@ int main(int argc, char **argv) {
 
     CandidateStorePtr candidateStore = std::make_shared<CandidateStore>();
 
-    auto result =
-        synthesizeCandidates(*ctx, executor, inputFunc, initialCandidateGen,
-                            candidateStore, availableOps, options, stats);
+    auto result = synthesize(*ctx, executor, inputFunc, initialCandidateGen,
+                             candidateStore, availableOps, options, stats);
 
     if (result) {
       if (printSynthesisSteps) {
