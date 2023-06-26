@@ -1,5 +1,5 @@
-#ifndef IRSYNTH_ATTRIBUTEGEN_H
-#define IRSYNTH_ATTRIBUTEGEN_H
+#ifndef IRSYNTH_GENERATORS_H
+#define IRSYNTH_GENERATORS_H
 
 #include "synthesis/Candidate.h"
 #include "synthesis/Grammar.h"
@@ -73,4 +73,4 @@ public:
                                 llvm::ArrayRef<int64_t> targetShape) override;
 };
 
-#endif // IRSYNTH_ATTRIBUTEGEN_H
+#endif // IRSYNTH_GENERATORS_H

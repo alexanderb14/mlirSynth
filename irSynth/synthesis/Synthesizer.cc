@@ -8,6 +8,7 @@
 #include "synthesis/Generators.h"
 #include "synthesis/Grammar.h"
 #include "synthesis/ProcessingStatus.h"
+#include "synthesis/Spec.h"
 #include "synthesis/Stats.h"
 
 #include "mlir/Dialect/Func/IR/FuncOps.h"
@@ -258,9 +259,9 @@ bool hasRankedAndKnownShape(Operation *op) {
 ProcessingStatus process(MLIRContext &ctx, SynthesisStats &stats,
                          RegisteredOperationName &opName,
                          grammar::GrammarOpPtr &opInfo, IExecutorPtr &executor,
-                         std::vector<ReturnAndArgType> &args,
+                         SpecPtr &spec,
                          CandidateStorePtr &candidateStore,
-                         CandidateStorePtr &localCandidateStore, double *refOut,
+                         CandidateStorePtr &localCandidateStore,
                          SynthesisOptions &options, ArgTuple operandArgTuple,
                          SynthesisResultPtr &synthesisResult,
                          ArrayRef<int64_t> &targetShape) {
@@ -385,7 +386,7 @@ ProcessingStatus process(MLIRContext &ctx, SynthesisStats &stats,
     return reject_hasEmptyReturnShape;
 
   // Create args array.
-  auto argsCand = selectArgs(args, newCandidate->getArgIds());
+  auto argsCand = selectArgs(spec->inputs, newCandidate->getArgIds());
   if (options.withCopyArgs)
     argsCand = copyArgs(argsCand);
   auto returnShapeCand = getReturnShape(func);
@@ -398,8 +399,8 @@ ProcessingStatus process(MLIRContext &ctx, SynthesisStats &stats,
 
   double *out = getReturnDataPtr(retCand);
   // printArray(out, returnShape, llvm::outs());
-  if (options.printArgsAndResults)
-    printArgsAndResultsInPython(args, out, targetShape);
+//  if (options.printArgsAndResults)
+//    printArgsAndResultsInPython(args, out, targetShape);
 
   // Hash and add to store if hash doesn't exist yet.
   double hash = hashArray(out, returnShape);
@@ -414,6 +415,7 @@ ProcessingStatus process(MLIRContext &ctx, SynthesisStats &stats,
   localCandidateStore->addCandidate(newCandidate);
 
   if (returnShape == targetShape) {
+    double *refOut = getReturnDataPtr(spec->output);
     if (areArraysEqual(refOut, out, returnShape)) {
       LLVM_DEBUG(llvm::dbgs() << "Found a match!\n");
       LLVM_DEBUG(module->print(llvm::dbgs()));
@@ -431,15 +433,8 @@ ProcessingStatus process(MLIRContext &ctx, SynthesisStats &stats,
   return accept_as_candidate;
 }
 
-SynthesisResultPtr
-synthesizeCandidates(MLIRContext &ctx, IExecutorPtr executor,
-                    func::FuncOp inputFunction,
-                    InitialCandidateGeneratorPtr initialCandidateGen,
-                    CandidateStorePtr &candidateStore,
-                    std::vector<RegisteredOperationName> &avaliableOps,
-                    SynthesisOptions &options, SynthesisStats &stats) {
+SpecPtr generateSpec(MLIRContext &ctx, IExecutorPtr& executor, func::FuncOp inputFunction) {
   auto inputFunctionName = inputFunction.getName().str();
-  auto inputFunctionArgs = inputFunction.getArguments();
   auto targetShape = getReturnShape(inputFunction);
   prepareInputFunction(inputFunction);
 
@@ -455,11 +450,27 @@ synthesizeCandidates(MLIRContext &ctx, IExecutorPtr executor,
   assert(succeeded(executor->lowerAffineToLLVMDialect(inputModule)));
   assert(succeeded(jitAndInvoke(inputModule, args, ret)));
 
-  double *refOut = getReturnDataPtr(ret);
-  if (options.printArgsAndResults)
-    printArgsAndResultsInPython(args, refOut, targetShape);
-
   convertScalarToMemrefArgs(args);
+
+  return std::make_shared<Spec>(args, ret);
+}
+
+SynthesisResultPtr
+synthesizeCandidates(MLIRContext &ctx, IExecutorPtr executor,
+                    func::FuncOp inputFunction,
+                    InitialCandidateGeneratorPtr initialCandidateGen,
+                    CandidateStorePtr &candidateStore,
+                    std::vector<RegisteredOperationName> &avaliableOps,
+                    SynthesisOptions &options, SynthesisStats &stats) {
+  auto inputFunctionName = inputFunction.getName().str();
+  auto inputFunctionArgs = inputFunction.getArguments();
+  auto targetShape = getReturnShape(inputFunction);
+  prepareInputFunction(inputFunction);
+
+  // Generate spec.
+  auto spec = generateSpec(ctx, executor, inputFunction);
+  if (options.printArgsAndResults)
+    spec->dumpAsPython();
 
   // Synthesize.
   // - Initialize candidate store.
@@ -538,8 +549,8 @@ synthesizeCandidates(MLIRContext &ctx, IExecutorPtr executor,
             SynthesisStats synthesisStats;
 
             ProcessingStatus status =
-                process(ctx, synthesisStats, opName, opInfo, executor, args,
-                        candidateStore, localCandidateStore, refOut, options,
+                process(ctx, synthesisStats, opName, opInfo, executor, spec,
+                        candidateStore, localCandidateStore, options,
                         operandArgTuple, synthesisResult, targetShape);
             synthesisStats.addProcessingStatus(status);
             stats.merge(synthesisStats);

@@ -44,6 +44,7 @@ add_library(synthesis
   synthesis/Guide.cc
   synthesis/Grammar.cc
   synthesis/ProcessingStatus.cc
+  synthesis/Spec.cc
   synthesis/Stats.cc)
 target_include_directories(synthesis
   PRIVATE ${CMAKE_CURRENT_LIST_DIR}

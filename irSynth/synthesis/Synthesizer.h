@@ -1,5 +1,5 @@
-#ifndef IRSYNTH_ENUMERATOR_H
-#define IRSYNTH_ENUMERATOR_H
+#ifndef IRSYNTH_SYNTHESIZER_H
+#define IRSYNTH_SYNTHESIZER_H
 
 #include "execution/Executor.h"
 #include "synthesis/CandidateStore.h"
@@ -50,4 +50,4 @@ synthesizeCandidates(mlir::MLIRContext &ctx, IExecutorPtr executor,
                     std::vector<mlir::RegisteredOperationName> &avaliableOps,
                     SynthesisOptions &options, SynthesisStats &stats);
 
-#endif // IRSYNTH_ENUMERATOR_H
+#endif // IRSYNTH_SYNTHESIZER_H
