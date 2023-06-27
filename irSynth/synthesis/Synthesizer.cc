@@ -534,9 +534,10 @@ synthesize(MLIRContext &ctx, IExecutorPtr executor, func::FuncOp inputFunction,
           &ctx, candidateTuples, [&](auto &candidateTuple) {
             // Check if timeout.
             auto synthEnd = std::chrono::high_resolution_clock::now();
-            auto synthDuration = std::chrono::duration_cast<std::chrono::seconds>(
-                                   synthEnd - synthStart)
-                                   .count();
+            auto synthDuration =
+                std::chrono::duration_cast<std::chrono::seconds>(synthEnd -
+                                                                 synthStart)
+                    .count();
             if (options.timeoutPerFunction &&
                 synthDuration > options.timeoutPerFunction)
               return failure();
