@@ -54,7 +54,8 @@
 
 using namespace mlir;
 
-void addCHLOToLLVMPasses(std::shared_ptr<mlir::PassManager> pm) {
+namespace HLO {
+void addCHLOToAffinePasses(std::shared_ptr<mlir::PassManager> pm) {
   pm->addPass(mhlo::createStablehloLegalizeToHloPass());
   pm->addNestedPass<func::FuncOp>(mhlo::createChloLegalizeToHloPass());
 
@@ -171,11 +172,17 @@ void addCHLOToLLVMPasses(std::shared_ptr<mlir::PassManager> pm) {
       mlir::arith::createArithExpandOpsPass());
   pm->addNestedPass<mlir::func::FuncOp>(mlir::memref::createExpandOpsPass());
   pm->addNestedPass<mlir::func::FuncOp>(mlir::createLowerAffinePass());
+}
+
+void addAffineToLLVMPasses(std::shared_ptr<mlir::PassManager> pm) {
   //  pm->addPass(mlir::mhlo::CreateLegalizeXLAFrameworkToLLVMPass());
   pm->addPass(mlir::hlo::createGenericHostToLLVMPass());
   pm->addPass(mlir::createReconcileUnrealizedCastsPass());
 }
 
+} // namespace HLO
+
+namespace Polygeist {
 void addAffineToLLVMPasses(std::shared_ptr<mlir::PassManager> pm) {
   pm->addPass(createLowerAffinePass());
   pm->addPass(createConvertSCFToCFPass());
@@ -186,3 +193,4 @@ void addAffineToLLVMPasses(std::shared_ptr<mlir::PassManager> pm) {
   pm->addPass(createConvertFuncToLLVMPass());
   pm->addPass(mlir::createReconcileUnrealizedCastsPass());
 }
+} // namespace Polygeist

@@ -161,10 +161,11 @@ LogicalResult jitAndInvoke(OwningOpRef<ModuleOp> module,
 
 Executor::Executor(MLIRContext *ctx) : ctx(ctx) {
   pmCHLOToLLVM = std::make_shared<PassManager>(ctx);
-  addCHLOToLLVMPasses(pmCHLOToLLVM);
+  HLO::addCHLOToAffinePasses(pmCHLOToLLVM);
+  HLO::addAffineToLLVMPasses(pmCHLOToLLVM);
 
   pmAffineToLLVM = std::make_shared<PassManager>(ctx);
-  addAffineToLLVMPasses(pmAffineToLLVM);
+  Polygeist::addAffineToLLVMPasses(pmAffineToLLVM);
 }
 
 LogicalResult Executor::lowerCHLOToLLVMDialect(ModuleOp &module) {
