@@ -39,6 +39,8 @@ void initializeCandidates(mlir::MLIRContext &ctx,
                           mlir::Region::BlockArgListType functionArgs,
                           llvm::ArrayRef<int64_t> targetShape);
 
+mlir::OwningOpRef<mlir::func::FuncOp> unwrapModule(mlir::ModuleOp &module);
+
 mlir::OwningOpRef<mlir::ModuleOp> createModule(mlir::MLIRContext &ctx,
                                                mlir::func::FuncOp *function);
 

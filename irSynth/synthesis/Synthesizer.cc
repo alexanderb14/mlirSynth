@@ -111,6 +111,15 @@ void finalizeFunction(func::FuncOp func, std::string funcName) {
   func->setAttr("irsynth.raised", UnitAttr::get(func->getContext()));
 }
 
+OwningOpRef<func::FuncOp> unwrapModule(ModuleOp &module) {
+  std::vector<func::FuncOp> functions;
+  module->walk([&](func::FuncOp func) {
+    functions.push_back(func);
+  });
+  assert (functions.size() == 1);
+  return functions[0];
+}
+
 OwningOpRef<ModuleOp> createModule(MLIRContext &ctx, func::FuncOp *function) {
   // Create an empty module.
   auto unknownLoc = UnknownLoc::get(&ctx);

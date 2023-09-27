@@ -2,6 +2,8 @@
 #include "execution/ArgUtils.h"
 #include "execution/ArrayUtils.h"
 #include "execution/Executor.h"
+#include "execution/Lowering.h"
+#include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/Target/LLVMIR/Dialect/LLVMIR/LLVMToLLVMIRTranslation.h"
 #include "mlir/Tools/ParseUtilities.h"
 #include "synthesis/Synthesizer.h"
@@ -41,6 +43,77 @@ std::vector<func::FuncOp> getFunctions(mlir::Operation *op,
       functions.push_back(func);
   });
   return functions;
+}
+
+func::FuncOp lowerHLO(func::FuncOp &func) {
+  auto *ctx = func->getContext();
+
+  auto pm = std::make_shared<mlir::PassManager>(ctx);
+  HLO::addCHLOToAffinePasses(pm);
+
+  auto hloModule = createModule(*ctx, &func).release();
+
+  if (failed(pm->run(hloModule))) {
+    assert(false && "Couldn't lower to HLO to affine dialect");
+  }
+
+  return unwrapModule(hloModule).release();
+}
+
+bool testValidate(func::FuncOp lhsFunction, func::FuncOp rhsFunction,
+                  bool printArgsAndResults = false, bool printResults = false) {
+  auto *ctx = lhsFunction->getContext();
+
+  lhsFunction->setAttr("llvm.emit_c_interface", UnitAttr::get(ctx));
+  lhsFunction.setSymName("foo");
+
+  auto lhsModuleRef = createModule(*ctx, &lhsFunction);
+  auto lhsModule = lhsModuleRef.release();
+
+  // Create inputs.
+  auto args = createArgs(lhsFunction);
+  randomlyInitializeArgs(lhsFunction, args);
+  auto targetShape = getReturnShape(lhsFunction);
+
+  // Lower and run the lhs function on the inputs.
+  auto pm = std::make_shared<mlir::PassManager>(ctx);
+  Polygeist::addAffineToLLVMPasses(pm);
+  assert(succeeded(pm->run(lhsModule)) &&
+         "Failed to lower affine to LLVM dialect");
+
+  auto refRet = getOwningMemRefForShape(targetShape);
+  assert(succeeded(jitAndInvoke(lhsModule, args, refRet)));
+  double *refOut = getReturnDataPtr(refRet);
+
+  if (printArgsAndResults)
+    printArgsAndResultsInPython(args, refOut, targetShape);
+
+  // RHS
+  rhsFunction->setAttr("llvm.emit_c_interface", UnitAttr::get(ctx));
+  rhsFunction.setSymName("foo");
+  auto rhsModuleRef = createModule(*ctx, &rhsFunction);
+  auto rhsModule = rhsModuleRef.release();
+
+  // Lower and run the rhs function on the inputs.
+  auto pmRHS = std::make_shared<mlir::PassManager>(ctx);
+  HLO::addAffineToLLVMPasses(pmRHS);
+  assert(succeeded(pm->run(rhsModule)) &&
+         "Failed to lower chlo to LLVM dialect");
+
+  auto rhsRet = getOwningMemRefForShape(targetShape);
+  convertScalarToMemrefArgs(args);
+  assert(succeeded(jitAndInvoke(rhsModule, args, rhsRet)));
+  double *rhsOut = getReturnDataPtr(rhsRet);
+
+  if (printResults) {
+    printArray(refOut, targetShape, llvm::outs());
+    llvm::outs() << "\n";
+    printArray(rhsOut, targetShape, llvm::outs());
+    llvm::outs() << "\n";
+  }
+
+  // Test for equivalence.
+  return areArraysEqual(refOut, rhsOut, targetShape);
 }
 
 int main(int argc, char **argv) {
@@ -100,61 +173,24 @@ int main(int argc, char **argv) {
          "Expected one function with the irsynth.original attribute");
   auto originalFunction = originalFunctions[0];
 
-  originalFunction->setAttr("llvm.emit_c_interface", UnitAttr::get(&ctx));
-  originalFunction.setSymName("foo");
-
-  auto originalModuleRef = createModule(ctx, &originalFunction);
-  auto originalModule = originalModuleRef.release();
-
-  // Create inputs.
-  auto args = createArgs(originalFunction);
-  randomlyInitializeArgs(originalFunction, args);
-  auto targetShape = getReturnShape(originalFunction);
-
-  // Lower and run the original function on the inputs.
-  auto executor = std::make_shared<Executor>(&ctx);
-
-  assert(succeeded(executor->lowerAffineToLLVMDialect(originalModule)) &&
-         "Failed to lower affine to LLVM dialect");
-  auto refRet = getOwningMemRefForShape(targetShape);
-  assert(succeeded(jitAndInvoke(originalModule, args, refRet)));
-  double *refOut = getReturnDataPtr(refRet);
-
-  if (printArgsAndResults)
-    printArgsAndResultsInPython(args, refOut, targetShape);
-
   // Load HLO function module(s).
   auto hloFunctions = getFunctions(inputOp.get(), "irsynth.raised");
   for (auto hloFunction : hloFunctions) {
-    auto functionName = hloFunction.getName().str();
+    auto lowered = lowerHLO(hloFunction);
 
-    hloFunction->setAttr("llvm.emit_c_interface", UnitAttr::get(&ctx));
-    hloFunction.setSymName("foo");
-    auto hloModuleRef = createModule(ctx, &hloFunction);
-    auto hloModule = hloModuleRef.release();
+    originalFunction.dump();
+    lowered->dump();
 
-    // Lower and run the hlo function on the inputs.
-    assert(succeeded(executor->lowerCHLOToLLVMDialect(hloModule)) &&
-           "Failed to lower chlo to LLVM dialect");
-    auto hloRet = getOwningMemRefForShape(targetShape);
-    convertScalarToMemrefArgs(args);
-    assert(succeeded(jitAndInvoke(hloModule, args, hloRet)));
-    double *hloOut = getReturnDataPtr(hloRet);
+    bool equiv = testValidate(originalFunction, lowered,
+                              printArgsAndResults, printResults);
 
     // Print the results.
-    llvm::outs() << functionName << ": ";
-    if (areArraysEqual(refOut, hloOut, targetShape)) {
+    llvm::outs() << hloFunction.getName().str() << ": ";
+    if (equiv) {
       llvm::outs() << "\033[1;42mResults are equal.\033[0m";
     } else {
       llvm::outs() << "\033[1;41mResults are different.\033[0m";
     }
     llvm::outs() << "\n";
-
-    if (printResults) {
-      printArray(refOut, targetShape, llvm::outs());
-      llvm::outs() << "\n";
-      printArray(hloOut, targetShape, llvm::outs());
-      llvm::outs() << "\n";
-    }
   }
 }
