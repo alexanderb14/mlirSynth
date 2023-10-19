@@ -5,6 +5,7 @@
 #include "transforms/FoldToTensorToMemrefPairPass.h"
 #include "transforms/LoopDistributionPass.h"
 #include "transforms/LoopOutlinePass.h"
+#include "transforms/MemrefCopyToLoopsPass.h"
 #include "transforms/PrepareTargetPass.h"
 #include "transforms/TargetOutlinePass.h"
 
@@ -47,6 +48,7 @@ int main(int argc, char **argv) {
   registerFoldToTensorToMemrefPairPass();
   registerLoopDistributionPass();
   registerLoopOutlinePass();
+  registerMemrefCopyToLoopsPass();
   registerPrepareTargetPass();
   registerTargetOutlinePass();
 
