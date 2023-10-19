@@ -80,6 +80,13 @@ target_link_libraries(transform
   PRIVATE analysis)
 llvm_update_compile_flags(transform)
 
+# Lib: Validation
+add_library(validation
+  validation/CheckingValidator.cc
+  validation/TestingValidator.cc)
+target_include_directories(validation
+  PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+
 # Exe: Transform Tool
 add_llvm_executable(opt
   tools/Opt.cc)
@@ -118,7 +125,8 @@ target_link_libraries(test-executor
           analysis
           synthesis
           execution
-          transform)
+          transform
+          validation)
 llvm_update_compile_flags(test-executor)
 
 # Exe: Grammar Extractor
