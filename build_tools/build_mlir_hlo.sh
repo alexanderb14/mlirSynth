@@ -16,6 +16,8 @@ git clone https://github.com/llvm/llvm-project.git
 pushd llvm-project
 git checkout $(cat ../build_tools/llvm_version.txt)
 git am < ../../build_tools/llvm_patches/add-trait-verification-function.patch
+git am < ../../build_tools/llvm_patches/upgrade-emit-c.patch
+git am < ../../build_tools/llvm_patches/support-more-emitc-ops.patch
 popd
 
 # Build MLIR.
@@ -36,7 +38,7 @@ cmake -GNinja \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DLLVM_PARALLEL_LINK_JOBS=1 \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-cmake --build "$PWD/llvm-build" --target all --target mlir-cpu-runner
+cmake --build "$PWD/llvm-build"
 
 # Build MLIR-HLO.
 mkdir build
