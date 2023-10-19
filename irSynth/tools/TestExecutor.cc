@@ -69,6 +69,14 @@ func::FuncOp lowerHLO(func::FuncOp &func) {
   return unwrapModule(hloModule).release();
 }
 
+void printStatus(bool isOk) {
+  if (isOk) {
+    llvm::outs() << "\033[1;42mOK\033[0m";
+  } else {
+    llvm::outs() << "\033[1;41mFAIL\033[0m";
+  }
+}
+
 int main(int argc, char **argv) {
   // Parse command line arguments.
   cl::opt<std::string> inputFilename(cl::Positional, cl::desc("<input file>"),
@@ -134,18 +142,18 @@ int main(int argc, char **argv) {
     originalFunction.dump();
     lowered->dump();
 
-    bool equiv = testValidate(originalFunction, lowered,
-                              printArgsAndResults, printResults);
-    checkValidate(originalFunction, lowered,
-                              printArgsAndResults, printResults);
+    // Test validate.
+    bool testEquiv = testValidate(originalFunction, lowered,
+                                  printArgsAndResults, printResults);
+    llvm::outs() << hloFunction.getName().str() << ": Testing with IO ";
+    printStatus(testEquiv);
+    llvm::outs() << "\n";
 
-    // Print the results.
-    llvm::outs() << hloFunction.getName().str() << ": ";
-    if (equiv) {
-      llvm::outs() << "\033[1;42mResults are equal.\033[0m";
-    } else {
-      llvm::outs() << "\033[1;41mResults are different.\033[0m";
-    }
+    // Check validate.
+    bool checkEquiv = checkValidate(originalFunction, lowered,
+                                    printArgsAndResults, printResults);
+    llvm::outs() << hloFunction.getName().str() << ": Checking with CBMC ";
+    printStatus(checkEquiv);
     llvm::outs() << "\n";
   }
 }

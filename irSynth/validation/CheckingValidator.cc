@@ -1,5 +1,8 @@
 #include "CheckingValidator.h"
 
+#include "mlir/IR/Location.h"
+#include "transforms/MemrefCopyToLoopsPass.h"
+
 #include "mlir/Conversion/AffineToStandard/AffineToStandard.h"
 #include "mlir/Dialect/Arith/IR/Arith.h"
 #include "mlir/Dialect/MemRef/IR/MemRef.h"
@@ -9,6 +12,10 @@
 #include "mlir/Transforms/Passes.h"
 
 #include "mlir/Target/Cpp/CppEmitter.h"
+#include "llvm/ADT/SmallVector.h"
+
+#include <fstream>
+#include <regex>
 
 using namespace mlir;
 
@@ -69,9 +76,9 @@ OwningOpRef<ModuleOp> buildModule(func::FuncOp lhsFunction,
         if (indices.size() == argShape.size()) {
           // Create decl.
           SmallVector<mlir::Value> operands = {};
-          auto declOp = builder.create<func::CallOp>(UnknownLoc::get(ctx),
-                                                     builder.getF64Type(),
-                                                     "cbmc_declare", operands);
+          auto declOp = builder.create<func::CallOp>(
+              UnknownLoc::get(ctx), builder.getF64Type(),
+              "__VERIFIER_nondet_float", operands);
 
           // Create store.
           builder.create<memref::StoreOp>(UnknownLoc::get(ctx),
@@ -134,7 +141,32 @@ OwningOpRef<ModuleOp> buildModule(func::FuncOp lhsFunction,
           UnknownLoc::get(ctx), rhsType, rhsMemref, indices);
 
       // Create check.
-      SmallVector<mlir::Value> checkOperands = {lhsLoad, rhsLoad};
+      // Check for equality of lhsLoad and rhsLoad.
+      auto cond1 = builder.create<arith::CmpFOp>(
+          UnknownLoc::get(ctx), arith::CmpFPredicate::ONE, lhsLoad, rhsLoad);
+
+      // Check for nan by calling function isnanf on lhsLoad.
+      SmallVector<mlir::Value> cond2Operands = {lhsLoad};
+      auto cond2 = builder.create<func::CallOp>(
+          UnknownLoc::get(ctx), builder.getI1Type(), "!isnanf", cond2Operands);
+
+      // Check for nan by calling function isnanf on rhsLoad.
+      SmallVector<mlir::Value> cond3Operands = {rhsLoad};
+      auto cond3 = builder.create<func::CallOp>(
+          UnknownLoc::get(ctx), builder.getI1Type(), "!isnanf", cond3Operands);
+
+      // Build predicate
+      auto pred1 = builder.create<arith::AndIOp>(
+          UnknownLoc::get(ctx), cond1.getResult(), cond2->getResult(0));
+      auto pred2 = builder.create<arith::AndIOp>(
+          UnknownLoc::get(ctx), pred1.getResult(), cond3->getResult(0));
+
+      // Create if Operation.
+      auto ifOp = builder.create<scf::IfOp>(UnknownLoc::get(ctx), pred2,
+                                            /*withElseRegion=*/false);
+      builder.setInsertionPointToStart(&ifOp.getThenRegion().front());
+
+      SmallVector<mlir::Value> checkOperands = {};
       builder.create<func::CallOp>(UnknownLoc::get(ctx), builder.getF64Type(),
                                    "cbmc_assert", checkOperands);
     }
@@ -144,12 +176,17 @@ OwningOpRef<ModuleOp> buildModule(func::FuncOp lhsFunction,
   builder.setInsertionPoint(&moduleBlock, moduleBlock.begin());
   func::FuncOp cbmcAssertFwdDecl = builder.create<func::FuncOp>(
       UnknownLoc::get(ctx), "cbmc_assert",
-      mlir::FunctionType::get(ctx, {builder.getF64Type(), builder.getF64Type()},
-                              {builder.getF64Type()}));
+      mlir::FunctionType::get(ctx, {}, {builder.getF64Type()}));
   cbmcAssertFwdDecl.setPrivate();
 
+  func::FuncOp isnanfFwdDecl = builder.create<func::FuncOp>(
+      UnknownLoc::get(ctx), "!isnanf",
+      mlir::FunctionType::get(ctx, {builder.getF64Type()},
+                              {builder.getI1Type()}));
+  isnanfFwdDecl.setPrivate();
+
   func::FuncOp cbmcDeclareFwdDecl = builder.create<func::FuncOp>(
-      UnknownLoc::get(ctx), "cbmc_declare",
+      UnknownLoc::get(ctx), "__VERIFIER_nondet_float",
       mlir::FunctionType::get(ctx, {}, {builder.getF64Type()}));
   cbmcDeclareFwdDecl.setPrivate();
 
@@ -160,9 +197,89 @@ OwningOpRef<ModuleOp> buildModule(func::FuncOp lhsFunction,
   return module;
 }
 
+void finalizeCCode(std::string &cCode) {
+  std::regex cbmcAssertRegex(".*cbmc_assert.*");
+  cCode = std::regex_replace(cCode, cbmcAssertRegex,
+                             "        __CPROVER_assert(0, \"unreachable?\");");
+
+  std::regex doubleRegex("double");
+  cCode = std::regex_replace(cCode, doubleRegex, "float");
+
+  cCode = "extern int __VERIFIER_nondet_int();\n"
+          "extern float __VERIFIER_nondet_float();\n"
+          "#include <stdio.h>\n"
+          "#include <stdbool.h>\n"
+          "\n" +
+          cCode;
+}
+
+void convertRank0MemrefsToScalars(func::FuncOp &func) {
+  // Traverse functions arguments. If there's a rank 0 memref, replace it with a
+  // scalar. Then look for all uses and replace them.
+  auto funcArgs = func.getArguments();
+  for (auto [argIdx, arg] : llvm::enumerate(funcArgs)) {
+    auto argType = arg.getType();
+    if (argType.isa<MemRefType>()) {
+      auto memrefType = argType.cast<MemRefType>();
+      if (memrefType.getShape().empty()) {
+        // Replace memref type in arg with scalar.
+        auto scalarType = memrefType.getElementType();
+        arg.setType(scalarType);
+
+        auto argTypes = func.getArgumentTypes().vec();
+        argTypes[argIdx] = scalarType;
+
+        func.setFunctionType(mlir::FunctionType::get(
+            func->getContext(), argTypes, func.getResultTypes()));
+
+        // Replace all uses of memref with scalar.
+        auto argUses = arg.getUses();
+        for (auto &argUse : argUses) {
+          auto *argUser = argUse.getOwner();
+
+          // If the user is a load, replace the loads uses with the scalar.
+          if (auto loadOp = dyn_cast<memref::LoadOp>(argUser)) {
+            auto loadUses = loadOp->getUses();
+            for (auto &loadUse : loadUses) {
+              auto *loadUser = loadUse.getOwner();
+              loadUser->replaceUsesOfWith(loadOp, arg);
+            }
+
+            // Then delete the load.
+            loadOp->erase();
+          }
+        }
+      }
+    }
+  }
+}
+
+std::string runCmd(std::string command) {
+  // Capture stderr too.
+  command += " 2>&1";
+
+  FILE *pipe = popen(command.c_str(), "r");
+  if (!pipe) {
+    assert(false && "Couldn't run command");
+  }
+
+  std::array<char, 128> buffer;
+  std::string outs;
+  while (fgets(buffer.data(), 128, pipe) != NULL) {
+    outs += buffer.data();
+  }
+
+  return outs;
+}
+
 bool checkValidate(func::FuncOp lhsFunction, func::FuncOp rhsFunction,
                    bool printArgsAndResults, bool printResults) {
   auto *ctx = lhsFunction->getContext();
+
+  // Convert rank 0 memrefs to scalars, since they can pose a mismatch in the
+  // function signatures.
+  convertRank0MemrefsToScalars(lhsFunction);
+  convertRank0MemrefsToScalars(rhsFunction);
 
   // Assemble module.
   auto module = buildModule(lhsFunction, rhsFunction);
@@ -172,6 +289,7 @@ bool checkValidate(func::FuncOp lhsFunction, func::FuncOp rhsFunction,
   auto pm = PassManager(ctx);
   pm.addPass(mlir::createInlinerPass());
   pm.addNestedPass<mlir::func::FuncOp>(mlir::createLowerAffinePass());
+  pm.addPass(createMemrefCopyToLoopsPass());
   if (failed(pm.run(module.get()))) {
     llvm::errs() << "Could not inline or lower to affine\n";
     assert(false);
@@ -187,11 +305,25 @@ bool checkValidate(func::FuncOp lhsFunction, func::FuncOp rhsFunction,
   });
 
   // Translate the IR to C.
-  if (failed(emitc::translateToCpp(module.get(), llvm::outs()))) {
+  std::string cCode;
+  llvm::raw_string_ostream os(cCode);
+
+  if (failed(emitc::translateToCpp(module.get(), os))) {
+    failed(emitc::translateToCpp(module.get(), llvm::outs()));
     llvm::errs() << "Could not translate to Cpp with emitc\n";
     assert(false);
   }
-  module->dump();
 
-  return true;
+  finalizeCCode(cCode);
+
+  // Write C code to file.
+  std::ofstream cFile("/tmp/cbmc.c");
+  cFile << cCode;
+  cFile.close();
+
+  // Run cbmc.
+  std::string cbmcOut = runCmd("cbmc /tmp/cbmc.c -cvc5 -json-ui -verbosity 5");
+
+  // Check if "VERIFICATION SUCCESSFUL" in cbmcOut.
+  return cbmcOut.find("VERIFICATION SUCCESSFUL") != std::string::npos;
 }
