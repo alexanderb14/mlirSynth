@@ -86,6 +86,8 @@ add_library(validation
   validation/TestingValidator.cc)
 target_include_directories(validation
   PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(validation
+  PRIVATE MLIRTargetCpp)
 
 # Exe: Transform Tool
 add_llvm_executable(opt
