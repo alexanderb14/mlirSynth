@@ -70,6 +70,7 @@ add_library(transform
   transforms/FoldToTensorToMemrefPairPass.cc
   transforms/LoopDistributionPass.cc
   transforms/LoopOutlinePass.cc
+  transforms/MemrefCopyToLoopsPass.cc
   transforms/PrepareTargetPass.cc
   transforms/TargetOutlinePass.cc
   transforms/Utils.cc)
