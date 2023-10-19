@@ -1,5 +1,7 @@
 #include "CheckingValidator.h"
 
+#include "transforms/MemrefCopyToLoopsPass.h"
+
 #include "mlir/Conversion/AffineToStandard/AffineToStandard.h"
 #include "mlir/Dialect/Arith/IR/Arith.h"
 #include "mlir/Dialect/MemRef/IR/MemRef.h"
@@ -172,6 +174,7 @@ bool checkValidate(func::FuncOp lhsFunction, func::FuncOp rhsFunction,
   auto pm = PassManager(ctx);
   pm.addPass(mlir::createInlinerPass());
   pm.addNestedPass<mlir::func::FuncOp>(mlir::createLowerAffinePass());
+  pm.addPass(createMemrefCopyToLoopsPass());
   if (failed(pm.run(module.get()))) {
     llvm::errs() << "Could not inline or lower to affine\n";
     assert(false);
@@ -191,7 +194,6 @@ bool checkValidate(func::FuncOp lhsFunction, func::FuncOp rhsFunction,
     llvm::errs() << "Could not translate to Cpp with emitc\n";
     assert(false);
   }
-  module->dump();
 
   return true;
 }
