@@ -14,6 +14,9 @@
 #include "mlir/Target/Cpp/CppEmitter.h"
 #include "llvm/ADT/SmallVector.h"
 
+#include <fstream>
+#include <regex>
+
 using namespace mlir;
 
 OwningOpRef<ModuleOp> buildModule(func::FuncOp lhsFunction,
@@ -195,6 +198,22 @@ OwningOpRef<ModuleOp> buildModule(func::FuncOp lhsFunction,
   return module;
 }
 
+void finalizeCCode(std::string& cCode) {
+  std::regex cbmcAssertRegex(".*cbmc_assert.*");
+  cCode = std::regex_replace(cCode, cbmcAssertRegex,
+                             "        __CPROVER_assert(0, \"unreachable?\");");
+
+  std::regex doubleRegex("double");
+  cCode = std::regex_replace(cCode, doubleRegex, "float");
+
+  cCode = "extern int __VERIFIER_nondet_int();\n"
+          "extern float __VERIFIER_nondet_float();\n"
+          "#include <stdio.h>\n"
+          "#include <stdbool.h>\n"
+          "\n"
+          + cCode;
+}
+
 bool checkValidate(func::FuncOp lhsFunction, func::FuncOp rhsFunction,
                    bool printArgsAndResults, bool printResults) {
   auto *ctx = lhsFunction->getContext();
@@ -223,9 +242,26 @@ bool checkValidate(func::FuncOp lhsFunction, func::FuncOp rhsFunction,
   });
 
   // Translate the IR to C.
-  if (failed(emitc::translateToCpp(module.get(), llvm::outs()))) {
+  std::string cCode;
+  llvm::raw_string_ostream os(cCode);
+
+  if (failed(emitc::translateToCpp(module.get(), os))) {
+    failed(emitc::translateToCpp(module.get(), llvm::outs()));
     llvm::errs() << "Could not translate to Cpp with emitc\n";
     assert(false);
+  }
+
+  finalizeCCode(cCode);
+
+  // Write C code to file.
+  std::ofstream cFile("/tmp/cbmc.c");
+  cFile << cCode;
+  cFile.close();
+
+  // Launch cbmc, while on a timeout of 30 seconds.
+  std::string command = "cbmc /tmp/cbmc.c -cvc5";
+  if (std::system(command.c_str()) == 0) {
+    return true;
   }
 
   return true;
