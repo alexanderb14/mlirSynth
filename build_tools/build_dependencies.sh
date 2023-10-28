@@ -18,8 +18,7 @@ git clone https://github.com/llvm/llvm-project.git
 pushd llvm-project
 git checkout $(cat ../build_tools/llvm_version.txt)
 git am < ../../build_tools/llvm_patches/add-trait-verification-function.patch
-git am < ../../build_tools/llvm_patches/upgrade-emit-c.patch
-git am < ../../build_tools/llvm_patches/support-more-emitc-ops.patch
+git am < ../../build_tools/llvm_patches/enable-emit-c-for-more-ops.patch
 popd
 
 # Build
