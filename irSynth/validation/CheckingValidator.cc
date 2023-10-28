@@ -1,5 +1,6 @@
 #include "CheckingValidator.h"
 
+#include "mlir/IR/Location.h"
 #include "transforms/MemrefCopyToLoopsPass.h"
 
 #include "mlir/Conversion/AffineToStandard/AffineToStandard.h"
@@ -11,6 +12,7 @@
 #include "mlir/Transforms/Passes.h"
 
 #include "mlir/Target/Cpp/CppEmitter.h"
+#include "llvm/ADT/SmallVector.h"
 
 using namespace mlir;
 
@@ -73,7 +75,7 @@ OwningOpRef<ModuleOp> buildModule(func::FuncOp lhsFunction,
           SmallVector<mlir::Value> operands = {};
           auto declOp = builder.create<func::CallOp>(UnknownLoc::get(ctx),
                                                      builder.getF64Type(),
-                                                     "cbmc_declare", operands);
+                                                     "__VERIFIER_nondet_float", operands);
 
           // Create store.
           builder.create<memref::StoreOp>(UnknownLoc::get(ctx),
@@ -136,7 +138,32 @@ OwningOpRef<ModuleOp> buildModule(func::FuncOp lhsFunction,
           UnknownLoc::get(ctx), rhsType, rhsMemref, indices);
 
       // Create check.
-      SmallVector<mlir::Value> checkOperands = {lhsLoad, rhsLoad};
+      // Check for equality of lhsLoad and rhsLoad.
+      auto cond1 = builder.create<arith::CmpFOp>(
+          UnknownLoc::get(ctx), arith::CmpFPredicate::ONE, lhsLoad, rhsLoad);
+
+      // Check for nan by calling function isnanf on lhsLoad.
+      SmallVector<mlir::Value> cond2Operands = {lhsLoad};
+      auto cond2 = builder.create<func::CallOp>(
+          UnknownLoc::get(ctx), builder.getI1Type(), "!isnanf", cond2Operands);
+
+      // Check for nan by calling function isnanf on rhsLoad.
+      SmallVector<mlir::Value> cond3Operands = {rhsLoad};
+      auto cond3 = builder.create<func::CallOp>(
+          UnknownLoc::get(ctx), builder.getI1Type(), "!isnanf", cond3Operands);
+
+      // Build predicate
+      auto pred1 = builder.create<arith::AndIOp>(
+          UnknownLoc::get(ctx), cond1.getResult(), cond2->getResult(0));
+      auto pred2 = builder.create<arith::AndIOp>(
+          UnknownLoc::get(ctx), pred1.getResult(), cond3->getResult(0));
+
+      // Create if Operation.
+      auto ifOp =
+          builder.create<scf::IfOp>(UnknownLoc::get(ctx), pred2, /*withElseRegion=*/false);
+      builder.setInsertionPointToStart(&ifOp.getThenRegion().front());
+
+      SmallVector<mlir::Value> checkOperands = {};
       builder.create<func::CallOp>(UnknownLoc::get(ctx), builder.getF64Type(),
                                    "cbmc_assert", checkOperands);
     }
@@ -146,12 +173,18 @@ OwningOpRef<ModuleOp> buildModule(func::FuncOp lhsFunction,
   builder.setInsertionPoint(&moduleBlock, moduleBlock.begin());
   func::FuncOp cbmcAssertFwdDecl = builder.create<func::FuncOp>(
       UnknownLoc::get(ctx), "cbmc_assert",
-      mlir::FunctionType::get(ctx, {builder.getF64Type(), builder.getF64Type()},
+      mlir::FunctionType::get(ctx, {},
                               {builder.getF64Type()}));
   cbmcAssertFwdDecl.setPrivate();
 
+  func::FuncOp isnanfFwdDecl = builder.create<func::FuncOp>(
+      UnknownLoc::get(ctx), "!isnanf",
+      mlir::FunctionType::get(ctx, {builder.getF64Type()},
+                              {builder.getI1Type()}));
+  isnanfFwdDecl.setPrivate();
+
   func::FuncOp cbmcDeclareFwdDecl = builder.create<func::FuncOp>(
-      UnknownLoc::get(ctx), "cbmc_declare",
+      UnknownLoc::get(ctx), "__VERIFIER_nondet_float",
       mlir::FunctionType::get(ctx, {}, {builder.getF64Type()}));
   cbmcDeclareFwdDecl.setPrivate();
 
