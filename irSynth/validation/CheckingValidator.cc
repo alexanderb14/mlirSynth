@@ -76,9 +76,9 @@ OwningOpRef<ModuleOp> buildModule(func::FuncOp lhsFunction,
         if (indices.size() == argShape.size()) {
           // Create decl.
           SmallVector<mlir::Value> operands = {};
-          auto declOp = builder.create<func::CallOp>(UnknownLoc::get(ctx),
-                                                     builder.getF64Type(),
-                                                     "__VERIFIER_nondet_float", operands);
+          auto declOp = builder.create<func::CallOp>(
+              UnknownLoc::get(ctx), builder.getF64Type(),
+              "__VERIFIER_nondet_float", operands);
 
           // Create store.
           builder.create<memref::StoreOp>(UnknownLoc::get(ctx),
@@ -162,8 +162,8 @@ OwningOpRef<ModuleOp> buildModule(func::FuncOp lhsFunction,
           UnknownLoc::get(ctx), pred1.getResult(), cond3->getResult(0));
 
       // Create if Operation.
-      auto ifOp =
-          builder.create<scf::IfOp>(UnknownLoc::get(ctx), pred2, /*withElseRegion=*/false);
+      auto ifOp = builder.create<scf::IfOp>(UnknownLoc::get(ctx), pred2,
+                                            /*withElseRegion=*/false);
       builder.setInsertionPointToStart(&ifOp.getThenRegion().front());
 
       SmallVector<mlir::Value> checkOperands = {};
@@ -176,8 +176,7 @@ OwningOpRef<ModuleOp> buildModule(func::FuncOp lhsFunction,
   builder.setInsertionPoint(&moduleBlock, moduleBlock.begin());
   func::FuncOp cbmcAssertFwdDecl = builder.create<func::FuncOp>(
       UnknownLoc::get(ctx), "cbmc_assert",
-      mlir::FunctionType::get(ctx, {},
-                              {builder.getF64Type()}));
+      mlir::FunctionType::get(ctx, {}, {builder.getF64Type()}));
   cbmcAssertFwdDecl.setPrivate();
 
   func::FuncOp isnanfFwdDecl = builder.create<func::FuncOp>(
@@ -198,7 +197,7 @@ OwningOpRef<ModuleOp> buildModule(func::FuncOp lhsFunction,
   return module;
 }
 
-void finalizeCCode(std::string& cCode) {
+void finalizeCCode(std::string &cCode) {
   std::regex cbmcAssertRegex(".*cbmc_assert.*");
   cCode = std::regex_replace(cCode, cbmcAssertRegex,
                              "        __CPROVER_assert(0, \"unreachable?\");");
@@ -210,8 +209,8 @@ void finalizeCCode(std::string& cCode) {
           "extern float __VERIFIER_nondet_float();\n"
           "#include <stdio.h>\n"
           "#include <stdbool.h>\n"
-          "\n"
-          + cCode;
+          "\n" +
+          cCode;
 }
 
 void convertRank0MemrefsToScalars(func::FuncOp &func) {
@@ -253,6 +252,24 @@ void convertRank0MemrefsToScalars(func::FuncOp &func) {
       }
     }
   }
+}
+
+std::string runCmd(std::string command) {
+  // Capture stderr too.
+  command += " 2>&1";
+
+  FILE *pipe = popen(command.c_str(), "r");
+  if (!pipe) {
+    assert(false && "Couldn't run command");
+  }
+
+  std::array<char, 128> buffer;
+  std::string outs;
+  while (fgets(buffer.data(), 128, pipe) != NULL) {
+    outs += buffer.data();
+  }
+
+  return outs;
 }
 
 bool checkValidate(func::FuncOp lhsFunction, func::FuncOp rhsFunction,
@@ -304,11 +321,9 @@ bool checkValidate(func::FuncOp lhsFunction, func::FuncOp rhsFunction,
   cFile << cCode;
   cFile.close();
 
-  // Launch cbmc, while on a timeout of 30 seconds.
-  std::string command = "cbmc /tmp/cbmc.c -cvc5";
-  if (std::system(command.c_str()) == 0) {
-    return true;
-  }
+  // Run cbmc.
+  std::string cbmcOut = runCmd("cbmc /tmp/cbmc.c -cvc5 -json-ui -verbosity 5");
 
-  return true;
+  // Check if "VERIFICATION SUCCESSFUL" in cbmcOut.
+  return cbmcOut.find("VERIFICATION SUCCESSFUL") != std::string::npos;
 }
