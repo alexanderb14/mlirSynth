@@ -214,9 +214,55 @@ void finalizeCCode(std::string& cCode) {
           + cCode;
 }
 
+void convertRank0MemrefsToScalars(func::FuncOp &func) {
+  // Traverse functions arguments. If there's a rank 0 memref, replace it with a
+  // scalar. Then look for all uses and replace them.
+  auto funcArgs = func.getArguments();
+  for (auto [argIdx, arg] : llvm::enumerate(funcArgs)) {
+    auto argType = arg.getType();
+    if (argType.isa<MemRefType>()) {
+      auto memrefType = argType.cast<MemRefType>();
+      if (memrefType.getShape().empty()) {
+        // Replace memref type in arg with scalar.
+        auto scalarType = memrefType.getElementType();
+        arg.setType(scalarType);
+
+        auto argTypes = func.getArgumentTypes().vec();
+        argTypes[argIdx] = scalarType;
+
+        func.setFunctionType(mlir::FunctionType::get(
+            func->getContext(), argTypes, func.getResultTypes()));
+
+        // Replace all uses of memref with scalar.
+        auto argUses = arg.getUses();
+        for (auto &argUse : argUses) {
+          auto *argUser = argUse.getOwner();
+
+          // If the user is a load, replace the loads uses with the scalar.
+          if (auto loadOp = dyn_cast<memref::LoadOp>(argUser)) {
+            auto loadUses = loadOp->getUses();
+            for (auto &loadUse : loadUses) {
+              auto *loadUser = loadUse.getOwner();
+              loadUser->replaceUsesOfWith(loadOp, arg);
+            }
+
+            // Then delete the load.
+            loadOp->erase();
+          }
+        }
+      }
+    }
+  }
+}
+
 bool checkValidate(func::FuncOp lhsFunction, func::FuncOp rhsFunction,
                    bool printArgsAndResults, bool printResults) {
   auto *ctx = lhsFunction->getContext();
+
+  // Convert rank 0 memrefs to scalars, since they can pose a mismatch in the
+  // function signatures.
+  convertRank0MemrefsToScalars(lhsFunction);
+  convertRank0MemrefsToScalars(rhsFunction);
 
   // Assemble module.
   auto module = buildModule(lhsFunction, rhsFunction);

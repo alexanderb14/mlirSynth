@@ -30,7 +30,7 @@ int nextPrime(int n) {
   return n;
 }
 
-SizeMap getMinifedSizeMap(func::FuncOp &func) {
+SizeMap getMinifedSizeMap(func::FuncOp &func, std::string &sizeMode) {
   bool debug = false;
 
   // Collect all memref types.
@@ -83,7 +83,14 @@ SizeMap getMinifedSizeMap(func::FuncOp &func) {
   int64_t minifiedValue = 3;
   for (auto dim : sortedDimensions) {
     minifiedDimensions[dim] = minifiedValue;
-    minifiedValue = nextPrime(minifiedValue + 1);
+    if (sizeMode == "Primes") {
+      minifiedValue = nextPrime(minifiedValue + 1);
+    } else if (sizeMode == "Uniform") {
+      minifiedValue = 3;
+    } else {
+      llvm::outs() << "Unknown size mode: " << sizeMode << "\n";
+      assert(false && "Unknown size mode");
+    }
   }
 
   if (debug) {
@@ -294,7 +301,7 @@ void ChangeSizesPass::runOnOperation() {
       if (isa<func::FuncOp>(op)) {
         auto func = cast<func::FuncOp>(op);
 
-        auto minifiedSizes = getMinifedSizeMap(func);
+        auto minifiedSizes = getMinifedSizeMap(func, sizeMode);
         changeTypeSizes<MemRefType>(func, minifiedSizes);
         changeLoopBounds(func, minifiedSizes);
 

@@ -22,6 +22,8 @@ struct ChangeSizesPass
 
   Option<std::string> mode{*this, "mode", llvm::cl::desc("Minify or Restore"),
                                     llvm::cl::init("minify")};
+  Option<std::string> sizeMode{*this, "sizes", llvm::cl::desc("Primes or Uniform"),
+                                    llvm::cl::init("Primes")};
 };
 
 namespace mlir {
