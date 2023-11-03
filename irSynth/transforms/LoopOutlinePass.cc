@@ -100,14 +100,14 @@ void outlineLoops(func::FuncOp &origFunc) {
         bodyBlock.push_back(newConstantOp);
         argMapper.map(value, newConstantOp.getResult());
 
-      // - Memref alloca.
+        // - Memref alloca.
       } else if (definingOp && dyn_cast<memref::AllocaOp>(definingOp)) {
         auto allocaOp = dyn_cast<memref::AllocaOp>(definingOp);
         auto newAllocaOp = allocaOp.clone();
         bodyBlock.push_back(newAllocaOp);
         argMapper.map(value, newAllocaOp.getResult());
 
-      // Else, add as argument.
+        // Else, add as argument.
       } else {
         auto newArg = bodyBlock.addArgument(value.getType(), unknownLoc);
         argMapper.map(value, newArg);
@@ -147,8 +147,7 @@ void outlineLoops(func::FuncOp &origFunc) {
           auto attribute = origFuncArgAttrs[value.getArgNumber()];
           argAttrs.push_back(attribute);
         } else {
-          newArg.dump();
-          assert(false && "Unexpected value type");
+          argAttrs.push_back(builder.getDictionaryAttr({}));
         }
       }
       func.setAllArgAttrs(argAttrs);
@@ -190,21 +189,6 @@ void outlineLoops(func::FuncOp &origFunc) {
     // Remove the loop.
     topLoop->erase();
   }
-
-  // Change the original function result to the result of the last outlined
-  // function.
-  // - Original function return type.
-  auto lastFuncOp = dyn_cast<func::CallOp>(lastCall);
-  auto lastFuncResultType = lastFuncOp.getResultTypes();
-  origFunc.setFunctionType(
-      builder.getFunctionType(origFunc.getArgumentTypes(), lastFuncResultType));
-
-  // - Return value.
-  auto *lastOp = origFunc.getBody().back().getTerminator();
-  assert(isa<func::ReturnOp>(lastOp) && "Expected return op at the end of the "
-                                        "function body.");
-  auto returnOp = dyn_cast<func::ReturnOp>(lastOp);
-  returnOp->setOperands(lastFuncOp->getResults());
 }
 
 void LoopOutlinePass::runOnOperation() {

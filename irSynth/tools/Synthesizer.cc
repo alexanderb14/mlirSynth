@@ -1,15 +1,17 @@
 #include "ContextManager.h"
 
 #include "Common.h"
-#include "synthesis/Candidate.h"
-#include "synthesis/CartesianProduct.h"
-#include "synthesis/Synthesizer.h"
-#include "synthesis/Guide.h"
 #include "execution/Executor.h"
+#include "mlir/IR/BuiltinAttributes.h"
 #include "mlir/IR/BuiltinTypes.h"
 #include "mlir/IR/Location.h"
 #include "mlir/IR/Verifier.h"
 #include "mlir/Support/LogicalResult.h"
+#include "synthesis/Candidate.h"
+#include "synthesis/CartesianProduct.h"
+#include "synthesis/Guide.h"
+#include "synthesis/Synthesizer.h"
+#include "transforms/AnnotateLastStoredMemrefArgPass.h"
 #include "transforms/ChangeSizesPass.h"
 #include "transforms/CleanupPass.h"
 #include "transforms/CopyModifiedMemrefsPass.h"
@@ -107,6 +109,7 @@ LogicalResult preprocess(Operation *op, MLIRContext *ctx,
                          SynthesisOptions &options) {
   mlir::PassManager pm(ctx);
 
+  pm.addPass(createAnnotateLastStoredMemrefArgPass());
   if (options.distribute)
     pm.addPass(createLoopDistributionPass());
   pm.addPass(createChangeSizesPass());
@@ -123,7 +126,7 @@ LogicalResult preprocess(Operation *op, MLIRContext *ctx,
   return success();
 }
 
-LogicalResult postprocess(Operation* op, MLIRContext *ctx,
+LogicalResult postprocess(Operation *op, MLIRContext *ctx,
                           SynthesisOptions &options) {
   mlir::PassManager pm(ctx);
   pm.addNestedPass<func::FuncOp>(mhlo::createChloLegalizeToHloPass());
@@ -131,7 +134,7 @@ LogicalResult postprocess(Operation* op, MLIRContext *ctx,
   pm.addPass(createInlinerPass());
   pm.addPass(createFoldToTensorToMemrefPairPass());
   pm.addPass(createCleanupPass());
-  pm.addPass(createTargetOutlinePass());
+  // pm.addPass(createTargetOutlinePass());
 
   if (failed(pm.run(op))) {
     llvm::errs() << "Failed to run postprocessing passes\n";
@@ -143,245 +146,11 @@ LogicalResult postprocess(Operation* op, MLIRContext *ctx,
   return success();
 }
 
-int main(int argc, char **argv) {
-  // Parse command line arguments.
-  cl::opt<std::string> inputFilename(cl::Positional, cl::desc("<input file>"),
-                                     cl::init("-"));
-
-  cl::opt<std::string> targetDialect(
-      "target-dialect", cl::desc("Target dialect"), cl::init("hlo"));
-
-  cl::opt<bool> printStatusNames(
-      "print-status-names", cl::desc("Print status names"), cl::init(false));
-  cl::opt<bool> printStatusTiles(
-      "print-status-tiles", cl::desc("Print status tiles"), cl::init(false));
-
-  cl::opt<bool> printValidCandidates("print-valid-candidates",
-                                     cl::desc("Print valid candidates"),
-                                     cl::init(false));
-  cl::opt<bool> printInvalidCandidates("print-invalid-candidates",
-                                       cl::desc("Print invalid candidates"),
-                                       cl::init(false));
-
-  cl::opt<bool> printErrors("print-errors", cl::desc("Print errors"),
-                            cl::init(false));
-  cl::opt<bool> printStats("print-stats", cl::desc("Print stats"),
-                           cl::init(false));
-  cl::opt<bool> printArgsAndResults("print-args-and-results",
-                                    cl::desc("Print args and results"),
-                                    cl::init(false));
-
-  cl::opt<bool> printAvailableOps("print-available-ops",
-                                  cl::desc("Print available ops"),
-                                  cl::init(false));
-  cl::opt<bool> printSynthesisSteps(
-      "print-synthesis-steps", cl::desc("Print synthesis steps"),
-      cl::init(false));
-
-  cl::opt<std::string> ops(
-      "ops", cl::desc("Comma separated list of allowed ops"), cl::init(""));
-  cl::opt<int> maxNumOps("max-num-ops", cl::desc("Max number of operations"),
-                         cl::init(3));
-  cl::opt<int> timeoutPerFunction(
-      "timeout-per-function",
-      cl::desc("Synthesis timeout per function in seconds"), cl::init(0));
-
-  cl::opt<int> numThreads("num-threads", cl::desc("Number of threads"),
-                          cl::init(1));
-
-  cl::opt<bool> ignoreEquivalentCandidates(
-      "ignore-equivalent-candidates",
-      cl::desc("Ignore computationally equivalent candidates"),
-      cl::init(false));
-  cl::opt<bool> ignoreTypes(
-      "ignore-types",
-      cl::desc("Ignore operand types when generating candidates"),
-      cl::init(false));
-  cl::opt<bool> skipTypeInference(
-      "skip-type-inference",
-      cl::desc("Skip type inference when generating candidates"),
-      cl::init(false));
-  cl::opt<bool> withCopyArgs("with-copy-args",
-                             cl::desc("Add copy args to candidates"),
-                             cl::init(false));
-
-  cl::opt<bool> guide("guide", cl::desc("Use guide to select allowed ops"),
-                      cl::init(false));
-  cl::opt<bool> distribute(
-      "distribute",
-      cl::desc("Distribute loops to split synthesis into smaller subproblems"),
-      cl::init(false));
-
-  cl::ParseCommandLineOptions(argc, argv, "Synthsizer\n");
-
-  // Parse options.
-  SynthesisOptions options;
-  options.printStatusNames = printStatusNames;
-  options.printStatusTiles = printStatusTiles;
-  options.printValidCandidates = printValidCandidates;
-  options.printInvalidCandidates = printInvalidCandidates;
-  options.printStats = printStats;
-  options.printArgsAndResults = printArgsAndResults;
-  options.maxNumOps = maxNumOps;
-  options.timeoutPerFunction = timeoutPerFunction;
-  options.ignoreEquivalentCandidates = ignoreEquivalentCandidates;
-  options.ignoreTypes = ignoreTypes;
-  options.skipTypeInference = skipTypeInference;
-  options.withCopyArgs = withCopyArgs;
-
-  options.guide = guide;
-  options.distribute = distribute;
-
-  // Initialize LLVM.
-  llvm::InitLLVM y(argc, argv);
-  llvm::InitializeNativeTarget();
-  llvm::InitializeNativeTargetAsmPrinter();
-  llvm::InitializeNativeTargetAsmParser();
-
-  // Initialize MLIR.
-  ContextManagerPtr contextManager =
-      std::make_shared<ContextManager>(printErrors);
-  auto *ctx = contextManager->createContext();
-
-  Dialect *stablehloDialect = ctx->getOrLoadDialect<stablehlo::StablehloDialect>();
-  Dialect *hloDialect = ctx->getOrLoadDialect<mhlo::MhloDialect>();
-  Dialect *chloDialect = ctx->getOrLoadDialect<chlo::ChloDialect>();
-  Dialect *linalgDialect = ctx->getOrLoadDialect<linalg::LinalgDialect>();
-
-  // Parse the input file.
-  std::string errorMessage;
-  auto file = openInputFile(inputFilename, &errorMessage);
-  if (!file) {
-    llvm::errs() << errorMessage << "\n";
-    return 1;
-  }
-
-  SourceMgr sourceMgr;
-  sourceMgr.AddNewSourceBuffer(std::move(file), SMLoc());
-
-  FallbackAsmResourceMap fallbackResourceMap;
-  ParserConfig config(ctx, /*verifyAfterParse=*/true, &fallbackResourceMap);
-  OwningOpRef<Operation *> inputOp =
-      parseSourceFileForTool(sourceMgr, config, /*insertImplicitModule*/ false);
-  assert(inputOp && "Failed to parse input file");
-
-  // Preprocess.
-  if (preprocess(inputOp.get(), ctx, options).failed()) {
-    return 1;
-  }
-
-  // Parse the funcion ops.
-  std::vector<func::FuncOp> functions =
-      getFunctions(inputOp.get(), "irsynth.original");
-  LLVM_DEBUG(llvm::dbgs() << "Found " << functions.size()
-                          << " functions to synthesize\n");
-
-  IExecutorPtr executor;
-  if (numThreads == 1) {
-    ctx->disableMultithreading();
-    executor = std::make_shared<Executor>(ctx);
-  } else {
-    executor = std::make_shared<ThreadedExecutor>(contextManager, numThreads);
-  }
-
-  // Target dialect specific.
-  std::vector<Dialect *> dialects;
-  std::vector<std::string> supportedOps;
-  InitialCandidateGeneratorPtr initialCandidateGen;
-
-  if (targetDialect == "hlo") {
-    dialects = {stablehloDialect, hloDialect, chloDialect};
-    supportedOps = {"chlo.broadcast_divide",
-                    "chlo.broadcast_add",
-                    "chlo.broadcast_subtract",
-                    "chlo.broadcast_multiply",
-                    "stablehlo.dot",
-                    "stablehlo.reduce",
-                    "stablehlo.dot_general",
-                    "stablehlo.transpose",
-                    "stablehlo.select"};
-    initialCandidateGen = std::make_shared<HLOInitialCandidateGenerator>(*ctx);
-  } else if (targetDialect == "linalg") {
-    dialects = {linalgDialect};
-    supportedOps = {"linalg.matmul", "linalg.matvec"};
-    initialCandidateGen =
-        std::make_shared<LinalgInitialCandidateGenerator>(*ctx);
-
-    options.ignoreTypes = true;
-    options.skipTypeInference = true;
-    options.withCopyArgs = true;
-  } else {
-    llvm::errs() << "Target dialect not supported\n";
-    return 1;
-  }
-
-  // Synthesize functions.
-  llvm::DenseMap<func::FuncOp, OwningOpRef<ModuleOp>> originalToSynthesizedFns;
-  llvm::DenseMap<func::FuncOp, std::vector<unsigned>>
-      originalToSynthesizedArgIds;
-
-  bool failedAtLeastOnce = false;
-
-  SynthesisStats stats;
-  for (auto inputFuncOrig : functions) {
-    auto inputFunc = inputFuncOrig.clone();
-    // Get ops.
-    std::vector<std::string> opsVec;
-    if (guide) {
-      opsVec = predictOps(supportedOps, inputFunc);
-    } else if (!ops.empty()) {
-      opsVec = splitString(ops);
-    } else {
-      opsVec = supportedOps;
-    }
-    auto availableOps = getDialectOps(ctx, dialects, opsVec, false);
-
-    // Print available ops
-    if (printAvailableOps) {
-      llvm::outs() << "Available ops:\n";
-      for (auto op : availableOps) {
-        llvm::outs() << op << "\n";
-      }
-    }
-
-    // Synthesize.
-    if (printSynthesisSteps) {
-      llvm::outs() << "Synthesizing function " << inputFunc.getName() << "\n"
-        << "--------------------------\n";
-      inputFunc.print(llvm::outs());
-    }
-
-    CandidateStorePtr candidateStore = std::make_shared<CandidateStore>();
-
-    auto result = synthesize(*ctx, executor, inputFunc, initialCandidateGen,
-                             candidateStore, availableOps, options, stats);
-    stats.numOpsPerFunction.push_back(result->candidate->getNumOps());
-
-    if (result) {
-      if (printSynthesisSteps) {
-        llvm::errs() << "\033[1;42m"
-                     << "Succeeded synthesizing function " << inputFunc.getName()
-                     << "\033[0m"
-                     << "\n";
-        result->module->print(llvm::outs());
-      }
-    } else {
-      llvm::errs() << "\033[1;41m"
-                   << "Failed synthesizing function " << inputFunc.getName()
-                   << "\033[0m"
-                   << "\n";
-      failedAtLeastOnce = true;
-    }
-
-    if (result) {
-      originalToSynthesizedFns[inputFuncOrig] = std::move(result->module);
-      originalToSynthesizedArgIds[inputFuncOrig] = result->candidate->getArgIds();
-    }
-  }
-
-  if (options.printStats)
-    stats.dump();
-
+void mergeIntoModule(mlir::MLIRContext *&ctx, OwningOpRef<Operation *> &inputOp,
+                     llvm::DenseMap<func::FuncOp, OwningOpRef<ModuleOp>>
+                         &originalToSynthesizedFns,
+                     llvm::DenseMap<func::FuncOp, std::vector<unsigned int>>
+                         &originalToSynthesizedArgIds) {
   OpBuilder builder(ctx);
 
   for (auto &kv : originalToSynthesizedFns) {
@@ -449,7 +218,8 @@ int main(int argc, char **argv) {
         }
       }
       // Remove the remaining call site arguments.
-      callSite->eraseOperands(operandIdx, callSite.getNumOperands() - operandIdx);
+      callSite->eraseOperands(operandIdx,
+                              callSite.getNumOperands() - operandIdx);
 
       // Results: Tensor to memref.
       assert(callSite.getNumResults() == synthesizedFunc.getNumResults() &&
@@ -486,16 +256,282 @@ int main(int argc, char **argv) {
     }
   }
 
-  // Postprocess.
-  if (postprocess(inputOp.get(), ctx, options).failed()) {
+  // Get last ToMemrefOp.
+  bufferization::ToMemrefOp lastToMemrefOp = nullptr;
+  inputOp.get()->walk([&](bufferization::ToMemrefOp toMemrefOp) {
+    lastToMemrefOp = toMemrefOp;
+  });
+
+  // Copy lastToMemrefOp to the arg memref, the one that has been last stored
+  // to, which is annotated with the irSynth.lastStoredMemref attribute.
+  // - Get the attribute with the irSynth.lastStoredMemref attribute.
+  mlir::Value lastStoredMemrefArg;
+  inputOp.get()->walk([&](func::FuncOp func) {
+    for (unsigned i = 0; i < func.getNumArguments(); ++i) {
+      auto argAttrs = func.getArgAttrDict(i);
+      if (argAttrs && argAttrs.contains("irSynth.lastStoredMemref")) {
+        lastStoredMemrefArg = func.getArgument(i);
+      }
+    }
+  });
+
+  // - Create the memref.copy operation.
+  builder.setInsertionPointAfter(lastToMemrefOp);
+  mlir::Value lastToMemref = lastToMemrefOp.getMemref();
+  builder.create<memref::CopyOp>(lastToMemrefOp->getLoc(), lastToMemref,
+                                 lastStoredMemrefArg);
+}
+int main(int argc, char **argv) {
+  // Parse command line arguments.
+  cl::opt<std::string> inputFilename(cl::Positional, cl::desc("<input file>"),
+                                     cl::init("-"));
+
+  cl::opt<std::string> targetDialect(
+      "target-dialect", cl::desc("Target dialect"), cl::init("hlo"));
+
+  cl::opt<bool> printStatusNames(
+      "print-status-names", cl::desc("Print status names"), cl::init(false));
+  cl::opt<bool> printStatusTiles(
+      "print-status-tiles", cl::desc("Print status tiles"), cl::init(false));
+
+  cl::opt<bool> printValidCandidates("print-valid-candidates",
+                                     cl::desc("Print valid candidates"),
+                                     cl::init(false));
+  cl::opt<bool> printInvalidCandidates("print-invalid-candidates",
+                                       cl::desc("Print invalid candidates"),
+                                       cl::init(false));
+
+  cl::opt<bool> printErrors("print-errors", cl::desc("Print errors"),
+                            cl::init(false));
+  cl::opt<bool> printStats("print-stats", cl::desc("Print stats"),
+                           cl::init(false));
+  cl::opt<bool> printArgsAndResults("print-args-and-results",
+                                    cl::desc("Print args and results"),
+                                    cl::init(false));
+
+  cl::opt<bool> printAvailableOps(
+      "print-available-ops", cl::desc("Print available ops"), cl::init(false));
+  cl::opt<bool> printSynthesisSteps("print-synthesis-steps",
+                                    cl::desc("Print synthesis steps"),
+                                    cl::init(false));
+
+  cl::opt<std::string> ops(
+      "ops", cl::desc("Comma separated list of allowed ops"), cl::init(""));
+  cl::opt<int> maxNumOps("max-num-ops", cl::desc("Max number of operations"),
+                         cl::init(3));
+  cl::opt<int> timeoutPerFunction(
+      "timeout-per-function",
+      cl::desc("Synthesis timeout per function in seconds"), cl::init(0));
+
+  cl::opt<int> numThreads("num-threads", cl::desc("Number of threads"),
+                          cl::init(1));
+
+  cl::opt<bool> ignoreEquivalentCandidates(
+      "ignore-equivalent-candidates",
+      cl::desc("Ignore computationally equivalent candidates"),
+      cl::init(false));
+  cl::opt<bool> ignoreTypes(
+      "ignore-types",
+      cl::desc("Ignore operand types when generating candidates"),
+      cl::init(false));
+  cl::opt<bool> skipTypeInference(
+      "skip-type-inference",
+      cl::desc("Skip type inference when generating candidates"),
+      cl::init(false));
+  cl::opt<bool> withCopyArgs("with-copy-args",
+                             cl::desc("Add copy args to candidates"),
+                             cl::init(false));
+
+  cl::opt<bool> guide("guide", cl::desc("Use guide to select allowed ops"),
+                      cl::init(false));
+  cl::opt<bool> distribute(
+      "distribute",
+      cl::desc("Distribute loops to split synthesis into smaller subproblems"),
+      cl::init(false));
+
+  cl::ParseCommandLineOptions(argc, argv, "Synthsizer\n");
+
+  // Parse options.
+  SynthesisOptions options;
+  options.printStatusNames = printStatusNames;
+  options.printStatusTiles = printStatusTiles;
+  options.printValidCandidates = printValidCandidates;
+  options.printInvalidCandidates = printInvalidCandidates;
+  options.printStats = printStats;
+  options.printArgsAndResults = printArgsAndResults;
+  options.maxNumOps = maxNumOps;
+  options.timeoutPerFunction = timeoutPerFunction;
+  options.ignoreEquivalentCandidates = ignoreEquivalentCandidates;
+  options.ignoreTypes = ignoreTypes;
+  options.skipTypeInference = skipTypeInference;
+  options.withCopyArgs = withCopyArgs;
+
+  options.guide = guide;
+  options.distribute = distribute;
+
+  // Initialize LLVM.
+  llvm::InitLLVM y(argc, argv);
+  llvm::InitializeNativeTarget();
+  llvm::InitializeNativeTargetAsmPrinter();
+  llvm::InitializeNativeTargetAsmParser();
+
+  // Initialize MLIR.
+  ContextManagerPtr contextManager =
+      std::make_shared<ContextManager>(printErrors);
+  auto *ctx = contextManager->createContext();
+
+  Dialect *stablehloDialect =
+      ctx->getOrLoadDialect<stablehlo::StablehloDialect>();
+  Dialect *hloDialect = ctx->getOrLoadDialect<mhlo::MhloDialect>();
+  Dialect *chloDialect = ctx->getOrLoadDialect<chlo::ChloDialect>();
+  Dialect *linalgDialect = ctx->getOrLoadDialect<linalg::LinalgDialect>();
+
+  // Parse the input file.
+  std::string errorMessage;
+  auto file = openInputFile(inputFilename, &errorMessage);
+  if (!file) {
+    llvm::errs() << errorMessage << "\n";
     return 1;
   }
 
+  SourceMgr sourceMgr;
+  sourceMgr.AddNewSourceBuffer(std::move(file), SMLoc());
+
+  FallbackAsmResourceMap fallbackResourceMap;
+  ParserConfig config(ctx, /*verifyAfterParse=*/true, &fallbackResourceMap);
+  OwningOpRef<Operation *> inputModule =
+      parseSourceFileForTool(sourceMgr, config, /*insertImplicitModule*/ false);
+  assert(inputModule && "Failed to parse input file");
+  OwningOpRef<Operation *> inputModuleCpy = inputModule.get()->clone();
+
+  // Preprocess.
+  if (preprocess(inputModule.get(), ctx, options).failed()) {
+    return 1;
+  }
+
+  // Parse the funcion ops.
+  std::vector<func::FuncOp> functions =
+      getFunctions(inputModule.get(), "irsynth.original");
+  LLVM_DEBUG(llvm::dbgs() << "Found " << functions.size()
+                          << " functions to synthesize\n");
+
+  IExecutorPtr executor;
+  if (numThreads == 1) {
+    ctx->disableMultithreading();
+    executor = std::make_shared<Executor>(ctx);
+  } else {
+    executor = std::make_shared<ThreadedExecutor>(contextManager, numThreads);
+  }
+
+  // Target dialect specific.
+  std::vector<Dialect *> dialects;
+  std::vector<std::string> supportedOps;
+  InitialCandidateGeneratorPtr initialCandidateGen;
+
+  if (targetDialect == "hlo") {
+    dialects = {stablehloDialect, hloDialect, chloDialect};
+    supportedOps = {"chlo.broadcast_divide",   "chlo.broadcast_add",
+                    "chlo.broadcast_subtract", "chlo.broadcast_multiply",
+                    "stablehlo.dot",           "stablehlo.reduce",
+                    "stablehlo.dot_general",   "stablehlo.transpose",
+                    "stablehlo.select"};
+    initialCandidateGen = std::make_shared<HLOInitialCandidateGenerator>(*ctx);
+  } else if (targetDialect == "linalg") {
+    dialects = {linalgDialect};
+    supportedOps = {"linalg.matmul", "linalg.matvec"};
+    initialCandidateGen =
+        std::make_shared<LinalgInitialCandidateGenerator>(*ctx);
+
+    options.ignoreTypes = true;
+    options.skipTypeInference = true;
+    options.withCopyArgs = true;
+  } else {
+    llvm::errs() << "Target dialect not supported\n";
+    return 1;
+  }
+
+  // Synthesize functions.
+  llvm::DenseMap<func::FuncOp, OwningOpRef<ModuleOp>> originalToSynthesizedFns;
+  llvm::DenseMap<func::FuncOp, std::vector<unsigned>>
+      originalToSynthesizedArgIds;
+
+  bool failedAtLeastOnce = false;
+
+  SynthesisStats stats;
+  for (auto inputFuncOrig : functions) {
+    auto inputFunc = inputFuncOrig.clone();
+    // Get ops.
+    std::vector<std::string> opsVec;
+    if (guide) {
+      opsVec = predictOps(supportedOps, inputFunc);
+    } else if (!ops.empty()) {
+      opsVec = splitString(ops);
+    } else {
+      opsVec = supportedOps;
+    }
+    auto availableOps = getDialectOps(ctx, dialects, opsVec, false);
+
+    // Print available ops
+    if (printAvailableOps) {
+      llvm::outs() << "Available ops:\n";
+      for (auto op : availableOps) {
+        llvm::outs() << op << "\n";
+      }
+    }
+
+    // Synthesize.
+    if (printSynthesisSteps) {
+      llvm::outs() << "Synthesizing function " << inputFunc.getName() << "\n"
+                   << "--------------------------\n";
+      inputFunc.print(llvm::outs());
+    }
+
+    CandidateStorePtr candidateStore = std::make_shared<CandidateStore>();
+
+    auto result = synthesize(*ctx, executor, inputFunc, initialCandidateGen,
+                             candidateStore, availableOps, options, stats);
+    stats.numOpsPerFunction.push_back(result->candidate->getNumOps());
+
+    if (result) {
+      if (printSynthesisSteps) {
+        llvm::errs() << "\033[1;42m"
+                     << "Succeeded synthesizing function "
+                     << inputFunc.getName() << "\033[0m"
+                     << "\n";
+        result->module->print(llvm::outs());
+      }
+    } else {
+      llvm::errs() << "\033[1;41m"
+                   << "Failed synthesizing function " << inputFunc.getName()
+                   << "\033[0m"
+                   << "\n";
+      failedAtLeastOnce = true;
+    }
+
+    if (result) {
+      originalToSynthesizedFns[inputFuncOrig] = std::move(result->module);
+      originalToSynthesizedArgIds[inputFuncOrig] =
+          result->candidate->getArgIds();
+    }
+  }
+
+  if (options.printStats)
+    stats.dump();
+
+  mergeIntoModule(ctx, inputModule, originalToSynthesizedFns,
+                  originalToSynthesizedArgIds);
+
   // Print.
-  inputOp.get()->print(llvm::outs());
+  inputModuleCpy.get()->print(llvm::outs());
+  inputModule.get()->print(llvm::outs());
+
+  // Postprocess.
+  if (postprocess(inputModule.get(), ctx, options).failed()) {
+    return 1;
+  }
 
   // Verify.
-  if (failed(verify(inputOp.get())))
+  if (failed(verify(inputModule.get())))
     return 1;
 
   if (failedAtLeastOnce)
