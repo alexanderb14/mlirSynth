@@ -64,6 +64,7 @@ target_include_directories(execution
 
 # Lib: Transform
 add_library(transform
+  transforms/AnnotateLastStoredMemrefArgPass.cc
   transforms/ChangeSizesPass.cc
   transforms/CleanupPass.cc
   transforms/CopyModifiedMemrefsPass.cc
