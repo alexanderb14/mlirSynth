@@ -490,25 +490,26 @@ int main(int argc, char **argv) {
 
     auto result = synthesize(*ctx, executor, inputFunc, initialCandidateGen,
                              candidateStore, availableOps, options, stats);
-    stats.numOpsPerFunction.push_back(result->candidate->getNumOps());
 
     if (result) {
       if (printSynthesisSteps) {
         llvm::errs() << "\033[1;42m"
-                     << "Succeeded synthesizing function "
-                     << inputFunc.getName() << "\033[0m"
+                     << "Succeeded synthesizing function"
+                     << "\033[0m"
                      << "\n";
         result->module->print(llvm::outs());
       }
     } else {
       llvm::errs() << "\033[1;41m"
-                   << "Failed synthesizing function " << inputFunc.getName()
+                   << "Failed synthesizing function"
                    << "\033[0m"
                    << "\n";
       failedAtLeastOnce = true;
     }
 
     if (result) {
+      stats.numOpsPerFunction.push_back(result->candidate->getNumOps());
+
       originalToSynthesizedFns[inputFuncOrig] = std::move(result->module);
       originalToSynthesizedArgIds[inputFuncOrig] =
           result->candidate->getArgIds();
