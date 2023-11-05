@@ -73,4 +73,8 @@ public:
                                 llvm::ArrayRef<int64_t> targetShape) override;
 };
 
+// Type aliases
+// -----------------------------------------------------------------------------
+grammar::OpAndResType getTypeAlias(grammar::OpAndResType type);
+
 #endif // IRSYNTH_GENERATORS_H

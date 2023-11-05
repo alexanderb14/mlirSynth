@@ -380,3 +380,11 @@ std::vector<CandidatePtr> LinalgInitialCandidateGenerator::gen(
 
   return candidates;
 }
+
+// Type aliases
+// -----------------------------------------------------------------------------
+grammar::OpAndResType getTypeAlias(grammar::OpAndResType type) {
+  if (type == grammar::OpAndResType::HLO_FpOrComplexTensor)
+    return grammar::OpAndResType::HLO_Tensor;
+  return type;
+}

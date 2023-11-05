@@ -1,4 +1,5 @@
 #include "CandidateStore.h"
+#include "synthesis/Generators.h"
 
 using namespace llvm;
 using namespace mlir;
@@ -51,13 +52,15 @@ std::vector<CandidatePtr> CandidateStore::getCandidates(unsigned weight) {
 std::vector<CandidatePtr>
 CandidateStore::getCandidates(unsigned weight,
                               grammar::OpAndResType opAndResType) {
+  auto opAndResTypeAliased = getTypeAlias(opAndResType);
+
   std::vector<CandidatePtr> candidates;
 
   for (unsigned i = 0; i < weight; i++) {
     if (weightToCandidates.find(i) != weightToCandidates.end()) {
-      if (weightToCandidates[i].find(opAndResType) !=
+      if (weightToCandidates[i].find(opAndResTypeAliased) !=
           weightToCandidates[i].end()) {
-        for (auto &candidate : weightToCandidates[i][opAndResType]) {
+        for (auto &candidate : weightToCandidates[i][opAndResTypeAliased]) {
           candidates.push_back(candidate);
         }
       }

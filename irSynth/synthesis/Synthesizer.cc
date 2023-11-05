@@ -113,10 +113,8 @@ void finalizeFunction(func::FuncOp func, std::string funcName) {
 
 OwningOpRef<func::FuncOp> unwrapModule(ModuleOp &module) {
   std::vector<func::FuncOp> functions;
-  module->walk([&](func::FuncOp func) {
-    functions.push_back(func);
-  });
-  assert (functions.size() == 1);
+  module->walk([&](func::FuncOp func) { functions.push_back(func); });
+  assert(functions.size() == 1);
   return functions[0];
 }
 
@@ -315,7 +313,19 @@ ProcessingStatus processCandidate(
   if (operands.empty()) {
     resultTypes.push_back(builder.getNoneType());
   } else {
-    resultTypes.push_back(operands[0].getType());
+    auto opInfo = grammar::createGrammarOp(opName.getStringRef().str());
+    for (unsigned resultIdx = 0; resultIdx < opInfo->getNumResults();
+         resultIdx++) {
+      auto opResultType = opInfo->getResultType(resultIdx);
+
+      if (opResultType == opInfo->getOperandType(0)) {
+        resultTypes.push_back(operands[0].getType());
+      } else {
+        if (opResultType == grammar::OpAndResType::HLO_PredTensor) {
+          resultTypes.push_back(builder.getI1TensorType({}));
+        }
+      }
+    }
   }
 
   // Create operation.
