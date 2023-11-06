@@ -359,6 +359,7 @@ int main(int argc, char **argv) {
   options.printInvalidCandidates = printInvalidCandidates;
   options.printStats = printStats;
   options.printArgsAndResults = printArgsAndResults;
+  options.printSynthesisSteps = printSynthesisSteps;
   options.maxNumOps = maxNumOps;
   options.timeoutPerFunction = timeoutPerFunction;
   options.ignoreEquivalentCandidates = ignoreEquivalentCandidates;
@@ -480,7 +481,7 @@ int main(int argc, char **argv) {
     }
 
     // Synthesize.
-    if (printSynthesisSteps) {
+    if (options.printSynthesisSteps) {
       llvm::outs() << "Synthesizing function " << inputFunc.getName() << "\n"
                    << "--------------------------\n";
       inputFunc.print(llvm::outs());
@@ -492,7 +493,7 @@ int main(int argc, char **argv) {
                              candidateStore, availableOps, options, stats);
 
     if (result) {
-      if (printSynthesisSteps) {
+      if (options.printSynthesisSteps) {
         llvm::errs() << "\033[1;42m"
                      << "Succeeded synthesizing function"
                      << "\033[0m"

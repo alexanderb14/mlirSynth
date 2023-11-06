@@ -18,6 +18,7 @@ struct SynthesisOptions {
   bool printInvalidCandidates;
   bool printStats;
   bool printArgsAndResults;
+  bool printSynthesisSteps;
   int maxNumOps;
   int timeoutPerFunction;
   bool ignoreEquivalentCandidates;

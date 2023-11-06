@@ -552,6 +552,11 @@ synthesize(MLIRContext &ctx, IExecutorPtr executor, func::FuncOp inputFunction,
       auto candidateTuples =
           cartesianProduct.generate(operands, attributes, regions);
 
+      if (options.printSynthesisSteps) {
+        llvm::outs() << "Level: " << numOps << ", op: " << opName.getStringRef()
+                     << ", candidates: " << candidateTuples.size() << "\n";
+      }
+
       // Check each candidate in the cartesian product.
       auto status = failableParallelForEach(
           &ctx, candidateTuples, [&](auto &candidateTuple) {
