@@ -4,6 +4,16 @@
 
 using namespace mlir;
 
+std::vector<func::FuncOp> getFunctions(mlir::Operation *op,
+                                       std::string attrName) {
+  std::vector<func::FuncOp> functions;
+  op->walk([&](func::FuncOp func) {
+    if (attrName.empty() || func->getAttr(attrName))
+      functions.push_back(func);
+  });
+  return functions;
+}
+
 llvm::SmallVector<mlir::Operation *> getTopLevelLoops(func::FuncOp &op) {
   llvm::SmallVector<mlir::Operation *> loops;
   assert(op.getBody().getBlocks().size() == 1);

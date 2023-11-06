@@ -1,13 +1,15 @@
 #include "CheckingValidator.h"
 
-#include "mlir/IR/Location.h"
 #include "transforms/MemrefCopyToLoopsPass.h"
+#include "transforms/Utils.h"
 
 #include "mlir/Conversion/AffineToStandard/AffineToStandard.h"
 #include "mlir/Dialect/Arith/IR/Arith.h"
+#include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/Dialect/MemRef/IR/MemRef.h"
 #include "mlir/Dialect/SCF/IR/SCF.h"
 #include "mlir/IR/BuiltinOps.h"
+#include "mlir/IR/Location.h"
 #include "mlir/Pass/PassManager.h"
 #include "mlir/Transforms/Passes.h"
 
@@ -272,8 +274,16 @@ std::string runCmd(std::string command) {
   return outs;
 }
 
-bool checkValidate(func::FuncOp lhsFunction, func::FuncOp rhsFunction,
+bool checkValidate(ModuleOp lhsModule, ModuleOp rhsModule,
                    bool printArgsAndResults, bool printResults) {
+  auto lhsFunctions = getFunctions(lhsModule);
+  assert(lhsFunctions.size() == 1 && "Expected exactly one function");
+  auto lhsFunction = lhsFunctions.front();
+
+  auto rhsFunctions = getFunctions(rhsModule);
+  assert(rhsFunctions.size() == 1 && "Expected exactly one function");
+  auto rhsFunction = rhsFunctions.front();
+
   auto *ctx = lhsFunction->getContext();
 
   // Convert rank 0 memrefs to scalars, since they can pose a mismatch in the

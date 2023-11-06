@@ -13,6 +13,7 @@
 #include "synthesis/Synthesizer.h"
 #include "transforms/AnnotateLastStoredMemrefArgPass.h"
 #include "transforms/ChangeSizesPass.h"
+#include "transforms/Utils.h"
 #include "transforms/CleanupPass.h"
 #include "transforms/CopyModifiedMemrefsPass.h"
 #include "transforms/FoldToTensorToMemrefPairPass.h"
@@ -61,16 +62,6 @@ std::vector<std::string> splitString(std::string &str) {
   }
 
   return vect;
-}
-
-std::vector<func::FuncOp> getFunctions(mlir::Operation *op,
-                                       std::string attrName) {
-  std::vector<func::FuncOp> functions;
-  op->walk([&](func::FuncOp func) {
-    if (attrName.empty() || func->getAttr(attrName))
-      functions.push_back(func);
-  });
-  return functions;
 }
 
 std::vector<RegisteredOperationName>

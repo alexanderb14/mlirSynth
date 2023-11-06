@@ -1,10 +1,9 @@
 #ifndef IRSYNTH_VALIDATION_CHECKINGVALIDATOR_H
 #define IRSYNTH_VALIDATION_CHECKINGVALIDATOR_H
 
-#include "mlir/Dialect/Func/IR/FuncOps.h"
+#include "mlir/IR/BuiltinOps.h"
 
-bool checkValidate(mlir::func::FuncOp lhsFunction,
-                   mlir::func::FuncOp rhsFunction,
+bool checkValidate(mlir::ModuleOp lhsModule, mlir::ModuleOp rhsModule,
                    bool printArgsAndResults = false, bool printResults = false);
 
 #endif // IRSYNTH_VALIDATION_CHECKINGVALIDATOR_H

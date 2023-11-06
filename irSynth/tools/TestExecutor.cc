@@ -21,6 +21,7 @@
 #include "transforms/CopyModifiedMemrefsPass.h"
 #include "transforms/LoopDistributionPass.h"
 #include "transforms/LoopOutlinePass.h"
+#include "transforms/Utils.h"
 
 #include "lhlo/transforms/passes.h"
 #include "mlir-hlo/Dialect/mhlo/IR/register.h"
@@ -44,17 +45,7 @@
 using namespace llvm;
 using namespace mlir;
 
-std::vector<func::FuncOp> getFunctions(mlir::Operation *op,
-                                       std::string attrName) {
-  std::vector<func::FuncOp> functions;
-  op->walk([&](func::FuncOp func) {
-    if (attrName.empty() || func->getAttr(attrName))
-      functions.push_back(func);
-  });
-  return functions;
-}
-
-func::FuncOp lowerHLO(func::FuncOp &func) {
+OwningOpRef<ModuleOp> lowerHLO(func::FuncOp &func) {
   auto *ctx = func->getContext();
 
   auto pm = std::make_shared<mlir::PassManager>(ctx);
@@ -66,7 +57,7 @@ func::FuncOp lowerHLO(func::FuncOp &func) {
     assert(false && "Couldn't lower to HLO to affine dialect");
   }
 
-  return unwrapModule(hloModule).release();
+  return hloModule;
 }
 
 void printStatus(bool isOk) {
@@ -132,25 +123,22 @@ int main(int argc, char **argv) {
   auto originalFunctions = getFunctions(inputOp.get(), "irsynth.original");
   assert(originalFunctions.size() == 1 &&
          "Expected one function with the irsynth.original attribute");
-  auto originalFunction = originalFunctions[0];
+  auto original = createModule(ctx, &originalFunctions[0]);
 
   // Load HLO function module(s).
   auto hloFunctions = getFunctions(inputOp.get(), "irsynth.raised");
   for (auto hloFunction : hloFunctions) {
     auto lowered = lowerHLO(hloFunction);
 
-    originalFunction.dump();
-    lowered->dump();
-
     // Test validate.
-    bool testEquiv = testValidate(originalFunction, lowered,
+    bool testEquiv = testValidate(original->clone(), lowered->clone(),
                                   printArgsAndResults, printResults);
     llvm::outs() << hloFunction.getName().str() << ": Testing with IO ";
     printStatus(testEquiv);
     llvm::outs() << "\n";
 
     // Check validate.
-    bool checkEquiv = checkValidate(originalFunction, lowered,
+    bool checkEquiv = checkValidate(original->clone(), lowered->clone(),
                                     printArgsAndResults, printResults);
     llvm::outs() << hloFunction.getName().str() << ": Checking with CBMC ";
     printStatus(checkEquiv);
