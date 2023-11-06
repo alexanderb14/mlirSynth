@@ -323,13 +323,13 @@ ProcessingStatus processCandidate(
       auto opResultType = opInfo->getResultType(resultIdx);
 
       if (opResultType == opInfo->getOperandType(0)) {
-        resultTypes.push_back(operands[0].getType());
-      } else {
-        if (opResultType == grammar::OpAndResType::HLO_PredTensor) {
-          auto shape = operands[0].getType().cast<ShapedType>().getShape();
+        resultTypes.push_back(operands[resultIdx].getType());
+      } else if (opResultType == grammar::OpAndResType::HLO_PredTensor) {
+          auto shape = operands[resultIdx].getType().cast<ShapedType>().getShape();
           resultTypes.push_back(
               RankedTensorType::get(shape, builder.getIntegerType(1)));
-        }
+      } else {
+        resultTypes.push_back(operands[resultIdx].getType());
       }
     }
   }
