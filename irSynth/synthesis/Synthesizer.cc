@@ -28,6 +28,7 @@
 #include <chrono>
 #include <cstdint>
 #include <math.h>
+#include <mutex>
 #include <memory>
 #include <optional>
 #include <variant>
@@ -44,7 +45,8 @@ unsigned maxShapeRank = 4;
 void printCandidate(ProcessingStatus status,
                     CandidateStorePtr &localCandidateStore,
                     CandidateStorePtr &candidateStore,
-                    SynthesisOptions &options, SynthesisResultPtr &result) {
+                    SynthesisOptions &options, SynthesisResultPtr &result,
+                    std::mutex &printMutex) {
   // If there is nothing to print, return early.
   if (!(options.printStatusNames || options.printStatusTiles ||
         options.printValidCandidates || options.printInvalidCandidates)) {
@@ -92,6 +94,8 @@ void printCandidate(ProcessingStatus status,
   if ((status == accept_as_candidate && options.printValidCandidates) ||
       (!(status == accept_as_candidate) && options.printInvalidCandidates) ||
       options.printStatusNames) {
+    std::lock_guard<std::mutex> lock(printMutex);
+
     llvm::outs() << statusStr << "\n";
     if (result->module && status > reject_hasUnsupportedShapeRank) {
       result->module->print(llvm::outs());
@@ -322,7 +326,9 @@ ProcessingStatus processCandidate(
         resultTypes.push_back(operands[0].getType());
       } else {
         if (opResultType == grammar::OpAndResType::HLO_PredTensor) {
-          resultTypes.push_back(builder.getI1TensorType({}));
+          auto shape = operands[0].getType().cast<ShapedType>().getShape();
+          resultTypes.push_back(
+              RankedTensorType::get(shape, builder.getIntegerType(1)));
         }
       }
     }
@@ -401,9 +407,6 @@ ProcessingStatus processCandidate(
   if (failed(executor->lowerCHLOToLLVMDialect(moduleCopy))) {
     return reject_isNotCompilableToLLVM;
   }
-
-  if (returnShape.empty())
-    return reject_hasEmptyReturnShape;
 
   // Create args array.
   auto argsCand = selectArgs(spec->inputs, newCandidate->getArgIds());
@@ -534,6 +537,7 @@ synthesize(MLIRContext &ctx, IExecutorPtr executor, func::FuncOp inputFunction,
   SynthesisResultPtr result;
   auto synthStart = std::chrono::high_resolution_clock::now();
 
+  std::mutex printMutex;
   for (int numOps = 0; numOps <= options.maxNumOps; numOps++) {
     CandidateStorePtr localCandidateStore = std::make_shared<CandidateStore>();
 
@@ -573,7 +577,7 @@ synthesize(MLIRContext &ctx, IExecutorPtr executor, func::FuncOp inputFunction,
 
             // Print candidate.
             printCandidate(status, localCandidateStore, candidateStore, options,
-                           synthesisResult);
+                           synthesisResult, printMutex);
 
             // Check if solution.
             if (status == accept_as_solution) {

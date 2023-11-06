@@ -13,7 +13,6 @@ enum ProcessingStatus {
   reject_hasNoArguments,
   reject_hasUnknownRankAndShape,
   reject_isNotCompilableToLLVM,
-  reject_hasEmptyReturnShape,
   reject_isNotExecutable,
   reject_hashNotUnique,
   accept_as_candidate,

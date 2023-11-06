@@ -98,10 +98,10 @@ module {
     %13 = mhlo.sqrt %12 : tensor<3xf64>
     %14 = mhlo.compare  LE, %13, %2,  FLOAT : (tensor<3xf64>, tensor<3xf64>) -> tensor<3xi1>
     %15 = mhlo.select %14, %1, %13 : tensor<3xi1>, tensor<3xf64>
+
     %18 = "chlo.broadcast_subtract"(%arg1, %6) : (tensor<5x3xf64>, tensor<3xf64>) -> tensor<5x3xf64>
     %19 = mhlo.sqrt %arg0 : tensor<f64>
-    %20 = "mhlo.broadcast_in_dim"(%19) {broadcast_dimensions = dense<> : tensor<0xi64>} : (tensor<f64>) -> tensor<3xf64>
-    %21 = mhlo.multiply %20, %15 : tensor<3xf64>
+    %21 =  "chlo.broadcast_multiply"(%19, %15) : (tensor<f64>, tensor<3xf64>) -> tensor<3xf64>
     %24 = "chlo.broadcast_divide"(%18, %21) : (tensor<5x3xf64>, tensor<3xf64>) -> tensor<5x3xf64>
 
     %25 = "mhlo.transpose"(%24) {permutation = dense<[1, 0]> : tensor<2xi64>} : (tensor<5x3xf64>) -> tensor<3x5xf64>

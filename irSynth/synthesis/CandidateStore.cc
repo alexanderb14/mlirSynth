@@ -9,6 +9,7 @@ void CandidateStore::addCandidate(const CandidatePtr &candidate) {
 
   unsigned weight = candidate->getNumOps();
   grammar::OpAndResType opAndResType = candidate->getOpAndResType();
+  opAndResType = getTypeAlias(opAndResType);
 
   candidateToId[candidate.get()] = candidateToId.size();
 
@@ -52,15 +53,15 @@ std::vector<CandidatePtr> CandidateStore::getCandidates(unsigned weight) {
 std::vector<CandidatePtr>
 CandidateStore::getCandidates(unsigned weight,
                               grammar::OpAndResType opAndResType) {
-  auto opAndResTypeAliased = getTypeAlias(opAndResType);
+  opAndResType = getTypeAlias(opAndResType);
 
   std::vector<CandidatePtr> candidates;
 
   for (unsigned i = 0; i < weight; i++) {
     if (weightToCandidates.find(i) != weightToCandidates.end()) {
-      if (weightToCandidates[i].find(opAndResTypeAliased) !=
+      if (weightToCandidates[i].find(opAndResType) !=
           weightToCandidates[i].end()) {
-        for (auto &candidate : weightToCandidates[i][opAndResTypeAliased]) {
+        for (auto &candidate : weightToCandidates[i][opAndResType]) {
           candidates.push_back(candidate);
         }
       }

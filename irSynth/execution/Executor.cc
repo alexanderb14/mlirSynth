@@ -55,8 +55,9 @@ llvm::Error invokePacked(std::unique_ptr<ExecutionEngine> jit, StringRef name,
     if (error)
       return error;
     auto endTime = std::chrono::high_resolution_clock::now();
-    auto singleElapsedTime = std::chrono::duration_cast<std::chrono::nanoseconds>(
-                           endTime - startTime);
+    auto singleElapsedTime =
+        std::chrono::duration_cast<std::chrono::nanoseconds>(endTime -
+                                                             startTime);
     elapsedTimes.push_back(singleElapsedTime);
   }
 
@@ -140,8 +141,10 @@ LogicalResult jitAndInvoke(OwningOpRef<ModuleOp> module,
   const std::string adapterName = std::string("_mlir_ciface_") + "foo";
 
   if (elapsedTime) {
-    llvm::Error error = invokePacked(std::move(jit), adapterName, argsArray, elapsedTime);
-    llvm::outs() << "Elapsed time: " << elapsedTime->count() << " nanoseconds\n";
+    llvm::Error error =
+        invokePacked(std::move(jit), adapterName, argsArray, elapsedTime);
+    llvm::outs() << "Elapsed time: " << elapsedTime->count()
+                 << " nanoseconds\n";
 
     if (error) {
       llvm::errs() << "Error invoking function: " << error << "\n";

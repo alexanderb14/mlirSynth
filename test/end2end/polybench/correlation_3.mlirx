@@ -8,7 +8,7 @@ module attributes {dlti.dl_spec = #dlti.dl_spec<#dlti.dl_entry<"dlti.endianness"
       %2 = math.sqrt %1 : f64
       %3 = arith.cmpf ole, %2, %cst : f64
       %4 = arith.select %3, %cst_0, %2 : f64
-      affine.store %2, %arg0[%arg2] : memref<3xf64>
+      affine.store %4, %arg0[%arg2] : memref<3xf64>
     }
     return
   }

@@ -17,8 +17,6 @@ std::string processingStatusToStr(ProcessingStatus &status) {
     return "reject_hasUnknownRankAndShape";
   if (status == reject_isNotCompilableToLLVM)
     return "reject_isNotCompilableToLLVM";
-  if (status == reject_hasEmptyReturnShape)
-    return "reject_hasEmptyReturnShape";
   if (status == reject_isNotExecutable)
     return "reject_isNotExecutable";
   if (status == reject_hashNotUnique)
