@@ -5,7 +5,6 @@
 
 // CHECK:         %0 = call @fn_0(%arg0, %arg1, %alloc) : (memref<3x5xf64>, memref<3x5xf64>, memref<3x5xf64>) -> memref<3x5xf64>
 // CHECK-NEXT:    %1 = call @fn_1(%0) : (memref<3x5xf64>) -> memref<3x5xf64>
-// CHECK-NEXT:    return %1 : memref<3x5xf64>
 module {
   func.func @foo(%arg0: memref<3x5xf64>, %arg1: memref<3x5xf64>) -> memref<3x5xf64> {
     %res = memref.alloc() : memref<3x5xf64>
