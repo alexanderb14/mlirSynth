@@ -165,7 +165,7 @@ genMaskAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
   std::vector<std::pair<Attribute, grammar::OpAndResType>> attributes;
 
   if (targetShape.size() == 2) {
-    // Create lower triangular mask containing of i1 values
+    // Create a mask mask with the lower triangle set to 1 and the rest to 0.
     std::vector<Attribute> attrVect;
     for (int i = 0; i < targetShape[0]; i++) {
       for (int j = 0; j < targetShape[1]; j++) {
@@ -179,6 +179,22 @@ genMaskAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
     Type type = RankedTensorType::get({targetShape[0], targetShape[1]},
                                       builder.getI1Type());
     auto attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attrVect);
+    attributes.emplace_back(attrDense, grammar::OpAndResType::HLO_PredTensor);
+
+    // Create a mask where the diagonal is 1 and the rest is 0.
+    std::vector<Attribute> attrVect2;
+    for (int i = 0; i < targetShape[0]; i++) {
+      for (int j = 0; j < targetShape[1]; j++) {
+        if (i == j) {
+          attrVect2.push_back(builder.getBoolAttr(true));
+        } else {
+          attrVect2.push_back(builder.getBoolAttr(false));
+        }
+      }
+    }
+    type = RankedTensorType::get({targetShape[0], targetShape[1]},
+                                 builder.getI1Type());
+    attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attrVect2);
     attributes.emplace_back(attrDense, grammar::OpAndResType::HLO_PredTensor);
 
     // Create a matrix with 0 values.
