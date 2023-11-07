@@ -2,8 +2,7 @@
 
 // CHECK: %0 = stablehlo.dot
 module {
-  func.func @foo(%arg6 : memref<3x4xf64>, %arg9: memref<4x6xf64>) -> memref<3x6xf64> attributes { llvm.emit_c_interface} {
-    %arg10 = memref.alloc() : memref<3x6xf64>
+  func.func @foo(%arg6 : memref<3x4xf64>, %arg9: memref<4x6xf64>, %arg10: memref<3x6xf64>) attributes { llvm.emit_c_interface} {
     %cst = arith.constant 0.000000e+00 : f64
 
     affine.for %arg11 = 0 to 3 {
@@ -19,6 +18,6 @@ module {
         }
       }
     }
-    return %arg10 : memref<3x6xf64>
+    return
   }
 }

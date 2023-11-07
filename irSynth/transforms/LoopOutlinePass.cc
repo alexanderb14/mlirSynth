@@ -38,7 +38,6 @@ void outlineLoops(func::FuncOp &origFunc) {
 
   BlockAndValueMapping fnResultMapper;
   Operation *lastFunc = nullptr;
-  Operation *lastCall = nullptr;
 
   unsigned loopCounter = 0;
   for (auto *topLoop : topLoops) {
@@ -118,11 +117,16 @@ void outlineLoops(func::FuncOp &origFunc) {
     // Add body.
     bodyBlock.push_back(topLoop->clone(argMapper));
 
-    // Add the stored values as results.
-    // As a heuristic, we use only the last-stored value as the result.
-    // - Get the last stored value.
+    // Add the last stored memref value as result.
     llvm::SetVector<Value> storedValue;
-    storedValue.insert(storedValues.back());
+
+    Value lastStoredMemref = nullptr;
+    topLoop->walk([&](AffineStoreOp storeOp) {
+      lastStoredMemref = storeOp.getMemref();
+    });
+    assert(lastStoredMemref != nullptr && "No last stored memref found.");
+
+    storedValue.insert(lastStoredMemref);
 
     // - Create return operation.
     llvm::SmallVector<Value> results;
@@ -180,7 +184,6 @@ void outlineLoops(func::FuncOp &origFunc) {
     builder.setInsertionPoint(topLoop);
     auto callOp = builder.create<func::CallOp>(unknownLoc, func.getSymName(),
                                                func.getResultTypes(), args);
-    lastCall = callOp;
 
     // Add function call results to the fnResultMapper.
     for (unsigned i = 0; i < callOp.getNumResults(); i++)

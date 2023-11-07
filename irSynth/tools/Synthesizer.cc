@@ -252,6 +252,7 @@ void mergeIntoModule(mlir::MLIRContext *&ctx, OwningOpRef<Operation *> &inputOp,
   inputOp.get()->walk([&](bufferization::ToMemrefOp toMemrefOp) {
     lastToMemrefOp = toMemrefOp;
   });
+  assert(lastToMemrefOp != nullptr && "lastToMemref is null");
 
   // Copy lastToMemrefOp to the arg memref, the one that has been last stored
   // to, which is annotated with the irSynth.lastStoredMemref attribute.
@@ -265,6 +266,7 @@ void mergeIntoModule(mlir::MLIRContext *&ctx, OwningOpRef<Operation *> &inputOp,
       }
     }
   });
+  assert(lastStoredMemrefArg != nullptr && "lastStoredMemrefArg is null");
 
   // - Create the memref.copy operation.
   builder.setInsertionPointAfter(lastToMemrefOp);
