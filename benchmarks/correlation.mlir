@@ -49,23 +49,23 @@ module attributes {dlti.dl_spec = #dlti.dl_spec<#dlti.dl_entry<"dlti.endianness"
         affine.store %6, %arg3[%arg7, %arg8] : memref<1400x1200xf64>
       }
     }
-    //affine.for %arg7 = 0 to 1199 {
-    //  affine.store %cst, %arg4[%arg7, %arg7] : memref<1200x1200xf64>
-    //  affine.for %arg8 = #map(%arg7) to 1200 {
-    //    affine.store %cst_0, %arg4[%arg7, %arg8] : memref<1200x1200xf64>
-    //    affine.for %arg9 = 0 to 1400 {
-    //      %2 = affine.load %arg3[%arg9, %arg7] : memref<1400x1200xf64>
-    //      %3 = affine.load %arg3[%arg9, %arg8] : memref<1400x1200xf64>
-    //      %4 = arith.mulf %2, %3 : f64
-    //      %5 = affine.load %arg4[%arg7, %arg8] : memref<1200x1200xf64>
-    //      %6 = arith.addf %5, %4 : f64
-    //      affine.store %6, %arg4[%arg7, %arg8] : memref<1200x1200xf64>
-    //    }
-    //    %1 = affine.load %arg4[%arg7, %arg8] : memref<1200x1200xf64>
-    //    affine.store %1, %arg4[%arg8, %arg7] : memref<1200x1200xf64>
-    //  }
-    //}
-    //affine.store %cst, %arg4[1199, 1199] : memref<1200x1200xf64>
+    affine.for %arg7 = 0 to 1200 {
+      affine.store %cst, %arg4[%arg7, %arg7] : memref<1200x1200xf64>
+      affine.for %arg8 = #map(%arg7) to 1200 {
+        affine.store %cst_0, %arg4[%arg7, %arg8] : memref<1200x1200xf64>
+        affine.for %arg9 = 0 to 1400 {
+          %2 = affine.load %arg3[%arg9, %arg7] : memref<1400x1200xf64>
+          %3 = affine.load %arg3[%arg9, %arg8] : memref<1400x1200xf64>
+          %4 = arith.mulf %2, %3 : f64
+          %5 = affine.load %arg4[%arg7, %arg8] : memref<1200x1200xf64>
+          %6 = arith.addf %5, %4 : f64
+          affine.store %6, %arg4[%arg7, %arg8] : memref<1200x1200xf64>
+        }
+        %1 = affine.load %arg4[%arg7, %arg8] : memref<1200x1200xf64>
+        affine.store %1, %arg4[%arg8, %arg7] : memref<1200x1200xf64>
+      }
+    }
+    affine.store %cst, %arg4[1199, 1199] : memref<1200x1200xf64>
     return
   }
 }
