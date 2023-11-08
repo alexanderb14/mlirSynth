@@ -28,8 +28,8 @@
 #include <chrono>
 #include <cstdint>
 #include <math.h>
-#include <mutex>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <variant>
 
@@ -325,9 +325,10 @@ ProcessingStatus processCandidate(
       if (opResultType == opInfo->getOperandType(0)) {
         resultTypes.push_back(operands[resultIdx].getType());
       } else if (opResultType == grammar::OpAndResType::HLO_PredTensor) {
-          auto shape = operands[resultIdx].getType().cast<ShapedType>().getShape();
-          resultTypes.push_back(
-              RankedTensorType::get(shape, builder.getIntegerType(1)));
+        auto shape =
+            operands[resultIdx].getType().cast<ShapedType>().getShape();
+        resultTypes.push_back(
+            RankedTensorType::get(shape, builder.getIntegerType(1)));
       } else {
         resultTypes.push_back(operands[resultIdx].getType());
       }

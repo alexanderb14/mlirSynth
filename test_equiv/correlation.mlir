@@ -104,14 +104,10 @@ module {
     %21 =  "chlo.broadcast_multiply"(%19, %15) : (tensor<f64>, tensor<3xf64>) -> tensor<3xf64>
     %24 = "chlo.broadcast_divide"(%18, %21) : (tensor<5x3xf64>, tensor<3xf64>) -> tensor<5x3xf64>
 
-    %25 = "mhlo.transpose"(%24) {permutation = dense<[1, 0]> : tensor<2xi64>} : (tensor<5x3xf64>) -> tensor<3x5xf64>
-    %26 = "mhlo.dot"(%25, %24) {precision_config = [#mhlo<precision DEFAULT>, #mhlo<precision DEFAULT>]} : (tensor<3x5xf64>, tensor<5x3xf64>) -> tensor<3x3xf64>
-    %27 = "mhlo.iota"() {iota_dimension = 0 : i64} : () -> tensor<3xi32>
-    %28 = "mhlo.broadcast_in_dim"(%27) {broadcast_dimensions = dense<0> : tensor<1xi64>} : (tensor<3xi32>) -> tensor<3x3xi32>
-    %29 = "mhlo.iota"() {iota_dimension = 0 : i64} : () -> tensor<3xi32>
-    %30 = "mhlo.broadcast_in_dim"(%29) {broadcast_dimensions = dense<1> : tensor<1xi64>} : (tensor<3xi32>) -> tensor<3x3xi32>
-    %31 = mhlo.compare  EQ, %28, %30,  SIGNED : (tensor<3x3xi32>, tensor<3x3xi32>) -> tensor<3x3xi1>
-    %32 = mhlo.select %31, %0, %26 : tensor<3x3xi1>, tensor<3x3xf64>
-    return %32 : tensor<3x3xf64>
+    %26 = "mhlo.dot_general"(%24, %24) {dot_dimension_numbers = #mhlo.dot<lhs_contracting_dimensions = [0], rhs_contracting_dimensions = [0]>} : (tensor<5x3xf64>, tensor<5x3xf64>) -> tensor<3x3xf64>
+    %27 = mhlo.constant dense<[[true, false, false], [false, true, false], [false, false, true]]> : tensor<3x3xi1>
+    %28 = mhlo.select %27, %0, %26: tensor<3x3xi1>, tensor<3x3xf64>
+
+    return %28 : tensor<3x3xf64>
   }
 }

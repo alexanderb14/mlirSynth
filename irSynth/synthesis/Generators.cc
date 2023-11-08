@@ -197,15 +197,17 @@ genMaskAttributes(OpBuilder &builder, Region::BlockArgListType &functionArgs,
     attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attrVect2);
     attributes.emplace_back(attrDense, grammar::OpAndResType::HLO_PredTensor);
 
-    // Create a matrix with 0 values.
-    attrVect = std::vector<Attribute>();
-    for (int i = 0; i < targetShape[0] * targetShape[1]; i++) {
-      attrVect.push_back(builder.getF64FloatAttr(0.0));
+    // Create a matrix with 0 and one with 1 values.
+    for (int value = 0; value < 2; value++) {
+      attrVect = std::vector<Attribute>();
+      for (int i = 0; i < targetShape[0] * targetShape[1]; i++) {
+        attrVect.push_back(builder.getF64FloatAttr(value));
+      }
+      type = RankedTensorType::get({targetShape[0], targetShape[1]},
+                                   builder.getF64Type());
+      attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attrVect);
+      attributes.emplace_back(attrDense, grammar::OpAndResType::HLO_Tensor);
     }
-    type = RankedTensorType::get({targetShape[0], targetShape[1]},
-                                 builder.getF64Type());
-    attrDense = DenseElementsAttr::get(type.cast<TensorType>(), attrVect);
-    attributes.emplace_back(attrDense, grammar::OpAndResType::HLO_Tensor);
   }
 
   return attributes;
