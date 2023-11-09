@@ -25,8 +25,7 @@ module {
   }
 
   func.func @fn_0_raised_1(%arg0: tensor<5x5xf64> {irsynth.symmetric}, %arg1: tensor<5x3xf64>, %arg2: tensor<f64>, %arg3: tensor<f64>) -> tensor<5x5xf64> attributes {irsynth.raised} {
-    %0 = "mhlo.transpose"(%arg1) {permutation = dense<[1, 0]> : tensor<2xi64>} : (tensor<5x3xf64>) -> tensor<3x5xf64>
-    %1 = "mhlo.dot"(%arg1, %0) : (tensor<5x3xf64>, tensor<3x5xf64>) -> tensor<5x5xf64>
+    %1 = "mhlo.dot_general"( %arg1, %arg1) {dot_dimension_numbers = #mhlo.dot<lhs_contracting_dimensions = [1], rhs_contracting_dimensions = [1]>} : (tensor<5x3xf64>, tensor<5x3xf64>) -> tensor<5x5xf64>
     %2 = chlo.broadcast_multiply %1, %arg3: (tensor<5x5xf64>, tensor<f64>) -> tensor<5x5xf64>
     %3 = chlo.broadcast_multiply %arg0, %arg2: (tensor<5x5xf64>, tensor<f64>) -> tensor<5x5xf64>
     %4 = mhlo.add %3, %2 : tensor<5x5xf64>
@@ -38,8 +37,7 @@ module {
   }
 
   func.func @fn_0_raised_2(%arg0: tensor<5x5xf64> {irsynth.symmetric}, %arg1: tensor<5x3xf64>, %arg2: tensor<f64>, %arg3: tensor<f64>) -> tensor<5x5xf64> attributes {irsynth.raised} {
-    %0 = "mhlo.transpose"(%arg1) {permutation = dense<[1, 0]> : tensor<2xi64>} : (tensor<5x3xf64>) -> tensor<3x5xf64>
-    %1 = "mhlo.dot"(%arg1, %0) : (tensor<5x3xf64>, tensor<3x5xf64>) -> tensor<5x5xf64>
+    %1 = "mhlo.dot_general"( %arg1, %arg1) {dot_dimension_numbers = #mhlo.dot<lhs_contracting_dimensions = [1], rhs_contracting_dimensions = [1]>} : (tensor<5x3xf64>, tensor<5x3xf64>) -> tensor<5x5xf64>
     %2 = chlo.broadcast_multiply %1, %arg3: (tensor<5x5xf64>, tensor<f64>) -> tensor<5x5xf64>
     %3 = chlo.broadcast_multiply %arg0, %arg2: (tensor<5x5xf64>, tensor<f64>) -> tensor<5x5xf64>
     %4 = mhlo.add %3, %2 : tensor<5x5xf64>
