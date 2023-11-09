@@ -67,33 +67,34 @@ std::vector<std::string> splitString(std::string &str) {
 std::vector<RegisteredOperationName>
 getDialectOps(MLIRContext *ctx, std::vector<Dialect *> &dialects,
               const std::vector<std::string> &ops = {}, bool printOps = false) {
-  std::unordered_map<std::string, bool> opsMap;
-  for (auto &op : ops) {
-    opsMap[op] = true;
+  std::unordered_map<std::string, RegisteredOperationName> opNamesToRegisteredOps;
+  for (RegisteredOperationName op : ctx->getRegisteredOperations()) {
+    std::string opStr = op.getIdentifier().str();
+    opNamesToRegisteredOps.insert({opStr, op});
   }
 
-  std::vector<RegisteredOperationName> opNames;
-  for (auto *dialect : dialects) {
-    for (auto op : ctx->getRegisteredOperations()) {
-      if (&op.getDialect() == dialect) {
-        if (opsMap.empty() ||
-            opsMap.find(op.getIdentifier().str()) != opsMap.end()) {
-          opNames.push_back(op);
-        }
-      }
+  llvm::SetVector<RegisteredOperationName> selectedRegisteredOps;
+  for (auto &op : ops) {
+    std::string opStr = std::string(op);
+    //selectedRegisteredOps.insert(opNamesToRegisteredOps[opStr]);
+    auto it = opNamesToRegisteredOps.find(opStr);
+    if (it != opNamesToRegisteredOps.end()) {
+      selectedRegisteredOps.insert(it->second);
+    } else {
+      assert(false && "Op not found in registered ops");
     }
   }
 
   if (printOps) {
     llvm::outs() << "Registered ops:"
                  << "\n--------\n";
-    for (auto opName : opNames) {
+    for (auto opName : selectedRegisteredOps.takeVector()) {
       opName.dump();
       llvm::outs() << "\n";
     }
   }
 
-  return opNames;
+  return selectedRegisteredOps.takeVector();
 }
 
 LogicalResult preprocess(Operation *op, MLIRContext *ctx,
