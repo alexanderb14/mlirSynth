@@ -32,12 +32,12 @@ benchmarks_hlo = [
               ['chlo.broadcast_add', 'stablehlo.dot', 'chlo.broadcast_multiply'], True, 3),
     Benchmark('benchmarks/gemver.mlir', 'gemver',
               ['stablehlo.dot', 'chlo.broadcast_add', 'chlo.broadcast_multiply'], False, 3),
-    Benchmark('benchmarks/symm.mlir', 'symm',
-              ['stablehlo.transpose', 'stablehlo.dot', 'chlo.broadcast_multiply', 'stablehlo.add', 'stablehlo.select'], False, 5),
-    Benchmark('benchmarks/correlation.mlir', 'correlation',
-              ['stablehlo.dot_general', 'chlo.broadcast_divide', 'chlo.broadcast_subtract'], False, 3),
     Benchmark('benchmarks/covariance.mlir', 'covariance',
               ['stablehlo.dot_general', 'stablehlo.transpose', 'chlo.broadcast_divide', 'chlo.broadcast_subtract', 'stablehlo.reduce'], False, 3),
+    Benchmark('benchmarks/correlation.mlir', 'correlation',
+              ['stablehlo.dot_general', 'chlo.broadcast_divide', 'chlo.broadcast_subtract'], False, 3),
+    Benchmark('benchmarks/symm.mlir', 'symm',
+              ['stablehlo.transpose', 'stablehlo.dot', 'chlo.broadcast_multiply', 'stablehlo.add', 'stablehlo.select'], False, 5),
     Benchmark('benchmarks/syrk.mlir', 'syrk',
               ['stablehlo.transpose', 'stablehlo.dot', 'chlo.broadcast_multiply', 'stablehlo.add', 'stablehlo.select'], True, 5),
     Benchmark('benchmarks/syr2k.mlir', 'syr2k',
@@ -178,7 +178,7 @@ def run_benchmarks_best(benchmarks, dialect):
             json.dump(stats_all, f, indent=2)
 
 
-def run_benchmarks_naive_heuristic(benchmarks, dialect):
+def run_benchmarks_heuristic(benchmarks, dialect):
     stats_all = []
     for benchmark in tqdm.tqdm(benchmarks):
         stats = run_benchmark(benchmark=benchmark,
@@ -192,6 +192,9 @@ def run_benchmarks_naive_heuristic(benchmarks, dialect):
         with open('/tmp/stats.json', 'w') as f:
             json.dump(stats_all, f, indent=2)
 
+
+def run_benchmarks_naive(benchmarks, dialect):
+    stats_all = []
     for benchmark in tqdm.tqdm(benchmarks):
         stats = run_benchmark(benchmark=benchmark,
                               dialect=dialect,
@@ -224,6 +227,8 @@ def main():
                         default=False, help='Run all experiments')
     parser.add_argument('--exp_best', action='store_true',
                         default=False, help='Run experiments in their best configuration')
+    parser.add_argument('--exp_heuristic', action='store_true',
+                        default=False, help='Run experiments with heuristic')
     parser.add_argument('--exp_naive_heuristic', action='store_true',
                         default=False, help='Run experiments with naive and heuristic')
     parser.add_argument('--dialect', type=str, help='Dialect to use')
@@ -249,8 +254,11 @@ def main():
         run_benchmarks_all(benchmarks, args.dialect)
     elif args.exp_best:
         run_benchmarks_best(benchmarks, args.dialect)
+    elif args.exp_heuristic:
+        run_benchmarks_heuristic(benchmarks, args.dialect)
     elif args.exp_naive_heuristic:
-        run_benchmarks_naive_heuristic(benchmarks, args.dialect)
+        run_benchmarks_heuristic(benchmarks, args.dialect)
+        run_benchmarks_naive(benchmarks, args.dialect)
 
     # Plot results.
     plot_results()
