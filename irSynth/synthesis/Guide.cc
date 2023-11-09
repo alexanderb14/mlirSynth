@@ -95,31 +95,37 @@ int countNumMultipliedMismatchingMemrefAccesses(Operation *op) {
   int numMultipliedMismatchingMemrefs = 0;
 
   // Walk over affine.store operations
+  llvm::SmallVector<llvm::ArrayRef<int64_t>> allMemrefShapes;
   op->walk([&](arith::MulFOp mulOp) {
     auto memrefShapes = getUsedMemrefShapes(mulOp);
-
-    // Check if all memref shapes have a matching dimension with at least one
-    // other memref shape. Matching dimensions can be their first-last or
-    // last-first dimensions.
     for (auto memrefShape : memrefShapes) {
-      bool hasMatchingDimension = false;
-      for (auto memrefShapeOther : memrefShapes) {
-        if (memrefShape.size() != memrefShapeOther.size())
-          continue;
-        if (memrefShape.empty() || memrefShapeOther.empty())
-          continue;
-
-        if (memrefShape[0] == memrefShapeOther.back() ||
-            memrefShape.back() == memrefShapeOther[0]) {
-          hasMatchingDimension = true;
-          break;
-        }
-      }
-      if (!hasMatchingDimension) {
-        numMultipliedMismatchingMemrefs++;
-      }
+      if (memrefShape.empty())
+        continue;
+      allMemrefShapes.push_back(memrefShape);
     }
   });
+
+  // Check if all memref shapes have a matching dimension with at least one
+  // other memref shape. Matching dimensions can be their first-last or
+  // last-first dimensions.
+  for (auto memrefShape : allMemrefShapes) {
+    bool hasMatchingDimension = false;
+    for (auto memrefShapeOther : allMemrefShapes) {
+      if (memrefShape.size() != memrefShapeOther.size())
+        continue;
+      if (memrefShape.empty() || memrefShapeOther.empty())
+        continue;
+
+      if (memrefShape[0] == memrefShapeOther.back() ||
+          memrefShape.back() == memrefShapeOther[0]) {
+        hasMatchingDimension = true;
+        break;
+      }
+    }
+    if (!hasMatchingDimension) {
+      numMultipliedMismatchingMemrefs++;
+    }
+  }
 
   return numMultipliedMismatchingMemrefs;
 }
@@ -127,7 +133,7 @@ int countNumMultipliedMismatchingMemrefAccesses(Operation *op) {
 int countNumLoopBoundMaps(Operation *op) {
   int numLoopBoundMaps = 0;
   op->walk([&](AffineForOp forOp) {
-    if (!forOp.hasConstantUpperBound()) {
+    if (!forOp.hasConstantUpperBound() || !forOp.hasConstantLowerBound()) {
       numLoopBoundMaps++;
     }
   });
@@ -142,14 +148,14 @@ std::vector<std::string> predictOps(std::vector<std::string> &supportedOps,
 
   // Element wise heuristics
   std::vector<std::string> ops;
+  if (countNumOps<arith::MulFOp>(op) > 0)
+    ops.emplace_back("chlo.broadcast_multiply");
   if (countNumOps<arith::DivFOp>(op) > 0)
     ops.emplace_back("chlo.broadcast_divide");
   if (countNumOps<arith::AddFOp>(op) > 0)
     ops.emplace_back("chlo.broadcast_add");
   if (countNumOps<arith::SubFOp>(op) > 0)
     ops.emplace_back("chlo.broadcast_subtract");
-  if (countNumOps<arith::MulFOp>(op) > 0)
-    ops.emplace_back("chlo.broadcast_multiply");
 
   if (countNumOps<math::SqrtOp>(op) > 0)
     ops.emplace_back("stablehlo.sqrt");
@@ -170,7 +176,7 @@ std::vector<std::string> predictOps(std::vector<std::string> &supportedOps,
 
   // Reduction heuristics
   if (computeNumCyclesWithSelfEdges(g) > 0) {
-    if (getMaxArgDim(op) > 2) {
+    if (getMaxArgDim(op) > 2 || countNumMultipliedMismatchingMemrefAccesses(op) > 0) {
       ops.emplace_back("stablehlo.dot_general");
     } else {
       ops.emplace_back("stablehlo.dot");
