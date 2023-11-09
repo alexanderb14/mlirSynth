@@ -48,6 +48,7 @@ add_library(synthesis
   synthesis/Stats.cc)
 target_include_directories(synthesis
   PRIVATE ${CMAKE_CURRENT_LIST_DIR}
+          ${CMAKE_SOURCE_DIR}/indicators/single_include
           ${MHLO_INCLUDE_DIRS})
 target_link_libraries(synthesis
   PRIVATE cartesian_product

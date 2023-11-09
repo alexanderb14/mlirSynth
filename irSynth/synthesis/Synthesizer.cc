@@ -10,6 +10,7 @@
 #include "synthesis/ProcessingStatus.h"
 #include "synthesis/Spec.h"
 #include "synthesis/Stats.h"
+#include "synthesis/Threading.h"
 
 #include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/Dialect/Linalg/IR/Linalg.h"
@@ -553,14 +554,16 @@ synthesize(MLIRContext &ctx, IExecutorPtr executor, func::FuncOp inputFunction,
       auto candidateTuples =
           cartesianProduct.generate(operands, attributes, regions);
 
+      std::string statusStr;
       if (options.printSynthesisSteps) {
-        llvm::outs() << "Level: " << numOps << ", op: " << opName.getStringRef()
-                     << ", candidates: " << candidateTuples.size() << "\n";
+        statusStr = "Level: " + std::to_string(numOps) + ", op: " +
+                    opName.getStringRef().str() + ", candidates: " +
+                    std::to_string(candidateTuples.size());
       }
 
       // Check each candidate in the cartesian product.
-      auto status = failableParallelForEach(
-          &ctx, candidateTuples, [&](auto &candidateTuple) {
+      auto status = failableParallelForEachWithProgress(
+          &ctx, candidateTuples, statusStr, [&](auto &candidateTuple) {
             // Check if timeout.
             auto synthEnd = std::chrono::high_resolution_clock::now();
             auto synthDuration =
