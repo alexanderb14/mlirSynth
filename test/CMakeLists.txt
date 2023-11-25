@@ -4,5 +4,9 @@ configure_lit_site_cfg(
   ${CMAKE_CURRENT_SOURCE_DIR}/lit.cfg.py)
 
 set(IRSYNTH_TEST_DEPENDS FileCheck opt synthesizer)
-add_lit_testsuite(check-irsynth "Running irsynth tests"
-                  ${CMAKE_CURRENT_BINARY_DIR} DEPENDS ${IRSYNTH_TEST_DEPENDS})
+
+add_lit_testsuite(check-transforms "Running transforms tests"
+                  ${CMAKE_CURRENT_BINARY_DIR}/transforms DEPENDS ${IRSYNTH_TEST_DEPENDS})
+
+add_lit_testsuite(check-synthesis "Running synthesis tests"
+                  ${CMAKE_CURRENT_BINARY_DIR}/synthesis DEPENDS ${IRSYNTH_TEST_DEPENDS})
