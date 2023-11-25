@@ -10,3 +10,6 @@ add_lit_testsuite(check-transforms "Running transforms tests"
 
 add_lit_testsuite(check-synthesis "Running synthesis tests"
                   ${CMAKE_CURRENT_BINARY_DIR}/synthesis DEPENDS ${IRSYNTH_TEST_DEPENDS})
+
+add_lit_testsuite(check-equiv "Running equivalence tests"
+                  ${CMAKE_CURRENT_BINARY_DIR}/equiv DEPENDS ${IRSYNTH_TEST_DEPENDS})

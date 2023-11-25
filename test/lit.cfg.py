@@ -48,10 +48,19 @@ config.synthesizer_tools_dir = os.path.join(config.synthesizer_obj_root, 'bin')
 # Tweak the PATH to include the tools dir.
 llvm_config.with_environment('PATH', config.llvm_tools_dir, append_path=True)
 
+# Add the verification tools build dirs to the PATH.
+llvm_config.with_environment('PATH',
+                             os.path.join(config.test_source_root, '../deps/cbmc/build/bin'),
+                             append_path=True)
+llvm_config.with_environment('PATH',
+                             os.path.join(config.test_source_root, '../deps/cvc5/build/bin'),
+                             append_path=True)
+
 tool_dirs = [config.synthesizer_tools_dir, config.llvm_tools_dir]
 tools = [
     'synthesizer',
     'opt',
+    'test-executor',
 ]
 
 llvm_config.add_tool_substitutions(tools, tool_dirs)

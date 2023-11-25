@@ -60,11 +60,19 @@ OwningOpRef<ModuleOp> lowerHLO(func::FuncOp &func) {
   return hloModule;
 }
 
-void printStatus(bool isOk) {
-  if (isOk) {
-    llvm::outs() << "\033[1;42mOK\033[0m";
+void printStatus(bool isOk, bool printOutputBlackWhite) {
+  if (printOutputBlackWhite) {
+    if (isOk) {
+      llvm::outs() << "OK";
+    } else {
+      llvm::outs() << "FAIL";
+    }
   } else {
-    llvm::outs() << "\033[1;41mFAIL\033[0m";
+    if (isOk) {
+      llvm::outs() << "\033[1;42m\033[1;30mOK\033[0m";
+    } else {
+      llvm::outs() << "\033[1;41m\033[1;30mFAIL\033[0m";
+    }
   }
 }
 
@@ -76,6 +84,9 @@ int main(int argc, char **argv) {
                                     cl::desc("Print args and results"),
                                     cl::init(false));
   cl::opt<bool> printResults("print-results", cl::desc("Print results"),
+                             cl::init(false));
+  cl::opt<bool> printOutputBlackWhite("print-output-black-white",
+                                      cl::desc("Print output black/white"),
                              cl::init(false));
   cl::ParseCommandLineOptions(argc, argv, "Test Executor\n");
 
@@ -134,14 +145,14 @@ int main(int argc, char **argv) {
     bool testEquiv = testValidate(original->clone(), lowered->clone(),
                                   printArgsAndResults, printResults);
     llvm::outs() << hloFunction.getName().str() << ": Testing with IO ";
-    printStatus(testEquiv);
+    printStatus(testEquiv, printOutputBlackWhite);
     llvm::outs() << "\n";
 
     // Check validate.
     bool checkEquiv = checkValidate(original->clone(), lowered->clone(),
                                     printArgsAndResults, printResults);
     llvm::outs() << hloFunction.getName().str() << ": Checking with CBMC ";
-    printStatus(checkEquiv);
+    printStatus(checkEquiv, printOutputBlackWhite);
     llvm::outs() << "\n";
   }
 }
