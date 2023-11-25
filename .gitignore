@@ -1,4 +1,5 @@
 .cache
+.vscode
 .gdb_history
 build
 build-dbg
