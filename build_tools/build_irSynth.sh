@@ -20,8 +20,8 @@ mkdir build
 pushd build
 cmake .. -GNinja \
   -DLLVM_ENABLE_LLD=ON \
-  -DMLIR_DIR=${PWD}/../mlir-hlo/llvm-build/lib/cmake/mlir \
-  -DMHLO_DIR=${PWD}/../mlir-hlo/build/cmake/modules/CMakeFiles \
+  -DMLIR_DIR=${PWD}/../deps/llvm-project/build/lib/cmake/mlir \
+  -DMHLO_DIR=${PWD}/../deps/mlir-hlo/build/cmake/modules/CMakeFiles \
   -DCMAKE_C_COMPILER=clang \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
@@ -31,19 +31,19 @@ popd
 pushd build
 cmake --build . --target grammar-extractor
 popd
-TD_OPS="mlir-hlo/stablehlo/stablehlo/dialect/ChloOps.td \
-mlir-hlo/stablehlo/stablehlo/dialect/StablehloOps.td \
-mlir-hlo/llvm-project/mlir/include/mlir/Dialect/Linalg/IR/LinalgOps.td \
-mlir-hlo/llvm-project/mlir/include/mlir/Dialect/Linalg/IR/LinalgStructuredOps.td"
-TD_INCLUDES="-Imlir-hlo \
--Imlir-hlo/include \
--Imlir-hlo/include/mlir-hlo/Dialect/mhlo/IR \
--Imlir-hlo/stablehlo \
--Imlir-hlo/llvm-project/llvm/include \
--Imlir-hlo/llvm-project/mlir/include \
--Imlir-hlo/llvm-build/include \
--Imlir-hlo/llvm-build/tools/mlir/include \
--Imlir-hlo/llvm-project/mlir/include/mlir/Dialect/Linalg/IR"
+TD_OPS="deps/mlir-hlo/stablehlo/stablehlo/dialect/ChloOps.td \
+deps/mlir-hlo/stablehlo/stablehlo/dialect/StablehloOps.td \
+deps/llvm-project/mlir/include/mlir/Dialect/Linalg/IR/LinalgOps.td \
+deps/llvm-project/mlir/include/mlir/Dialect/Linalg/IR/LinalgStructuredOps.td"
+TD_INCLUDES="-Ideps/mlir-hlo \
+-Ideps/mlir-hlo/include \
+-Ideps/mlir-hlo/include/mlir-hlo/Dialect/mhlo/IR \
+-Ideps/mlir-hlo/stablehlo \
+-Ideps/llvm-project/llvm/include \
+-Ideps/llvm-project/mlir/include \
+-Ideps/llvm-project/build/include \
+-Ideps/llvm-project/build/tools/mlir/include \
+-Ideps/llvm-project/mlir/include/mlir/Dialect/Linalg/IR"
 cat $TD_OPS | ./build/bin/grammar-extractor $TD_INCLUDES \
   -gen-grammar-decls -o irSynth/synthesis/Grammar.h
 cat $TD_OPS | ./build/bin/grammar-extractor $TD_INCLUDES \
@@ -55,7 +55,7 @@ cmake --build .
 popd
 
 # Merge all compile_commands.json files, so that clangd can find them.
-jq -s 'map(.[])' mlir-hlo/llvm-build/compile_commands.json \
-  mlir-hlo/build/compile_commands.json \
+jq -s 'map(.[])' deps/llvm-project/build/compile_commands.json \
+  deps/mlir-hlo/build/compile_commands.json \
   build/compile_commands.json \
   > compile_commands.json

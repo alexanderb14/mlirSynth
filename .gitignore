@@ -3,8 +3,6 @@
 build
 build-dbg
 
-isl-0.25
-mlir-hlo
+deps
 
 compile_commands.json
-Rplots.pdf

@@ -86,5 +86,4 @@ LogicalResult failableParallelForEachWithProgress(MLIRContext *context, RangeT &
   return failure(processingFailed);
 }
 
-
 #endif // THREADING_H

@@ -9,7 +9,7 @@ add_library(analysis
   analysis/PolyhedralAnalysis.cc
   analysis/isl/isl_helper.cc)
 target_include_directories(analysis
-  PUBLIC ${CMAKE_SOURCE_DIR}/isl-0.25/include)
+  PUBLIC ${CMAKE_SOURCE_DIR}/deps/isl-0.25/include)
 target_link_libraries(analysis
   PRIVATE ${dialect_libs}
           ${conversion_libs}
@@ -24,7 +24,7 @@ target_link_libraries(analysis
           MLIRTransformUtils
           MLIRSupport
           MLIRIR
-          ${CMAKE_SOURCE_DIR}/isl-0.25/.libs/libisl.a
+          ${CMAKE_SOURCE_DIR}/deps/isl-0.25/.libs/libisl.a
           gmp)
 llvm_update_compile_flags(analysis)
 target_compile_options(analysis
@@ -48,7 +48,7 @@ add_library(synthesis
   synthesis/Stats.cc)
 target_include_directories(synthesis
   PRIVATE ${CMAKE_CURRENT_LIST_DIR}
-          ${CMAKE_SOURCE_DIR}/indicators/single_include
+          ${CMAKE_SOURCE_DIR}/deps/indicators/single_include
           ${MHLO_INCLUDE_DIRS})
 target_link_libraries(synthesis
   PRIVATE cartesian_product
@@ -62,6 +62,8 @@ add_library(execution
   execution/Lowering.cc)
 target_include_directories(execution
   PRIVATE ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(execution
+  PRIVATE MLIRExecutionEngine)
 
 # Lib: Transform
 add_library(transform

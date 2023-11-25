@@ -7,25 +7,30 @@ if ! [ -f "$PWD/../irSynth/README.md" ]; then
   exit 1
 fi
 
+# Prepare deps directory
+# ####
+mkdir -p deps
+pushd deps
+
 # MLIR-HLO and MLIR
 # ####
 # Pull
 git clone https://github.com/tensorflow/mlir-hlo.git
 pushd mlir-hlo
 git checkout abf4e4c1095fe17611437c3bed108dc60c9d92e0
+popd
 
 git clone https://github.com/llvm/llvm-project.git
 pushd llvm-project
-git checkout $(cat ../build_tools/llvm_version.txt)
+git checkout $(cat ../mlir-hlo/build_tools/llvm_version.txt)
 git am < ../../build_tools/llvm_patches/add-trait-verification-function.patch
 git am < ../../build_tools/llvm_patches/enable-emit-c-for-more-ops.patch
-popd
 
 # Build
-mkdir llvm-build
-cmake -GNinja \
-  "-H$PWD/llvm-project/llvm" \
-  "-B$PWD/llvm-build" \
+mkdir -p build
+pushd build
+cmake ../llvm \
+  -GNinja \
   -DLLVM_INSTALL_UTILS=ON \
   -DLLVM_ENABLE_LLD=ON \
   -DLLVM_ENABLE_PROJECTS=mlir \
@@ -39,19 +44,23 @@ cmake -GNinja \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DLLVM_PARALLEL_LINK_JOBS=1 \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-cmake --build "$PWD/llvm-build"
+cmake --build .
+popd
+popd
 
 # Build MLIR-HLO.
-mkdir build
+pushd mlir-hlo
+mkdir -p build
 pushd build
-cmake .. -GNinja \
+cmake .. \
+  -GNinja \
   -DLLVM_ENABLE_LLD=ON \
   -DCMAKE_BUILD_TYPE=RelWithDebInfo \
   -DLLVM_ENABLE_ASSERTIONS=On \
   -DCMAKE_C_COMPILER=clang \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-  -DMLIR_DIR=${PWD}/../llvm-build/lib/cmake/mlir
+  -DMLIR_DIR=${PWD}/../../llvm-project/build/lib/cmake/mlir
 cmake --build .
 popd
 popd
@@ -67,4 +76,17 @@ rm /tmp/isl-0.25.tar.gz
 pushd isl-0.25
 CC=clang CXX=clang++ ./configure
 make -j$(nproc)
+popd
+
+# Indicators
+# ####
+# Pull
+git clone https://github.com/p-ranav/indicators
+pushd indicators
+git checkout ef71abd9bc7254f7734fa84d5b1c336be2deb9f7
+
+# Build
+python3 utils/amalgamate/amalgamate.py -c single_include.json -s .
+popd
+
 popd
