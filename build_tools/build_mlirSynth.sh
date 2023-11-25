@@ -3,7 +3,7 @@
 set -x
 set -e
 
-if ! [ -f "$PWD/../irSynth/README.md" ]; then
+if ! [ -f "$PWD/../mlirSynth/README.md" ]; then
   echo "ERROR: Run this script from the root of the repository."
   exit 1
 fi
