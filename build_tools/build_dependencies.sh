@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -x
 set -e
 
 if ! [ -f "$PWD/../irSynth/README.md" ]; then

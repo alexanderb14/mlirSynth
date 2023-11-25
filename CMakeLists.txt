@@ -58,5 +58,5 @@ find_package(
   COMPONENTS graph
   REQUIRED)
 
-add_subdirectory(irSynth)
+add_subdirectory(mlirSynth)
 add_subdirectory(test)

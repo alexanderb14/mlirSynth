@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -x
+set -e
 
 if ! [ -f "$PWD/../irSynth/README.md" ]; then
   echo "ERROR: Run this script from the root of the repository."
@@ -12,11 +13,11 @@ python3 build_tools/gen_CartesianProduct.py \
   --max_operands 3 \
   --max_attributes 2 \
   --max_regions 2 \
-  --output irSynth/synthesis/CartesianProduct.cc
-clang-format -i irSynth/synthesis/CartesianProduct.cc --style=file
+  --output mlirSynth/synthesis/CartesianProduct.cc
+clang-format -i mlirSynth/synthesis/CartesianProduct.cc --style=file
 
-# Configure irSynth build.
-mkdir build
+# Configure mlirSynth build.
+mkdir -p build
 pushd build
 cmake .. -GNinja \
   -DLLVM_ENABLE_LLD=ON \
@@ -45,11 +46,11 @@ TD_INCLUDES="-Ideps/mlir-hlo \
 -Ideps/llvm-project/build/tools/mlir/include \
 -Ideps/llvm-project/mlir/include/mlir/Dialect/Linalg/IR"
 cat $TD_OPS | ./build/bin/grammar-extractor $TD_INCLUDES \
-  -gen-grammar-decls -o irSynth/synthesis/Grammar.h
+  -gen-grammar-decls -o mlirSynth/synthesis/Grammar.h
 cat $TD_OPS | ./build/bin/grammar-extractor $TD_INCLUDES \
-  -gen-grammar-defs -o irSynth/synthesis/Grammar.cc
+  -gen-grammar-defs -o mlirSynth/synthesis/Grammar.cc
 
-# Build irSynth.
+# Build mlirSynth.
 pushd build
 cmake --build .
 popd
