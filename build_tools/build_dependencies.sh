@@ -24,8 +24,8 @@ popd
 git clone https://github.com/llvm/llvm-project.git
 pushd llvm-project
 git checkout $(cat ../mlir-hlo/build_tools/llvm_version.txt)
-git am < ../../build_tools/llvm_patches/add-trait-verification-function.patch
-git am < ../../build_tools/llvm_patches/enable-emit-c-for-more-ops.patch
+git am < ../../build_tools/patches/llvm/add-trait-verification-function.patch
+git am < ../../build_tools/patches/llvm/enable-emit-c-for-more-ops.patch
 
 # Build
 mkdir -p build
@@ -89,6 +89,40 @@ git checkout ef71abd9bc7254f7734fa84d5b1c336be2deb9f7
 
 # Build
 python3 utils/amalgamate/amalgamate.py -c single_include.json -s .
+popd
+
+# CBMC
+# ####
+# Pull
+git clone https://github.com/diffblue/cbmc.git
+pushd cbmc
+git checkout b0dc2ea2f03c3a3817a03a91da9ccfd4b995794e
+git submodule update --init
+git am < ../../build_tools/patches/cbmc/use-fpa-theory-with-cvc5.patch
+
+# Build
+mkdir -p build
+pushd build
+cmake .. \
+  -GNinja \
+  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+  -DCMAKE_C_COMPILER=clang \
+  -DCMAKE_CXX_COMPILER=clang++
+cmake --build .
+popd
+
+# CVC5
+# ####
+# Pull
+git clone https://github.com/cvc5/cvc5.git
+pushd cvc5
+git checkout 7d3c5a757b7da00045a6fc011cad94e70d8eb442
+./configure.sh --auto-download --best
+
+# Build
+mkdir -p build
+cd build
+make -j 16
 popd
 
 popd
