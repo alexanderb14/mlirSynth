@@ -1,10 +1,14 @@
+// RUN: test-executor %s --print-output-black-white | FileCheck %s
+
+// CHECK: Testing with IO OK
+// CHECK: Checking with CBMC OK
 #map = affine_map<(d0) -> (d0)>
 module {
   func.func @fn_0(%arg1: f64, %arg4: f64, %arg0: memref<3x5xf64>, %arg2: memref<3x3xf64> {irsynth.symmetric}, %arg3: memref<3x5xf64>) -> memref<3x5xf64> attributes {irsynth.original} {
     %cst = arith.constant 0.000000e+00 : f64
-    %alloca = memref.alloca() : memref<f64>
+    %alloc0 = memref.alloc() : memref<f64>
     %alloc = memref.alloc() : memref<f64>
-    memref.copy %alloca, %alloc : memref<f64> to memref<f64>
+    memref.copy %alloc0, %alloc : memref<f64> to memref<f64>
     %alloc_0 = memref.alloc() : memref<3x5xf64>
     memref.copy %arg3, %alloc_0 : memref<3x5xf64> to memref<3x5xf64>
     affine.for %arg5 = 0 to 3 {

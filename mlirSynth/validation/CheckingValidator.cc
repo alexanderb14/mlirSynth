@@ -235,12 +235,12 @@ void convertRank0MemrefsToScalars(func::FuncOp &func) {
             func->getContext(), argTypes, func.getResultTypes()));
 
         // Replace all uses of memref with scalar.
-        auto argUses = arg.getUses();
-        for (auto &argUse : argUses) {
-          auto *argUser = argUse.getOwner();
-
+        auto argUsers = arg.getUsers();
+        SmallVector<mlir::Operation *> argUsersCopy(argUsers.begin(),
+                                                    argUsers.end());
+        for (auto *argUserOp : argUsersCopy) {
           // If the user is a load, replace the loads uses with the scalar.
-          if (auto loadOp = dyn_cast<memref::LoadOp>(argUser)) {
+          if (auto loadOp = dyn_cast<memref::LoadOp>(argUserOp)) {
             auto loadUses = loadOp->getUses();
             for (auto &loadUse : loadUses) {
               auto *loadUser = loadUse.getOwner();
@@ -290,6 +290,8 @@ bool checkValidate(ModuleOp lhsModule, ModuleOp rhsModule,
   // function signatures.
   convertRank0MemrefsToScalars(lhsFunction);
   convertRank0MemrefsToScalars(rhsFunction);
+  lhsFunction->dump();
+  rhsFunction->dump();
 
   // Assemble module.
   auto module = buildModule(lhsFunction, rhsFunction);

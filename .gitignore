@@ -2,7 +2,7 @@
 .vscode
 .gdb_history
 build
-build-dbg
+build_debug
 
 deps
 

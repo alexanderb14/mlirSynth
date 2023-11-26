@@ -40,12 +40,12 @@ module {
   }
 
   func.func @fn_0_raised(%arg4: tensor<f64>, %arg5: tensor<f64>, %arg6: tensor<3x5xf64>, %arg7: tensor<3x7xf64>, %arg8: tensor<7x5xf64>, %arg9: tensor<5x11xf64>, %arg10: tensor<3x11xf64>) -> tensor<3x11xf64> attributes {irsynth.raised} {
-    %0 = "chlo.broadcast_multiply" (%arg8, %arg4) : (tensor<7x5xf64>, tensor<f64>) -> tensor<7x5xf64>
-    %1 = "mhlo.dot" (%arg7, %0) : (tensor<3x7xf64>, tensor<7x5xf64>) -> tensor<3x5xf64>
-    %2 = "mhlo.dot" (%1, %arg9) : (tensor<3x5xf64>, tensor<5x11xf64>) -> tensor<3x11xf64>
-    %3 = "chlo.broadcast_multiply" (%arg10, %arg5) : (tensor<3x11xf64>, tensor<f64>) -> tensor<3x11xf64>
-    %4 = "mhlo.add" (%3, %2) : (tensor<3x11xf64>, tensor<3x11xf64>) -> tensor<3x11xf64>
+    %0 = stablehlo.dot %arg7, %arg8 : (tensor<3x7xf64>, tensor<7x5xf64>) -> tensor<3x5xf64>
+    %1 = chlo.broadcast_multiply %arg4, %0 : (tensor<f64>, tensor<3x5xf64>) -> tensor<3x5xf64>
 
-    return %4: tensor<3x11xf64>
+    %2 = chlo.broadcast_multiply %arg5, %arg10 : (tensor<f64>, tensor<3x11xf64>) -> tensor<3x11xf64>
+    %3 = "stablehlo.dot_general"(%1, %arg9) {dot_dimension_numbers = #stablehlo.dot<lhs_contracting_dimensions = [1], rhs_contracting_dimensions = [0]>} : (tensor<3x5xf64>, tensor<5x11xf64>) -> tensor<3x11xf64>
+    %4 = chlo.broadcast_add %3, %arg10 : (tensor<3x11xf64>, tensor<3x11xf64>) -> tensor<3x11xf64>
+    return %4 : tensor<3x11xf64>
   }
 }

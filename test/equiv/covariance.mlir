@@ -1,3 +1,7 @@
+// RUN: test-executor %s --print-output-black-white | FileCheck %s
+
+// CHECK: Testing with IO OK
+// CHECK: Checking with CBMC OK
 #map = affine_map<(d0) -> (d0)>
 
 module {

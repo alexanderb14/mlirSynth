@@ -8,6 +8,18 @@ if ! [ -f "$PWD/../mlirSynth/README.md" ]; then
   exit 1
 fi
 
+# Preparations
+# ####
+# Parse build type
+BUILD_DIR=build
+BUILD_TYPE=RelWithDebInfo
+if [ "$1" == "--debug" ]; then
+  BUILD_DIR=build_debug
+  BUILD_TYPE=Debug
+fi
+
+# Build mlirSynth
+# ####
 # Autogenerate arg tuple construction source file.
 python3 build_tools/gen_CartesianProduct.py \
   --max_operands 3 \
@@ -17,19 +29,20 @@ python3 build_tools/gen_CartesianProduct.py \
 clang-format -i mlirSynth/synthesis/CartesianProduct.cc --style=file
 
 # Configure mlirSynth build.
-mkdir -p build
-pushd build
+mkdir -p $BUILD_DIR
+pushd $BUILD_DIR
 cmake .. -GNinja \
   -DLLVM_ENABLE_LLD=ON \
-  -DMLIR_DIR=${PWD}/../deps/llvm-project/build/lib/cmake/mlir \
-  -DMHLO_DIR=${PWD}/../deps/mlir-hlo/build/cmake/modules/CMakeFiles \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DMLIR_DIR=${PWD}/../deps/llvm-project/${BUILD_DIR}/lib/cmake/mlir \
+  -DMHLO_DIR=${PWD}/../deps/mlir-hlo/${BUILD_DIR}/cmake/modules/CMakeFiles \
   -DCMAKE_C_COMPILER=clang \
   -DCMAKE_CXX_COMPILER=clang++ \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 popd
 
 # Generate Grammar from tablegen files.
-pushd build
+pushd $BUILD_DIR
 cmake --build . --target grammar-extractor
 popd
 TD_OPS="deps/mlir-hlo/stablehlo/stablehlo/dialect/ChloOps.td \
@@ -51,7 +64,7 @@ cat $TD_OPS | ./build/bin/grammar-extractor $TD_INCLUDES \
   -gen-grammar-defs -o mlirSynth/synthesis/Grammar.cc
 
 # Build mlirSynth.
-pushd build
+pushd $BUILD_DIR
 cmake --build .
 popd
 

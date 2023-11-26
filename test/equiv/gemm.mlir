@@ -1,3 +1,7 @@
+// RUN: test-executor %s --print-output-black-white | FileCheck %s
+
+// CHECK: Testing with IO OK
+// CHECK: Checking with CBMC OK
 module {
   func.func @fn_0(%arg3: f64, %arg4: f64, %arg5_orig: memref<3x5xf64>, %arg6: memref<3x7xf64>, %arg7: memref<7x5xf64>) -> memref<3x5xf64> attributes {changed_sizes = "1000:3,1200:7,1100:5", irsynth.original} {
     %arg5 = memref.alloc() : memref<3x5xf64>

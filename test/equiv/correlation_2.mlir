@@ -1,3 +1,7 @@
+// RUN: test-executor %s --print-output-black-white | FileCheck %s
+
+// CHECK: Testing with IO OK
+// CHECK: Checking with CBMC OK
 module {
   func.func @fn_2(%arg0: memref<3xf64>, %arg1: memref<5x3xf64>, %arg2: memref<3xf64>) -> memref<3xf64> attributes {irsynth.original} {
     %cst = arith.constant 0.000000e+00 : f64
