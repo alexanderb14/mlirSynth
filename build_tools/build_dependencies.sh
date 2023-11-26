@@ -143,13 +143,13 @@ if [ ! -d "cvc5" ]; then
   git checkout 7d3c5a757b7da00045a6fc011cad94e70d8eb442
   ./configure.sh --auto-download --best
   popd
-fi
 
-# Build
-pushd cvc5
-mkdir -p build
-cd build
-make -j 16
-popd
+  # Build
+  pushd cvc5
+  mkdir -p build
+  cd build
+  make -j 16
+  popd
+fi
 
 popd
